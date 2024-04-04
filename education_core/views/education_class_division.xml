@@ -5,7 +5,7 @@
         <field name="name">education.class.division.kanban</field>
         <field name="model">education.class.division</field>
         <field name="arch" type="xml">
-            <kanban class="education_class_division_kanban">
+            <kanban class="education_class_division_kanban" >
                 <field name="id"/>
                 <field name="name"/>
                 <field name="actual_strength"/>

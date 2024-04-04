@@ -63,8 +63,6 @@ class StudentApplication(models.Model):
         """Create student from the application
             and data and return the student"""
         for rec in self:
-            print('self===', self)
-            print('self===', rec)
             values = {
                 'name': rec.name,
                 'last_name': rec.last_name,
