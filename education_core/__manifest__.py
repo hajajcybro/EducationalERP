@@ -21,7 +21,7 @@
 ##############################################################################
 {
     'name': 'Educational ERP Core',
-    'version': '17.0.1.0.0',
+    'version': '17.0.1.0.1',
     'category': 'Industries',
     'summary': """Core Module of Educational ERP""",
     'description': """A strong and complete user-friendly ERP solution designed 

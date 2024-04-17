@@ -31,12 +31,12 @@ class EducationClassDivision(models.Model):
 
     @api.model
     def create(self, vals):
-        """Return the name as a str of class + division"""
-        class_id = self.env['education.class'].browse(vals['class_id'])
-        division_id = self.env['education.division'].browse(
-            vals['division_id'])
-        name = str(class_id.name + '-' + division_id.name)
-        vals['name'] = name
+        if 'class_id' in vals and 'division_id' in vals:
+            class_id = self.env['education.class'].browse(vals['class_id'])
+            division_id = self.env['education.division'].browse(
+                vals['division_id'])
+            name = str(class_id.name + '-' + division_id.name)
+            vals['name'] = name
         return super(EducationClassDivision, self).create(vals)
 
     def action_view_students(self):

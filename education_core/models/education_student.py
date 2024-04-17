@@ -85,7 +85,7 @@ class EducationStudent(models.Model):
                                         string="Class",
                                         help="Class of the student")
     admission_class_id = fields.Many2one('education.class',
-                                         string="Admission Class",
+                                         string="Class",
                                          help="Admission taken class")
     ad_no = fields.Char(string="Admission Number", readonly=True,
                         help="Admission number of student")
