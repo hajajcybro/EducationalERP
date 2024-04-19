@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--    Tree view of model-->
+    <record id="education_mess_view_tree" model="ir.ui.view">
+        <field name="name">education.mess.view.tree</field>
+        <field name="model">education.mess</field>
+        <field name="arch" type="xml">
+            <tree string="Mess">
+                <field name="mess_name"/>
+                <field name="mess_code"/>
+                <field name="hostel"/>
+            </tree>
+        </field>
+    </record>
+    <!--Form view of model-->
+    <record id="education_mess_view_form" model="ir.ui.view">
+        <field name="name">education.mess.view.form</field>
+        <field name="model">education.mess</field>
+        <field name="arch" type="xml">
+            <form string="Hostel">
+                <sheet>
+                    <group col="4" name="main">
+                        <field name="mess_name"/>
+                        <field name="mess_code"/>
+                        <field name="hostel"/>
+                        <field name="company_id"
+                               groups="base.group_multi_company"/>
+                    </group>
+                    <notebook colspan="4">
+                        <page string="Food Menu">
+                            <field name="food_menu">
+                                <tree string="Food Menu" editable="bottom">
+                                    <field name="week_list"/>
+                                    <field name="break_fast"/>
+                                    <field name="lunch"/>
+                                    <field name="snack"/>
+                                    <field name="supper"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!--Action for the model-->
+    <record model="ir.actions.act_window" id="education_mess_action">
+        <field name="name">Mess</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">education.mess</field>
+        <!--            <field name="view_type">form</field>-->
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Create Mess.
+            </p>
+        </field>
+    </record>
+    <menuitem id="education_mess_menu_action" parent="education_mess_menu_root"
+              name="Mess"
+              sequence="1" action="education_mess_action"/>
+</odoo>

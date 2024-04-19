@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--View form of model-->
+    <record id="mess_food_view_tree" model="ir.ui.view">
+        <field name="name">mess.food.view.form</field>
+        <field name="model">mess.food</field>
+        <field name="arch" type="xml">
+            <form string="Mess">
+                <field name="mess_rel"/>
+                <field name="break_fast"/>
+                <field name="lunch"/>
+                <field name="snack"/>
+                <field name="supper"/>
+                <field name="week_list"/>
+            </form>
+        </field>
+    </record>
+</odoo>
