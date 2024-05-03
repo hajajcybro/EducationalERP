@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_education_fee_category_user,access.education.fee.category.user,education_fee.model_education_fee_category,account.group_account_user,1,1,1,0
+access_education_fee_category_manager,access.education.fee.category.manager,education_fee.model_education_fee_category,account.group_account_manager,1,1,1,1
+access_education_fee_structure_user,access.education.fee.structure.user,education_fee.model_education_fee_structure,account.group_account_user,1,1,1,0
+access_education_fee_structure_manager,access.education.fee.structure.manager,education_fee.model_education_fee_structure,account.group_account_manager,1,1,1,1
+access_education_fee_structure_lines_user,access.education.fee.structure.lines.user,education_fee.model_education_fee_structure_lines,account.group_account_user,1,1,1,0
+access_education_fee_structure_lines_manager,access.education.fee.structure.lines.manager,education_fee.model_education_fee_structure_lines,account.group_account_manager,1,1,1,1
+access_education_fee_type_user,access.education.fee.type.user,education_fee.model_education_fee_type,account.group_account_user,1,1,1,0
+access_education_fee_type_manager,access.education.fee.type.manager,education_fee.model_education_fee_type,account.group_account_manager,1,1,1,1

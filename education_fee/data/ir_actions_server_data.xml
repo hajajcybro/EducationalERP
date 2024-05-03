@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--Scheduled action for the automatic entry-->
+        <record id="action_automatic_entry" model="ir.actions.server">
+            <field name="name">Automatic Entries</field>
+            <field name="model_id" ref="account.model_account_move_line"/>
+            <field name="groups_id"
+                   eval="[(4, ref('account.group_account_user'))]"/>
+            <field name="binding_model_id"
+                   ref="account.model_account_move_line"/>
+            <field name="state">code</field>
+            <field name="code">action = records.action_automatic_entry()</field>
+        </record>
+        <!--Scheduled action to switch the invoice into the credit note-->
+        <record id="action_move_switch_invoice_to_credit_note"
+                model="ir.actions.server">
+            <field name="name">Switch into refund/credit note</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="groups_id"
+                   eval="[(4, ref('account.group_account_invoice'))]"/>
+            <field name="binding_model_id" ref="account.model_account_move"/>
+            <field name="state">code</field>
+            <field name="binding_view_types">form</field>
+            <field name="code">
+                if records:
+                action = records.action_switch_invoice_into_refund_credit_note()
+            </field>
+        </record>
+        <!--Scheduled action to check the hash integrity-->
+        <record id="action_check_hash_integrity" model="ir.actions.server">
+            <field name="name">Data Inalterability Check</field>
+            <field name="model_id" ref="account.model_res_company"/>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="code">
+                action = env.company._action_check_hash_integrity()
+            </field>
+        </record>
+    </data>
+</odoo>

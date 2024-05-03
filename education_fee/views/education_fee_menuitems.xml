@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--Root menu for module education fee-->
+    <menuitem id="education_fee_menu_root" name="Fee"
+              web_icon="education_fee,static/description/icon.png"
+              sequence="11">
+        <!--Root menu for education fee-->
+        <menuitem id="education_fee_menu_root_receipt" name="Students Fee"
+                  sequence="2">
+            <!--Menu for education fee receipt-->
+            <menuitem id="education_fee_menu_receipt"
+                      action="account_move_action_fee_receipt"
+                      sequence="1"/>
+            <!--Menu for education fee refund-->
+            <menuitem id="education_fee_menu_refund"
+                      action="action_move_out_refund_type"
+                      sequence="2"/>
+        </menuitem>
+        <!--Configuration menu for module education fee-->
+        <menuitem id="education_fee_menu_configuration" name="Configuration"
+                  sequence="3">
+            <!--Menu for the model education fee structure-->
+            <menuitem id="education_fee_menu_structure"
+                      action="education_fee_structure_action"
+                      sequence="1"/>
+            <!--Menu for the model education fee type-->
+            <menuitem id="education_fee_menu_type"
+                      action="education_fee_type_action"
+                      sequence="2"/>
+            <!--Category menu for the model education fee-->
+            <menuitem id="education_fee_menu_category"
+                      action="education_fee_category_action"
+                      sequence="3"/>
+        </menuitem>
+    </menuitem>
+</odoo>
