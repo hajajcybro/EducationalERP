@@ -22,7 +22,7 @@
 {
     'name': 'Educational ERP Core',
     'version': '17.0.1.0.1',
-    'category': 'Industries',
+    'category': 'Services, Indsutries',
     'summary': """Core Module of Educational ERP""",
     'description': """A strong and complete user-friendly ERP solution designed 
      specifically for school administration is Educational ERP. 
