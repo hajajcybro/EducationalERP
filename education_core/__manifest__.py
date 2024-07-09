@@ -25,7 +25,7 @@
     'version': '16.0.1.0.2',
     'summary': """Core Module of Educational ERP""",
     'description': 'Core Module of Educational ERP',
-    'category': 'Educational',
+    'category': 'Services',
     'author': 'Cybrosys Techno Solutions',
     'company': 'Cybrosys Techno Solutions',
     'website': "http://www.educationalerp.com",
