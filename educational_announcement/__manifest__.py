@@ -21,25 +21,25 @@
 ################################################################################
 {
     'name': 'Educational Announcement',
-    'version': '17.0.1.0.0',
+    'version': '17.0.1.0.1',
     'category': 'Extra Tools',
-    'summary': 'Announcement for Educational ERP',
-    'description': 'Educational Announcement allows the school management'
-                   ' to facilitate real-time communication to both student '
-                   'and faculties.',
+    'summary': 'Announcement for Education ERP',
+    'description': """Educational Announcement allows the school management 
+     to facilitate real-time communication to both student and faculties.""",
     'author': 'Cybrosys Techno Solutions',
     'company': 'Cybrosys Techno Solutions',
+    'maintainer': 'Cybrosys Techno Solutions',
     'website': "http://www.educationalerp.com",
-    'depends': ['base', 'education_core', 'mail', 'contacts'],
+    'depends': ['education_core', 'mail', 'contacts'],
     'data': [
-        'data/school_announcement_data.xml',
-        'data/ir_cron_data.xml',
         'security/ir.model.access.csv',
+        'data/ir_sequence_data.xml',
+        'data/ir_cron_data.xml',
         'views/school_announcement_views.xml',
     ],
     'images': ['static/description/banner.png'],
     'license': 'AGPL-3',
     'installable': True,
     'auto_install': False,
-    'application': False,
+    'application': True,
 }

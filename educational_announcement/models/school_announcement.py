@@ -21,8 +21,8 @@
 ################################################################################
 import logging
 import re
-from datetime import datetime
 import lxml
+from datetime import datetime
 from odoo import api, fields, models, _
 
 _logger = logging.getLogger(__name__)
@@ -41,7 +41,6 @@ class SchoolAnnouncement(models.Model):
     announcement_subject = fields.Char(
         string='Subject',
         required=True,
-        readonly=False,
         help="Title or Subject of the Announcement")
     state = fields.Selection(
         [('draft', 'Draft'),
@@ -51,9 +50,9 @@ class SchoolAnnouncement(models.Model):
          ('failed', 'Failed'),
          ('expired', 'Expired')],
         string='Status', default='draft',
-        help="State of the announcement")
+        help="State of the announcement", copy=False)
     scheduled_date = fields.Date(
-        'Scheduled Date',
+        string='Scheduled Date',
         help="If set, the queue manager will send the email after the date. "
              "If not set, the email will be send as soon as possible.")
     requested_date = fields.Date(
@@ -81,8 +80,26 @@ class SchoolAnnouncement(models.Model):
     failure_reason = fields.Text(
         string='Failure Reason',
         compute="_compute_failure_reason",
-        help="Mention the failure reason.")
-    mail_id = fields.Many2one('mail.mail', string="Mail")
+        help="Mention the failure reason.", copy=False)
+    mail_id = fields.Many2one('mail.mail', string="Mail",
+                              help='Maid related to the announcement')
+
+    @api.depends('mail_id.state', 'mail_id.failure_reason')
+    def _compute_failure_reason(self):
+        """Function to compute the failure reason"""
+        for rec in self:
+            rec.failure_reason = rec.mail_id.failure_reason
+            if rec.mail_id.state == 'exception':
+                rec.write({'state': 'failed'})
+            elif rec.mail_id.state == 'sent':
+                rec.write({'state': 'done'})
+
+    @api.model
+    def create(self, vals):
+        """Create sequence for announcement"""
+        vals['name'] = self.env['ir.sequence'].next_by_code(
+            'school.announcement') or _('New')
+        return super(SchoolAnnouncement, self).create(vals)
 
     def expire_date(self):
         """Calculate the date is expired or not."""
@@ -92,22 +109,15 @@ class SchoolAnnouncement(models.Model):
         for rec in announcements:
             rec.state = 'expired'
 
-    def to_send(self):
+    def action_to_send(self):
         """Change the state to 'to_send' on clicking confirm button"""
         self.state = 'to_send'
 
-    def undo(self):
+    def action_undo(self):
         """Change state to draft"""
         self.state = 'draft'
 
-    @api.model
-    def create(self, vals):
-        """Create sequence for announcement"""
-        vals['name'] = self.env['ir.sequence'].next_by_code(
-            'school.announcement') or _('New')
-        return super(SchoolAnnouncement, self).create(vals)
-
-    def mail_send(self):
+    def action_mail_send(self):
         """Function to send mail to student, staff or general"""
         recipients = []
         if not self.mail_id:
@@ -140,7 +150,7 @@ class SchoolAnnouncement(models.Model):
         if self.mail_id.state == 'exception':
             self.write({'state': 'failed'})
 
-    def mail_schedule(self):
+    def action_mail_schedule(self):
         """Function to schedule mail for the recipients"""
         recipients = []
         if self.to_assign == 'student':
@@ -165,19 +175,9 @@ class SchoolAnnouncement(models.Model):
         self.mail_id = self.env['mail.mail'].create(main_content)
         self.write({'state': 'pending'})
 
-    def mail_resend(self):
+    def action_mail_resend(self):
         """Function to resend the mail"""
         self.mail_id.send()
-
-    @api.depends('mail_id.state', 'mail_id.failure_reason')
-    def _compute_failure_reason(self):
-        """Function to compute the failure reason"""
-        for rec in self:
-            rec.failure_reason = rec.mail_id.failure_reason
-            if rec.mail_id.state == 'exception':
-                rec.write({'state': 'failed'})
-            elif rec.mail_id.state == 'sent':
-                rec.write({'state': 'done'})
 
     def _convert_inline_images_to_urls(self, body_html):
         """
@@ -191,23 +191,18 @@ class SchoolAnnouncement(models.Model):
                 'datas': b64image,
                 'name': "cropped_image_mailing_{}".format(self.id),
                 'type': 'binary', })
-
             attachment.generate_access_token()
-
             return '/web/image/%s?access_token=%s' % (
                 attachment.id, attachment.access_token)
-
         modified = False
         root = lxml.html.fromstring(body_html)
         for node in root.iter('img'):
             match = image_re.match(node.attrib.get('src', ''))
             if match:
-                mime = match.group(1)  # unsed
+                match.group(1)  # unsed
                 image = match.group(2).encode()  # base64 image as bytes
-
                 node.attrib['src'] = _image_to_url(image)
                 modified = True
-
         if modified:
             return lxml.html.tostring(root)
         return body_html

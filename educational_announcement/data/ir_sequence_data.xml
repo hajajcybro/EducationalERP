@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <data>
-<!--        Sequence creation -->
+    <data noupdate="1">
+        <!--        Sequence creation -->
         <record id="announcement_seq" model="ir.sequence">
             <field name="name">Announcement</field>
             <field name="code">school.announcement</field>
