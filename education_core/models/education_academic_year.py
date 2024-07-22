@@ -56,7 +56,7 @@ class EducationAcademicYear(models.Model):
     ay_description = fields.Text(string='Description',
                                  help="Description about the academic year")
     active = fields.Boolean(
-        'Active', default=True,
+        string='Active', default=True,
         help="If unchecked, it will allow you to hide the Academic "
              "Year without removing it.")
 

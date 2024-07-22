@@ -22,10 +22,10 @@
 from odoo import fields, models
 
 
-class EducationClassDivisionHistory(models.Model):
+class EducationClassHistory(models.Model):
     """Used for managing student previous class details """
     _name = 'education.class.history'
-    _description = "Class room history"
+    _description = "Class Room History"
     _rec_name = 'class_id'
 
     academic_year_id = fields.Many2one('education.academic.year',

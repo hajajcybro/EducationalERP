@@ -48,7 +48,8 @@
             </p>
         </field>
     </record>
-    <menuitem action="education_academic_year_action"
+    <menuitem id="education_academic_year_menu"
+              action="education_academic_year_action"
               parent="menu_education_main_menu"
-              id="education_academic_year_menu" sequence="2"/>
+              sequence="2"/>
 </odoo>

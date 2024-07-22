@@ -22,7 +22,7 @@
 {
     'name': 'Educational ERP Core',
     'version': '17.0.1.0.1',
-    'category': 'Services',
+    'category': 'Industries',
     'summary': """Core Module of Educational ERP""",
     'description': """A strong and complete user-friendly ERP solution designed 
      specifically for school administration is Educational ERP. 
@@ -30,8 +30,9 @@
      class management, and subject administration are simple to administer.""",
     'author': 'Cybrosys Techno Solutions',
     'company': 'Cybrosys Techno Solutions',
+    'maintainer': 'Cybrosys Techno Solutions',
     'website': "https://www.educationalerp.com",
-    'depends': ['stock', 'hr_recruitment', 'education_theme'],
+    'depends': ['stock', 'hr_recruitment', 'education_theme', 'contacts'],
     'data': [
         'security/education_security.xml',
         'security/ir.model.access.csv',
@@ -48,6 +49,7 @@
         'views/education_document_views.xml',
         'views/document_document_views.xml',
         'views/education_division_views.xml',
+        'views/education_medium_views.xml',
         'views/education_subject_views.xml',
         'views/education_syllabus_views.xml',
         'views/education_amenities_views.xml',
@@ -57,6 +59,9 @@
         'report/student_id_card_reports.xml',
         'report/student_application_reports.xml',
         'report/faculty_id_card_reports.xml',
+    ],
+    'demo': [
+        'demo/education_academic_year_demo.xml'
     ],
     'images': ['static/description/banner.jpg'],
     'license': 'AGPL-3',

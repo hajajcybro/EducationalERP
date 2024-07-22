@@ -19,26 +19,46 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+import re
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
 
-class StudentApplication(models.Model):
+class EducationApplication(models.Model):
     """Manages student application and its verification"""
     _name = 'education.application'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = 'Applications for the admission'
     _order = 'id desc'
 
+    _sql_constraints = [
+        ('email', 'UNIQUE(email)',
+         "This email is already associated with another student.")
+    ]
+
     @api.model
     def create(self, vals):
         """Overriding the create method and assigning
-         the sequence for the record"""
+         the sequence for the record and other field validations."""
         if vals.get('name', _('New')) == _('New'):
             vals['name'] = self.env['ir.sequence'].next_by_code(
                 'education.application') or _('New')
-        res = super(StudentApplication, self).create(vals)
-        return res
+        if 'email' not in vals.keys() or ('email' in vals.keys() and not vals['email']):
+            raise ValidationError(f"Email address is required.")
+        if re.compile(
+                r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)").match(
+                vals['email']) is None:
+            raise ValidationError(f"Invalid email address: {vals['email']}")
+        return super().create(vals)
+
+    @api.constrains('email')
+    def _check_email(self):
+        if self.email and not re.compile(
+                r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)").match(
+                self.email):
+            raise ValidationError(f"Invalid email address: {self.email}")
+        if not self.email:
+            raise ValidationError(f"Please enter the email.")
 
     def unlink(self):
         """Return warning if the application is not in the reject state"""
@@ -206,10 +226,12 @@ class StudentApplication(models.Model):
     medium_id = fields.Many2one(
         'education.medium', string="Medium", required=True,
         help="Choose the Medium of class, like English, Hindi etc")
+
     sec_lang_id = fields.Many2one('education.subject',
                                   string="Second language", required=True,
                                   domain=[('is_language', '=', True)],
                                   help="Choose the Second language")
+
     mother_tongue = fields.Char(string="Mother Tongue",
                                 required=True,
                                 help="Enter Student's Mother Tongue")
@@ -220,14 +242,14 @@ class StudentApplication(models.Model):
                                      default=fields.Datetime.now,
                                      required=True, help="Date of admission")
     name = fields.Char(string='Application  No', readonly=True,
-                       default=lambda self: _('New'),
+                       default=lambda self: _('New'), copy=False,
                        help="Application number of admission")
     company_id = fields.Many2one('res.company', string='Company',
                                  default=lambda self: self.env.user.company_id,
                                  help="Current Company")
     email = fields.Char(string="Email", required=True,
                         help="Enter E-mail id for contact purpose")
-    phone = fields.Char(string="Phone",
+    phone = fields.Char(string="Phone", copy=False,
                         help="Enter Phone no. for contact purpose")
     mobile = fields.Char(string="Mobile", required=True,
                          help="Enter Mobile num for contact purpose")
@@ -303,5 +325,5 @@ class StudentApplication(models.Model):
                               ('approve', 'Approve'),
                               ('reject', 'Rejected'), ('done', 'Done')],
                              string='State', required=True, default='draft',
-                             track_visibility='onchange',
+                             track_visibility='onchange', copy=False,
                              help="Stages of admission")

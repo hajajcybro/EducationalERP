@@ -23,13 +23,13 @@ from odoo import fields, models, _
 from odoo.exceptions import UserError
 
 
-class HRRecruitment(models.Model):
+class HrApplicant(models.Model):
     """Inherited hr_applicant for adding a field for faculty and to
     create faculty from application"""
     _inherit = 'hr.applicant'
 
     is_faculty = fields.Boolean(string="Faculty ?",
-                                help="Tick the field True if this "
+                                help="True if this "
                                      "is a Faculty Recruitment")
 
     def create_employee_from_applicant(self):
@@ -67,7 +67,6 @@ class HRRecruitment(models.Model):
                     'work_phone': applicant.department_id and applicant.department_id.company_id
                                   and applicant.department_id.company_id.phone or False})
                 applicant.write({'emp_id': employee.id})
-
                 # creating the faculty
                 if applicant.is_faculty:
                     values = {
@@ -83,12 +82,10 @@ class HRRecruitment(models.Model):
                     body=_(
                         'New Employee %s Hired') % applicant.partner_name if applicant.partner_name else applicant.name,
                     subtype_xmlid="hr_recruitment.mt_job_applicant_hired")
-                # employee._broadcast_welcome()
             else:
                 raise UserError(_(
                     'You must define an Applied Job and a Contact '
                     'Name for this applicant.'))
-
         employee_action = self.env.ref('hr.open_view_employee_list')
         dict_act_window = employee_action.read([])[0]
         if employee:

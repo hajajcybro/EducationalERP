@@ -109,7 +109,8 @@
                             <field name="admission_class_id"
                                    readonly="state == 'done'"/>
                             <field name="sec_lang_id"
-                                   readonly="state == 'done'"/>
+                                   readonly="state == 'done'"
+                                   options="{'no_create': True}"/>
                         </group>
                         <group>
                             <field name="medium_id"
@@ -365,7 +366,7 @@
                 'phone': rec.phone,
                 'image_1920': rec.image,
                 'is_student': True,
-                'medium_id': rec.medium.id,
+                'medium_id': rec.medium_id.id,
                 'religion': rec.religion,
                 'caste': rec.caste,
                 'sec_lang_id': rec.sec_lang_id.id,
@@ -384,17 +385,17 @@
                     'per_country_id': rec.country_id.id,
                     'per_zip': rec.zip,
                     })
-                student = env['education.student'].create(values)
-                rec.write({ 'state': 'done' })
+                    student = env['education.student'].create(values)
+                    rec.write({ 'state': 'done' })
         </field>
     </record>
-    <menuitem name="Reports"
-              id="education_application_menu_report"
+    <menuitem id="education_application_menu_report" name="Reports"
               parent="menu_education_root"
               sequence="6"/>
-    <menuitem action="education_application_action_report"
+    <menuitem id="education_application_menu_report_analysis"
+              action="education_application_action_report"
               parent="education_application_menu_report"
-              id="education_application_menu_report_analysis"/>
+    />
     <menuitem id="menu_education_admission" name="Admission"
               parent="menu_education_root" sequence="5"/>
     <menuitem id="education_application_menu" name="Application"

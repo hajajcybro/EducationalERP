@@ -22,6 +22,7 @@
             </p>
         </field>
     </record>
-    <menuitem action="education_division_action" parent="menu_education_main_menu"
-              id="education_division_menu" sequence="20"/>
+    <menuitem id="education_division_menu" action="education_division_action"
+              parent="menu_education_main_menu"
+              sequence="20"/>
 </odoo>

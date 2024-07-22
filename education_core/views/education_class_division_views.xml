@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!--Kanban view of Education Class Division-->
-    <record model="ir.ui.view" id="education_class_division_view_kanban">
+    <record id="education_class_division_view_kanban" model="ir.ui.view">
         <field name="name">education.class.division.view.kanban</field>
         <field name="model">education.class.division</field>
         <field name="arch" type="xml">
@@ -67,7 +67,6 @@
                 <sheet string="Class">
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_students" type="object"
-                                widget="statinfo"
                                 class="oe_stat_button" icon="fa-user"
                                 invisible="student_count == 0">
                             <field name="student_count" widget="statinfo"
@@ -135,7 +134,8 @@
             </p>
         </field>
     </record>
-    <menuitem action="education_class_division_action"
+    <menuitem id="education_class_division_menu"
+              action="education_class_division_action"
               parent="menu_education_admission"
-              id="education_class_division_menu" sequence="20"/>
+              sequence="20"/>
 </odoo>

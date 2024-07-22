@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <tree string="Amenities">
                 <field name="name"/>
-                </tree>
+            </tree>
         </field>
     </record>
     <!--Form view of Education amenities-->
@@ -37,6 +37,7 @@
             </p>
         </field>
     </record>
-    <menuitem action="education_amenities_action" parent="menu_education_main_menu"
-              id="education_amenities_menu" sequence="5"/>
+    <menuitem id="education_amenities_menu" action="education_amenities_action"
+              parent="menu_education_main_menu"
+              sequence="5"/>
 </odoo>

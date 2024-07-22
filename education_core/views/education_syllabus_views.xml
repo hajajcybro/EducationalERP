@@ -50,6 +50,7 @@
             </p>
         </field>
     </record>
-    <menuitem action="education_syllabus_action" parent="menu_education_class_conf"
-              id="education_syllabus_menu" sequence="5"/>
+    <menuitem id="education_syllabus_menu" action="education_syllabus_action"
+              parent="menu_education_class_conf"
+              sequence="5"/>
 </odoo>

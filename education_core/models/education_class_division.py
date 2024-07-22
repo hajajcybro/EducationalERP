@@ -26,11 +26,12 @@ from odoo.exceptions import ValidationError
 class EducationClassDivision(models.Model):
     """Manages class division details"""
     _name = 'education.class.division'
-    _description = "Class room"
+    _description = "Class Division"
     _inherit = ['mail.thread']
 
     @api.model
     def create(self, vals):
+        """Inherited to add the value for name field"""
         if 'class_id' in vals and 'division_id' in vals:
             class_id = self.env['education.class'].browse(vals['class_id'])
             division_id = self.env['education.division'].browse(

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Paper format for student applicatio-->
+    <!-- Paper format for student application-->
     <record id="paperformat_student_application"
             model="report.paperformat">
         <field name="name">Student Application A4</field>

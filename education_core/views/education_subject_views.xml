@@ -39,7 +39,7 @@
             </form>
         </field>
     </record>
-
+    <!--Search view of Education Subject-->
     <record id="education_subject_view_search" model="ir.ui.view">
         <field name="name">Subjects</field>
         <field name="model">education.subject</field>
@@ -69,7 +69,8 @@
             </p>
         </field>
     </record>
-    <menuitem action="education_subject_action"
+    <!--    Subject menu-->
+    <menuitem id="education_subject_menu" action="education_subject_action"
               parent="menu_education_class_conf"
-              id="education_subject_menu" sequence="4"/>
+              sequence="4"/>
 </odoo>

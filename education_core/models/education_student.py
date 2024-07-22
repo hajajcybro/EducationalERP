@@ -20,6 +20,7 @@
 #
 ##############################################################################
 from odoo import api, fields, models, _
+from odoo.exceptions import ValidationError
 
 
 class EducationStudent(models.Model):
@@ -27,14 +28,14 @@ class EducationStudent(models.Model):
     _name = 'education.student'
     _inherit = ['mail.thread']
     _inherits = {'res.partner': 'partner_id'}
-    _description = 'Student record'
+    _description = 'Student Record'
 
     def action_student_documents(self):
         """Return the documents student submitted
         along with the admission application"""
         self.ensure_one()
         if self.application_id.id:
-            documents = self.env['education.documents'].search(
+            documents = self.env['education.document'].search(
                 [('application_ref_id', '=', self.application_id.id)])
             documents_list = documents.mapped('id')
             return {
@@ -74,7 +75,7 @@ class EducationStudent(models.Model):
         ondelete="cascade", help="Related partner of the student")
     middle_name = fields.Char(string='Middle Name', help="Enter middle name")
     last_name = fields.Char(string='Last Name', help="Enter last name")
-    date_of_birth = fields.Date(string="Date of Birth", requird=True,
+    date_of_birth = fields.Date(string="Date of Birth", required=True,
                                 help="Enter date of birth of student")
     guardian_id = fields.Many2one('res.partner', string="Guardian",
                                   domain=[('is_parent', '=', True)],
@@ -144,3 +145,11 @@ class EducationStudent(models.Model):
         ('ad_no', 'unique(ad_no)',
          "Another Student already exists with this admission number!"),
     ]
+
+    @api.onchange('class_division_id')
+    def _onchange_class_division_id(self):
+        """Method for checking the maximum number of students in a class"""
+        for rec in self:
+            if rec.class_division_id.actual_strength<len(rec.class_division_id.student_ids):
+                raise ValidationError("The number of students exceeds the "
+                                      "maximum strength of the class division.")

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!--Form view of Education Document -->
-    <record model='ir.ui.view' id='education_document_view_form'>
+    <record id='education_document_view_form' model='ir.ui.view'>
         <field name="name">education.document.view.form</field>
         <field name="model">education.document</field>
         <field name="arch" type="xml">
@@ -66,6 +66,7 @@
                         <field name="doc_attachment_ids"
                                widget="many2many_binary"
                                readonly="state in ['done','returned']"
+                               required="has_hard_copy == False"
                                class="oe_inline"/>
                     </group>
                     <notebook>
@@ -101,7 +102,7 @@
         </field>
     </record>
     <!--Tree view of Education Document -->
-    <record model='ir.ui.view' id='education_document_view_tree'>
+    <record id='education_document_view_tree' model='ir.ui.view'>
         <field name="name">education.document.view.tree</field>
         <field name="model">education.document</field>
         <field name="arch" type="xml">
@@ -125,8 +126,8 @@
             </p>
         </field>
     </record>
-    <menuitem action="education_document_action"
+    <menuitem id="education_document_menu" action="education_document_action"
               parent="menu_education_class_conf"
-              id="education_document_menu" sequence="10"
+              sequence="10"
               groups="base.group_no_one"/>
 </odoo>
