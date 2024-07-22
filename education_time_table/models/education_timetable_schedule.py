@@ -20,10 +20,11 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from odoo import api, fields, models
+from odoo import api, fields, models, _
+from odoo.exceptions import ValidationError
 
 
-class EducationTimeTableSchedule(models.Model):
+class EducationTimetableSchedule(models.Model):
     """Model representing the Timetable Schedule for specific periods."""
     _name = 'education.timetable.schedule'
     _description = 'Timetable Schedule'
@@ -52,8 +53,9 @@ class EducationTimeTableSchedule(models.Model):
         ('4', 'Friday'),
         ('5', 'Saturday'),
         ('6', 'Sunday'),
-    ], 'Week', required=True,  help="Day of the week for the schedule.")
+    ], string='Week', required=True,  help="Day of the week for the schedule.")
     timetable_id = fields.Many2one('education.timetable',
+                                   string='Timetable',
                                    required=True, help="Timetable associated "
                                                        "with the schedule.")
     class_division_id = fields.Many2one('education.class.division',
@@ -68,13 +70,35 @@ class EducationTimeTableSchedule(models.Model):
     @api.model
     def create(self, vals):
         """Automatically stores division details fetched from timetable"""
-        res = super(EducationTimeTableSchedule, self).create(vals)
+        res = super().create(vals)
         res.class_division_id = res.timetable_id.class_division_id.id
         return res
 
     @api.onchange('period_id')
     def _onchange_period_id(self):
         """Gets the start and end time of the period"""
-        for period in self:
-            period.time_from = period.period_id.time_from
-            period.time_till = period.period_id.time_to
+        self.time_from = self.period_id.time_from
+        self.time_till = self.period_id.time_to
+
+    @api.constrains('time_from', 'time_till', 'timetable_id')
+    def _check_overlapping_schedules(self):
+        """Method for avoiding time overlapping"""
+        for record in self:
+            if record.time_from >= record.time_till:
+                raise ValidationError(
+                    _("The start time must be before the end time."))
+            overlapping_schedules = self.search([
+                ('timetable_id', '=', record.timetable_id.id),
+                ('id', '!=', record.id),
+                ('week_day','=',record.week_day),
+                '|', '&',
+                ('time_from', '<', record.time_till),
+                ('time_till', '>', record.time_from),
+                '&',
+                ('time_till', '>', record.time_from),
+                ('time_from', '<', record.time_till)
+            ])
+            if overlapping_schedules:
+                raise ValidationError(
+                    _("The schedule times overlap with another schedule."))
+

@@ -20,6 +20,6 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from . import education_time_table
+from . import education_timetable
 from . import education_timetable_schedule
 from . import timetable_period

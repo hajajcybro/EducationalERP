@@ -164,7 +164,7 @@
         </field>
     </record>
     <!--        Education timetable action-->
-    <record id="action_education_time_table" model="ir.actions.act_window">
+    <record id="education_time_table_action" model="ir.actions.act_window">
         <field name="name">Education Timetable</field>
         <field name="res_model">education.timetable</field>
         <field name="view_mode">tree,form</field>
@@ -187,5 +187,5 @@
             id="education_time_table_sub_sub_menu"
             name="Timetable"
             parent="education_time_table_sub_menu"
-            action="action_education_time_table"/>
+            action="education_time_table_action"/>
 </odoo>

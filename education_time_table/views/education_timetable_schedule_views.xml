@@ -88,11 +88,38 @@
             </p>
         </field>
     </record>
+    <!-- Record for Timetable View Class Division Wise -->
+    <record id="action_education_time_table_view_class_division_wise"
+            model="ir.actions.act_window">
+        <field name="name">timetable.schedule.class.wise</field>
+        <field name="res_model">education.timetable.schedule</field>
+        <field name="view_mode">tree,form</field>
+        <field name="target">current</field>
+        <field name="domain">[('class_division_id', '=', active_id)]</field>
+        <field name="context">
+            {'search_default_group_class_division':1,'search_default_group_week_day':
+            1}
+        </field>
+    </record>
+    <!-- Record for Timetable View Faculty Wise -->
+    <record id="action_education_time_table_view_faculty_wise"
+            model="ir.actions.act_window">
+        <field name="name">Timetable Schedule</field>
+        <field name="res_model">education.timetable.schedule</field>
+        <field name="view_mode">tree,form</field>
+        <field name="target">current</field>
+        <field name="domain">[('faculty_id', '=', active_id)]</field>
+        <field name="context">{'search_default_weekday':
+            1,'search_default_group_faculty': 1}
+        </field>
+    </record>
+    <!--    Schedules menu-->
     <menuitem
             id="education_time_table_schedule_main_menu"
             name="Schedules"
             parent="education_time_table_main_menu"
             sequence="2"/>
+    <!--    Timetable Schedule menu-->
     <menuitem
             id="education_time_table_schedule_sub_menu"
             name="Timetable Schedule"
