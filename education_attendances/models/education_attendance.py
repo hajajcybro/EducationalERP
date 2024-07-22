@@ -81,6 +81,25 @@ class EducationAttendance(models.Model):
                     res.division_id.name, res.date))
         return res
 
+    def write(self, vals):
+        """Check and return validation if attendance for this day exists"""
+        res = super(EducationAttendance, self).write(vals)
+        if 'division_id' in vals:
+            for record in self:
+                record.class_id = record.division_id.class_id.id
+
+        attendance_obj = self.env['education.attendance']
+        for record in self:
+            already_created_attendance = attendance_obj.search(
+                [('division_id', '=', record.division_id.id),
+                 ('date', '=', record.date),
+                 ('company_id', '=', record.company_id.id)])
+            if len(already_created_attendance) > 1:
+                raise ValidationError(
+                    _('Attendance register of %s is already created on "%s"') % (
+                        record.division_id.name, record.date))
+        return res
+
     def action_create_attendance_line(self):
         """ Action for creating attendance line for the students
             present in the division"""

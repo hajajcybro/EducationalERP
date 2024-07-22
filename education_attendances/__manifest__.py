@@ -23,8 +23,8 @@
     'name': 'Educational Attendance Management',
     'version': '17.0.1.0.0',
     'category': 'Industries',
-    'summary': "Openerp to Student Attendance Management System "
-               "for Educational ERP",
+    'summary': """"Openerp to Student Attendance Management System for 
+     Educational ERP""",
     'description': """An easy and efficient management tool to manage and 
      track student attendance. Enables different types of filtration to 
      generate the adequate reports""",

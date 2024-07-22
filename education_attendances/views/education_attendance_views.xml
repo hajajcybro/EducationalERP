@@ -24,8 +24,7 @@
                         <group>
                             <field name="division_id"
                                    readonly="attendance_created == True"/>
-                            <field name="faculty_id"
-                                   readonly="attendance_created == True"/>
+                            <field name="faculty_id"/>
                             <field name="class_id" invisible="1"/>
                             <field name="academic_year_id" invisible="1"/>
                         </group>
@@ -47,7 +46,7 @@
                     </div>
                     <div style="height: 30px;"
                          invisible="attendance_created == False">
-                        <div style="width: 78%;float:left;text-align:right;padding-right: 75px;"
+                        <div style="width: 50%;float:left;text-align:right;padding-right: 15%;"
                              invisible="all_marked_morning == True or state != 'draft'">
                             <button style="padding: 1px 5px;background-color: #5fb18d !important;border-color: #5fb18d !important;"
                                     string="Mark All"
@@ -55,7 +54,7 @@
                                     type="object"
                                     class="oe_highlight"/>
                         </div>
-                        <div style="width: 78%;float:left;text-align:right;padding-right: 75px;"
+                        <div style="width: 50%;float:left;text-align:right;padding-right: 15%;"
                              invisible="all_marked_morning == False or state != 'draft'">
                             <button style="padding: 1px 5px;background-color: #e25151;border-color: #e0e0e0;color:#575751;"
                                     string="Un Mark"
@@ -63,7 +62,7 @@
                                     type="object"
                                     class="oe_highlight"/>
                         </div>
-                        <div style="width:22%;float:left;padding-left:1%;"
+                        <div style="width:50%;float:left;padding-left:10%;"
                              invisible="all_marked_afternoon == True or state != 'draft'">
                             <button style="padding: 1px 5px;background-color: #5fb18d !important;border-color: #5fb18d !important;"
                                     string="Mark All"
@@ -71,7 +70,7 @@
                                     type="object"
                                     class="oe_highlight"/>
                         </div>
-                        <div style="width:22%;float:left;padding-left:1%;"
+                        <div style="width:50%;float:left;padding-left:10%;"
                              invisible="all_marked_afternoon == False or state != 'draft'">
                             <button style="padding: 1px 5px;background-color: #e25151;border-color: #e0e0e0;color:#575751;"
                                     string="Un Mark"
