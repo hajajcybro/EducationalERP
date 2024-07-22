@@ -30,7 +30,6 @@ class EducationExamValuation(models.Model):
         This model is used to store information about the valuation of exams,
         including details like the maximum mark, pass mark, students, and results.
     """
-
     _name = 'education.exam.valuation'
     _description = "Exam Valuation"
     _inherit = ['mail.thread', 'mail.activity.mixin']
@@ -39,7 +38,8 @@ class EducationExamValuation(models.Model):
         string='Name', default='New', help='Name of the exam valuation.')
     exam_id = fields.Many2one(
         'education.exam', string='Exam', required=True,
-        domain=[('state', '=', 'ongoing')], help='Associated exam for valuation.')
+        domain=[('state', '=', 'ongoing')], help='Associated exam for'
+                                                 ' valuation.')
     class_id = fields.Many2one(
         'education.class', string='Class',
         required=True, help='Class associated with the exam valuation.')
@@ -57,9 +57,10 @@ class EducationExamValuation(models.Model):
         string='Pass Mark', required=True,
         help='Passing mark for the exam.')
     state = fields.Selection(
-        [('draft', 'Draft'), ('completed', 'Completed'), ('cancel', 'Canceled')],
+        [('draft', 'Draft'), ('completed', 'Completed'),
+         ('cancel', 'Canceled')],
         default='draft', help='State of the exam valuation.')
-    valuation_line = fields.One2many(
+    valuation_line_ids = fields.One2many(
         'exam.valuation.line',
         'valuation_id', string='Students',
         help='Students and their marks in the valuation.')
@@ -68,7 +69,7 @@ class EducationExamValuation(models.Model):
         string='Subject', required=True,
         help='Subject for which the valuation is conducted.')
     mark_sheet_created = fields.Boolean(
-        string='Mark sheet Created',
+        string='Mark sheet Created', copy=False,
         help='Flag indicating whether the mark sheet is created.')
     date = fields.Date(
         string='Date', default=fields.Date.today,
@@ -83,14 +84,17 @@ class EducationExamValuation(models.Model):
         help='Company associated with the exam valuation.')
 
     @api.onchange('class_id')
-    def onchange_class_id(self):
+    def _onchange_class_id(self):
         """
-            Update the domain for the 'division_id' field based on the selected class.
+            Update the domain for the 'division_id' field based on the selected
+            class.
 
             This onchange method is triggered when the 'class_id' field changes.
-            It updates the domain for the 'division_id' field to filter divisions based on the selected class.
+            It updates the domain for the 'division_id' field to filter
+            divisions based on the selected class.
 
-            :return: A dictionary containing the updated domain for 'division_id'.
+            :return: A dictionary containing the updated domain for
+            'division_id'.
         """
         domain = []
         if self.division_id.class_id != self.class_id:
@@ -100,28 +104,34 @@ class EducationExamValuation(models.Model):
         return {'domain': {'division_id': domain}}
 
     @api.onchange('pass_mark')
-    def onchange_pass_mark(self):
+    def _onchange_pass_mark(self):
         """
-           Update the 'pass_or_fail' field for valuation_line records when 'pass_mark' changes.
+           Update the 'pass_or_fail' field for valuation_line records
+           when 'pass_mark' changes.
 
            This onchange method is triggered when the 'pass_mark' field changes.
-           It updates the 'pass_or_fail' field for all valuation_line records based on the new 'pass_mark'.
+           It updates the 'pass_or_fail' field for all valuation_line records
+           based on the new 'pass_mark'.
 
            :raises UserError: If 'pass_mark' is greater than 'mark'.
         """
         if self.pass_mark > self.mark:
             raise UserError(_('Pass mark must be less than Max Mark'))
-        for records in self.valuation_line:
-            records.pass_or_fail = True if records.mark_scored >= self.pass_mark else False
+        for records in self.valuation_line_ids:
+            records.pass_or_fail = True if (records.mark_scored >=
+                                            self.pass_mark) else False
 
     @api.onchange('exam_id', 'subject_id')
-    def onchange_exam_id(self):
+    def _onchange_exam_id(self):
         """
             Update fields based on changes in 'exam_id' and 'subject_id'.
 
-            This onchange method is triggered when either 'exam_id' or 'subject_id' changes.
-            It updates related fields such as 'class_id', 'division_id', and 'mark' based on the new selections.
-            It also updates the domain for 'subject_id' based on the subjects associated with the selected exam.
+            This onchange method is triggered when either 'exam_id' or
+            'subject_id' changes.
+            It updates related fields such as 'class_id', 'division_id', and
+            'mark' based on the new selections.
+            It also updates the domain for 'subject_id' based on the subjects
+            associated with the selected exam.
 
             :return: A dictionary containing the updated domain for 'subject_id'.
         """
@@ -146,7 +156,38 @@ class EducationExamValuation(models.Model):
             domain.append(items.subject_id.id)
         return {'domain': {'subject_id': [('id', 'in', domain)]}}
 
-    def create_mark_sheet(self):
+    @api.model
+    def create(self, vals):
+        """
+            Override the create method to check for existing exam valuations.
+
+            This method overrides the create method to ensure that there is no
+            existing exam valuation
+            for the same exam, division, and subject combination. It raises a
+             UserError if such a
+            valuation already exists.
+
+            :param vals: Dictionary of values for creating the record.
+            :return: The created record.
+            :raises UserError: If a valuation sheet for the same exam,
+             division, and subject already exists.
+        """
+        res = super(EducationExamValuation, self).create(vals)
+        valuation_obj = self.env['education.exam.valuation']
+        search_valuation = valuation_obj.search(
+            [('exam_id', '=', res.exam_id.id),
+             ('division_id', '=', res.division_id.id),
+             ('subject_id', '=', res.subject_id.id), ('state', '!=', 'cancel')])
+        if len(search_valuation) > 1:
+            raise UserError(
+                _(
+                    'Valuation Sheet for \n Subject --> %s \nDivision --> %s'
+                    ' \nExam --> %s \n is already created') % (
+                    res.subject_id.name, res.division_id.name,
+                    res.exam_id.name))
+        return res
+
+    def action_create_mark_sheet(self):
         """
             Create exam valuation lines for all students in the division.
             """
@@ -163,46 +204,22 @@ class EducationExamValuation(models.Model):
             valuation_line_obj.create(data)
         self.mark_sheet_created = True
 
-    @api.model
-    def create(self, vals):
+    def action_valuation_completed(self):
         """
-            Override the create method to check for existing exam valuations.
+            Mark the exam valuation as completed and update the related
+            result records.
 
-            This method overrides the create method to ensure that there is no existing exam valuation
-            for the same exam, division, and subject combination. It raises a UserError if such a
-            valuation already exists.
-
-            :param vals: Dictionary of values for creating the record.
-            :return: The created record.
-            :raises UserError: If a valuation sheet for the same exam, division, and subject already exists.
-        """
-        res = super(EducationExamValuation, self).create(vals)
-        valuation_obj = self.env['education.exam.valuation']
-        search_valuation = valuation_obj.search(
-            [('exam_id', '=', res.exam_id.id),
-             ('division_id', '=', res.division_id.id),
-             ('subject_id', '=', res.subject_id.id), ('state', '!=', 'cancel')])
-        if len(search_valuation) > 1:
-            raise UserError(
-                _(
-                    'Valuation Sheet for \n Subject --> %s \nDivision --> %s \nExam --> %s \n is already created') % (
-                    res.subject_id.name, res.division_id.name,
-                    res.exam_id.name))
-        return res
-
-    def valuation_completed(self):
-        """
-            Mark the exam valuation as completed and update the related result records.
-
-            This method sets the state of the exam valuation to 'completed' and updates the related
-            result records with the calculated marks and pass/fail status for each student.
+            This method sets the state of the exam valuation to 'completed'
+             and updates the related
+            result records with the calculated marks and pass/fail status for
+             each student.
             """
-        self.name = str(self.exam_id.exam_type.name) + '-' + str(
+        self.name = str(self.exam_id.exam_type_id.name) + '-' + str(
             self.exam_id.start_date)[0:10] + ' (' + str(
             self.division_id.name) + ')'
         result_obj = self.env['education.exam.results']
         result_line_obj = self.env['results.subject.line']
-        for students in self.valuation_line:
+        for students in self.valuation_line_ids:
             search_result = result_obj.search(
                 [('exam_id', '=', self.exam_id.id),
                  ('division_id', '=', self.division_id.id),
@@ -249,13 +266,14 @@ class EducationExamValuation(models.Model):
                 result_line_obj.create(result_line_data)
         self.state = 'completed'
 
-    def set_to_draft(self):
+    def action_set_to_draft(self):
         """
-           Set the exam valuation back to draft state and unlink related result line records.
+           Set the exam valuation back to draft state and unlink related
+           result line records.
            """
         result_line_obj = self.env['results.subject.line']
         result_obj = self.env['education.exam.results']
-        for students in self.valuation_line:
+        for students in self.valuation_line_ids:
             search_result = result_obj.search(
                 [('exam_id', '=', self.exam_id.id),
                  ('division_id', '=', self.division_id.id),
@@ -266,7 +284,7 @@ class EducationExamValuation(models.Model):
             search_result_line.unlink()
         self.state = 'draft'
 
-    def valuation_canceled(self):
+    def action_valuation_canceled(self):
         """
             Set the exam valuation state to 'cancel'.
         """
@@ -281,20 +299,26 @@ class StudentsExamValuationLine(models.Model):
     _description = 'Exam Valuation Line'
 
     student_id = fields.Many2one('education.student', string='Student',
-                                 help='Student associated with this valuation line.')
-    student_name = fields.Char(string='Student Name', help='Name of the student.')
-    mark_scored = fields.Float(string='Mark Scored', help='Marks obtained by the student in the exam.')
+                                 help='Student associated with this'
+                                      ' valuation line.')
+    student_name = fields.Char(string='Student Name',
+                               help='Name of the student.')
+    mark_scored = fields.Float(string='Mark Scored',
+                               help='Marks obtained by the student in the exam.')
     pass_or_fail = fields.Boolean(string='Pass/Fail',
-                                  help='Indicates whether the student has passed or failed in the exam.')
-    valuation_id = fields.Many2one('education.exam.valuation', string='Valuation',
-                                   help='Exam Valuation to which this line belongs.')
+                                  help='Indicates whether the student has '
+                                       'passed or failed in the exam.')
+    valuation_id = fields.Many2one('education.exam.valuation',
+                                   string='Valuation',
+                                   help='Exam Valuation to which this line '
+                                        'belongs.')
     company_id = fields.Many2one(
         'res.company', string='Company',
         default=lambda self: self.env['res.company']._company_default_get(),
         help='Company associated with this record.')
 
     @api.onchange('mark_scored', 'pass_or_fail')
-    def onchange_mark_scored(self):
+    def _onchange_mark_scored(self):
         """
             Onchange method to validate mark_scored and update pass_or_fail.
         """

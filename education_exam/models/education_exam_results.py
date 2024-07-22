@@ -19,7 +19,6 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 #############################################################################
-
 from odoo import api, fields, models
 
 
@@ -31,23 +30,33 @@ class EducationExamResults(models.Model):
     _description = 'Exam Results'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string='Name', help='Name associated with the exam result entry.')
-    exam_id = fields.Many2one('education.exam', string='Exam', help='Select the exam associated with the result.')
+    name = fields.Char(string='Name',
+                       help='Name associated with the exam result entry.')
+    exam_id = fields.Many2one('education.exam', string='Exam',
+                              help='Select the exam associated with the result.')
     class_id = fields.Many2one('education.class', string='Class',
-                               help='Select the class for which the exam result is recorded.')
+                               help='Select the class for which the exam '
+                                    'result is recorded.')
     division_id = fields.Many2one('education.class.division', string='Division',
                                   help='Select the division within the class.')
     student_id = fields.Many2one('education.student', string='Student',
-                                 help='Select the student for whom the result is recorded.')
-    student_name = fields.Char(string='Student', help='Name of the student associated with the exam result.')
-    subject_line_ids = fields.One2many('results.subject.line', 'result_id',
+                                 help='Select the student for whom the '
+                                      'result is recorded.')
+    student_name = fields.Char(string='Student',
+                               help='Name of the student associated with the'
+                                    ' exam result.')
+    subject_line_ids = fields.One2many('results.subject.line',
+                                       'result_id',
                                        string='Subjects',
-                                       help='List of subjects and their corresponding results for the exam.')
+                                       help='List of subjects and their '
+                                            'corresponding results for the'
+                                            ' exam.')
     academic_year_id = fields.Many2one('education.academic.year',
                                        string='Academic Year',
                                        related='division_id.academic_year_id',
                                        store=True,
-                                       help='Academic year associated with the division.')
+                                       help='Academic year associated with'
+                                            ' the division.')
     company_id = fields.Many2one(
         'res.company', string='Company',
         default=lambda self: self.env['res.company']._company_default_get(),
@@ -55,7 +64,8 @@ class EducationExamResults(models.Model):
     )
     total_pass_mark = fields.Float(string='Total Pass Mark', store=True,
                                    readonly=True, compute='_total_marks_all',
-                                   help='Total pass marks obtained by the student.')
+                                   help='Total pass marks obtained by the '
+                                        'student.')
     total_max_mark = fields.Float(string='Total Max Mark', store=True,
                                   readonly=True, compute='_total_marks_all',
                                   help='Total maximum marks for the exam.')
@@ -64,7 +74,8 @@ class EducationExamResults(models.Model):
                                      help='Total marks scored by the student.')
     overall_pass = fields.Boolean(string='Overall Pass/Fail', store=True,
                                   readonly=True, compute='_total_marks_all',
-                                  help='Overall pass or fail status based on subject results.')
+                                  help='Overall pass or fail status based '
+                                       'on subject results.')
 
     @api.depends('subject_line_ids.mark_scored')
     def _total_marks_all(self):
@@ -96,27 +107,47 @@ class ResultsSubjectLine(models.Model):
     _name = 'results.subject.line'
     _description = 'Results Subject Line'
 
-    name = fields.Char(string='Name', help='Name associated with the subject result entry.')
-    subject_id = fields.Many2one('education.subject', string='Subject',
-                                 help='Select the subject for which the result is recorded.')
-    max_mark = fields.Float(string='Max Mark', help='Maximum marks achievable for the subject.')
-    pass_mark = fields.Float(string='Pass Mark', help='Passing marks for the subject.')
-    mark_scored = fields.Float(string='Mark Scored', help='Marks obtained by the student in the subject.')
-    pass_or_fail = fields.Boolean(string='Pass/Fail', help='Pass or fail status for the subject result.')
-    result_id = fields.Many2one('education.exam.results', string='Result Id',
+    name = fields.Char(string='Name',
+                       help='Name associated with the subject result entry.')
+    subject_id = fields.Many2one('education.subject',
+                                 string='Subject',
+                                 help='Select the subject for which the'
+                                      ' result is recorded.')
+    max_mark = fields.Float(string='Max Mark',
+                            help='Maximum marks achievable for the subject.')
+    pass_mark = fields.Float(string='Pass Mark',
+                             help='Passing marks for the subject.')
+    mark_scored = fields.Float(string='Mark Scored',
+                               help='Marks obtained by the student in the '
+                                    'subject.')
+    pass_or_fail = fields.Boolean(string='Pass/Fail',
+                                  help='Pass or fail status for the '
+                                       'subject result.')
+    result_id = fields.Many2one('education.exam.results',
+                                string='Result Id',
                                 help='Reference to the parent exam result.')
     exam_id = fields.Many2one('education.exam', string='Exam',
-                              help='Reference to the exam associated with the subject result.')
+                              help='Reference to the exam associated with the '
+                                   'subject result.')
     class_id = fields.Many2one('education.class', string='Class',
-                               help='Reference to the class associated with the subject result.')
-    division_id = fields.Many2one('education.class.division', string='Division',
-                                  help='Reference to the division within the class.')
+                               help='Reference to the class associated with'
+                                    ' the subject result.')
+    division_id = fields.Many2one('education.class.division',
+                                  string='Division',
+                                  help='Reference to the division within the'
+                                       ' class.')
     student_id = fields.Many2one('education.student', string='Student',
-                                 help='Reference to the student associated with the subject result.')
-    student_name = fields.Char(string='Student', help='Name of the student associated with the subject result.')
-    academic_year_id = fields.Many2one('education.academic.year', string='Academic Year',
-                                       related='division_id.academic_year_id', store=True,
-                                       help='Academic year associated with the subject result.')
+                                 help='Reference to the student associated '
+                                      'with the subject result.')
+    student_name = fields.Char(string='Student',
+                               help='Name of the student associated with the '
+                                    'subject result.')
+    academic_year_id = fields.Many2one('education.academic.year',
+                                       string='Academic Year',
+                                       related='division_id.academic_year_id',
+                                       store=True,
+                                       help='Academic year associated '
+                                            'with the subject result.')
     company_id = fields.Many2one(
         'res.company', string='Company',
         default=lambda self: self.env['res.company']._company_default_get(),

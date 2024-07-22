@@ -42,19 +42,23 @@ class EducationExam(models.Model):
     division_id = fields.Many2one(
         'education.class.division', string='Division',
         help='Division associated with the exam.')
-    exam_type = fields.Many2one(
+    exam_type_id = fields.Many2one(
         'education.exam.type', string='Type', required=True,
         help='Type of the education exam.')
     school_class_division_wise = fields.Selection(
         [('school', 'School'), ('class', 'Class'), ('division', 'Division')],
-        related='exam_type.school_class_division_wise', string='School/Class/Division Wise',
+        related='exam_type_id.school_class_division_wise',
+        string='School/Class/Division Wise',
         help='Specifies whether the exam is school, class, or division-wise.')
     class_division_hider = fields.Char(
-        string='Class Division Hider', help='Hider field for class and division.')
+        string='Class Division Hider',
+        help='Hider field for class and division.')
     start_date = fields.Date(
-        string='Start Date', required=True, help='Start date of the education exam.')
+        string='Start Date', required=True,
+        help='Start date of the education exam.')
     end_date = fields.Date(
-        string='End Date', required=True, help='End date of the education exam.')
+        string='End Date', required=True,
+        help='End date of the education exam.')
     subject_line_ids = fields.One2many(
         'education.subject.line', 'exam_id',
         string='Subjects', help='Subjects associated with the exam.')
@@ -82,16 +86,17 @@ class EducationExam(models.Model):
         return res
 
     @api.onchange('class_division_hider')
-    def onchange_class_division_hider(self):
+    def _onchange_class_division_hider(self):
         """
             Onchange method for Class Division Hider.
 
-            Updates the school_class_division_wise field based on the class_division_hider value.
+            Updates the school_class_division_wise field based on the
+             class_division_hider value.
         """
         self.school_class_division_wise = 'school'
 
     @api.constrains('start_date', 'end_date')
-    def check_dates(self):
+    def _check_dates(self):
         """
            Constraint method to check start and end dates.
 
@@ -102,19 +107,19 @@ class EducationExam(models.Model):
                 raise ValidationError(
                     _("Start date must be Anterior to end date"))
 
-    def close_exam(self):
+    def action_close_exam(self):
         """
             Sets the state of the exam to 'close'.
         """
         self.state = 'close'
 
-    def cancel_exam(self):
+    def action_cancel_exam(self):
         """
             Sets the state of the exam to 'cancel'.
         """
         self.state = 'cancel'
 
-    def confirm_exam(self):
+    def action_confirm_exam(self):
         """
             Confirm the exam.
 
@@ -125,7 +130,7 @@ class EducationExam(models.Model):
         """
         if len(self.subject_line_ids) < 1:
             raise UserError(_('Please Add Subjects'))
-        name = str(self.exam_type.name) + '-' + str(self.start_date)[0:10]
+        name = str(self.exam_type_id.name) + '-' + str(self.start_date)[0:10]
         if self.division_id:
             name = name + ' (' + str(self.division_id.name) + ')'
         elif self.class_id:
@@ -134,7 +139,7 @@ class EducationExam(models.Model):
         self.state = 'ongoing'
 
 
-class SubjectLine(models.Model):
+class EducationSubjectLine(models.Model):
     """
         Model representing Education Subject Line.
         This model stores information about subjects associated with an education exam, including
@@ -164,6 +169,35 @@ class SubjectLine(models.Model):
         default=lambda self: self.env['res.company']._company_default_get(),
         help='Company associated with the subject line.')
 
+    @api.constrains('date', 'exam_id')
+    def _check_exam_date(self):
+        for record in self:
+            """Method for validating the exam date"""
+            if (record.date < record.exam_id.start_date or record.date >
+                    record.exam_id.end_date):
+                raise ValidationError(
+                    'The exam date must be between the start and end'
+                    ' dates of the exam.')
+
+    @api.constrains('exam_date', 'time_from', 'time_to', 'exam_id')
+    def _check_time_overlap(self):
+        """Method for checking date and time overlapping"""
+        for record in self:
+            overlapping_records = self.search([
+                ('exam_id', '=', record.exam_id.id),
+                ('date', '=', record.date),
+                ('id', '!=', record.id),
+                '|',
+                '&', ('time_from', '<', record.time_to),
+                ('time_to', '>', record.time_from),
+                '&', ('time_from', '<', record.time_to),
+                ('time_to', '>', record.time_from)
+            ])
+            if overlapping_records:
+                raise ValidationError(
+                    'The subject exam times cannot overlap with another '
+                    'subject on the same date.')
+
 
 class EducationExamType(models.Model):
     """
@@ -181,7 +215,8 @@ class EducationExamType(models.Model):
         string='Name', required=True, help='Name of the education exam type.')
     school_class_division_wise = fields.Selection(
         [('school', 'School'), ('class', 'Class'), ('division', 'Division'),
-         ('final', 'Final Exam (Exam that promotes students to the next class)')],
+         ('final',
+          'Final Exam (Exam that promotes students to the next class)')],
         string='Exam Type', default='class', help='Type of education exam.')
     company_id = fields.Many2one(
         'res.company', string='Company',

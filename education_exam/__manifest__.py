@@ -21,12 +21,11 @@
 #############################################################################
 {
     'name': 'Educational Exam Management',
-    'version': '17.0.1.0.0',
+    'version': '17.0.1.0.1',
     'category': 'Industries',
     'summary': """Sneak the Examination Management in Educational ERP""",
-    'description': 'An easy way to handle the examinations in an educational '
-                   'system with better reports and exam valuation and exam result '
-                   'facilities',
+    'description': """An easy way to handle the examinations in an educational 
+     system with better reports and exam valuation and exam result facilities""",
     'author': 'Cybrosys Techno Solutions',
     'company': 'Cybrosys Techno Solutions',
     'maintainer': 'Cybrosys Techno Solutions',
@@ -43,5 +42,5 @@
     'license': 'AGPL-3',
     'installable': True,
     'auto_install': False,
-    'application': False,
+    'application': True,
 }
