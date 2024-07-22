@@ -27,19 +27,19 @@ class AccountMove(models.Model):
     """Inherited model 'account.move' """
     _inherit = 'account.move'
 
-    @api.onchange('fee_structure')
-    def _get_fee_lines(self):
+    @api.onchange('fee_structure_id')
+    def _onchange_fee_structure(self):
         """Set default fee lines based on selected fee structure"""
         for item in self:
             lines = []
-            for line in item.fee_structure.fee_type_ids:
-                name = line.fee_type.product_variant_id.description_sale
+            for line in item.fee_structure_id.fee_type_ids:
+                name = line.fee_type_id.product_variant_id.description_sale
                 if not name:
-                    name = line.fee_type.product_variant_id.name
+                    name = line.fee_type_id.product_variant_id.name
                 fee_line = {
                     'price_unit': line.fee_amount,
                     'quantity': 1.00,
-                    'product_id': line.fee_type.product_variant_id,
+                    'product_id': line.fee_type_id.product_variant_id,
                     'name': name,
                     'account_id': item.journal_id.default_account_id
                 }
@@ -48,7 +48,7 @@ class AccountMove(models.Model):
 
     @api.onchange('student_id', 'fee_category_id', 'payed_from_date',
                   'payed_to_date')
-    def _get_partner_details(self):
+    def _onchange_student_id(self):
         """Student_id is inherited from res_partner. Set partner_id from
          student_id """
         self.ensure_one()
@@ -72,7 +72,6 @@ class AccountMove(models.Model):
                     ('invoice_date', '>=', from_date),
                     ('invoice_date', '<=', to_date),
                     ('fee_category_id', '=', item.fee_category_id.id)])
-                invoice_line_list = []
                 for invoice in invoice_ids:
                     for line in invoice.invoice_line_ids:
                         fee_line = {
@@ -89,18 +88,19 @@ class AccountMove(models.Model):
                 item.payed_line_ids = lines
 
     @api.onchange('fee_category_id')
-    def _get_fee_structure(self):
+    def _onchange_fee_category_id(self):
         """ Set domain for fee structure based on category"""
         self.invoice_line_ids = None
         return {
             'domain': {
-                'fee_structure': [('category_id', '=', self.fee_category_id.id)]
+                'fee_structure_id': [
+                    ('category_id', '=', self.fee_category_id.id)]
 
             }
         }
 
     @api.onchange('fee_category_id')
-    def _get_category_details(self):
+    def _onchange_fee_category_id(self):
         """Function to get category details"""
         for item in self:
             if item.fee_category_id:
@@ -112,31 +112,33 @@ class AccountMove(models.Model):
                                                      " stores every details of "
                                                      "your transaction.")
     student_id = fields.Many2one('education.student',
-                                 string='Admission No', help='Student '
-                                                             'admission number.')
+                                 string='Admission No', help='Student admission'
+                                                             ' number.')
     student_name = fields.Char(string='Name',
                                related='student_id.partner_id.name', store=True,
                                help='Name of student.')
     class_division_id = fields.Many2one('education.class.division',
                                         string='Class', help='Class of the'
                                                              ' student.')
-    fee_structure = fields.Many2one('education.fee.structure',
-                                    string='Fee Structure',
-                                    help='Fee structure')
+    fee_structure_id = fields.Many2one('education.fee.structure',
+                                       string='Fee Structure',
+                                       help='Fee structure')
     is_fee = fields.Boolean(string='Is Fee', store=True, default=False,
                             help='Fees boolean to specify whether fee or not.')
     fee_category_id = fields.Many2one('education.fee.category',
                                       string='Category',
                                       help='Category of fees.')
-    is_fee_structure = fields.Boolean('Have a fee structure?',
+    is_fee_structure = fields.Boolean(string='Have a fee structure?',
                                       related='fee_category_id.fee_structure',
                                       help='Whether fee structure exists.')
     payed_line_ids = fields.One2many('account.move.line', 'partner_id',
                                      string='Payments Done',
                                      readonly=True, store=False,
                                      help='Payment lines.')
-    payed_from_date = fields.Date(string='From Date')
-    payed_to_date = fields.Date(string='To Date')
+    payed_from_date = fields.Date(string='From Date',
+                                  help='From date corresponding to the payment')
+    payed_to_date = fields.Date(string='To Date',
+                                help='To date corresponding to the payment')
     account_id = fields.Many2one('account.account', string='Account',
                                  index=True, ondelete="cascade",
                                  domain="[('deprecated', '=', False),"
@@ -158,5 +160,4 @@ class AccountMove(models.Model):
                 'is_fee': True,
                 'student_name': partner.name
             })
-        res = super(AccountMove, self).create(vals)
-        return res
+        return super().create(vals)

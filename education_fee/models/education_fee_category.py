@@ -29,15 +29,15 @@ class EducationFeeCategory(models.Model):
 
     name = fields.Char(string='Name', required=True,
                        help='Create a fee category suitable for your '
-                            'institution.Like Institutuinal, Hostel, '
+                            'institution. Like Institutional, Hostel, '
                             'Transportation, Arts and Sports, etc')
     journal_id = fields.Many2one('account.journal',
                                  string='Journal', required=True,
                                  help='Setting up of unique journal for each '
                                       'category help to distinguish '
                                       'account entries of each category ')
-    fee_structure = fields.Boolean(string='Have a fee structure?', required=True,
-                                   default=False,
+    fee_structure = fields.Boolean(string='Have a Fee Structure?',
+                                   required=True,
                                    help='If any fee structure want to be '
                                         'included in this category '
                                         'you must click here.'

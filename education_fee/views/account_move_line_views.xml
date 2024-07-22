@@ -2,8 +2,8 @@
 <odoo>
     <!-- VIEWS -->
     <!-- account.move.line (Journal items) -->
-    <record id="view_move_line_form" model="ir.ui.view">
-        <field name="name">account.move.line.form</field>
+    <record id="account_move_line_view_form" model="ir.ui.view">
+        <field name="name">account.move.line.view.form</field>
         <field name="model">account.move.line</field>
         <field eval="2" name="priority"/>
         <field name="arch" type="xml">
@@ -14,7 +14,8 @@
                     <group>
                         <field name="name"/>
                         <field name="partner_id"
-                               domain="['|', ('parent_id', '=', False), ('is_company', '=', True)]"
+                               domain="['|', ('parent_id', '=', False),
+                               ('is_company', '=', True)]"
                                readonly="parent_state == 'posted'"/>
                     </group>
                     <notebook colspan="4">
@@ -43,7 +44,6 @@
                                            groups="account.group_account_readonly"/>
                                     <field name="date_maturity"/>
                                 </group>
-
                                 <group string="Taxes"
                                        invisible="tax_line_id == False or tax_ids == []">
                                     <field name="tax_line_id" readonly="1"
@@ -96,9 +96,9 @@
             </form>
         </field>
     </record>
-<!--    Kanban view of account.move.line-->
+    <!--    Kanban view of account.move.line-->
     <record id="account_move_line_view_kanban" model="ir.ui.view">
-        <field name="name">account.move.line.kanban</field>
+        <field name="name">account.move.line.view.kanban</field>
         <field name="model">account.move.line</field>
         <field name="arch" type="xml">
             <kanban class="o_kanban_mobile">
@@ -134,9 +134,9 @@
             </kanban>
         </field>
     </record>
-<!--Pivot view-->
-    <record id="view_move_line_pivot" model="ir.ui.view">
-        <field name="name">account.move.line.pivot</field>
+    <!--Pivot view-->
+    <record id="account_move_line_view_pivot" model="ir.ui.view">
+        <field name="name">account.move.line.view.pivot</field>
         <field name="model">account.move.line</field>
         <field name="arch" type="xml">
             <pivot string="Journal Items" sample="1">
@@ -146,9 +146,9 @@
             </pivot>
         </field>
     </record>
-<!--Tree view-->
-    <record id="view_move_line_tree" model="ir.ui.view">
-        <field name="name">account.move.line.tree</field>
+    <!--Tree view-->
+    <record id="account_move_line_view_tree" model="ir.ui.view">
+        <field name="name">account.move.line.view.tree</field>
         <field name="model">account.move.line</field>
         <field eval="100" name="priority"/>
         <field name="arch" type="xml">
@@ -181,7 +181,7 @@
             </tree>
         </field>
     </record>
-<!--    Tree view for accounting journal items -->
+    <!--    Tree view for accounting journal items -->
     <record id="view_move_line_tree_grouped" model="ir.ui.view">
         <field name="name">account.move.line.tree.grouped</field>
         <field name="model">account.move.line</field>
@@ -191,7 +191,7 @@
                   expand="context.get('expand', False)" multi_edit="1">
                 <field name="date" optional="show" readonly="1"/>
                 <field name="company_id"
-                        options="{'no_create': True}"
+                       options="{'no_create': True}"
                        optional="show"/>
                 <field name="move_id" optional="show"/>
                 <field name="account_id" optional="show"
@@ -241,10 +241,9 @@
             </tree>
         </field>
     </record>
-
-<!--New tree view for accounting move lines,
-inheriting from the existing view "account.view_move_line_tree" for sales
-and purchase -->
+    <!--New tree view for accounting move lines,
+    inheriting from the existing view "account.view_move_line_tree" for sales
+    and purchase -->
     <record id="view_move_line_tree_grouped_sales_purchases" model="ir.ui.view">
         <field name="name">account.move.line.tree.grouped.sales.purchase</field>
         <field name="model">account.move.line</field>
@@ -271,7 +270,7 @@ and purchase -->
             </field>
         </field>
     </record>
-<!--Inherited tree view for account.move.line for bank cash -->
+    <!--Inherited tree view for account.move.line for bank cash -->
     <record id="view_move_line_tree_grouped_bank_cash" model="ir.ui.view">
         <field name="name">account.move.line.tree.grouped.bank.cash</field>
         <field name="model">account.move.line</field>
@@ -292,7 +291,7 @@ and purchase -->
             </field>
         </field>
     </record>
-<!--Inherited tree view for misc-->
+    <!--Inherited tree view for misc-->
     <record id="view_move_line_tree_grouped_misc" model="ir.ui.view">
         <field name="name">account.move.line.tree.grouped.misc</field>
         <field name="model">account.move.line</field>
@@ -307,7 +306,7 @@ and purchase -->
             </field>
         </field>
     </record>
-<!--Inherited tree view for general-->
+    <!--Inherited tree view for general-->
     <record id="view_move_line_tree_grouped_general" model="ir.ui.view">
         <field name="name">account.move.line.tree.grouped.misc</field>
         <field name="model">account.move.line</field>
@@ -326,18 +325,23 @@ and purchase -->
             </field>
         </field>
     </record>
-     <record id="view_move_line_tree_grouped_partner" model="ir.ui.view">
-            <field name="name">account.move.line.tree.grouped.partner</field>
-            <field name="model">account.move.line</field>
-            <field name="mode">primary</field>
-            <field name="inherit_id" ref="account.view_move_line_tree"/>
-            <field name="arch" type="xml">
-                <field name="partner_id" position="attributes"><attribute name="optional">hide</attribute></field>
-                <field name="date_maturity" position="attributes"><attribute name="optional">show</attribute></field>
-                <field name="balance" position="attributes"><attribute name="optional">show</attribute></field>
+    <record id="view_move_line_tree_grouped_partner" model="ir.ui.view">
+        <field name="name">account.move.line.tree.grouped.partner</field>
+        <field name="model">account.move.line</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="account.view_move_line_tree"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="attributes">
+                <attribute name="optional">hide</attribute>
             </field>
-        </record>
-
+            <field name="date_maturity" position="attributes">
+                <attribute name="optional">show</attribute>
+            </field>
+            <field name="balance" position="attributes">
+                <attribute name="optional">show</attribute>
+            </field>
+        </field>
+    </record>
     <record id="view_move_line_tax_audit_tree" model="ir.ui.view">
         <field name="name">account.move.line.tax.audit.tree</field>
         <field name="model">account.move.line</field>
@@ -355,11 +359,11 @@ and purchase -->
             <field name="credit" position="replace"/>
         </field>
     </record>
-<!--This view inherits from the existing account.view_move_line_tree and
-modifies its structure to include tax-related information in the
-accounting move line tree view-->
+    <!--This view inherits from the existing account.view_move_line_tree and
+    modifies its structure to include tax-related information in the
+    accounting move line tree view-->
     <record id="account_move_line_graph_date" model="ir.ui.view">
-        <field name="name">account.move.line.graph</field>
+        <field name="name">account.move.line.view.graph</field>
         <field name="model">account.move.line</field>
         <field name="arch" type="xml">
             <graph string="Account Statistics" type="bar" sample="1">
@@ -369,73 +373,129 @@ accounting move line tree view-->
         </field>
     </record>
     <record id="view_account_move_line_filter" model="ir.ui.view">
-            <field name="name">account.move.line.search</field>
-            <field name="model">account.move.line</field>
-            <field eval="16" name="priority"/>
-            <field name="arch" type="xml">
-                <search string="Search Journal Items">
-                    <field name="name" string="Journal Item" filter_domain="['|', '|', '|', ('name', 'ilike', self), ('ref', 'ilike', self), ('account_id', 'ilike', self), ('partner_id', 'ilike', self)]"/>
-                    <field name="name"/>
-                    <field name="ref"/>
-                    <field name="invoice_date"/>
-                    <field name="date"/>
-                    <field name="date_maturity" string="Due Date"/>
-                    <field name="discount_date" string="Discount Date"/>
-                    <field name="balance" string="Amount" filter_domain="['|', ('credit', '=', self), ('debit', '=', self)]"/>
-                    <field name="account_id"/>
-                    <field name="account_type"/>
-                    <field name="partner_id"/>
-                    <field name="journal_id"/>
-                    <field name="move_id" string="Journal Entry" filter_domain="[
+        <field name="name">account.move.line.view.search</field>
+        <field name="model">account.move.line</field>
+        <field eval="16" name="priority"/>
+        <field name="arch" type="xml">
+            <search string="Search Journal Items">
+                <field name="name" string="Journal Item"
+                       filter_domain="['|', '|', '|', ('name', 'ilike', self), ('ref', 'ilike', self), ('account_id', 'ilike', self), ('partner_id', 'ilike', self)]"/>
+                <field name="name"/>
+                <field name="ref"/>
+                <field name="invoice_date"/>
+                <field name="date"/>
+                <field name="date_maturity" string="Due Date"/>
+                <field name="discount_date" string="Discount Date"/>
+                <field name="balance" string="Amount"
+                       filter_domain="['|', ('credit', '=', self), ('debit', '=', self)]"/>
+                <field name="account_id"/>
+                <field name="account_type"/>
+                <field name="partner_id"/>
+                <field name="journal_id"/>
+                <field name="move_id" string="Journal Entry" filter_domain="[
                         '|', '|', ('move_id.name', 'ilike', self), ('move_id.ref', 'ilike', self), ('move_id.partner_id', 'ilike', self)]"/>
-                    <field name="tax_ids" />
-                    <field name="tax_line_id" string="Originator Tax"/>
-                    <field name="reconcile_model_id"/>
-                    <separator/>
-                    <filter string="Unposted" name="unposted" domain="[('parent_state', '=', 'draft')]" help="Unposted Journal Items"/>
-                    <filter string="Posted" name="posted" domain="[('parent_state', '=', 'posted')]" help="Posted Journal Items"/>
-                    <separator/>
-                    <filter string="To Check" name="to_check" domain="[('move_id.to_check', '=', True)]"/>
-                    <separator/>
-                    <filter string="Unreconciled" domain="[('amount_residual', '!=', 0), ('account_id.reconcile', '=', True)]" help="Journal items where matching number isn't set" name="unreconciled"/>
-                    <separator/>
-                    <filter string="Sales" name="sales" domain="[('journal_id.type', '=', 'sale')]" context="{'default_journal_type': 'sale'}"/>
-                    <filter string="Purchases" name="purchases" domain="[('journal_id.type', '=', 'purchase')]" context="{'default_journal_type': 'purchase'}"/>
-                    <filter string="Bank" name="bank" domain="[('journal_id.type', '=', 'bank')]" context="{'default_journal_type': 'bank'}"/>
-                    <filter string="Cash" name="cash" domain="[('journal_id.type', '=', 'cash')]" context="{'default_journal_type': 'cash'}"/>
-                    <filter string="Miscellaneous" domain="[('journal_id.type', '=', 'general')]" name="misc_filter" context="{'default_journal_type': 'general'}"/>
-                    <separator/>
-                    <filter string="Payable" domain="[('account_id.account_type', '=', 'liability_payable'), ('account_id.non_trade', '=', False)]" help="From Trade Payable accounts" name="trade_payable"/>
-                    <filter string="Receivable" domain="[('account_id.account_type', '=', 'asset_receivable'), ('account_id.non_trade', '=', False)]" help="From Trade Receivable accounts" name="trade_receivable"/>
-                    <filter string="Non Trade Payable" domain="[('account_id.account_type', '=', 'liability_payable'), ('account_id.non_trade', '=', True)]" help="From Non Trade Receivable accounts" name="non_trade_payable" invisible="1"/>
-                    <filter string="Non Trade Receivable" domain="[('account_id.account_type', '=', 'asset_receivable'), ('account_id.non_trade', '=', True)]" help="From Non Trade Receivable accounts" name="non_trade_receivable" invisible="1"/>
-                    <filter string="P&amp;L Accounts" domain="[('account_id.internal_group', 'in', ('income', 'expense'))]" help="From P&amp;L accounts" name="pl_accounts"/>
-                    <filter string="No Bank Transaction" domain="[('statement_line_id', '=', False)]" name="no_st_line_id" invisible="1"/>
-                    <separator/>
-                    <filter string="Date" name="date" date="date"/>
-                    <filter string="Invoice Date" name="invoice_date" date="invoice_date"/>
-                    <separator/>
-                    <filter string="Report Dates" name="date_between" domain="[('date', '&gt;=', context.get('date_from')), ('date', '&lt;=', context.get('date_to'))]" invisible="1"/>
-                    <filter string="Report Dates" name="date_before" domain="[('date', '&lt;=', context.get('date_to'))]" invisible="1"/>
-                    <separator/>
-                    <group expand="0" string="Group By">
-                        <filter string="Journal Entry" name="group_by_move" domain="[]" context="{'group_by': 'move_name'}"/>
-                        <filter string="Account" name="group_by_account" domain="[]" context="{'group_by': 'account_id'}"/>
-                        <filter string="Partner" name="group_by_partner" domain="[]" context="{'group_by': 'partner_id'}"/>
-                        <filter string="Journal" name="journal" domain="[]" context="{'group_by': 'journal_id'}"/>
-                        <filter string="Date" name="groupby_date" domain="[]" context="{'group_by': 'date'}"/>
-                        <filter string="Invoice Date" name="groupby_invoice_date" domain="[]" context="{'group_by': 'invoice_date'}"/>
-                        <filter string="Taxes" name="group_by_taxes" domain="[]" context="{'group_by': 'tax_ids'}"/>
-                        <filter string="Tax Grid" name="group_by_tax_tags" domain="[]" context="{'group_by': 'tax_tag_ids'}"/>
-                        <filter string="Matching #" name="group_by_matching" domain="[]" context="{'group_by': 'matching_number'}"/>
-                    </group>
-                    <searchpanel class="account_root">
-                        <field name="account_root_id" icon="fa-filter" groupby="account_id" limit="0"/>
-                    </searchpanel>
-                </search>
-            </field>
-        </record>
-
+                <field name="tax_ids"/>
+                <field name="tax_line_id" string="Originator Tax"/>
+                <field name="reconcile_model_id"/>
+                <separator/>
+                <filter string="Unposted" name="unposted"
+                        domain="[('parent_state', '=', 'draft')]"
+                        help="Unposted Journal Items"/>
+                <filter string="Posted" name="posted"
+                        domain="[('parent_state', '=', 'posted')]"
+                        help="Posted Journal Items"/>
+                <separator/>
+                <filter string="To Check" name="to_check"
+                        domain="[('move_id.to_check', '=', True)]"/>
+                <separator/>
+                <filter string="Unreconciled"
+                        domain="[('amount_residual', '!=', 0), ('account_id.reconcile', '=', True)]"
+                        help="Journal items where matching number isn't set"
+                        name="unreconciled"/>
+                <separator/>
+                <filter string="Sales" name="sales"
+                        domain="[('journal_id.type', '=', 'sale')]"
+                        context="{'default_journal_type': 'sale'}"/>
+                <filter string="Purchases" name="purchases"
+                        domain="[('journal_id.type', '=', 'purchase')]"
+                        context="{'default_journal_type': 'purchase'}"/>
+                <filter string="Bank" name="bank"
+                        domain="[('journal_id.type', '=', 'bank')]"
+                        context="{'default_journal_type': 'bank'}"/>
+                <filter string="Cash" name="cash"
+                        domain="[('journal_id.type', '=', 'cash')]"
+                        context="{'default_journal_type': 'cash'}"/>
+                <filter string="Miscellaneous"
+                        domain="[('journal_id.type', '=', 'general')]"
+                        name="misc_filter"
+                        context="{'default_journal_type': 'general'}"/>
+                <separator/>
+                <filter string="Payable"
+                        domain="[('account_id.account_type', '=', 'liability_payable'), ('account_id.non_trade', '=', False)]"
+                        help="From Trade Payable accounts"
+                        name="trade_payable"/>
+                <filter string="Receivable"
+                        domain="[('account_id.account_type', '=', 'asset_receivable'), ('account_id.non_trade', '=', False)]"
+                        help="From Trade Receivable accounts"
+                        name="trade_receivable"/>
+                <filter string="Non Trade Payable"
+                        domain="[('account_id.account_type', '=', 'liability_payable'), ('account_id.non_trade', '=', True)]"
+                        help="From Non Trade Receivable accounts"
+                        name="non_trade_payable" invisible="1"/>
+                <filter string="Non Trade Receivable"
+                        domain="[('account_id.account_type', '=', 'asset_receivable'), ('account_id.non_trade', '=', True)]"
+                        help="From Non Trade Receivable accounts"
+                        name="non_trade_receivable" invisible="1"/>
+                <filter string="P&amp;L Accounts"
+                        domain="[('account_id.internal_group', 'in', ('income', 'expense'))]"
+                        help="From P&amp;L accounts" name="pl_accounts"/>
+                <filter string="No Bank Transaction"
+                        domain="[('statement_line_id', '=', False)]"
+                        name="no_st_line_id"
+                        invisible="1"/>
+                <separator/>
+                <filter string="Date" name="date" date="date"/>
+                <filter string="Invoice Date" name="invoice_date"
+                        date="invoice_date"/>
+                <separator/>
+                <filter string="Report Dates" name="date_between"
+                        domain="[('date', '&gt;=', context.get('date_from')), ('date', '&lt;=', context.get('date_to'))]"
+                        invisible="1"/>
+                <filter string="Report Dates" name="date_before"
+                        domain="[('date', '&lt;=', context.get('date_to'))]"
+                        invisible="1"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Journal Entry" name="group_by_move"
+                            domain="[]"
+                            context="{'group_by': 'move_name'}"/>
+                    <filter string="Account" name="group_by_account" domain="[]"
+                            context="{'group_by': 'account_id'}"/>
+                    <filter string="Partner" name="group_by_partner" domain="[]"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter string="Journal" name="journal" domain="[]"
+                            context="{'group_by': 'journal_id'}"/>
+                    <filter string="Date" name="groupby_date" domain="[]"
+                            context="{'group_by': 'date'}"/>
+                    <filter string="Invoice Date" name="groupby_invoice_date"
+                            domain="[]"
+                            context="{'group_by': 'invoice_date'}"/>
+                    <filter string="Taxes" name="group_by_taxes" domain="[]"
+                            context="{'group_by': 'tax_ids'}"/>
+                    <filter string="Tax Grid" name="group_by_tax_tags"
+                            domain="[]"
+                            context="{'group_by': 'tax_tag_ids'}"/>
+                    <filter string="Matching #" name="group_by_matching"
+                            domain="[]"
+                            context="{'group_by': 'matching_number'}"/>
+                </group>
+                <searchpanel class="account_root">
+                    <field name="account_root_id" icon="fa-filter"
+                           groupby="account_id" limit="0"/>
+                </searchpanel>
+            </search>
+        </field>
+    </record>
     <!--Journal entry of  account.move-->
     <record id="view_move_tree" model="ir.ui.view">
         <field name="name">account.move.tree</field>
@@ -458,7 +518,6 @@ accounting move line tree view-->
             </tree>
         </field>
     </record>
-
     <record id="view_invoice_tree" model="ir.ui.view">
         <field name="name">account.invoice.tree</field>
         <field name="model">account.move</field>
@@ -527,7 +586,6 @@ accounting move line tree view-->
             </tree>
         </field>
     </record>
-
     <record id="view_out_invoice_tree" model="ir.ui.view">
         <field name="name">account.out.invoice.tree</field>
         <field name="model">account.move</field>
@@ -538,8 +596,7 @@ accounting move line tree view-->
             </xpath>
         </field>
     </record>
-
-<!--Account.move tree view-->
+    <!--Account.move tree view-->
     <record id="view_in_invoice_tree" model="ir.ui.view">
         <field name="name">account.out.invoice.tree</field>
         <field name="model">account.move</field>
@@ -554,8 +611,7 @@ accounting move line tree view-->
             </xpath>
         </field>
     </record>
-
-<!--Account.move kanban view-->
+    <!--Account.move kanban view-->
     <record id="view_receipt_kanban" model="ir.ui.view">
         <field name="name">account.move.kanban</field>
         <field name="model">account.move</field>
@@ -621,7 +677,7 @@ accounting move line tree view-->
             </kanban>
         </field>
     </record>
-<!--    Account.move receipt form-->
+    <!--    Account.move receipt form-->
     <record id="receipt_form" model="ir.ui.view">
         <field name="name">account.move.form</field>
         <field name="model">account.move</field>
@@ -637,7 +693,6 @@ accounting move line tree view-->
                             class="oe_highlight"
                             type="object" groups="account.group_account_invoice"
                             invisible="state != 'draft' or auto_post == True or move_type == 'entry'"/>
-
                     <!-- Send (only invoices) -->
                     <button name="action_invoice_sent"
                             type="object"
@@ -656,12 +711,10 @@ accounting move line tree view-->
                             string="Register Payment"
                             groups="account.group_account_invoice"
                             invisible="state != 'posted' or payment_state not in ('not_paid', 'partial') or move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt')"/>
-
                     <!-- Preview (only customer invoices) -->
                     <button name="preview_invoice" type="object"
                             string="Preview"
                             invisible="move_type not in ('out_invoice', 'out_refund')"/>
-
                     <!-- Reverse -->
                     <button name="%(account.action_view_account_move_reversal)d"
                             string="Reverse Entry"
@@ -729,7 +782,6 @@ accounting move line tree view-->
                                 string="Reconciled Entries">
                         </button>
                     </div>
-
                     <!-- Payment status for invoices / receipts -->
                     <widget name="web_ribbon" title="Paid"
                             invisible="payment_state != 'paid' or move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt')"/>
@@ -744,7 +796,6 @@ accounting move line tree view-->
                             bg_color="bg-info"
                             invisible="payment_state != 'invoicing_legacy'"
                             tooltip="This entry has been generated through the Invoicing app, before installing Accounting. It has been disabled by the 'Invoicing Switch Threshold Date' setting so that it does not impact your accounting."/>
-
                     <!-- Invisible fields -->
                     <field name="id" invisible="1"/>
                     <field name="show_name_warning" invisible="1"/>
@@ -768,7 +819,7 @@ accounting move line tree view-->
                         <span class="o_form_label">
                             <field name="move_type"
                                    invisible="move_type == 'entry'"
-                                    readonly="1" nolabel="1"/>
+                                   readonly="1" nolabel="1"/>
                         </span>
                         <h1>
                             <span
@@ -806,7 +857,7 @@ accounting move line tree view-->
                         </group>
                         <group>
                             <field name="fee_category_id" required="1"/>
-                            <field name="fee_structure"
+                            <field name="fee_structure_id"
                                    invisible="is_fee_structure == False"/>
                         </group>
                         <group id="header_left_group">
@@ -873,7 +924,6 @@ accounting move line tree view-->
                             <field name="date" string="Accounting Date"
                                    invisible="move_type in ('out_invoice', 'out_refund', 'out_receipt')"
                                    readonly="state != 'draft'"/>
-
                             <!-- Invoice payment terms (only invoices) + due date (only invoices / receipts) -->
                             <label for="invoice_payment_term_id"
                                    string="Due Date"
@@ -898,7 +948,7 @@ accounting move line tree view-->
                                 <field name="journal_id" invisible="1"
                                        options="{'no_create': True}"
                                        readonly="posted_before == True"/>
-                           <!-- Bigger margin on the left because in edit mode the external link button covers the text -->
+                                <!-- Bigger margin on the left because in edit mode the external link button covers the text -->
                                 <!--                                    <span class="oe_inline o_form_label mr-3 ml-5 oe_edit_only"-->
                                 <!--                                        groups="base.group_multi_currency"> in </span>-->
                                 <field name="currency_id" invisible="1"
@@ -926,10 +976,8 @@ accounting move line tree view-->
                                                 string="Add a note"
                                                 context="{'default_display_type': 'line_note'}"/>
                                     </control>
-
                                     <!-- Displayed fields -->
                                     <field name="sequence" widget="handle"/>
-                                    <field name="move_name" invisible="1"/>
                                     <field name="product_id"
                                            string="Fee Name"
                                            optional="show"
@@ -946,8 +994,6 @@ accounting move line tree view-->
                                            options="{'no_create': True}"
                                            domain="[('company_id', '=', parent.company_id), ('deprecated', '=', False)]"/>
                                     <field name="quantity"/>
-                                    <field name="product_uom_category_id"
-                                           invisible="1"/>
                                     <field name="product_uom_id" string="UoM"
                                            groups="uom.group_uom"
                                            optional="show"/>
@@ -962,42 +1008,19 @@ accounting move line tree view-->
                                            optional="show"/>
                                     <field name="price_subtotal"
                                            string="Subtotal"
-                                          />
+                                    />
                                     <field name="price_total"
                                            string="Total"
-                                           />
-                                    <!-- Others fields -->
-                                    <field name="partner_id" invisible="1"/>
-                                    <field name="amount_currency"
-                                           invisible="1"/>
-                                    <field name="currency_id" invisible="1"/>
-                                    <field name="debit" invisible="1"/>
-                                    <field name="credit" invisible="1"/>
-                                    <field name="date" invisible="1"/>
-                                    <field name="date_maturity" invisible="1"/>
-
-                                    <field name="tax_line_id" invisible="1"/>
-                                    <field name="tax_repartition_line_id"
-                                           invisible="1"/>
-                                    <field name="tax_tag_ids" invisible="1"/>
-                                    <field name="tax_base_amount"
-                                           invisible="1"/>
-                                    <field name="company_id" invisible="1"/>
-                                    <field name="company_currency_id"
-                                           invisible="1"/>
-                                    <field name="display_type" force_save="1"
-                                           invisible="1"/>
-                                    <field name="account_internal_group"
-                                           invisible="1"/>
+                                    />
                                 </tree>
                                 <kanban class="o_kanban_mobile">
                                     <!-- Displayed fields -->
                                     <field name="name"/>
                                     <field name="product_id"/>
                                     <field name="price_subtotal"
-                                           />
+                                    />
                                     <field name="price_total"
-                                           />
+                                    />
                                     <field name="quantity"/>
                                     <field name="product_uom_category_id"
                                            invisible="1"/>
@@ -1033,9 +1056,9 @@ accounting move line tree view-->
                                                             <strong>
                                                                 <span class="float-right text-right">
                                                                     <t t-esc="record.price_subtotal.value"
-                                                                       />
+                                                                    />
                                                                     <t t-esc="record.price_total.value"
-                                                                       />
+                                                                    />
                                                                 </span>
                                                             </strong>
                                                         </div>
@@ -1118,7 +1141,6 @@ accounting move line tree view-->
                                     </sheet>
                                 </form>
                             </field>
-
                             <!-- Totals (only invoices / receipts) -->
                             <group class="oe_subtotal_footer oe_right"
                                    invisible="move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt') or payment_state =='invoicing_legacy'">
@@ -1140,7 +1162,6 @@ accounting move line tree view-->
                             <field name="narration"
                                    placeholder="Terms and Conditions"
                                    class="oe_inline" nolabel="1"/>
-
                             <field name="invoice_outstanding_credits_debits_widget"
                                    class="oe_invoice_outstanding_credits_debits"
                                    colspan="2" nolabel="1" widget="payment"
@@ -1250,7 +1271,7 @@ accounting move line tree view-->
                                                domain="['|', ('parent_id', '=', False), ('is_company', '=', True)]"/>
                                         <field name="name"/>
                                         <field name="amount_currency"
-                                              />
+                                        />
                                         <field name="company_currency_id"
                                                invisible="1"/>
                                         <field name="company_id" invisible="1"/>
@@ -1330,7 +1351,7 @@ accounting move line tree view-->
                                        name="accounting_info_group"
                                        invisible="move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund')">
                                     <field name="company_id"
-                                           />
+                                    />
                                     <field name="invoice_incoterm_id"/>
                                     <field name="fiscal_position_id"/>
                                     <field name="invoice_cash_rounding_id"
@@ -1440,7 +1461,7 @@ accounting move line tree view-->
             </search>
         </field>
     </record>
-<!--Filter for account.move model-->
+    <!--Filter for account.move model-->
     <record id="view_account_invoice_filter" model="ir.ui.view">
         <field name="name">account.invoice.select</field>
         <field name="model">account.move</field>
@@ -1513,17 +1534,13 @@ accounting move line tree view-->
             </search>
         </field>
     </record>
-
     <!-- ACTIONS -->
-
     <!-- account.move.line (Journal Items) -->
-
     <record id="action_move_line_select" model="ir.actions.act_window">
         <field name="name">Journal Items</field>
         <field name="res_model">account.move.line</field>
         <field name="context">{'search_default_account_id': [active_id]}</field>
     </record>
-
     <record id="action_automatic_entry" model="ir.actions.server">
         <field name="name">Automatic Entries</field>
         <field name="model_id" ref="account.model_account_move_line"/>
@@ -1533,7 +1550,6 @@ accounting move line tree view-->
         <field name="state">code</field>
         <field name="code">action = records.action_automatic_entry()</field>
     </record>
-
     <record id="action_account_moves_all_a" model="ir.actions.act_window">
         <field name="context">{'journal_type':'general',
             'search_default_group_by_move': 1,
@@ -1547,7 +1563,6 @@ accounting move line tree view-->
         <field name="view_id" ref="view_move_line_tree_grouped"/>
         <field name="view_mode">tree,pivot,graph,form,kanban</field>
     </record>
-
     <record id="action_account_moves_journal_sales"
             model="ir.actions.act_window">
         <field name="context">{'journal_type':'sales',
@@ -1563,7 +1578,6 @@ accounting move line tree view-->
                ref="view_move_line_tree_grouped_sales_purchases"/>
         <field name="view_mode">tree,pivot,graph</field>
     </record>
-
     <record id="action_account_moves_journal_purchase"
             model="ir.actions.act_window">
         <field name="context">{'journal_type':'purchase',
@@ -1580,16 +1594,20 @@ accounting move line tree view-->
                ref="view_move_line_tree_grouped_sales_purchases"/>
         <field name="view_mode">tree,pivot,graph</field>
     </record>
-
-   <record id="action_account_moves_journal_bank_cash" model="ir.actions.act_window">
-            <field name="context">{'journal_type':'bank', 'search_default_group_by_move': 1, 'search_default_posted':1, 'search_default_bank':1, 'search_default_cash':1, 'expand': 1}</field>
-            <field name="name">Bank and Cash</field>
-            <field name="res_model">account.move.line</field>
-            <field name="domain">[('display_type', 'not in', ('line_section', 'line_note'))]</field>
-            <field name="view_id" ref="view_move_line_tree_grouped_bank_cash"/>
-            <field name="view_mode">tree,pivot,graph</field>
-        </record>
-
+    <record id="action_account_moves_journal_bank_cash"
+            model="ir.actions.act_window">
+        <field name="context">{'journal_type':'bank',
+            'search_default_group_by_move': 1, 'search_default_posted':1,
+            'search_default_bank':1, 'search_default_cash':1, 'expand': 1}
+        </field>
+        <field name="name">Bank and Cash</field>
+        <field name="res_model">account.move.line</field>
+        <field name="domain">[('display_type', 'not in', ('line_section',
+            'line_note'))]
+        </field>
+        <field name="view_id" ref="view_move_line_tree_grouped_bank_cash"/>
+        <field name="view_mode">tree,pivot,graph</field>
+    </record>
     <record id="action_account_moves_journal_misc"
             model="ir.actions.act_window">
         <field name="context">{'journal_type':'general',
@@ -1605,7 +1623,6 @@ accounting move line tree view-->
         <field name="view_id" ref="view_move_line_tree_grouped_misc"/>
         <field name="view_mode">tree,pivot,graph</field>
     </record>
-
     <record id="action_account_moves_ledger_partner"
             model="ir.actions.act_window">
         <field name="context">{'journal_type':'general',
@@ -1623,7 +1640,6 @@ accounting move line tree view-->
         <field name="search_view_id" ref="view_account_move_line_filter"/>
         <field name="view_mode">tree,pivot,graph</field>
     </record>
-
     <record id="action_account_moves_all_tree" model="ir.actions.act_window">
         <field name="name">Journal Items</field>
         <field name="res_model">account.move.line</field>
@@ -1634,9 +1650,8 @@ accounting move line tree view-->
             'default_partner_id': active_id,
             'search_default_posted':1}
         </field>
-        <field name="view_id" ref="view_move_line_tree"/>
+        <field name="view_id" ref="account.view_move_line_tree"/>
     </record>
-
     <record id="action_account_moves_all" model="ir.actions.act_window">
         <field name="context">{'journal_type':'general',
             'search_default_posted':1}
@@ -1647,12 +1662,10 @@ accounting move line tree view-->
             'line_note')), ('move_id.state', '!=',
             'cancel')]
         </field>
-        <field name="view_id" ref="view_move_line_tree"/>
+        <field name="view_id" ref="account.view_move_line_tree"/>
         <field name="view_mode">tree,pivot,graph,form,kanban</field>
     </record>
-
     <!-- Journal entry for account.move  -->
-
     <record id="action_move_journal_line" model="ir.actions.act_window">
         <field name="name">Journal Entries</field>
         <field name="res_model">account.move</field>
@@ -1673,15 +1686,13 @@ accounting move line tree view-->
             </p>
         </field>
     </record>
-
-
     <record id="action_move_out_invoice_type" model="ir.actions.act_window">
         <field name="name">Fee Receipts</field>
         <field name="res_model">account.move</field>
         <field name="view_mode">tree,kanban,form</field>
         <field name="view_id" ref="view_out_invoice_tree"/>
         <field name="search_view_id" ref="view_account_invoice_filter"/>
-        <field name="domain">['|',('move_type', '=', 'out_invoice'),('is_fee', '=',
+        <field name="domain">[('move_type', '=', 'out_invoice'),('is_fee', '=',
             True)]
         </field>
         <field name="context">{'default_move_type': 'out_invoice'}</field>
@@ -1708,15 +1719,12 @@ accounting move line tree view-->
         <field name="view_id" ref="receipt_form"/>
         <field name="act_window_id" ref="action_move_out_invoice_type"/>
     </record>
-
     <record id="action_fee_tree1_view1" model="ir.actions.act_window.view">
         <field eval="1" name="sequence"/>
         <field name="view_mode">tree</field>
         <field name="view_id" ref="view_move_tree"/>
         <field name="act_window_id" ref="action_move_out_invoice_type"/>
     </record>
-
-
     <record id="action_move_out_refund_type" model="ir.actions.act_window">
         <field name="name">Student Credit Notes</field>
         <field name="res_model">account.move</field>
@@ -1738,7 +1746,6 @@ accounting move line tree view-->
             </p>
         </field>
     </record>
-
     <record id="action_receipt_out_refund_form"
             model="ir.actions.act_window.view">
         <field eval="2" name="sequence"/>
@@ -1753,8 +1760,7 @@ accounting move line tree view-->
         <field name="view_id" ref="view_move_tree"/>
         <field name="act_window_id" ref="action_move_out_refund_type"/>
     </record>
-
-<!--ACtion for -->
+    <!--Action -->
     <record id="action_move_line_form" model="ir.actions.act_window">
         <field name="name">Entries</field>
         <field name="type">ir.actions.act_window</field>
@@ -1762,7 +1768,6 @@ accounting move line tree view-->
         <field name="view_id" ref="view_move_tree"/>
         <field name="search_view_id" ref="view_account_move_filter"/>
     </record>
-
     <record model="ir.actions.server"
             id="action_move_switch_invoice_to_credit_note">
         <field name="name">Switch into refund/credit note</field>
@@ -1777,8 +1782,8 @@ accounting move line tree view-->
             action = records.action_switch_invoice_into_refund_credit_note()
         </field>
     </record>
-<!--Server action for inalterability check-->
-    <record model="ir.actions.server" id="action_check_hash_integrity">
+    <!--Server action for inalterability check-->
+    <record id="action_check_hash_integrity" model="ir.actions.server">
         <field name="name">Data Inalterability Check</field>
         <field name="model_id" ref="account.model_res_company"/>
         <field name="type">ir.actions.server</field>
@@ -1787,18 +1792,17 @@ accounting move line tree view-->
             action = env.company._action_check_hash_integrity()
         </field>
     </record>
-<!--    Menu item for students fee-->
+    <!--    Menu item for students fee-->
     <menuitem id="menu_student_fee_receipt" name="Students Fee"
               parent="education_fee_menu_root"
               sequence="2"/>
-<!--    Menu item for invoice receipt-->
-    <menuitem action="action_move_out_invoice_type"
-              id="menu_action_fee_receipt"
+    <!--    Menu item for invoice receipt-->
+    <menuitem id="menu_action_fee_receipt" action="action_move_out_invoice_type"
               parent="menu_student_fee_receipt"
               sequence="1"/>
-<!--    Menu item for refund type receipt-->
-    <menuitem action="action_move_out_refund_type"
-              id="receipt_out_refund_menu_action"
+    <!--    Menu item for refund type receipt-->
+    <menuitem id="receipt_out_refund_menu_action"
+              action="action_move_out_refund_type"
               parent="menu_student_fee_receipt"
               sequence="2"/>
 </odoo>

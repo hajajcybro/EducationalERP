@@ -33,6 +33,7 @@ class EducationFeeStructure(models.Model):
         self.amount_total = sum(line.fee_amount for line in self.fee_type_ids)
 
     company_currency_id = fields.Many2one('res.currency',
+                                          string='Company Currency',
                                           compute='get_company_id',
                                           readonly=True, related_sudo=False,
                                           help='Company currency')
@@ -42,11 +43,13 @@ class EducationFeeStructure(models.Model):
                                    'fee_structure_id',
                                    string='Fee Types', help='Specify the '
                                                             'fee types.')
-    comment = fields.Text(string='Additional Information')
-    academic_year = fields.Many2one('education.academic.year',
-                                    string='Academic Year', required=True,
-                                    help='Mention the academic year.')
-    expire = fields.Boolean(string='Expire', default=False,
+    comment = fields.Text(string='Additional Information',
+                          help="Additional information regarding the fee"
+                               " structure")
+    academic_year_id = fields.Many2one('education.academic.year',
+                                       string='Academic Year', required=True,
+                                       help='Mention the academic year.')
+    expire = fields.Boolean(string='Expire',
                             help='Expired or not')
     amount_total = fields.Float(string='Amount',
                                 currency_field='company_currency_id',
@@ -54,6 +57,8 @@ class EducationFeeStructure(models.Model):
                                 help='Total amount')
     category_id = fields.Many2one('education.fee.category',
                                   string='Category', required=True,
-                                  default=lambda self: self.env['education.fee.category'].search([], limit=1),
+                                  default=lambda self: self.env[
+                                      'education.fee.category'].search([],
+                                                                       limit=1),
                                   domain=[('fee_structure', '=', True)],
                                   help='Fees category.')

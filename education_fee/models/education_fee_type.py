@@ -47,6 +47,7 @@ class EducationFeeType(models.Model):
     category_id = fields.Many2one('education.fee.category',
                                   string='Category',
                                   required=True,
+                                  help="Fee category",
                                   default=lambda self: self.env[
                                       'education.fee.category'].search([],
                                                                        limit=1))

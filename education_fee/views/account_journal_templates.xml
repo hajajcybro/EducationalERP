@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<!--    Template for journals-->
+    <!--    Template for journals-->
     <record id="account_journal_dashboard_kanban_view" model="ir.ui.view">
         <field name="name">account.journal.dashboard.kanban</field>
         <field name="model">account.journal</field>
@@ -138,7 +138,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <!-- For purchase and sale -->
                             <div t-if="journal_type == 'purchase' || journal_type == 'sale'"
                                  class="row">
@@ -178,7 +177,6 @@
                                         </a>
                                     </div>
                                 </div>
-
                                 <div class="col-4 o_kanban_card_manage_section o_kanban_manage_new"
                                      groups="account.group_account_invoice">
                                     <h5 class="o_kanban_card_manage_title">
@@ -272,7 +270,6 @@
                                         </a>
                                     </div>
                                 </div>
-
                                 <div class="col-4 o_kanban_card_manage_section o_kanban_manage_operations">
                                     <h5 class="o_kanban_card_manage_title">
                                         <span>Operations</span>
@@ -578,7 +575,7 @@
             </kanban>
         </field>
     </record>
-<!--Action for views-->
+    <!--Action for views-->
     <record id="open_fee_journal_dashboard_kanban"
             model="ir.actions.act_window">
         <field name="name">Fee Dashboard</field>
@@ -589,10 +586,12 @@
         <field name="context">{'search_default_dashboard':1}</field>
         <field name="domain">[]</field>
         <field name="help" type="html">
-           <p class="o_view_nocontent_neutral_face">
+            <p class="o_view_nocontent_neutral_face">
                 This is the Fee dashboard
-            </p><p>
-                If you have not installed a chart of account, please install one first.<br/>
+            </p>
+            <p>
+                If you have not installed a chart of account, please install one first.
+                <br/>
                 <a class="btn-link" type="action"
                    name="%(account.open_account_charts_modules)d" tabindex="-1">Browse
                     available countries.
@@ -600,8 +599,8 @@
             </p>
         </field>
     </record>
-<!--    Menu Item for dashboard-->
-    <menuitem id="fee_menu_board_journal_1" name="Dashboard"
+    <!--    Menu Item for dashboard-->
+    <menuitem id="education_fee_menu_dashboard" name="Dashboard"
               action="open_fee_journal_dashboard_kanban"
               parent="education_fee_menu_root" sequence="1"/>
 </odoo>

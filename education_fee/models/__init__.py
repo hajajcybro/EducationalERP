@@ -20,10 +20,9 @@
 #
 ################################################################################
 from . import account_journal
-from . import education_fee_category
-from . import education_fee_type
-from . import education_fee_structure
-from . import education_fee_structure_lines
 from . import account_move
 from . import account_move_line
-from . import payed_lines
+from . import education_fee_category
+from . import education_fee_structure
+from . import education_fee_structure_lines
+from . import education_fee_type

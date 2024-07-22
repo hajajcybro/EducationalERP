@@ -26,7 +26,7 @@ class AccountJournal(models.Model):
     """Inherited 'account.journal' model"""
     _inherit = 'account.journal'
 
-    is_fee = fields.Boolean(string='Is Educational fee?', default=False,
+    is_fee = fields.Boolean(string='Is Educational fee?',
                             help="Whether educational fee or not.")
 
     def action_create_new_fee(self):
@@ -35,7 +35,6 @@ class AccountJournal(models.Model):
         context = self._context.copy()
         context.update({'journal_id': self.id, 'default_journal_id': self.id})
         context.update({'default_move_type': 'out_invoice'})
-
         return {
             'type': 'ir.actions.act_window',
             'view_mode': 'form',

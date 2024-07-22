@@ -26,7 +26,11 @@ class AccountMoveLine(models.Model):
     """Inheriting model 'account.move.line'"""
     _inherit = 'account.move.line'
 
-    manual = fields.Boolean(default=True)
+    manual = fields.Boolean(string="Manual", help="True for manual",
+                            default=True)
+    date = fields.Date(string='Date', help="Date of payment", readonly=True)
+    receipt_no = fields.Char(string='Receipt No',
+                             help="Uniquely identifies the payment")
 
     @api.onchange('product_id')
     def _get_category_domain(self):
