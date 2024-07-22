@@ -26,19 +26,20 @@ class EducationApplication(models.Model):
     """Inherited model 'education.application'"""
     _inherit = 'education.application'
 
-    need_hostel = fields.Boolean(string='Need Hostel Facility', default=False)
+    need_hostel = fields.Boolean(string='Need Hostel Facility',
+                                 help='True if need a hostel facility')
 
     def create_student(self):
         """Creating hostel admission from the student application form"""
         for rec in self:
-            res = super(EducationApplication, rec).create_student()
+            res = super().create_student()
             if rec.need_hostel:
                 std = self.env['education.student'].search(
                     [('application_id', '=', rec.id)])
                 if std:
                     std.need_hostel = True
                     values = {
-                        'member_std_name': std.id,
+                        'student_id': std.id,
                         'father_name': std.father_name,
                         'mother_name': std.mother_name,
                         'guardian_name': std.guardian_name.name,

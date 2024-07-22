@@ -2,7 +2,9 @@
 <odoo>
     <!--    Form view for the inherited model-->
     <record id="education_student_view_form" model="ir.ui.view">
-        <field name="name">education.student.view.form</field>
+        <field name="name">
+            education.student.view.form.inherit.education.hostel
+        </field>
         <field name="model">education.student</field>
         <field name="inherit_id"
                ref="education_core.education_student_view_form"/>
@@ -13,10 +15,10 @@
                     <group string="Allocation Details" name="hostel_info">
                         <group>
                             <field name="hostel_member"/>
-                            <field name="room"/>
+                            <field name="room_id"/>
                         </group>
                         <group>
-                            <field name="hostel"/>
+                            <field name="hostel_id"/>
                             <field name="hostel_fee"/>
                         </group>
                     </group>

@@ -30,42 +30,53 @@ class EducationRoom(models.Model):
     _description = "Room"
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    hostel = fields.Many2one('education.hostel', required=True,
-                             string="Hostel")
-    room_name = fields.Char(string="Room Name", required=True, )
-    room_code = fields.Char(string="Room Code", required=True)
+    hostel_id = fields.Many2one('education.hostel', required=True,
+                                string="Hostel",
+                                help='Hostel corresponding to the room')
+    room_name = fields.Char(string="Room Name", required=True,
+                            help='Name of room')
+    room_code = fields.Char(string="Room Code", required=True,
+                            help='Room code of room')
     floor = fields.Many2one('education.floor', required=True, string="Floor")
-    responsible = fields.Many2one('education.faculty',
-                                  string="Responsible Staff",
-                                  related='floor.responsible')
-    room_capacity = fields.Char(string="Capacity", required=True)
-    room_members = fields.One2many('education.room_member', "room_member_rel")
-    room_amenity = fields.One2many('room.amenity', 'amenity_rel')
+    responsible_id = fields.Many2one('education.faculty',
+                                     string="Responsible Staff",
+                                     related='floor.responsible_id',
+                                     help='Faculty corresponding to the room')
+    room_capacity = fields.Char(string="Capacity", required=True,
+                                help='Capacity of the room')
+    room_member_ids = fields.One2many('education.room_member',
+                                      "room_id",
+                                      string='Members', help='Room members')
+    amenity_ids = fields.One2many('room.amenity', 'amenity_rel_id',
+                                  string='Amenity', help='Room amenities')
     allocated_number = fields.Char(string="Allocated Students",
-                                   compute='get_total_allocated')
-    vacancy = fields.Char(string="Vacancy", compute='get_total_allocated')
+                                   compute='_compute_allocated_number',
+                                   help='Students allocated to the room')
+    vacancy = fields.Char(string="Vacancy", compute='_compute_allocated_number',
+                          help='Vacancy in the room')
     company_id = fields.Many2one('res.company', string='Company',
                                  default=lambda self: self.env[
-                                     'res.company']._company_default_get())
+                                     'res.company']._company_default_get(),
+                                 help='Company corresponding to the hostel')
 
-    @api.onchange('hostel', 'floor')
-    def get_rooms(self):
+    @api.onchange('hostel_id', 'floor')
+    def _onchange_hostel_id(self):
         """Adding domain for floors"""
-        hostel = None
-        if self.hostel:
-            hostel = self.hostel.id
+        hostel_id = None
+        if self.hostel_id:
+            hostel_id = self.hostel_id.id
         return {
             'domain': {
-                'floor': [('hostel', '=', hostel)]
+                'floor': [('hostel_id', '=', hostel_id)]
             }
         }
 
-    @api.constrains('room_members')
-    def get_total_allocated(self):
+    @api.depends('room_member_ids')
+    def _compute_allocated_number(self):
         """Counting the allocated and vacancy for room"""
         for std in self:
             std_count = self.env['education.hostel.member'].search_count(
-                [('room', '=', std.id),
+                [('room_id', '=', std.id),
                  ('state', '!=', 'vacated'),
                  ('vacated_date', '=', False)])
             if std_count > int(std.room_capacity):
@@ -77,20 +88,19 @@ class EducationRoom(models.Model):
     def create(self, vals):
         """Function to create education room list"""
         res = super(EducationRoom, self).create(vals)
-        if 'hostel' in vals and vals['hostel']:
+        if 'hostel_id' in vals and vals['hostel_id']:
             self.env['education.room_list'].create({
                 'room_mem_rel': res.id,
                 'floor': res.floor.id,
-                'hostel_room_rel2': vals['hostel']
+                'hostel_room_rel2': vals['hostel_id']
             })
         return res
 
-    # @api.multi
-    def student_view(self):
+    def action_view_students(self):
         """Get the students allocated in the room"""
         self.ensure_one()
         domain = [
-            ('room', '=', self.id),
+            ('room_id', '=', self.id),
             ('state', '=', 'allocated'),
             ('vacated_date', '=', False)]
         return {
@@ -105,9 +115,9 @@ class EducationRoom(models.Model):
         }
 
 
-class EduAmen(models.Model):
+class EduAmenity(models.Model):
     """Model created  'edu.amenity'"""
     _name = 'edu.amenity'
     _description = "Amenity"
 
-    name = fields.Char(string="Amenity")
+    name = fields.Char(string="Amenity", help='Name of amenity')

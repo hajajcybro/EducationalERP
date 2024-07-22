@@ -24,7 +24,8 @@
             </p>
         </field>
     </record>
-    <menuitem id="food_item_menu_action" parent="education_mess_menu_root"
+    <!--    Food item menu-->
+    <menuitem id="food_item_menu" parent="education_mess_menu_root"
               name="Food Item"
               sequence="2" action="food_item_action"/>
 </odoo>

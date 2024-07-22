@@ -19,24 +19,42 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 ################################################################################
-from odoo import fields, models
+from odoo import api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class EducationRoomMember(models.Model):
     """Creating model 'education.room_member'"""
     _name = 'education.room_member'
-    _rec_name = 'room_member'
+    _rec_name = 'room_member_id'
     _description = "Room Member"
 
-    room_member_rel = fields.Many2one('education.room',
-                                      string="Room")
-    allocated_date = fields.Date(string="Allocated Date")
-    vacated_date = fields.Date(string="Vacated Date")
-    room_member = fields.Many2one('education.hostel.member')
+    room_id = fields.Many2one('education.room',
+                              string="Room", help='Room of member')
+    allocated_date = fields.Date(string="Allocated Date",
+                                 help='Date of allocation',
+                                 default=fields.Date.today)
+    vacated_date = fields.Date(string="Vacated Date",
+                               help='Date of vacating room')
+    room_member_id = fields.Many2one('education.hostel.member', string='Member',
+                                     help='Corresponding hostel member')
     floor = fields.Many2one('education.floor', string="Floor",
-                            related='room_member_rel.floor')
+                            related='room_id.floor',
+                            help='Floor corresponding to the room member')
     hostel_room_rel = fields.Many2one('education.hostel',
                                       string="Hostel",
-                                      related='room_member_rel.hostel')
+                                      related='room_id.hostel_id',
+                                      help='Hostel of room member')
     student_id = fields.Many2one('education.student',
-                                 string="Student")
+                                 string="Student",
+                                 help='Student corresponding to the'
+                                      ' room member')
+
+    @api.constrains('allocated_date', 'vacated_date')
+    def _check_allocated_date(self):
+        """Method for validating allocated_date and vacated_date"""
+        for rec in self:
+            if rec.allocated_date and rec.vacated_date and (
+                    rec.vacated_date < rec.allocated_date):
+                raise ValidationError(
+                    "Vacated date cannot be earlier than allocated date")

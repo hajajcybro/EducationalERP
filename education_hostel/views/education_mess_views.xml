@@ -8,7 +8,7 @@
             <tree string="Mess">
                 <field name="mess_name"/>
                 <field name="mess_code"/>
-                <field name="hostel"/>
+                <field name="hostel_id"/>
             </tree>
         </field>
     </record>
@@ -22,19 +22,19 @@
                     <group col="4" name="main">
                         <field name="mess_name"/>
                         <field name="mess_code"/>
-                        <field name="hostel"/>
+                        <field name="hostel_id"/>
                         <field name="company_id"
                                groups="base.group_multi_company"/>
                     </group>
                     <notebook colspan="4">
                         <page string="Food Menu">
-                            <field name="food_menu">
+                            <field name="food_menu_ids">
                                 <tree string="Food Menu" editable="bottom">
                                     <field name="week_list"/>
-                                    <field name="break_fast"/>
-                                    <field name="lunch"/>
-                                    <field name="snack"/>
-                                    <field name="supper"/>
+                                    <field name="break_fast_id"/>
+                                    <field name="lunch_id"/>
+                                    <field name="snack_id"/>
+                                    <field name="supper_id"/>
                                 </tree>
                             </field>
                         </page>
@@ -58,7 +58,8 @@
             </p>
         </field>
     </record>
-    <menuitem id="education_mess_menu_action" parent="education_mess_menu_root"
+    <!--    Mess menu-->
+    <menuitem id="education_mess_menu" parent="education_mess_menu_root"
               name="Mess"
               sequence="1" action="education_mess_action"/>
 </odoo>

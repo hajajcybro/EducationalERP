@@ -28,10 +28,11 @@ class RoomAmenity(models.Model):
     _name = 'room.amenity'
     _description = "Amenity"
 
-    amenity = fields.Many2one('education.amenities',
-                              string="Amenity", required=True)
-    qty = fields.Integer(string="Quantity")
-    amenity_rel = fields.Many2one('education.room')
+    amenity_id = fields.Many2one('education.amenities',
+                                 string="Amenity", required=True)
+    qty = fields.Integer(string="Quantity", help='Quantity of amenity')
+    amenity_rel_id = fields.Many2one('education.room', string='Room',
+                                 help='Room corresponding to the amenity')
 
     @api.constrains('qty')
     def check_qty(self):

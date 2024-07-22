@@ -8,7 +8,7 @@
             <tree string="Room">
                 <field name="room_name"/>
                 <field name="room_code"/>
-                <field name="hostel"/>
+                <field name="hostel_id"/>
                 <field name="allocated_number"/>
                 <field name="vacancy"/>
             </tree>
@@ -22,7 +22,8 @@
             <form string="Room">
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button" name="student_view"
+                        <button class="oe_stat_button"
+                                name="action_view_students"
                                 type="object" icon="fa-group">
                             <field string="Students" name="allocated_number"
                                    widget="statinfo"/>
@@ -31,9 +32,9 @@
                     <group col="4" name="main">
                         <field name="room_name"/>
                         <field name="room_code"/>
-                        <field name="hostel"/>
+                        <field name="hostel_id"/>
                         <field name="floor"/>
-                        <field name="responsible"/>
+                        <field name="responsible_id"/>
                         <field name="room_capacity"/>
                         <field name="company_id"
                                groups="base.group_multi_company"/>
@@ -41,9 +42,9 @@
                     <notebook colspan="4">
                         <page
                                 string="Room Amenities">
-                            <field name="room_amenity">
+                            <field name="amenity_ids">
                                 <tree string="Room Amenities" editable="bottom">
-                                    <field name="amenity"/>
+                                    <field name="amenity_id"/>
                                     <field name="qty"/>
                                 </tree>
                             </field>
@@ -72,6 +73,8 @@
             </p>
         </field>
     </record>
-      <menuitem id="education_room_menu_action" parent="education_menu_config" name="Room"
-            action="education_room_action" sequence="2" />
+    <!--    Room menu-->
+    <menuitem id="education_room_menu" parent="education_menu_config"
+              name="Room"
+              action="education_room_action" sequence="2"/>
 </odoo>

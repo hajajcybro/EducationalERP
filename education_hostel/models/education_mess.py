@@ -28,15 +28,16 @@ class EducationMess(models.Model):
     _rec_name = "mess_code"
     _description = "Mess"
 
-    mess_name = fields.Char(string="Name", required="True",
+    mess_name = fields.Char(string="Name", required=True,
                             help="Mess name.")
-    mess_code = fields.Char(string="Code", required="True",
+    mess_code = fields.Char(string="Code", required=True,
                             help='Code of mess')
-    food_menu = fields.One2many('mess.food', 'mess_rel',
-                                string="Food Menu", help="Menu as list")
-    hostel = fields.Many2one('education.hostel', string="Hostel",
-                             required="True", help="Mention the hostel.")
-
+    food_menu_ids = fields.One2many('mess.food', 'mess_id',
+                                    string="Food Menu", help="Menu as list")
+    hostel_id = fields.Many2one('education.hostel', string="Hostel",
+                                required=True, help="Mention the hostel.")
     company_id = fields.Many2one('res.company', string='Company',
-                                 default=lambda s: s.env['res.company']._company_default_get('ir.sequence'))
-
+                                 default=lambda s: s.env[
+                                     'res.company']._company_default_get(
+                                     'ir.sequence'),
+                                 help='Company corresponding to the mess')

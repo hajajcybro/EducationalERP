@@ -27,8 +27,11 @@ class EducationRoomList(models.Model):
     _name = 'education.room_list'
     _description = "Education Roomlist"
 
-    room_mem_rel = fields.Many2one('education.room', string="Room")
+    room_mem_rel = fields.Many2one('education.room', string="Room",
+                                   help='Room corresponding to the list')
     floor = fields.Many2one('education.floor', string="Floor",
-                            related='room_mem_rel.floor')
+                            related='room_mem_rel.floor',
+                            help='Floor corresponding to the list')
     hostel_room_rel2 = fields.Many2one('education.hostel', string="Room",
-                                       related='room_mem_rel.hostel')
+                                       related='room_mem_rel.hostel_id',
+                                       help='Hostel corresponding to the list')

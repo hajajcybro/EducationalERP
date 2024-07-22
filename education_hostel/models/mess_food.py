@@ -27,15 +27,16 @@ class MessFood(models.Model):
     _name = 'mess.food'
     _description = 'Food Order'
 
-    mess_rel = fields.Many2one('education.mess', string="MESS")
-    break_fast = fields.Many2one('food.item', string="Break Fast",
-                                 help="Mention the breakfast item.")
-    lunch = fields.Many2one('food.item', string="Lunch",
-                            help="Mention the lunch item.")
-    snack = fields.Many2one('food.item', string="Snack",
-                            help="Mention the snack item.")
-    supper = fields.Many2one('food.item', string="Supper",
-                             help="Mention the supper item.")
+    mess_id = fields.Many2one('education.mess', string="MESS",
+                              help='Mess corresponding to the food item')
+    break_fast_id = fields.Many2one('food.item', string="Break Fast",
+                                    help="Mention the breakfast item.")
+    lunch_id = fields.Many2one('food.item', string="Lunch",
+                               help="Mention the lunch item.")
+    snack_id = fields.Many2one('food.item', string="Snack",
+                               help="Mention the snack item.")
+    supper_id = fields.Many2one('food.item', string="Supper",
+                                help="Mention the supper item.")
     week_list = fields.Selection([
         ('MO', 'Monday'),
         ('TU', 'Tuesday'),

@@ -19,16 +19,16 @@
 #    If not, see <http://www.gnu.org/licenses/>.
 #
 ################################################################################
-from . import education_aplication
+from . import education_application
 from . import education_floor
-from . import education_hostel_member
 from . import education_hostel
 from . import education_hostel_leave
+from . import education_hostel_member
 from . import education_mess
 from . import education_room
+from . import education_room_list
+from . import education_room_member
 from . import education_student
 from . import food_item
 from . import mess_food
-from . import education_room_list
 from . import room_amenity
-from . import education_room_member

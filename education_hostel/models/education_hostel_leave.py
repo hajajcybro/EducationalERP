@@ -27,18 +27,17 @@ from odoo.exceptions import ValidationError
 class EducationHostelLeave(models.Model):
     """Created model 'education.hostel_leave' """
     _name = 'education.hostel_leave'
-    _rec_name = 'name'
     _description = "Leave Request"
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    request_id = fields.Char(string='Request ID', required=True, copy=False,
-                             readonly=True,
-                             index=True, default=lambda self: _('New'))
+    request = fields.Char(string='Request ID', required=True, copy=False,
+                          readonly=True,
+                          index=True, default=lambda self: _('New'))
     name = fields.Many2one('education.hostel.member', string="Member",
                            required=True, help="Sequence of member.")
-    hostel = fields.Many2one('education.hostel', string="Hostel",
-                             related='name.hostel',
-                             help="Name of hostel.")
+    hostel_id = fields.Many2one('education.hostel', string="Hostel",
+                                related='name.hostel_id',
+                                help="Name of hostel.")
     leave_from = fields.Datetime(string="Date From", required=True,
                                  help="Date from which leave starts.")
     leave_to = fields.Datetime(string="Date To", required=True,
@@ -46,11 +45,10 @@ class EducationHostelLeave(models.Model):
     reason = fields.Text(string="Reason", required=True,
                          help="Leave reason.")
     number_of_days = fields.Float('Number of Days',
-                                  compute='_get_number_of_days',
+                                  compute='_compute_number_of_days',
                                   store=True,
                                   readonly=True,
                                   help="Number of leave days computed.")
-
     company_id = fields.Many2one('res.company', string='Company',
                                  default=lambda s: s.env[
                                      'res.company']._company_default_get(
@@ -63,13 +61,17 @@ class EducationHostelLeave(models.Model):
         ('validate', 'Approved')
     ], string='Status', readonly=True, copy=False,
         default='confirm',
-        help="The status is set to 'To Submit', when a leave request is created." +
-             "\nThe status is 'To Approve', when leave request is confirmed by user." +
-             "\nThe status is 'Refused', when leave request is refused by manager." +
-             "\nThe status is 'Approved', when leave request is approved by manager.")
+        help="The status is set to 'To Submit', when a leave request is "
+             "created." +
+             "\nThe status is 'To Approve', when leave request is confirmed"
+             " by user." +
+             "\nThe status is 'Refused', when leave request is refused by"
+             " manager." +
+             "\nThe status is 'Approved', when leave request is approved by "
+             "manager.")
 
     @api.depends('leave_from', 'leave_to')
-    def _get_number_of_days(self):
+    def _compute_number_of_days(self):
         """ Compute the total leave days"""
         for holiday in self:
             if holiday.leave_from and holiday.leave_to:
@@ -94,7 +96,7 @@ class EducationHostelLeave(models.Model):
             holiday.write({'state': 'cancel'})
 
     @api.constrains('leave_from', 'leave_to')
-    def check_dates(self):
+    def _check_dates(self):
         """Validation for dates"""
         for rec in self:
             if rec.leave_from >= rec.leave_to:
@@ -105,8 +107,8 @@ class EducationHostelLeave(models.Model):
     def create(self, vals):
         """Overriding the create method and assigning the the request id
         for the record"""
-        if vals.get('request_id', _('New')) == _('New'):
-            vals['request_id'] = self.env['ir.sequence'].next_by_code(
+        if vals.get('request', _('New')) == _('New'):
+            vals['request'] = self.env['ir.sequence'].next_by_code(
                 'hostel.leave') or _('New')
         res = super(EducationHostelLeave, self).create(vals)
         return res

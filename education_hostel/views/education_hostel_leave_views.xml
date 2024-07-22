@@ -8,7 +8,7 @@
             <search string="Leave Request">
                 <field name="name" filter_domain="[('name','ilike',self)]"
                        string="Name"/>
-                <field name="hostel"/>
+                <field name="hostel_id"/>
                 <filter string="To Approve" domain="[('state','=','confirm')]"
                         help="To Approve" name="to_approve"/>
                 <field name="state"/>
@@ -41,7 +41,7 @@
                 <sheet>
                     <div class="oe_title">
                         <h3>
-                            <field name="request_id"/>
+                            <field name="request"/>
                         </h3>
                     </div>
                     <group>
@@ -53,7 +53,7 @@
                                    groups="base.group_multi_company"/>
                         </group>
                         <group>
-                            <field name="hostel"/>
+                            <field name="hostel_id"/>
                             <field name="leave_to"/>
                             <field name="number_of_days"/>
                         </group>
@@ -72,7 +72,7 @@
         <field name="model">education.hostel_leave</field>
         <field name="arch" type="xml">
             <tree>
-                <field name="request_id"/>
+                <field name="request"/>
                 <field name="name"/>
                 <field name="number_of_days"/>
                 <field name="state"/>
@@ -80,7 +80,7 @@
         </field>
     </record>
     <!--Action for the model-->
-    <record model="ir.actions.act_window" id="education_hostel_leave_action">
+    <record id="education_hostel_leave_action" model="ir.actions.act_window">
         <field name="name">Leave Requests</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">education.hostel_leave</field>
@@ -95,6 +95,6 @@
             </p>
         </field>
     </record>
-    <menuitem id="child_edu_leaves1" parent="child_edu_leaves" name="Leaves"
+    <menuitem id="education_leave_menu_leaves" parent="education_leave_menu" name="Leaves"
               sequence="1" action="education_hostel_leave_action"/>
 </odoo>

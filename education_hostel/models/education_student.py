@@ -26,11 +26,14 @@ class EducationStudent(models.Model):
     """Inherited model 'education.student'"""
     _inherit = 'education.student'
 
-    need_hostel = fields.Boolean(string='Need Hostel Facility', default=False)
-    hostel = fields.Many2one('education.hostel', string="Hostel", tracking=1,
-                             help="Hostel of the student.")
-    room = fields.Many2one('education.room', string="Room", tracking=1,
-                           help="Room of the student.")
+    need_hostel = fields.Boolean(string='Need Hostel Facility',
+                                 help='True if student need hostel')
+    hostel_id = fields.Many2one('education.hostel',
+                                string="Hostel", tracking=1,
+                                help="Hostel of the student.")
+    room_id = fields.Many2one('education.room',
+                              string="Room", tracking=1,
+                              help="Room of the student.")
     hostel_fee = fields.Char(string="Fee", tracking=1,
                              help="Hostel fee of the student.")
     hostel_member = fields.Many2one('education.hostel.member',

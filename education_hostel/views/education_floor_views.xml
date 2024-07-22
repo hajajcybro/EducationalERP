@@ -10,10 +10,10 @@
                     <group>
                         <group>
                             <field name="floor_no"/>
-                            <field name="responsible"/>
+                            <field name="responsible_id"/>
                         </group>
                         <group>
-                            <field name="hostel"/>
+                            <field name="hostel_id"/>
                             <field name="company_id"
                                    groups="base.group_multi_company"/>
                         </group>
@@ -29,13 +29,13 @@
         <field name="arch" type="xml">
             <tree string="Floor" editable="top">
                 <field name="floor_no"/>
-                <field name="hostel"/>
-                <field name="responsible"/>
+                <field name="hostel_id"/>
+                <field name="responsible_id"/>
             </tree>
         </field>
     </record>
     <!--Action for the model-->
-    <record model="ir.actions.act_window" id="education_floor_action">
+    <record id="education_floor_action" model="ir.actions.act_window">
         <field name="name">Floor</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">education.floor</field>
@@ -49,7 +49,7 @@
             </p>
         </field>
     </record>
-    <menuitem id="education_floor_menu_action" parent="education_menu_config"
+    <menuitem id="education_floor_menu" parent="education_menu_config"
               name="Floor"
               action="education_floor_action" sequence="3"/>
 </odoo>

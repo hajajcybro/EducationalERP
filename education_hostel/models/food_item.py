@@ -25,7 +25,6 @@ from odoo import fields, models
 class FoodItem(models.Model):
     """Created model 'food.item'"""
     _name = 'food.item'
-    _rec_name = 'name'
     _description = 'Food'
 
     name = fields.Char(string="Food", required=True,
