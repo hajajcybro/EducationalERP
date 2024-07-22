@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--    Inherit education student views to add extra fields-->
+    <record id="education_student_view_form" model="ir.ui.view">
+        <field name="name">
+            education.student.view.form.inherit.education.transportation
+        </field>
+        <field name="model">education.student</field>
+        <field name="inherit_id"
+               ref="education_core.education_student_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Transportation Details"
+                      invisible="need_transportation_facility == False">
+                    <group>
+                        <group>
+                            <field name="trip_id"/>
+                            <field name="location_id"/>
+                        </group>
+                        <group>
+                            <field name="trans_cost"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//group[@name='amenity_info']" position='inside'>
+                <group string="Transportation">
+                    <field name="need_transportation_facility"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--    Education Trip tree view-->
+    <record id="education_trip_view_tree" model="ir.ui.view">
+        <field name="name">education.trip.view.tree</field>
+        <field name="model">education.trip</field>
+        <field name="arch" type="xml">
+            <tree string="Route">
+                <field name="name"/>
+                <field name="total_students"/>
+            </tree>
+        </field>
+    </record>
+    <!--    Education Trip kanban view-->
+    <record id="education_trip_view_kanban" model="ir.ui.view">
+        <field name="name">education.trip.view.kanban</field>
+        <field name="model">education.trip</field>
+        <field name="arch" type="xml">
+            <kanban class="oe_background_grey o_kanban_dashboard o_edu_hostel">
+                <field name="color"/>
+                <field name="name"/>
+                <field name="total_students"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card oe_kanban_global_click ">
+                            <div class="o_dropdown_kanban dropdown">
+                                <a class="dropdown-toggle btn"
+                                   data-toggle="dropdown" href="#">
+                                    <span class="fa fa-bars fa-lg"></span>
+                                </a>
+                                <ul class="dropdown-menu" role="menu"
+                                    aria-labelledby="dLabel">
+                                    <t t-if="widget.editable">
+                                        <li>
+                                            <a type="edit">Edit</a>
+                                        </li>
+                                    </t>
+                                    <t t-if="widget.deletable">
+                                        <li>
+                                            <a type="delete">Delete</a>
+                                        </li>
+                                    </t>
+                                    <li>
+                                        <ul class="oe_kanban_colorpicker"
+                                            data-field="color"/>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="oe_kanban_content">
+                                <div class="row">
+                                    <div class="text-center">
+                                        <div class="text-center">
+                                            <strong>
+                                                <field name="name"/>
+                                            </strong>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="oe_kanban_details">
+                                <strong>
+                                    <div class="text-center">
+                                        <div t-if="record.total_students.value">
+                                            Total Students:
+                                            <field name="total_students"/>
+                                        </div>
+                                    </div>
+                                </strong>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <!--    Education Trip form view-->
+    <record id="education_trip_view_form" model="ir.ui.view">
+        <field name="name">education.trip.view.form</field>
+        <field name="model">education.trip</field>
+        <field name="arch" type="xml">
+            <form string="Route">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="student_view"
+                                type="object" icon="fa-users">
+                            <field string="Students" name="total_students"
+                                   widget="statinfo"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only" string="Route"/>
+                        <h1>
+                            <field name="name" placeholder="Route.."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="src_loc_id"/>
+                            <field name="company_id"
+                                   groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="academic_year_id" invisible="1"/>
+                            <field name="dest_loc_id"/>
+                        </group>
+                    </group>
+                    <notebook colspan="4">
+                        <page string="Stage Details">
+                            <field name="stop_ids">
+                                <tree string="Stop" editable="bottom">
+                                    <field name="stop_id"/>
+                                    <field name="stop_sequence" readonly="1"/>
+                                    <field name="morning_timing"
+                                           widget="float_time"/>
+                                    <field name="evening_timing"
+                                           widget="float_time"/>
+                                    <field name="cost" readonly="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Vehicle Details">
+                            <field name="vehicle_ids">
+                                <tree string="Vehicles" editable="bottom">
+                                    <field name="vehicle_id"/>
+                                    <field name="vehicle_no" readonly="1"/>
+                                    <field name="driver_id" readonly="1"/>
+                                    <field name="morning_timing"
+                                           widget="float_time"/>
+                                    <field name="evening_timing"
+                                           widget="float_time"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <!--    Education trip menu action-->
+    <record model="ir.actions.act_window" id="education_trip_action">
+        <field name="name">Route</field>
+        <field name="res_model">education.trip</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Create Route.
+            </p>
+        </field>
+    </record>
+    <!--    Transportation main menu-->
+    <menuitem id="fleet.menu_root" name="Transportation"
+              web_icon="fleet,static/description/icon.png"/>
+    <!--    Transportation sub menu-->
+    <menuitem id="education_trip_menu" name="Transportation" sequence="1"
+              parent="fleet.menu_root"/>
+    <!--    Route menu-->
+    <menuitem id="education_trip_menu_transportation" name="Route"
+              parent="education_trip_menu" sequence="1"
+              action="education_trip_action"/>
+</odoo>

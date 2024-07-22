@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_education_stop_fleet_user,education.stop.fleet.user,model_education_stop,fleet.fleet_group_user,1,1,1,1
+access_education_stop_fleet_manager,education.stop.fleet.manager,model_education_stop,fleet.fleet_group_manager,1,1,1,1
+access_education_trip_fleet_user,education.trip.fleet.user,model_education_trip,fleet.fleet_group_user,1,1,1,1
+access_education_trip_manager,education.trip.fleet.manager,model_education_trip,fleet.fleet_group_manager,1,1,1,1
+access_edu_stop_fleet_user,edu.stop.fleet.user,model_edu_stop,fleet.fleet_group_user,1,1,1,1
+access_edu_stop_fleet_manager,edu.stop.fleet.manager,model_edu_stop,fleet.fleet_group_manager,1,1,1,1
+access_education_trip_stop_fleet_user,education.trip_stop.fleet.user,model_education_trip_stop,fleet.fleet_group_user,1,1,1,1
+access_education_trip_stop_fleet_manager,education.trip_stop.fleet.manager,model_education_trip_stop,fleet.fleet_group_manager,1,1,1,1
+access_education_vehicle_fleet_user,edu.vehicle.fleet.user,model_edu_vehicle,fleet.fleet_group_user,1,1,1,1
+access_education_vehicle_fleet_manager,edu.vehicle.fleet.manager,model_edu_vehicle,fleet.fleet_group_manager,1,1,1,1
+access_education_student_fleet_user,education.student.fleet.user,model_education_student,fleet.fleet_group_user,1,1,0,1
+access_education_student_fleet_manager,education.student.fleet.manager,model_education_student,fleet.fleet_group_manager,1,1,0,1

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--    Education stop tree view-->
+    <record id="education_stop_view_tree" model="ir.ui.view">
+        <field name="name">education.stop.view.tree</field>
+        <field name="model">education.stop</field>
+        <field name="arch" type="xml">
+            <tree string="Stage" editable="top">
+                <field name="stop_id"/>
+                <field name="stop_sequence"/>
+                <field name="cost"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+    <!--        Stage menu action-->
+    <record id="education_stop_action" model="ir.actions.act_window">
+        <field name="name">Stage</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">education.stop</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Create Stage.
+            </p>
+        </field>
+    </record>
+    <menuitem id="education_stop_menu" name="Stage" parent="education_trip_menu"
+              sequence="2"
+              action="education_stop_action"/>
+</odoo>

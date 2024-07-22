@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!--  Define a trip  -->
+        <record id="education_trip1" model="education.trip">
+            <field name="src_loc_id" ref="edu_stop_albany"/>
+            <field name="dest_loc_id" ref="edu_stop_allegany"/>
+            <field name="name">ALBANY-->ALLEGANY</field>
+        </record>
+    </data>
+</odoo>
