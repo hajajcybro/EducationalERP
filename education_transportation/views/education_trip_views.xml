@@ -83,7 +83,7 @@
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" name="student_view"
-                                type="object" icon="fa-users">
+                                type="object" icon="fa fa-group">
                             <field string="Students" name="total_students"
                                    widget="statinfo"/>
                         </button>

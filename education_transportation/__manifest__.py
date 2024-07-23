@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 ##############################################################################
 #    A part of Educational ERP Project <https://www.educationalerp.com>
