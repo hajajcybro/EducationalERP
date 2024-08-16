@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--Form view of the model mess.food-->
+    <record id="mess_food_view_form" model="ir.ui.view">
+        <field name="name">mess.food.view.form</field>
+        <field name="model">mess.food</field>
+        <field name="arch" type="xml">
+            <form string="Mess">
+                <field name="mess_rel"/>
+                <field name="break_fast"/>
+                <field name="lunch"/>
+                <field name="snack"/>
+                <field name="supper"/>
+                <field name="week_list"/>
+            </form>
+        </field>
+    </record>
+    <!--Tree view of the model education mess-->
+    <record id="education_mess_view_tree" model="ir.ui.view">
+        <field name="name">education.mess.view.tree</field>
+        <field name="model">education.mess</field>
+        <field name="arch" type="xml">
+            <tree string="Mess">
+                <field name="mess_name"/>
+                <field name="mess_code"/>
+                <field name="hostel"/>
+            </tree>
+        </field>
+    </record>
+    <!--Form view of the model education.mess-->
+    <record id="education_mess_view_form" model="ir.ui.view">
+        <field name="name">education.mess.view.form</field>
+        <field name="model">education.mess</field>
+        <field name="arch" type="xml">
+            <form string="Hostel">
+                <sheet>
+                    <group col="4" name="main">
+                        <field name="mess_name"/>
+                        <field name="mess_code"/>
+                        <field name="hostel"/>
+                        <field name="company_id"
+                               groups="base.group_multi_company"/>
+                    </group>
+                    <notebook colspan="4">
+                        <page string="Food Menu">
+                            <field name="food_menu">
+                                <tree string="Food Menu" editable="bottom">
+                                    <field name="week_list"/>
+                                    <field name="break_fast"/>
+                                    <field name="lunch"/>
+                                    <field name="snack"/>
+                                    <field name="supper"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!--Windows action for the model education.mess-->
+    <record id="education_mess_action" model="ir.actions.act_window">
+        <field name="name">Mess</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">education.mess</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Create Mess.
+            </p>
+        </field>
+    </record>
+    <!--Form view of the model food.item-->
+    <record id="food_item_view_tree" model="ir.ui.view">
+        <field name="name">food.item.view.tree</field>
+        <field name="model">food.item</field>
+        <field name="arch" type="xml">
+            <tree string="Food Items" editable="top">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+    <!--Windows action for the model food.items-->
+    <record id="food_item_action" model="ir.actions.act_window">
+        <field name="name">Food Items</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">food.item</field>
+        <field name="view_mode">tree</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Create Food Item.
+            </p>
+        </field>
+    </record>
+</odoo>

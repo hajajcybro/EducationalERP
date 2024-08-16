@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--Inherited view of the model education.application-->
+    <record id="view_education_application_form" model="ir.ui.view">
+        <field name="name">
+            education.application.view.form.inherit.education.hostel
+        </field>
+        <field name="model">education.application</field>
+        <field name="inherit_id"
+               ref="education_core.view_education_application_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='amenity_info']" position='inside'>
+                <group string="Hostel">
+                    <field name="need_hostel"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
