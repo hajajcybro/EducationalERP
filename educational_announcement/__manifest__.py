@@ -37,7 +37,7 @@
         'data/ir_cron_data.xml',
         'views/school_announcement_views.xml',
     ],
-    'images': ['static/description/banner.png'],
+    'images': ['static/description/banner.jpg'],
     'license': 'AGPL-3',
     'installable': True,
     'auto_install': False,
