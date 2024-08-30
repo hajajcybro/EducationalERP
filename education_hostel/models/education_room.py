@@ -53,7 +53,7 @@ class EducationRoom(models.Model):
                                    compute='_compute_allocated_number',
                                    help='Students allocated to the room')
     vacancy = fields.Char(string="Vacancy", compute='_compute_allocated_number',
-                          help='Vacancy in the room')
+                          store=True, help='Vacancy in the room')
     company_id = fields.Many2one('res.company', string='Company',
                                  default=lambda self: self.env[
                                      'res.company']._company_default_get(),

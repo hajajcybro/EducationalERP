@@ -30,9 +30,9 @@ class EducationHostel(models.Model):
     _description = "Hostel"
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    hostel_name = fields.Char(string="Name", required=True, tracking=True,
+    hostel_name = fields.Char(string="Name", required=True, tracking=1,
                               help="Name of the hostel.")
-    hostel_code = fields.Char(string="Code", required=True, tracking=True,
+    hostel_code = fields.Char(string="Code", required=True, tracking=1,
                               help="Code of the hostel.")
     hostel_capacity = fields.Char(string="Capacity"
                                   , compute="_compute_student_total",
@@ -46,9 +46,9 @@ class EducationHostel(models.Model):
     hostel_warden_id = fields.Many2one('education.faculty',
                                        required=True, string="Warden",
                                        help="Warden of the hostel.")
-    room_rent = fields.Char(string="Room Rent", required=True, tracking=True,
+    room_rent = fields.Char(string="Room Rent", required=True, tracking=1,
                             help="Room rent of the hostel.")
-    mess_fee = fields.Char(string="Mess Fee", required=True, tracking=True,
+    mess_fee = fields.Char(string="Mess Fee", required=True, tracking=1,
                            help="Mess fee of the mess.")
     total_students = fields.Char(string="Students",
                                  compute="_compute_student_total",
@@ -69,9 +69,8 @@ class EducationHostel(models.Model):
                                help='State of hostel')
     country_id = fields.Many2one('res.country', string='Country',
                                  help='Country of hostel')
-    phone = fields.Char(string='Phone', required=True, help='Phone of hostel')
-    mobile = fields.Char(string='Mobile', required=True,
-                         help='Mobile of hostel')
+    phone = fields.Char(string='Phone', required=1, help='Phone of hostel')
+    mobile = fields.Char(string='Mobile', required=1, help='Mobile of hostel')
     email = fields.Char(string='Email', help='Email of hostel')
     company_id = fields.Many2one('res.company', string='Company',
                                  default=lambda s: s.env[
