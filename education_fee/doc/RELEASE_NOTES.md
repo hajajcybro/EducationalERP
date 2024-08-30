@@ -5,7 +5,7 @@
 ##### ADD
 - Initial commit for Educational Fee Management
 
-#### 11.07.2024
+#### 11.06.2024
 #### Version 17.0.1.0.1
 ##### UPDT
 - Bug Fix-Fixed issues related to fee receipts
