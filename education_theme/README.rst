@@ -8,7 +8,7 @@ By using appropriate hues, this module contributes to making Educational ERP mor
 
 Configuration
 =============
-No additional configuration required
+No additional configuration required.
 
 License
 -------
