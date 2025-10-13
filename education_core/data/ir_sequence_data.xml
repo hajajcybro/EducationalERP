@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="seq_education_student_temp" model="ir.sequence">
+        <field name="name">Temporary Student Reference</field>
+        <field name="code">education_student_temporary</field>
+        <field name="prefix">REF</field>
+        <field name="padding">4</field>
+        <field name="number_next">1</field>
+    </record>
+
+    <record id="seq_education_student_admission" model="ir.sequence">
+        <field name="name">Admission Number</field>
+        <field name="code">education_student_admission</field>
+        <field name="prefix">ADM/%(year)s/</field>
+        <field name="padding">3</field>
+    </record>
+
+</odoo>

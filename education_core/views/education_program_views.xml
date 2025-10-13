@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- List View -->
+    <record id="view_education_program_list" model="ir.ui.view">
+        <field name="name">education.program.list</field>
+        <field name="model">education.program</field>
+        <field name="arch" type="xml">
+            <list string="Education Programs" create="true" edit="true">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="duration"/>
+                <field name="credit_hours"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_education_program_form" model="ir.ui.view">
+        <field name="name">education.program.form</field>
+        <field name="model">education.program</field>
+        <field name="arch" type="xml">
+            <form string="Education Program">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Program Name..."/>
+                        </h1>
+                        <label for="active" string="Active"/>
+                        <field name="active" widget="boolean_toggle" style="margin:10px;"/>
+                    </div>
+
+                    <group>
+                        <group string="Program Details">
+                            <field name="code"/>
+                            <field name="duration" string="Duration (Years)"/>
+                            <field name="credit_hours"/>
+                        </group>
+
+                        <group string="Additional Information">
+                            <field name="description" placeholder="Add a short description about this program..."/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Courses">
+                            <field name="course_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="credit_hours"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_education_program" model="ir.actions.act_window">
+        <field name="name">Programs</field>
+        <field name="res_model">education.program</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

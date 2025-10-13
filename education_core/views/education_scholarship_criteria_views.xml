@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_education_scholarship_criteria_tree" model="ir.ui.view">
+        <field name="name">education.scholarship.criteria.tree</field>
+        <field name="model">education.scholarship.criteria</field>
+        <field name="arch" type="xml">
+            <list string="Scholarship Eligibility Criteria">
+                <field name="name"/>
+                <field name="criteria_field"/>
+                <field name="operator"/>
+                <field name="value"/>
+                <field name="description"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_education_scholarship_criteria_form" model="ir.ui.view">
+        <field name="name">education.scholarship.criteria.form</field>
+        <field name="model">education.scholarship.criteria</field>
+        <field name="arch" type="xml">
+            <form string="Scholarship Eligibility Criteria">
+                <sheet>
+                    <group>
+                        <group string="Basic Information">
+                            <field name="name" placeholder="Criteria Name..."/>
+                            <field name="description"/>
+                        </group>
+                        <group string="Condition">
+                            <field name="criteria_field"/>
+                            <field name="operator"/>
+                            <field name="value" placeholder="Enter required value..."/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_education_scholarship_criteria" model="ir.actions.act_window">
+        <field name="name">Eligibility Criteria</field>
+        <field name="res_model">education.scholarship.criteria</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>
