@@ -24,7 +24,6 @@
                             <field name="name"/>
                             <field name="room_id"/>
                             <field name="capacity"/>
-                            <field name="active"/>
                         </group>
                         <group>
                             <field name="program_id"/>
@@ -35,6 +34,7 @@
                     <notebook>
                         <page string="Notes">
                             <group>
+                                <field name="active"/>
                                 <field name="notes"/>
                             </group>
                         </page>

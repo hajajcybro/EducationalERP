@@ -11,3 +11,4 @@ from . import education_course
 from . import education_scholarship
 from . import education_scholarship_criteria
 from . import education_document
+from . import education_class_room

@@ -12,3 +12,4 @@ access_education_course_user,access.education.course.user,model_education_course
 access_education_scholarship,access.education.scholarship,model_education_scholarship,,1,1,1,1
 access_education_scholarship_criteria,access.education.scholarship.criteria,model_education_scholarship_criteria,,1,1,1,1
 access_education_document,access_education_document,model_education_document,base.group_user,1,1,1,1
+access_education_class_room,access_education_class_room,model_education_class_room,base.group_user,1,1,1,1

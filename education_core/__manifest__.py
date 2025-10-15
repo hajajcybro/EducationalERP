@@ -24,6 +24,7 @@
         'views/education_scholarship_views.xml',
         'views/education_scholarship_criteria_views.xml',
         'views/education_document_view.xml',
+        'views/education_class_room_view.xml',
         'views/menus.xml',
 ],
     'license': 'AGPL-3',

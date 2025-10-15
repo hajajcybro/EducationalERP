@@ -68,6 +68,10 @@
               name="Document"
               parent="menu_student_configuration"
               action="action_education_document"/>
+    <menuitem id="menu_education_class_room_action"
+              name="Class Room"
+              parent="menu_student_configuration"
+              action="action_education_class_room"/>
 
 
 </odoo>

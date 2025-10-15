@@ -9,7 +9,7 @@ class EducationStudentStudent(models.Model):
     _name = 'education.student.student'
     _description = 'Student'
     _inherit = 'mail.thread'
-    _rec_name = 'admission_no'
+    _rec_name = 'name'
     _order = 'admission_no'
 
 
@@ -70,7 +70,6 @@ class EducationStudentStudent(models.Model):
     photo = fields.Binary(string='Image',
                           help='Upload a photo of the student.'
                           )
-
     state = fields.Selection([
         ('draft', 'Draft'),
         ('applied', 'Applied'),
@@ -81,7 +80,6 @@ class EducationStudentStudent(models.Model):
         ('cancelled', 'Cancelled'),
     ], string='Status', default='draft', help='Current status of the student.'
     )
-
     notes = fields.Text(string='Notes',help='Additional notes about the student.')
     created_by = fields.Many2one(
         'res.users',
@@ -107,6 +105,25 @@ class EducationStudentStudent(models.Model):
         help='ISO code of the selected country.'
     )
     zip = fields.Char(string='Zip', help='Postal/zip code.')
+    document_ids = fields.One2many(
+        'education.document',
+        'student_id',
+        string='Documents'
+    )
+    academic_year = fields.Many2one('education.academic.year',string='Academic Year')
+
+    def action_open_documents(self):
+        """Open documents related to this student."""
+        print('smart batu')
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Documents',
+            'res_model': 'education.document',
+            'view_mode': 'list,form',
+            'domain': [('student_id', '=', self.id)],
+            'context': {'default_student_id': self.id},
+        }
 
     @api.depends('dob')
     def _compute_age(self):
