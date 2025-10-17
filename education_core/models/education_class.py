@@ -36,9 +36,26 @@ class EducationClass(models.Model):
     )
 
 
-
-
     @api.depends('room_id')
     def _compute_capacity(self):
+        """Compute the class capacity based on the selected room."""
         for rec in self:
             rec.capacity = rec.room_id.capacity if rec.room_id else 0
+
+    @api.constrains('room_id', 'academic_year_id')
+    def _check_duplicate_room_assignment(self):
+        """Prevent assigning the same room to multiple classes
+            in the same academic year."""
+        for rec in self:
+            if rec.room_id and rec.academic_year_id:
+                existing = self.search([
+                    ('id', '!=', rec.id),
+                    ('room_id', '=', rec.room_id.id),
+                    ('academic_year_id', '=', rec.academic_year_id.id)
+                ], limit=1)
+                if existing:
+                    raise ValidationError((
+                        f"Room '{rec.room_id.name}' is already assigned to class "
+                        f"'{existing.name}' for academic year '{rec.academic_year_id.name}'."
+                    ))
+

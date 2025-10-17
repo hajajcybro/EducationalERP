@@ -29,7 +29,6 @@ class EducationDocument(models.Model):
         ('id_proof', 'ID Proof'),
         ('photo', 'Photo'),
         ('medical_certificate', 'Medical Certificate'),
-        ('caste_certificate', 'Caste Certificate'),
         ('income_certificate', 'Income Certificate'),
         ('other', 'Other'),
     ], string='Document Type', required=True)

@@ -31,8 +31,8 @@ class EducationAcademicYear(models.Model):
         inverse_name='academic_year_id',  # The Many2one field in session
         string='Sessions'
     )
-    class_ids = fields.Char(string='Classes')
-    program_ids = fields.Char(string='Programs')
+    class_ids = fields.Many2one('education.class',string='Classes')
+    program_ids = fields.Many2one('education.program',string='Programs')
 
     _sql_constraints = [
         ('name_unique', 'unique(name)', 'The Academic Year name must be unique.'),

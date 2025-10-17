@@ -60,6 +60,7 @@ class EducationStudentStudent(models.Model):
     )
     current_enrollment_id = fields.Many2one('education.enrollment',
         string='Current Enrollment',
+        readonly=True,
         help='Link to the current enrollment record of the student.'
     )
     guardian = fields.Char(
@@ -72,8 +73,7 @@ class EducationStudentStudent(models.Model):
                           )
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('applied', 'Applied'),
-        ('admitted', 'Admitted'),
+        ('registered', 'Registered'),
         ('enrolled', 'Enrolled'),
         ('graduated', 'Graduated'),
         ('left', 'Left'),
@@ -91,7 +91,7 @@ class EducationStudentStudent(models.Model):
     active = fields.Boolean(default=True, help='Uncheck to archive the student record.')
 
     email = fields.Char(string='Email', required=True, help='Student email address.')
-    phone = fields.Integer(string='Phone', help='Student contact number.')
+    phone = fields.Char(string='Phone', help='Student contact number.')
 
     street = fields.Char('Street', help='Street address.',required=True,)
     street2 = fields.Char('Street2', help='Additional street information.',required=True,)
@@ -143,10 +143,32 @@ class EducationStudentStudent(models.Model):
         return super().create(vals_list)
 
     def action_register(self):
-        """Replace temporary reference with admission number on registration"""
+        """Register student and create enrollment record."""
         for rec in self:
             if rec.reference_no and not rec.admission_no:
                 rec.admission_no = self.env['ir.sequence'].next_by_code('education_student_admission')
                 rec.reference_no = False
-                rec.state = 'applied'
+                rec.state = 'registered'
 
+                # Create related enrollment record
+                enrollment = self.env['education.enrollment'].create({
+                    'student_id': rec.id,
+                    'program_id': 'To Be Assigned',
+                    'class_id': 'To Be Assigned',
+                    'status': 'draft',
+                    'enrollment_date': fields.Date.today(),
+                })
+                rec.current_enrollment_id = enrollment.id
+
+    @api.constrains('email', 'phone')
+    def _check_contact_fields(self):
+        """Validate email and phone formats."""
+        import re
+        email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        phone_pattern = r'^\+?\d{7,15}$'  # allows 7-15 digits, with optional +
+
+        for record in self:
+            if record.email and not re.match(email_pattern, record.email):
+                raise ValidationError(_('Invalid email address. Please enter a valid format like name@example.com.'))
+            if record.phone and not re.match(phone_pattern, record.phone):
+                raise ValidationError(_('Invalid phone number. Please enter digits only, 7–15 numbers, with optional +.'))

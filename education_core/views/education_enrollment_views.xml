@@ -23,8 +23,12 @@
         <field name="arch" type="xml">
             <form string="Enrollment">
                 <header>
+                    <button name="action_enroll" string="Enroll" type="object"
+                            class="oe_highlight"
+                            invisible="status != 'draft'"/>
                     <field name="status" widget="statusbar" options="{'clickable': '1'}"/>
                 </header>
+
                 <sheet>
                     <group>
                         <group>

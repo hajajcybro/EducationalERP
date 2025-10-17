@@ -45,10 +45,11 @@
                     <notebook>
                         <page string="Courses">
                             <field name="course_ids">
-                                <list editable="bottom">
+                                <list>
                                     <field name="name"/>
                                     <field name="code"/>
                                     <field name="credit_hours"/>
+                                    <field name="is_elective"/>
                                 </list>
                             </field>
                         </page>

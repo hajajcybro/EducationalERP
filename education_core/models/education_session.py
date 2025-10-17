@@ -28,9 +28,8 @@ class EducationSession(models.Model):
     created_by = fields.Many2one('res.users', string="Created By", default=lambda self: self.env.user)
 
     # Optional relationships temporarily made Char
-    class_ids = fields.Char(string="Classes")
-    exam_schedule_ids = fields.Char(string="Exam Schedules")
-
+    class_ids = fields.Many2one('education.class',string="Classes")
+    # exam_schedule_ids = fields.Char(string="Exam Schedules")
     duration_days = fields.Integer(string="Duration (Days)", compute="_compute_duration", store=True)
 
     _sql_constraints = [
