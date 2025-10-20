@@ -12,9 +12,9 @@ class EducationEnrollment(models.Model):
         'education.student.student',
         string='Student',
         required=True,
+        ondelete='cascade',
         help='Student being enrolled.'
     )
-    program_id = fields.Char(string='Program')
     class_id = fields.Char(string='Class')
     section = fields.Char(string='Section')
     batch_id = fields.Char(string='Batch')

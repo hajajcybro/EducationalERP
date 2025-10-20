@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+     <record id="scholarship_grade" model="education.scholarship.criteria">
+        <field name="name">High Achiever Grade</field>
+        <field name="criteria_field">grade</field>
+        <field name="operator">>=</field>
+        <field name="value">85</field>
+        <field name="description">Minimum grade of 85% required for scholarship</field>
+    </record>
+
+    <record id="scholarship_gender_female" model="education.scholarship.criteria">
+        <field name="name">Female Students Only</field>
+        <field name="criteria_field">gender</field>
+        <field name="operator">==</field>
+        <field name="value">female</field>
+        <field name="description">Only female students are eligible</field>
+    </record>
+
+
+</odoo>

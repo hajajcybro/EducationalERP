@@ -22,16 +22,22 @@
             <form string="Class Room">
                 <sheet>
                     <group>
-                        <field name="name"/>
-                        <field name="building"/>
-                        <field name="floor"/>
-                        <field name="capacity"/>2
-                    </group>
-                    <notebook string="Note">
                         <group>
-                            <field name="notes"/>
+                            <field name="name"/>
+                            <field name="building"/>
                             <field name="active"/>
                         </group>
+                        <group>
+                            <field name="floor"/>
+                            <field name="capacity"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Note">
+                            <group>
+                                <field name="notes"/>
+                            </group>
+                        </page>
                     </notebook>
                 </sheet>
             </form>

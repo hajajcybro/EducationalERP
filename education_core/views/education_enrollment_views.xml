@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <list string="Enrollments">
                 <field name="student_id"/>
-                <field name="program_id"/>
+<!--                <field name="program_id"/>-->
                 <field name="class_id"/>
                 <field name="batch_id"/>
                 <field name="section"/>
@@ -42,7 +42,7 @@
                     </group>
                     <group>
                         <group>
-                            <field name="program_id"/>
+<!--                            <field name="program_id"/>-->
                             <field name="class_id"/>
                             <field name="batch_id"/>
                             <field name="section"/>
