@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Education Core',
-    'version': '1.0',
+    'version': '19.0.1.0.0',
     'summary': 'Manage educational details and student data',
     'category': 'Education',
     'sequence': -333,
@@ -9,7 +9,7 @@
     'company': 'Cybrosys Techno Solutions',
     'maintainer': 'Cybrosys Techno Solutions',
     'website': 'https://www.cybrosys.com',
-    'depends': ['base', 'mail'],
+    'depends': ['base', 'mail','base_automation'],
     'data': [
         'data/education_student_student_data.xml',
         'data/education_class_room_data.xml',
@@ -20,6 +20,7 @@
         'data/education_session_data.xml',
         'data/education_scholarship_criteria_data.xml',
         'data/education_scholarship_data.xml',
+        'data/ir_action_data.xml',
         'security/education_security_groups.xml',
         'security/ir.model.access.csv',
         'views/education_student_student_views.xml',

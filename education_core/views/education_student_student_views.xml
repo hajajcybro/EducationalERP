@@ -10,6 +10,8 @@
                 <header>
                      <button name="action_register" string="Register" class="oe_highlight" type="object"
                             invisible="state !='draft'"/>
+                    <button name="action_enroll" string="Enroll" class="oe_highlight" type="object"
+                            invisible="state =='enrolled'"/>
                     <field name="state" widget="statusbar" class="oe_avatar"/>
                 </header>
 
@@ -23,6 +25,7 @@
                         string="Documents">
                         <field name="document_ids" widget="statinfo" string="Documents"/>
                     </button>
+
                 </div>
                      <field name="photo" widget="image" class="oe_avatar"
                            options="{'preview_image': 'photo'}"/>
@@ -69,7 +72,6 @@
                                     <group>
                                         <field name="current_enrollment_id"/>
                                         <field name="academic_year"/>
-                                        <field name="created_by"/>
                                         <field name="active"/>
                                     </group>
                                 </group>

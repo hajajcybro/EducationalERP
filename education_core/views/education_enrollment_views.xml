@@ -7,10 +7,6 @@
         <field name="arch" type="xml">
             <list string="Enrollments">
                 <field name="student_id"/>
-<!--                <field name="program_id"/>-->
-                <field name="class_id"/>
-                <field name="batch_id"/>
-                <field name="section"/>
                 <field name="status" widget="badge"/>
             </list>
         </field>
@@ -42,10 +38,8 @@
                     </group>
                     <group>
                         <group>
-<!--                            <field name="program_id"/>-->
-                            <field name="class_id"/>
-                            <field name="batch_id"/>
-                            <field name="section"/>
+                            <field name="current_class_id"/>
+                            <field name="academic_year_id"/>
                             <field name="roll_number"/>
                         </group>
                         <group>

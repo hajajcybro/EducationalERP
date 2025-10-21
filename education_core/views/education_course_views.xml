@@ -51,14 +51,6 @@
                         <page string="Description">
                             <field name="description" nolabel="1" placeholder="Enter detailed course description..."/>
                         </page>
-
-                        <page string="Additional Details" optional="hide">
-                            <group>
-                                <field name="create_uid" readonly="1" />
-                                <field name="create_date" readonly="1" />
-
-                            </group>
-                        </page>
                     </notebook>
                 </sheet>
             </form>

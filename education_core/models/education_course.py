@@ -3,7 +3,6 @@ from odoo import models, fields, api
 class EducationCourse(models.Model):
     _name = 'education.course'
     _description = 'Education Course'
-    _rec_name = 'name'
 
 
     name = fields.Char(string="Course Name", required=True)

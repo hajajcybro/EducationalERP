@@ -7,7 +7,6 @@ class EducationClass(models.Model):
     _name = 'education.class'
     _description = 'Education Class'
     _inherit  = 'mail.thread'
-    _rec_name = 'name'
     _order = 'name'
 
     name = fields.Char(string='Class Name',required=True,
@@ -18,7 +17,7 @@ class EducationClass(models.Model):
     academic_year_id = fields.Many2one('education.academic.year',string='Academic Year', required=True,
                     help = 'Select the academic year during which this class will run'
                                    )
-    capacity = fields.Integer(string='Room Capacity',  compute='_compute_capacity', readonly=True,
+    capacity = fields.Integer(string='Room Capacity',  compute='_compute_capacity',
                               help='Maximum number of students that can be enrolled in this class'
                               )
     class_teacher_id = fields.Many2one('res.partner', string='Class Teacher',

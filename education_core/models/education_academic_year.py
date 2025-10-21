@@ -8,7 +8,6 @@ class EducationAcademicYear(models.Model):
     _name = 'education.academic.year'
     _description = 'EducationAcademicYear'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _rec_name = 'name'
     _order = 'start_date desc'
 
     name = fields.Char(string='Academic Year', required=True, unique=True)
@@ -27,16 +26,15 @@ class EducationAcademicYear(models.Model):
 
     # Relations
     session_ids = fields.One2many(
-        comodel_name='education.session',  # The model this links to
-        inverse_name='academic_year_id',  # The Many2one field in session
+        comodel_name='education.session',
+        inverse_name='academic_year_id',
         string='Sessions'
     )
-    class_ids = fields.Many2one('education.class',string='Classes')
-    program_ids = fields.Many2one('education.program',string='Programs')
+    class_id = fields.Many2one('education.class',string='Classes')
+    program_id = fields.Many2one('education.program',string='Programs')
 
     _sql_constraints = [
         ('name_unique', 'unique(name)', 'The Academic Year name must be unique.'),
-        # ('code_unique', 'unique(code)', 'The Academic Year code must be unique.')
     ]
 
     @api.constrains('start_date', 'end_date')
@@ -59,9 +57,3 @@ class EducationAcademicYear(models.Model):
             if self.search([('id', '!=', record.id), ('name', '=', record.name)]):
                 raise ValidationError(f"Academic Year with name '{record.name}' already exists.")
 
-    def unlink(self):
-        """Return validation error on deleting the academic year"""
-        for rec in self:
-            raise ValidationError(
-                _("Academic Year can not be deleted, You only can "
-                  "Archive it."))

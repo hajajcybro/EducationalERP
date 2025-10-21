@@ -11,14 +11,12 @@
                             class="btn-primary" invisible="state != 'draft'"/>
                     <button name="action_close" string="Close Session" type="object"
                             class="btn-secondary" invisible="state != 'active'"/>
-                    <!--                    <button string="Cancel" class="btn-secondary" special="cancel"/>-->
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
                     <group>
                         <group>
                             <field name="name"/>
-                            <!--                            <field name="code"/>-->
                             <field name="academic_year_id"/>
                             <field name="sequence"/>
                         </group>
@@ -33,15 +31,6 @@
                     <notebook>
                         <page string="Description">
                             <field name="description"/>
-                        </page>
-                        <page string="Classes">
-                            <!--                            <field name="class_ids">-->
-                            <!--                                <list editable="bottom">-->
-                            <!--                                    <field name="name"/>-->
-                            <!--&lt;!&ndash;                                    <field name="program_id"/>&ndash;&gt;-->
-                            <!--                                    <field name="academic_year_id"/>-->
-                            <!--                                </list>-->
-                            <!--                            </field>-->
                         </page>
                     </notebook>
                 </sheet>
@@ -80,9 +69,4 @@
         </field>
     </record>
 
-    <!-- Menu -->
-    <!--    <menuitem id="education_session_menu"-->
-    <!--              name="Education session"-->
-    <!--              action="education_session_action"-->
-    <!--              sequence="10"/>-->
 </odoo>

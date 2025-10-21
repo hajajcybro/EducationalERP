@@ -4,7 +4,6 @@ from odoo.exceptions import ValidationError
 class EducationCategory(models.Model):
     _name = 'education.category'
     _description = 'Student Category'
-    _order = 'name'
 
     name = fields.Char(string='Category Name',
                     required=True,

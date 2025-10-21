@@ -25,11 +25,7 @@ class EducationSession(models.Model):
     ], string="Status", default='draft', tracking=True)
     description = fields.Text(string="Description")
     active = fields.Boolean(default=True)
-    created_by = fields.Many2one('res.users', string="Created By", default=lambda self: self.env.user)
 
-    # Optional relationships temporarily made Char
-    class_ids = fields.Many2one('education.class',string="Classes")
-    # exam_schedule_ids = fields.Char(string="Exam Schedules")
     duration_days = fields.Integer(string="Duration (Days)", compute="_compute_duration", store=True)
 
     _sql_constraints = [
@@ -39,10 +35,8 @@ class EducationSession(models.Model):
     @api.depends('start_date', 'end_date')
     def _compute_duration(self):
         for rec in self:
-            if rec.start_date and rec.end_date:
-                rec.duration_days = (rec.end_date - rec.start_date).days
-            else:
-                rec.duration_days = 0
+            rec.duration_days = (rec.end_date - rec.start_date).days if rec.start_date and rec.end_date else 0
+
 
     @api.constrains('start_date', 'end_date')
     def _check_dates(self):

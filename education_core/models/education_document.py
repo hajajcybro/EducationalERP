@@ -20,7 +20,6 @@ class EducationDocument(models.Model):
         string='Admission No',
         compute='_compute_admission_no',
         store=True,
-        readonly=True
     )
     document_type = fields.Selection([
         ('birth_certificate', 'Birth Certificate'),

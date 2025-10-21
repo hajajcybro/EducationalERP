@@ -19,8 +19,6 @@
                     </group>
                     <group>
                         <group>
-                            <!--                            <field name="name"/>-->
-                            <!--                            <field name="code"/>-->
                             <field name="start_date"/>
                             <field name="end_date"/>
                         </group>
@@ -37,10 +35,10 @@
                             <field name="session_ids"/>
                         </page>
                         <page string="Classes">
-                            <field name="class_ids"/>
+                            <field name="class_id"/>
                         </page>
                         <page string="Programs">
-                            <field name="program_ids"/>
+                            <field name="program_id"/>
                         </page>
                     </notebook>
                 </sheet>
@@ -56,12 +54,9 @@
         <field name="arch" type="xml">
             <list string="Education_academic_year">
                 <field name="name"/>
-                <!--                <field name="code"/>-->
                 <field name="start_date"/>
                 <field name="end_date"/>
                 <field name="state" widget="badge"/>
-                <!--                <field name="is_current"/>-->
-                <!--                <field name="active" />-->
             </list>
         </field>
     </record>

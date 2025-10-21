@@ -5,7 +5,6 @@ from odoo.exceptions import ValidationError
 class EducationClassRoom(models.Model):
     _name = 'education.class.room'
     _description = 'Education Class Room'
-    _rec_name = 'name'
 
     name = fields.Integer(string='Room Name', required=True)
     building = fields.Char(string='Building', help='Building or block name')
@@ -20,3 +19,4 @@ class EducationClassRoom(models.Model):
         for record in self:
             if record.capacity <= 0:
                 raise ValidationError('Capacity must be greater than zero.')
+

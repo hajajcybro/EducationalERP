@@ -5,7 +5,6 @@ from odoo.exceptions import ValidationError
 class EducationScholarship(models.Model):
     _name = 'education.scholarship'
     _description = 'Education Scholarship'
-    _rec_name = 'name'
 
     name = fields.Char(string='Scholarship Name', required=True)
     scholarship_type = fields.Selection([

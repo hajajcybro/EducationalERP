@@ -3,7 +3,6 @@ from odoo import models, fields, api
 class EducationProgram(models.Model):
     _name = 'education.program'
     _description = 'Education Program'
-    _rec_name = 'name'
 
     name = fields.Char(string="Program Name", required=True)
     code = fields.Char(string="Code", required=True)
