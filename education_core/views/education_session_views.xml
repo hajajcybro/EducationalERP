@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="education_session_view_form" model="ir.ui.view">
+        <field name="name">education.session.view.form</field>
+        <field name="model">education.session</field>
+        <field name="arch" type="xml">
+            <form string="Education_session">
+                <header>
+                    <button name="action_activate" string="Activate" type="object"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_close" string="Close Session" type="object"
+                            class="btn-secondary" invisible="state != 'active'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="academic_year_id"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="duration_days" readonly="1"/>
+                            <field name="is_current"/>
+
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="education_session_view_list" model="ir.ui.view">
+        <field name="name">education.session.view.list</field>
+        <field name="model">education.session</field>
+        <field name="arch" type="xml">
+            <list string="Education_session">
+                <field name="name"/>
+                <!--                <field name="code"/>-->
+                <field name="academic_year_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="duration_days"/>
+                <field name="is_current"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="education_session_action" model="ir.actions.act_window">
+        <field name="name">Education session</field>
+        <field name="res_model">education.session</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first education session!
+            </p>
+        </field>
+    </record>
+
+</odoo>

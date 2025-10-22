@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+     <record id="scholarship_criteria_grade" model="education.scholarship.criteria.line">
+        <field name="name">grade</field>
+    </record>
+
+    <record id="scholarship_criteria_gender" model="education.scholarship.criteria.line">
+        <field name="name">gender</field>
+    </record>
+
+</odoo>

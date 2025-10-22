@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+   <menuitem id="menu_student_management_root"
+              name="Student Management"
+              sequence="10"/>
+    <menuitem id="menu_education_students"
+              name="Students"
+              parent="menu_student_management_root"
+              action="action_edu_student"
+              sequence="20"/>
+    <menuitem id="menu_education_enrollment"
+              name="Enrollments"
+              parent="menu_student_management_root"
+              action="action_education_enrollment"
+              sequence="20"/>
+    <menuitem id="menu_education_class" name="Classes"
+              parent="menu_student_management_root"
+              action="action_education_class"
+              sequence="20"/>
+
+
+    <menuitem id="menu_scholarship_root"
+              name="Scholarships"
+              parent="menu_student_management_root"
+              sequence="20"/>
+
+    <!-- Scholarship Main Menu -->
+    <menuitem id="menu_education_scholarship"
+              name="Scholarship Records"
+              parent="menu_scholarship_root"
+              action="action_education_scholarship"
+              sequence="10"/>
+
+    <menuitem id="menu_education_scholarship_criteria"
+              name="Eligibility Criteria"
+              parent="menu_scholarship_root"
+              action="action_education_scholarship_criteria"
+              sequence="20"/>
+
+    <menuitem id="menu_education_scholarship_criteria_line"
+              name="Criteria line"
+              parent="menu_scholarship_root"
+              action="action_education_scholarship_criteria_line"
+              sequence="20"/>
+
+    <!--    configuration-->
+    <menuitem id="menu_student_configuration"
+              name="Configuration"
+              parent="menu_student_management_root"
+              sequence="20"/>
+    <menuitem id="menu_education_academic_year"
+              name="Academic year"
+              parent="menu_student_configuration"
+              action="education_academic_year_action"
+              sequence="20"/>
+    <menuitem id="menu_education_session"
+              name="Academic Sessions"
+              parent="menu_student_configuration"
+              action="education_session_action"
+              sequence="20"/>
+    <menuitem id="menu_education_program"
+              name="Programs"
+              parent="menu_student_configuration"
+              action="action_education_program"
+              sequence="30"/>
+    <menuitem id="menu_education_course"
+              name="Courses"
+              parent="menu_student_configuration"
+              action="action_education_course"
+              sequence="40"/>
+
+    <menuitem id="menu_education_document_action"
+              name="Document"
+              parent="menu_student_configuration"
+              action="action_education_document"/>
+    <menuitem id="menu_education_class_room_action"
+              name="Class Room"
+              parent="menu_student_configuration"
+              action="action_education_class_room"/>
+
+
+</odoo>

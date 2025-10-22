@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Demo Students -->
+    <record id="student_demo_1" model="education.student.student">
+        <field name="name">John R</field>
+        <field name="dob">2012-05-10</field>
+        <field name="gender">male</field>
+        <field name="blood_group">b+</field>
+        <field name="email">john@example.com</field>
+        <field name="phone">+919876543210</field>
+        <field name="street">12, Lake View Road</field>
+        <field name="street2">Anna Nagar</field>
+        <field name="city">Chennai</field>
+        <field name="country_id" ref="base.in"/>
+        <field name="state_id" ref="base.state_in_tn"/>
+        <field name="zip">600040</field>
+        <field name="guardian">R. Jekkab</field>
+        <field name="notes">Excellent in academics and co-curricular activities.</field>
+    </record>
+
+</odoo>

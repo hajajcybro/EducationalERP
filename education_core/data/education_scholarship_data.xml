@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+<!--    <record id="scholarship_merit_2024" model="education.scholarship">-->
+<!--        <field name="name">Merit Scholarship 2024</field>-->
+<!--        <field name="scholarship_type">merit</field>-->
+<!--        <field name="amount">5000</field>-->
+<!--        <field name="min_gpa">8.5</field>-->
+<!--        <field name="duration">12</field>-->
+<!--        <field name="description">Awarded to students with GPA >= 8.5</field>-->
+<!--        <field name="status">draft</field>-->
+<!--        <field name="eligibility_ids" eval="[(4, ref('scholarship_grade'))]"/>-->
+<!--    </record>-->
+
+<!--    <record id="scholarship_female_students" model="education.scholarship">-->
+<!--        <field name="name">Women Empowerment Scholarship</field>-->
+<!--        <field name="scholarship_type">other</field>-->
+<!--        <field name="amount">4000</field>-->
+<!--        <field name="duration">12</field>-->
+<!--        <field name="description">Available only for female students</field>-->
+<!--        <field name="status">draft</field>-->
+<!--        <field name="eligibility_ids" eval="[(4, ref('scholarship_gender_female'))]"/>-->
+<!--    </record>-->
+
+</odoo>
