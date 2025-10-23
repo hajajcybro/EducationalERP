@@ -3,8 +3,12 @@
    <menuitem id="menu_student_management_root"
               name="Student Management"
               sequence="10"/>
+    <menuitem id="menu_education_students_role"
+              name="Student"
+              parent="menu_student_management_root"
+              action="action_school_partner_student"/>
     <menuitem id="menu_education_students"
-              name="Students"
+              name="Application"
               parent="menu_student_management_root"
               action="action_edu_student"
               sequence="20"/>

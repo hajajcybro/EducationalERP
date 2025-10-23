@@ -10,10 +10,12 @@ class EducationAcademicYear(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'start_date desc'
 
-    name = fields.Char(string='Academic Year', required=True, unique=True)
-    code = fields.Char(string='Code', help='Short code for Academic Year, e.g., AY25-26')
+
+    name = fields.Char(string='Academic Year', unique=True)
     start_date = fields.Date(string='Start Date', required=True)
     end_date = fields.Date(string='End Date', required=True)
+    duration = fields.Char(string='Duration', compute='_compute_duration', store=True,
+                           help='Displays academic year duration in format like 2024 → 2025')
     state = fields.Selection([
         ('draft', 'Draft'),
         ('active', 'Active'),
@@ -23,15 +25,6 @@ class EducationAcademicYear(models.Model):
                                 help='Marks the current academic year.')
     active = fields.Boolean(string='Active', default=True)
     notes = fields.Text(string='Notes')
-
-    # Relations
-    session_ids = fields.One2many(
-        comodel_name='education.session',
-        inverse_name='academic_year_id',
-        string='Sessions'
-    )
-    class_id = fields.Many2one('education.class',string='Classes')
-    program_id = fields.Many2one('education.program',string='Programs')
 
     _sql_constraints = [
         ('name_unique', 'unique(name)', 'The Academic Year name must be unique.'),
@@ -43,17 +36,27 @@ class EducationAcademicYear(models.Model):
             if record.start_date > record.end_date:
                 raise ValidationError("Start date must be before end date.")
 
-    @api.onchange('is_current')
-    def _onchange_is_current(self):
-        if self.is_current:
-            # Ensure only one academic year is current
-            other_years = self.search([('id', '!=', self.id), ('is_current', '=', True)])
-            for year in other_years:
-                year.is_current = False
+
+    @api.depends('start_date', 'end_date')
+    def _compute_duration(self):
+        """Compute duration in readable academic-year format."""
+        for rec in self:
+            if rec.start_date and rec.end_date:
+                rec.duration = rec.end_date.year - rec.start_date.year
+
+
+
+    @api.onchange('start_date', 'end_date')
+    def _onchange_dates_set_name(self):
+        """Automatically generate name and code when dates are updated."""
+        if self.start_date and self.end_date:
+            start_year = self.start_date.year
+            end_year = self.end_date.year
+            self.name = f"{start_year}-{end_year}"
 
     @api.constrains('name')
     def _check_unique(self):
         for record in self:
             if self.search([('id', '!=', record.id), ('name', '=', record.name)]):
-                raise ValidationError(f"Academic Year with name '{record.name}' already exists.")
+                raise ValidationError(f"Academic Year  '{record.name}' already exists.")
 

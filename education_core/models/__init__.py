@@ -13,3 +13,4 @@ from . import education_scholarship_criteria
 from . import education_document
 from . import education_class_room
 from . import education_schoolarship_criteria_line
+from . import res_partner

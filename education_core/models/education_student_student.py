@@ -11,7 +11,6 @@ class EducationStudentStudent(models.Model):
     _inherit = 'mail.thread'
     _order = 'admission_no'
 
-
     name = fields.Char('Student Name',
             required = True,
             help = 'Enter the full name of the student.'
@@ -20,7 +19,6 @@ class EducationStudentStudent(models.Model):
         copy=False, readonly=True,
         tracking=True, default='New',
         help = 'Automatically generated reference number for the student.'
-
     )
     admission_no = fields.Char(
         string='Admission Number',
@@ -106,6 +104,8 @@ class EducationStudentStudent(models.Model):
     academic_year = fields.Many2one('education.academic.year',string='Academic Year',
                                     domain=[('state', '!=', 'closed')],
                                     )
+    partner_id = fields.Many2one('res.partner', string='Related Contact', readonly=True,
+                                 help='Linked res.partner record for this student.')
 
     def action_open_documents(self):
         """Open documents related to this student."""
@@ -142,14 +142,7 @@ class EducationStudentStudent(models.Model):
                 rec.admission_no = self.env['ir.sequence'].next_by_code('education_student_admission')
                 rec.reference_no = False
                 rec.state = 'registered'
-                # Create related enrollment record
-                # enrollment = self.env['education.enrollment'].create({
-                #     'student_id': rec.id,
-                #     'current_class_id': '',
-                #     'status': 'draft',
-                #     'enrollment_date': fields.Date.today(),
-                # })
-                # rec.current_enrollment_id = enrollment.id
+
 
     @api.constrains('email', 'phone')
     def _check_contact_fields(self):

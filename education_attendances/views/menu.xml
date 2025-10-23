@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+     <menuitem id="menu_education_attendances_root"
+              name="Attendance"
+              sequence="10"/>
+
+    <menuitem id="menu_education_enrollment"
+              name="Student"
+              parent="menu_education_attendances_root"
+              action="education_core.action_education_enrollment"
+              sequence="20"/>
+</odoo>
+

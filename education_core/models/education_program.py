@@ -6,7 +6,8 @@ class EducationProgram(models.Model):
 
     name = fields.Char(string="Program Name", required=True)
     code = fields.Char(string="Code", required=True)
-    duration = fields.Integer(string="Duration (Years)")
+    academic_year_id = fields.Many2one('education.academic.year',string="Academic Year")
+    duration = fields.Char(related="academic_year_id.duration",string="Duration")
     credit_hours = fields.Float(string="Total Credit Hours")
     description = fields.Text(string="Description")
     active = fields.Boolean(default=True, string="Active")

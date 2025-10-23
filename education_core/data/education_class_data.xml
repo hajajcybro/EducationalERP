@@ -3,8 +3,6 @@
     <record id="class_1" model="education.class">
         <field name="name">Class 10A</field>
         <field name="room_id" ref="education_core.class_room_12"/>
-        <field name="program_id" ref="education_core.program_bsc_cs"/>
-        <field name="academic_year_id" ref="education_core.academic_year_2024"/>
         <field name="class_teacher_id" ref="base.partner_admin"/>
         <field name="active">True</field>
     </record>
@@ -12,8 +10,6 @@
      <record id="class_1" model="education.class">
         <field name="name">Class 10B</field>
         <field name="room_id" ref="education_core.class_room_11"/>
-        <field name="program_id" ref="education_core.program_bcom"/>
-        <field name="academic_year_id" ref="education_core.academic_year_2024"/>
         <field name="class_teacher_id" ref="base.partner_admin"/>
         <field name="active">True</field>
     </record>

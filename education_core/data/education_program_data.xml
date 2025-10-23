@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <record id="program_bsc_cs" model="education.program">
-        <field name="name">Bachelor of Science in Computer Science</field>
-        <field name="code">BSC-CS</field>
-        <field name="duration">3</field>
-        <field name="credit_hours">120.0</field>
-        <field name="description">
-            A 3-year undergraduate program focused on computer science, software development, and information systems.
-        </field>
-        <field name="active">True</field>
-    </record>
+<!--    <record id="program_bsc_cs" model="education.program">-->
+<!--        <field name="name">Bachelor of Science in Computer Science</field>-->
+<!--        <field name="code">BSC-CS</field>-->
+<!--        <field name="duration">3</field>-->
+<!--        <field name="credit_hours">120.0</field>-->
+<!--        <field name="description">-->
+<!--            A 3-year undergraduate program focused on computer science, software development, and information systems.-->
+<!--        </field>-->
+<!--        <field name="active">True</field>-->
+<!--    </record>-->
 
-     <record id="program_bcom" model="education.program">
-        <field name="name">Bachelor of Commerce</field>
-        <field name="code">BCOM</field>
-        <field name="duration">3</field>
-        <field name="credit_hours">110.0</field>
-        <field name="description">
-            A comprehensive program covering business, accounting, and finance management principles.
-        </field>
-        <field name="active">True</field>
-    </record>
+<!--     <record id="program_bcom" model="education.program">-->
+<!--        <field name="name">Bachelor of Commerce</field>-->
+<!--        <field name="code">BCOM</field>-->
+<!--        <field name="duration">3</field>-->
+<!--        <field name="credit_hours">110.0</field>-->
+<!--        <field name="description">-->
+<!--            A comprehensive program covering business, accounting, and finance management principles.-->
+<!--        </field>-->
+<!--        <field name="active">True</field>-->
+<!--    </record>-->
 
-     <record id="program_msc_data" model="education.program">
-        <field name="name">Master of Science in Data Analytics</field>
-        <field name="code">MSC-DA</field>
-        <field name="duration">2</field>
-        <field name="credit_hours">80.0</field>
-        <field name="description">
-            A postgraduate program that equips students with skills in data analytics, machine learning, and visualization.
-        </field>
-        <field name="active">True</field>
-    </record>
+<!--     <record id="program_msc_data" model="education.program">-->
+<!--        <field name="name">Master of Science in Data Analytics</field>-->
+<!--        <field name="code">MSC-DA</field>-->
+<!--        <field name="duration">2</field>-->
+<!--        <field name="credit_hours">80.0</field>-->
+<!--        <field name="description">-->
+<!--            A postgraduate program that equips students with skills in data analytics, machine learning, and visualization.-->
+<!--        </field>-->
+<!--        <field name="active">True</field>-->
+<!--    </record>-->
 
 </odoo>

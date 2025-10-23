@@ -14,7 +14,7 @@ class EducationClass(models.Model):
     program_id = fields.Many2one('education.program', string='Education Program',
                     help='Specify the education program or course this class belongs to'
                              )
-    academic_year_id = fields.Many2one('education.academic.year',string='Academic Year', required=True,
+    academic_year_id = fields.Many2one('education.academic.year',string='Academic Year', 
                     help = 'Select the academic year during which this class will run'
                                    )
     capacity = fields.Integer(string='Room Capacity',  compute='_compute_capacity',

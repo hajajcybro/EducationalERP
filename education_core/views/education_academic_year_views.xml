@@ -21,6 +21,7 @@
                         <group>
                             <field name="start_date"/>
                             <field name="end_date"/>
+                            <field name="duration"/>
                         </group>
                         <group>
                             <field name="is_current"/>
@@ -30,15 +31,6 @@
                     <notebook>
                         <page string="Notes">
                             <field name="notes"/>
-                        </page>
-                        <page string="Sessions">
-                            <field name="session_ids"/>
-                        </page>
-                        <page string="Classes">
-                            <field name="class_id"/>
-                        </page>
-                        <page string="Programs">
-                            <field name="program_id"/>
                         </page>
                     </notebook>
                 </sheet>
