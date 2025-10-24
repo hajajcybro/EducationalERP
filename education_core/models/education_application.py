@@ -4,10 +4,9 @@ from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 from datetime import date
 
-
-class EducationStudentStudent(models.Model):
-    _name = 'education.student.student'
-    _description = 'Student'
+class EducationApplication(models.Model):
+    _name = 'education.application'
+    _description = 'Education Application'
     _inherit = 'mail.thread'
     _order = 'admission_no'
 
@@ -15,6 +14,7 @@ class EducationStudentStudent(models.Model):
             required = True,
             help = 'Enter the full name of the student.'
     )
+    program_id = fields.Many2one('education.program',string='Program', required=True)
     reference_no = fields.Char(
         copy=False, readonly=True,
         tracking=True, default='New',
@@ -101,7 +101,7 @@ class EducationStudentStudent(models.Model):
         'student_id',
         string='Documents'
     )
-    academic_year = fields.Many2one('education.academic.year',string='Academic Year',
+    academic_year_id = fields.Many2one('education.academic.year',string='Academic Year',
                                     domain=[('state', '!=', 'closed')],
                                     )
     partner_id = fields.Many2one('res.partner', string='Related Contact', readonly=True,
@@ -143,6 +143,33 @@ class EducationStudentStudent(models.Model):
                 rec.reference_no = False
                 rec.state = 'registered'
 
+            partner = rec.partner_id
+            if not partner:
+                partner = self.env['res.partner'].create({
+                    'name': rec.name,
+                    'email': rec.email,
+                    'phone': rec.phone,
+                    'street': rec.street,
+                    'street2': rec.street2,
+                    'city': rec.city,
+                    'zip': rec.zip,
+                    'country_id': rec.country_id.id,
+                    'state_id': rec.state_id.id,
+                    'position_role': 'student',
+
+                })
+            rec.partner_id = partner.id
+            partner.write({
+                    'admission_no': rec.admission_no,
+                    'program_id': rec.program_id.id,
+                    'academic_year_id': rec.academic_year_id.id,
+                    'gender': rec.gender,
+                    'dob': rec.dob,
+                    'age': rec.age,
+                    'blood_group': rec.blood_group,
+                    'category': rec.category,
+                    'guardian': rec.guardian,
+                })
 
     @api.constrains('email', 'phone')
     def _check_contact_fields(self):
@@ -160,6 +187,10 @@ class EducationStudentStudent(models.Model):
     def action_enroll(self):
         """Open Enrollment form for this student"""
         self.ensure_one()
+        default_class = self.env['education.class'].search([
+            ('program_id', '=', self.program_id.id),
+            ('academic_year_id', '=', self.academic_year_id.id),
+        ], limit=1)
         return {
             'type': 'ir.actions.act_window',
             'name': 'Enroll Student',
@@ -169,8 +200,19 @@ class EducationStudentStudent(models.Model):
             'context': {
                 'default_student_id': self.id,
                 'default_status': 'enrolled',
+                'default_current_class_id':default_class.id if default_class else False,
             },
         }
+
+    # @api.onchange('program_id')
+    # def _onchange_program_id(self):
+    #     """Restrict academic years based on program duration"""
+    #     for rec in self:
+    #         domain = []
+    #         if rec.program_id and rec.program_id.duration:
+    #             domain = [('duration', '=', rec.program_id.duration)]
+    #         return {'domain': {'academic_year_id': domain}}
+    #
 
 
 

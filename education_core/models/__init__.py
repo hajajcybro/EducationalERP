@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from . import education_student_student
+from . import education_application
 from . import education_class
 from . import education_category
 from . import education_enrollment
@@ -14,3 +14,4 @@ from . import education_document
 from . import education_class_room
 from . import education_schoolarship_criteria_line
 from . import res_partner
+from . import hr_employee

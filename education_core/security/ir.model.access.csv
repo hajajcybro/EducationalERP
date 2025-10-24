@@ -1,6 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 
-access_education_student,access_education_student,model_education_student_student,base.group_user,1,1,1,1
+access_education_application,access_education_application,model_education_application,base.group_user,1,1,1,1
 access_education_class,access_education_class,model_education_class,base.group_user,1,1,1,1
 access_education_category,access_education_category,model_education_category,base.group_user,1,1,1,1
 

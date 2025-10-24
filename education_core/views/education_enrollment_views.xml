@@ -44,10 +44,10 @@
                              <field name="enrollment_date"/>
                         </group>
                         <group>
-                            <field name="current_class_id"/>
-                            <field name="roll_number"/>
                             <field name="academic_year_id"/>
                             <field name="program_id"/>
+                            <field name="current_class_id"/>
+                            <field name="roll_number"/>
                             <field name="teacher_id"/>
 
 

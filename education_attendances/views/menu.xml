@@ -7,7 +7,7 @@
     <menuitem id="menu_education_enrollment"
               name="Student"
               parent="menu_education_attendances_root"
-              action="education_core.action_education_enrollment"
+              action="education_core.action_school_partner_student"
               sequence="20"/>
 </odoo>
 

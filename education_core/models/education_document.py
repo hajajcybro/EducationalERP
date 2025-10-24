@@ -11,7 +11,7 @@ class EducationDocument(models.Model):
     _rec_name = 'student_id'
 
     student_id = fields.Many2one(
-        'education.student.student',
+        'education.application',
         string='Student',
         required=True,
         ondelete='cascade',

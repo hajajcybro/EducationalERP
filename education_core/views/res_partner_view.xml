@@ -6,8 +6,50 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='category_id']" position="after">
+            <xpath expr="//field[@name='parent_id']" position="replace">
+                <field name="company_id"/>
+            </xpath>
+            <xpath expr="//field[@name='function']" position="replace">
                 <field name="position_role" filter_domain="[('position_role,'==','student')]"/>
+            </xpath>
+             <xpath expr="//field[@name='vat']" position="replace">
+                <field name="program_id"/>
+            </xpath>
+            <xpath expr="//field[@name='website']" position="replace">
+                <field name="academic_year_id"/>
+            </xpath>
+             <xpath expr="//field[@name='category_id']" position="replace">
+                <field name="active"/>
+            </xpath>
+            <xpath expr="//page[@name='contact_addresses']"  position="replace">
+                <page string="Academic Info" name="academic_info">
+                    <group>
+                        <group string="Reference">
+                            <field name="admission_no" readonly="1"/>
+                            <field name="current_enrollment_id"/>
+                            <field name="scholarship_id"/>
+                        </group>
+                        <group string="Class">
+                            <field name="class_id"/>
+                            <field name="roll_no"/>
+                            <field name="class_teacher_id"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//page[@name='sales_purchases']" position="replace">
+                <page string="Other Info" name="personal_info">name=""
+                    <group>
+                        <group sting="Personal Info">
+                            <field name="gender"/>
+                            <field name="dob"/>
+                            <field name="age" readonly="1"/>
+                            <field name="blood_group"/>
+                            <field name="category"/>
+                            <field name="guardian"/>
+                        </group>
+                    </group>
+                </page>
             </xpath>
         </field>
     </record>

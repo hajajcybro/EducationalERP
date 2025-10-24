@@ -10,7 +10,7 @@ class EducationEnrollment(models.Model):
     _order = 'enrollment_date desc'
 
     student_id = fields.Many2one(
-        'education.student.student',
+        'education.application',
         string='Student',
         required=True,
         ondelete='cascade',
@@ -23,16 +23,18 @@ class EducationEnrollment(models.Model):
         related='student_id.photo',
         readonly=True
     )
+    academic_year_id = fields.Many2one('education.academic.year',related='student_id.academic_year_id',
+        string='Academic Year',
+     )
+    program_id = fields.Many2one('education.program',related='student_id.program_id',
+        string='Program',
+     )
     current_class_id =fields.Many2one(
         'education.class',string='Class',
         required=True,
     )
-    academic_year_id = fields.Many2one(related='current_class_id.academic_year_id',
-        string='Academic Year',
-     )
-    program_id = fields.Many2one(related='current_class_id.program_id',
-        string='Program',
-     )
+
+
     teacher_id = fields.Many2one(related='current_class_id.class_teacher_id',
         string='Class Teacher',
      )
@@ -53,7 +55,7 @@ class EducationEnrollment(models.Model):
     roll_number = fields.Integer(
         string='Roll Number',
         store=True,
-        compute='_compute_roll_number',
+
         help='Automatically assigned roll number per class and academic year.'
     )
     remarks = fields.Text(string='Remarks')
@@ -72,18 +74,31 @@ class EducationEnrollment(models.Model):
             if rec.student_id:
                 rec.student_id.state = 'enrolled'
 
-    @api.depends('current_class_id', 'academic_year_id')
-    def _compute_roll_number(self):
-        """Assign roll numbers sequentially per class and academic year."""
+    def _assign_roll_number(self):
+        """Assign sequential roll number based on class and academic year."""
         for rec in self:
-            if rec.current_class_id and rec.academic_year_id:
-                # Find the maximum roll number in the class + year
-                last_roll = self.search(
-                    [
-                        ('current_class_id', '=', rec.current_class_id.id),
-                        ('academic_year_id', '=', rec.academic_year_id.id)
-                    ], order='roll_number desc', limit=1).roll_number
-                rec.roll_number = (last_roll or 0) + 1
+            if not rec.current_class_id or not rec.academic_year_id:
+                continue
+
+            last_enrollment = self.search([
+                ('current_class_id', '=', rec.current_class_id.id),
+                ('academic_year_id', '=', rec.academic_year_id.id),
+            ], order='roll_number desc', limit=1)
+
+            rec.roll_number = (last_enrollment.roll_number or 0) + 1
+
+    # @api.depends('current_class_id', 'academic_year_id')
+    # def _compute_roll_number(self):
+    #     """Assign roll numbers sequentially per class and academic year."""
+    #     for rec in self:
+    #         if rec.current_class_id and rec.academic_year_id:
+    #             # Find the maximum roll number in the class + year
+    #             last_roll = self.search(
+    #                 [
+    #                     ('current_class_id', '=', rec.current_class_id.id),
+    #                     ('academic_year_id', '=', rec.academic_year_id.id)
+    #                 ], order='roll_number desc', limit=1).roll_number
+    #             rec.roll_number = (last_roll or 0) + 1
 
 
     @api.model_create_multi

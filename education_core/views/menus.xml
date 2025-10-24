@@ -3,18 +3,23 @@
    <menuitem id="menu_student_management_root"
               name="Student Management"
               sequence="10"/>
-    <menuitem id="menu_education_students_role"
+    <menuitem id="menu_student_student"
               name="Student"
               parent="menu_student_management_root"
+              sequence="10"/>
+
+    <menuitem id="menu_education_students_role"
+              name="Student"
+              parent="menu_student_student"
               action="action_school_partner_student"/>
     <menuitem id="menu_education_students"
               name="Application"
-              parent="menu_student_management_root"
+              parent="menu_student_student"
               action="action_edu_student"
               sequence="20"/>
     <menuitem id="menu_education_enrollment"
               name="Enrollments"
-              parent="menu_student_management_root"
+              parent="menu_student_student"
               action="action_education_enrollment"
               sequence="20"/>
     <menuitem id="menu_education_class" name="Classes"

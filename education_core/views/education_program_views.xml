@@ -33,7 +33,6 @@
                     <group>
                         <group string="Program Details">
                             <field name="code"/>
-                            <field name="academic_year_id"/>
                             <field name="duration"/>
                             <field name="credit_hours"/>
                         </group>

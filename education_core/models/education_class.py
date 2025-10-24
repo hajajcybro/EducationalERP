@@ -11,17 +11,17 @@ class EducationClass(models.Model):
 
     name = fields.Char(string='Class Name',required=True,
                        help='Enter the name of the class')
-    program_id = fields.Many2one('education.program', string='Education Program',
+    program_id = fields.Many2one('education.program', string='Education Program',required=True,
                     help='Specify the education program or course this class belongs to'
                              )
-    academic_year_id = fields.Many2one('education.academic.year',string='Academic Year', 
+    academic_year_id = fields.Many2one('education.academic.year',string='Academic Year', required=True,
                     help = 'Select the academic year during which this class will run'
                                    )
     capacity = fields.Integer(string='Room Capacity',  compute='_compute_capacity',
                               help='Maximum number of students that can be enrolled in this class'
                               )
     class_teacher_id = fields.Many2one('res.partner', string='Class Teacher',
-                        help = 'Assign a teacher who will be responsible for this class.'
+                        help = 'Assign a teacher who will be responsible for this class.',required=True,
     )
     room_id = fields.Many2one('education.class.room',string='Room No', required=True,
                           help='Specify the room or hall number where this class will be conducted.'
@@ -59,3 +59,12 @@ class EducationClass(models.Model):
                         f"'{existing.name}' for academic year '{rec.academic_year_id.name}'."
                     ))
 
+    @api.constrains('program_id', 'academic_year_id')
+    def _check_program_year_duration(self):
+        for rec in self:
+            if rec.program_id and rec.academic_year_id:
+                if int(rec.academic_year_id.duration) != rec.program_id.duration:
+                    raise ValidationError(
+                        f"Academic year '{rec.academic_year_id.name}' (duration {rec.academic_year_id.duration}) "
+                        f"does not match the duration of program '{rec.program_id.name}' ({rec.program_id.duration} years)."
+                    )
