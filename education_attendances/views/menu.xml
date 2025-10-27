@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
      <menuitem id="menu_education_attendances_root"
-              name="Attendance"
+              name="Student Attendance"
               sequence="10"/>
 
-    <menuitem id="menu_education_enrollment"
+    <menuitem id="menu_education_attendance"
               name="Student"
               parent="menu_education_attendances_root"
-              action="education_core.action_school_partner_student"
+              action="action_school_student"
               sequence="20"/>
+    <menuitem id="menu_education_timetable"
+              name="Timetable Slot"
+              parent="menu_education_attendances_root"
+              action="action_education_timetable_slot"
+              sequence="20"/>
+      <menuitem id="menu_education_leave"
+              name="Leave Request"
+              parent="menu_education_attendances_root"
+              action="action_education_leave_request"
+              sequence="20"/>
+
 </odoo>
 

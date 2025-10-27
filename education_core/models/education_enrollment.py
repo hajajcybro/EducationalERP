@@ -85,7 +85,7 @@ class EducationEnrollment(models.Model):
                 ('academic_year_id', '=', rec.academic_year_id.id),
             ], order='roll_number desc', limit=1)
 
-            rec.roll_number = (last_enrollment.roll_number or 0) + 1
+            rec.roll_number = (last_enrollment or 0) + 1
 
     # @api.depends('current_class_id', 'academic_year_id')
     # def _compute_roll_number(self):

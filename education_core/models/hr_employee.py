@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
+from email.policy import default
+
 from odoo import models, fields
 
-class ResPartner(models.Model):
+class HrEmployee(models.Model):
     """Extend partner to add position role"""
     _inherit = 'hr.employee'
 
-    position_role = fields.Selection(
-        selection=[('teacher', 'Teacher'), ('student', 'Student')],
-        string='Position',
+    role = fields.Selection(
+        selection=[('teacher', 'Teacher'), ('staff', 'Office Staff')],
+        string='Position',default='teacher'
     )

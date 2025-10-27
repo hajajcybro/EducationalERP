@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
 
-<!--    <record id="school_partner_teacher_form_view" model="ir.ui.view">-->
-<!--        <field name="name">school.partner.teacher.form.view</field>-->
-<!--        <field name="model">hr.employee</field>-->
-<!--        <field name="inherit_id" ref="hr.view_employee_form"/>-->
-<!--        <field name="arch" type="xml">-->
-<!--             <xpath expr="//field[@name='email']" position="after">-->
-<!--                <field name="position_role" filter_domain="[('position_role,'==','student')]"/>-->
-<!--            </xpath>-->
-<!--        </field>-->
-<!--    </record>-->
+    <record id="school_partner_role_form_view" model="ir.ui.view">
+        <field name="name">school.partner.role.form.view</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+             <xpath expr="//field[@name='category_ids']" position="replace">
+                <field name="role" filter_domain="[('role,'==','teacher')]"/>
+            </xpath>
+        </field>
+    </record>
 
-<!--&lt;!&ndash;    window action for teacher&ndash;&gt;-->
-<!--    <record id="action_school_partner_teacher" model="ir.actions.act_window">-->
-<!--        <field name="name">Hr Employee</field>-->
-<!--        <field name="res_model">hr.employee</field>-->
-<!--        <field name="view_mode">list,form</field>-->
-<!--&lt;!&ndash;        <field name="domain">[('position_role', '=', 'teacher')]</field>&ndash;&gt;-->
-<!--&lt;!&ndash;        <field name="context">{'default_position_role': 'teacher'}</field>&ndash;&gt;-->
-<!--        <field name="help" type="html">-->
-<!--            <p class="0_view_no_content_smiling_face">create</p>-->
-<!--        </field>-->
-<!--    </record>-->
+<!--    window action for teacher-->
+    <record id="action_school_partner_role" model="ir.actions.act_window">
+        <field name="name">Hr Employee</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('role', '=', 'teacher')]</field>
+        <field name="context">{'defaultrole': 'teacher'}</field>
+        <field name="help" type="html">
+            <p class="0_view_no_content_smiling_face">create</p>
+        </field>
+    </record>
 
 
 </odoo>

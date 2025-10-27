@@ -11,7 +11,10 @@
     'website': 'https://www.cybrosys.com',
     'depends': ['education_core','mail'],
     'data': [
-        'views/education_enrollemt_view.xml',
+        'security/ir.model.access.csv',
+        'views/res_partner_view.xml',
+        'views/education_timetable_slot_view.xml',
+        'views/education_leave_request_view.xml',
         'views/menu.xml',
     ],
     'license': 'AGPL-3',

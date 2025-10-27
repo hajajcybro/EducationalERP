@@ -20,7 +20,7 @@ class EducationClass(models.Model):
     capacity = fields.Integer(string='Room Capacity',  compute='_compute_capacity',
                               help='Maximum number of students that can be enrolled in this class'
                               )
-    class_teacher_id = fields.Many2one('res.partner', string='Class Teacher',
+    class_teacher_id = fields.Many2one('hr.employee', string='Class Teacher',
                         help = 'Assign a teacher who will be responsible for this class.',required=True,
     )
     room_id = fields.Many2one('education.class.room',string='Room No', required=True,

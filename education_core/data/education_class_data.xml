@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <record id="class_1" model="education.class">
-        <field name="name">Class 10A</field>
-        <field name="room_id" ref="education_core.class_room_12"/>
-        <field name="class_teacher_id" ref="base.partner_admin"/>
-        <field name="active">True</field>
-    </record>
+<!--    <record id="class_1" model="education.class">-->
+<!--        <field name="name">Class 10A</field>-->
+<!--&lt;!&ndash;        <field name="room_id" ref="education_core.class_room_12"/>&ndash;&gt;-->
+<!--&lt;!&ndash;        <field name="class_teacher_id" ref="base.partner_admin"/>&ndash;&gt;-->
+<!--        <field name="active">True</field>-->
+<!--    </record>-->
 
-     <record id="class_1" model="education.class">
-        <field name="name">Class 10B</field>
-        <field name="room_id" ref="education_core.class_room_11"/>
-        <field name="class_teacher_id" ref="base.partner_admin"/>
-        <field name="active">True</field>
-    </record>
+<!--     <record id="class_1" model="education.class">-->
+<!--        <field name="name">Class 10B</field>-->
+<!--&lt;!&ndash;        <field name="room_id" ref="education_core.class_room_11"/>&ndash;&gt;-->
+<!--&lt;!&ndash;        <field name="class_teacher_id" ref="base.partner_admin"/>&ndash;&gt;-->
+<!--        <field name="active">True</field>-->
+<!--    </record>-->
 
 
 </odoo>

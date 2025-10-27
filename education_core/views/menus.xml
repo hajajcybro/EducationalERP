@@ -22,10 +22,16 @@
               parent="menu_student_student"
               action="action_education_enrollment"
               sequence="20"/>
+<!--    class menu-->
     <menuitem id="menu_education_class" name="Classes"
               parent="menu_student_management_root"
               action="action_education_class"
               sequence="20"/>
+<!--    faculty menu-->
+    <menuitem id="menu_education_role" name="Faculty"
+              parent="menu_student_management_root"
+              action="action_school_partner_role"
+              sequence="10"/>
 
 
     <menuitem id="menu_scholarship_root"
@@ -82,6 +88,10 @@
               name="Document"
               parent="menu_student_configuration"
               action="action_education_document"/>
+    <menuitem id="menu_education_document_action"
+              name="Category"
+              parent="menu_student_configuration"
+              action="action_education_category"/>
     <menuitem id="menu_education_class_room_action"
               name="Class Room"
               parent="menu_student_configuration"

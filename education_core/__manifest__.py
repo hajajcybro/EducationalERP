@@ -9,7 +9,7 @@
     'company': 'Cybrosys Techno Solutions',
     'maintainer': 'Cybrosys Techno Solutions',
     'website': 'https://www.cybrosys.com',
-    'depends': ['base', 'mail','base_automation'],
+    'depends': ['base', 'mail','base_automation','hr'],
     'data': [
         'data/education_student_student_data.xml',
         'data/education_class_room_data.xml',
