@@ -15,6 +15,8 @@
         'views/res_partner_view.xml',
         'views/education_timetable_slot_view.xml',
         'views/education_leave_request_view.xml',
+        'views/education_timetable_template.xml',
+        'views/education_timetable_line_view.xml',
         'views/menu.xml',
     ],
     'license': 'AGPL-3',

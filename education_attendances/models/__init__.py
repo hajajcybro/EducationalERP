@@ -3,3 +3,5 @@
 from . import res_partner
 from . import education_timetable_slot
 from . import education_leave_request
+from . import education_timetable_template
+from . import education_timetable_line

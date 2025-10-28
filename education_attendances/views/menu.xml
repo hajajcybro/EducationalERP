@@ -3,18 +3,37 @@
      <menuitem id="menu_education_attendances_root"
               name="Student Attendance"
               sequence="10"/>
-
+<!--    student-->
     <menuitem id="menu_education_attendance"
               name="Student"
               parent="menu_education_attendances_root"
               action="action_school_student"
               sequence="20"/>
+
+<!--    timetable-->
+    <menuitem id="menu_student_timetable"
+              name="Time Table"
+              parent="menu_education_attendances_root"
+              sequence="20"/>
+
     <menuitem id="menu_education_timetable"
               name="Timetable Slot"
-              parent="menu_education_attendances_root"
+              parent="menu_student_timetable"
               action="action_education_timetable_slot"
               sequence="20"/>
-      <menuitem id="menu_education_leave"
+    <menuitem id="menu_education_timetable_template"
+              name="Timetable Template"
+              parent="menu_student_timetable"
+              action="action_education_timetable_template"
+              sequence="20"/>
+    <menuitem id="menu_education_timetable_line"
+              name="Timetable Lines"
+              parent="menu_student_timetable"
+              action="action_education_timetable_line"
+              sequence="20"/>
+
+<!--    leave-->
+    <menuitem id="menu_education_leave"
               name="Leave Request"
               parent="menu_education_attendances_root"
               action="action_education_leave_request"

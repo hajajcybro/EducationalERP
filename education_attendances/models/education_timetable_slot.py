@@ -1,34 +1,32 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields
+from odoo import models, fields,api
+from odoo.exceptions import ValidationError
 
 class EducationTimetableSlot(models.Model):
     _name = 'education.timetable.slot'
     _description = 'Education Timetable Slot'
-    _rec_name = 'display_name'
 
-    class_id = fields.Many2one('education.class', string='Class', required=True)
-    day = fields.Selection([
-        ('monday', 'Monday'),
-        ('tuesday', 'Tuesday'),
-        ('wednesday', 'Wednesday'),
-        ('thursday', 'Thursday'),
-        ('friday', 'Friday'),
-        ('saturday', 'Saturday'),
-    ], string='Day', required=True)
-    start_time = fields.Float(string='Start Time', required=True, help='Time in 24h format, e.g. 9.5 = 9:30 AM')
-    end_time = fields.Float(string='End Time', required=True)
-    subject_id = fields.Many2one('education.course', string='Subject / Course')
-    faculty_id = fields.Many2one('hr.employee', string='Faculty', domain=[('role', '=', 'teacher')])
-    room_id = fields.Many2one('education.class.room', string='Room')
-    slot_type = fields.Selection([
-        ('lecture', 'Lecture'),
-        ('lab', 'Lab'),
-        ('tutorial', 'Tutorial'),
-    ], string='Slot Type', default='lecture')
-    display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
+    template_id = fields.Many2one('education.timetable.template')
+    date = fields.Date()
+    line_id = fields.Many2one('education.timetable.line', required=True)
+    class_id = fields.Many2one('education.class', required=True)
+    subject_id = fields.Many2one('education.course', required=True)
+    faculty_id = fields.Many2one('hr.employee', required=True)
+    room_id = fields.Many2one('education.class.room')
+    start_time = fields.Float()
+    end_time = fields.Float()
+    status = fields.Selection([
+        ('scheduled', 'Scheduled'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled')
+    ], default='scheduled')
 
-    def _compute_display_name(self):
+    @api.constrains('start_time', 'end_time')
+    def _check_time_order(self):
+        """Validate that start time is earlier than end time."""
         for rec in self:
-            rec.display_name = f"{rec.class_id.name or ''} - {rec.day.title()} ({rec.start_time} - {rec.end_time})"
+            if rec.start_time >= rec.end_time:
+                raise ValidationError("Start time must be earlier than end time.")
+
 
 
