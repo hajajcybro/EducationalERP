@@ -83,7 +83,6 @@
               parent="menu_student_configuration"
               action="action_education_course"
               sequence="40"/>
-
     <menuitem id="menu_education_document_action"
               name="Document"
               parent="menu_student_configuration"

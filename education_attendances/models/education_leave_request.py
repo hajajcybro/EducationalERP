@@ -63,9 +63,9 @@ class EducationLeaveRequest(models.Model):
 
 
     def action_submit(self):
-            """Move the request to 'Submitted' state."""
-            for rec in self:
-                rec.status = 'submitted'
+        """Move the request to 'Submitted' state."""
+        for rec in self:
+            rec.status = 'submitted'
 
     def action_approve(self):
             """Approve the leave request and set approver."""

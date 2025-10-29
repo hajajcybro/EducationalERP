@@ -22,7 +22,7 @@
               action="action_education_timetable_slot"
               sequence="20"/>
     <menuitem id="menu_education_timetable_template"
-              name="Timetable Template"
+              name="Timetable"
               parent="menu_student_timetable"
               action="action_education_timetable_template"
               sequence="20"/>
@@ -31,6 +31,11 @@
               parent="menu_student_timetable"
               action="action_education_timetable_line"
               sequence="20"/>
+<!--     <menuitem id="menu_education_attendances"-->
+<!--              name="Student Attendance"-->
+<!--              parent="menu_student_timetable"-->
+<!--              action="action_education_attendance"-->
+<!--              sequence="20"/>-->
 
 <!--    leave-->
     <menuitem id="menu_education_leave"

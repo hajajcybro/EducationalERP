@@ -1,0 +1,14 @@
+# -*- coding: utf-8 -*-
+from odoo import models, fields, api
+
+class EducationAttendance(models.Model):
+    _name = 'education.attendance'
+    _description = 'Education Attendance'
+
+    slot_id = fields.Many2one('education.timetable.slot', required=True)
+    student_id = fields.Many2one('res.partner', required=True, domain=[('position_role', '=', 'student')])
+    roll_no = fields.Char()
+    present = fields.Boolean(string='Present/Absence', default=True)
+    _sql_constraints = [
+        ('unique_student_slot', 'unique(slot_id, student_id)', 'Attendance already recorded for this student in this slot!')
+    ]

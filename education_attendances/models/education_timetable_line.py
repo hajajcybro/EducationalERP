@@ -7,7 +7,7 @@ class EducationTimetableLine(models.Model):
     _description = 'Education Timetable Line'
     _rec_name = 'template_id'
 
-    template_id = fields.Many2one('education.timetable.template', required=True)
+    template_id = fields.Many2one('education.timetable', required=True)
     day = fields.Selection([('monday','Monday'),('tuesday','Tuesday'),('wednesday','Wednesday'),('thursday','Thursday'),('friday','Friday')])
     start_time = fields.Float(required=True)
     end_time = fields.Float(required=True)

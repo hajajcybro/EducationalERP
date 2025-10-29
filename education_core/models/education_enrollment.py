@@ -74,6 +74,16 @@ class EducationEnrollment(models.Model):
             if rec.student_id:
                 rec.student_id.state = 'enrolled'
 
+                # Update res.partner with class and roll details
+                student = rec.student_id
+                if student.partner_id:
+                    student.partner_id.write({
+                        'class_id': rec.current_class_id.id,
+                        'academic_year_id': rec.academic_year_id.id,
+                        'program_id': rec.program_id.id,
+                        'roll_no': rec.roll_number,
+                    })
+
     def _assign_roll_number(self):
         """Assign sequential roll number based on class and academic year."""
         for rec in self:

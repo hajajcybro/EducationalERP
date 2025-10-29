@@ -6,14 +6,34 @@
         <field name="model">education.timetable.slot</field>
         <field name="arch" type="xml">
             <form string="Timetable Slot">
+                <header>
+                    <button name="action_done" string="Completed" type="object"  class="oe_highlight"/>
+                    <field name="status" widget="statusbar"/>
+                </header>
                 <sheet>
                     <group>
                         <group>
                             <field name="template_id"/>
+                            <field name="faculty_id"/>
+                        </group>
+                        <group>
                             <field name="date"/>
-                            <field name="line_id"/>
+                             <field name="start_time"/>
+                             <field name="end_time"/>
+
                         </group>
                     </group>
+                     <notebook>
+                        <page string="Attendance">
+                            <field name="attendance_line_ids">
+                                <list editable="bottom">
+                                    <field name="student_id"/>
+                                    <field name="roll_no"/>
+                                    <field name="present"/>
+                                </list>
+                            </field>
+                        </page>
+                </notebook>
                 </sheet>
             </form>
         </field>
@@ -27,7 +47,6 @@
             <list string="Timetable Slots">
                 <field name="template_id"/>
                 <field name="date"/>
-                <field name="line_id"/>
             </list>
         </field>
     </record>
