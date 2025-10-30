@@ -31,7 +31,7 @@ class EducationTimetableSlot(models.Model):
 
     attendance_line_ids = fields.One2many(
         'education.attendance',
-        'slot_id',
+        'student_id',
         string='Attendance Lines',
         compute='_compute_attendance_lines',
         store=False

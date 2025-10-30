@@ -59,3 +59,28 @@ class ResPartner(models.Model):
         default=lambda self: self.env.company,
         help='Company automatically assigned based on current user.'
     )
+
+    def action_open_documents(self):
+        """Open documents related to this student."""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Documents',
+            'res_model': 'education.document',
+            'view_mode': 'list,form',
+            'domain': [('student_id', '=', self.id)],
+            'context': {'default_student_id': self.id},
+        }
+
+    def action_open_enrollment(self):
+        """Open documents related to this student."""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Enrollment Info',
+            'res_model': 'education.enrollment',
+            'view_mode': 'list,form',
+            'domain': [('admission_no', '=', self.admission_no)],
+            'context': {'default_admission_no': self.admission_no},
+        }
+

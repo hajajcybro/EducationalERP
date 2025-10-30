@@ -31,11 +31,11 @@
               parent="menu_student_timetable"
               action="action_education_timetable_line"
               sequence="20"/>
-<!--     <menuitem id="menu_education_attendances"-->
-<!--              name="Student Attendance"-->
-<!--              parent="menu_student_timetable"-->
-<!--              action="action_education_attendance"-->
-<!--              sequence="20"/>-->
+     <menuitem id="menu_education_attendances"
+              name="Student Attendance"
+              parent="menu_student_timetable"
+              action="action_education_attendance"
+              sequence="20"/>
 
 <!--    leave-->
     <menuitem id="menu_education_leave"

@@ -33,8 +33,6 @@ class EducationEnrollment(models.Model):
         'education.class',string='Class',
         required=True,
     )
-
-
     teacher_id = fields.Many2one(related='current_class_id.class_teacher_id',
         string='Class Teacher',
      )
@@ -68,21 +66,10 @@ class EducationEnrollment(models.Model):
     ]
 
     def action_enroll(self):
-        """Mark as enrolled and update student's state."""
+        """Mark as enrolled"""
         for rec in self:
             rec.status = 'enrolled'
-            if rec.student_id:
-                rec.student_id.state = 'enrolled'
 
-                # Update res.partner with class and roll details
-                student = rec.student_id
-                if student.partner_id:
-                    student.partner_id.write({
-                        'class_id': rec.current_class_id.id,
-                        'academic_year_id': rec.academic_year_id.id,
-                        'program_id': rec.program_id.id,
-                        'roll_no': rec.roll_number,
-                    })
 
     def _assign_roll_number(self):
         """Assign sequential roll number based on class and academic year."""
@@ -94,21 +81,8 @@ class EducationEnrollment(models.Model):
                 ('current_class_id', '=', rec.current_class_id.id),
                 ('academic_year_id', '=', rec.academic_year_id.id),
             ], order='roll_number desc', limit=1)
-
-            rec.roll_number = (last_enrollment or 0) + 1
-
-    # @api.depends('current_class_id', 'academic_year_id')
-    # def _compute_roll_number(self):
-    #     """Assign roll numbers sequentially per class and academic year."""
-    #     for rec in self:
-    #         if rec.current_class_id and rec.academic_year_id:
-    #             # Find the maximum roll number in the class + year
-    #             last_roll = self.search(
-    #                 [
-    #                     ('current_class_id', '=', rec.current_class_id.id),
-    #                     ('academic_year_id', '=', rec.academic_year_id.id)
-    #                 ], order='roll_number desc', limit=1).roll_number
-    #             rec.roll_number = (last_roll or 0) + 1
+            last_roll = last_enrollment.roll_number or 0
+            rec.roll_number = last_roll + 1
 
 
     @api.model_create_multi
@@ -116,6 +90,11 @@ class EducationEnrollment(models.Model):
         """Create enrollment and update linked student's state and current enrollment."""
         records = super().create(vals_list)
         for rec in records:
+            if not rec.roll_number:
+                rec._assign_roll_number()
+                rec.write({'roll_number': rec.roll_number
+                })
+
             existing = self.search([
                 ('student_id', '=', rec.student_id.id),
                 ('status', '=', 'enrolled'),
@@ -131,5 +110,12 @@ class EducationEnrollment(models.Model):
                     'state': 'enrolled',
                     'current_enrollment_id': rec.id,
                 })
+                partner = rec.student_id.partner_id
+                if partner:
+                    partner.write({
+                        'class_id': rec.current_class_id.id,
+                        'roll_no': rec.roll_number,
+                        'class_teacher_id': rec.teacher_id.id,
+                    })
         return records
 

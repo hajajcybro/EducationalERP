@@ -7,7 +7,7 @@ class EducationCategory(models.Model):
 
     name = fields.Char(string='Category Name',
                     required=True,
-                    help = 'Enter the name of the student category, e.g., Hostel Student, Day Scholar.'
+                    help = 'Enter the name of the student category, e.g:  Merit, International.'
                    )
     description = fields.Text(string='Description',
                               required=True,

@@ -1,22 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Student Portal Access -->
-    <record id="group_education_student" model="res.groups">
-        <field name="name">Education/Student</field>
-    </record>
+  <data noupdate="1">
 
-    <!-- Teacher Access -->
-    <record id="group_education_teacher" model="res.groups">
-        <field name="name">Education/Teacher</field>
-    </record>
-
-    <!-- Office Staff -->
-    <record id="group_education_office_staff" model="res.groups">
-        <field name="name">Education/Office Staff</field>
-    </record>
-
-    <!-- Administrator -->
+    <!-- Education: Administrator -->
     <record id="group_education_admin" model="res.groups">
-        <field name="name">Education/Administrator</field>
+      <field name="name">Education / Administrator</field>
+      <field name="category_id" ref="base.module_category_education"/>
     </record>
+
+    <!-- Admission Officer -->
+    <record id="group_education_admission_officer" model="res.groups">
+      <field name="name">Education / Admission Officer</field>
+      <field name="category_id" ref="base.module_category_education"/>
+    </record>
+
+    <!-- Teacher -->
+    <record id="group_education_teacher" model="res.groups">
+      <field name="name">Education / Teacher</field>
+      <field name="category_id" ref="base.module_category_education"/>
+    </record>
+
+    <!-- Student (internal user role) -->
+    <record id="group_education_student" model="res.groups">
+      <field name="name">Education / Student</field>
+      <field name="category_id" ref="base.module_category_education"/>
+    </record>
+
+    <!-- Parent -->
+    <record id="group_education_parent" model="res.groups">
+      <field name="name">Education / Parent</field>
+      <field name="category_id" ref="base.module_category_education"/>
+    </record>
+
+    <!-- Portal users (use Odoo's portal group as well) -->
+    <record id="group_education_portal_user" model="res.groups">
+      <field name="name">Education / Portal User</field>
+      <field name="implied_ids" eval="[(4, ref('portal.group_portal'))]"/>
+      <field name="category_id" ref="base.module_category_education"/>
+    </record>
+
+  </data>
 </odoo>

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+ # -*- coding: utf-8 -*-
 {
     'name': 'Education Core',
     'version': '19.0.1.0.0',
@@ -11,14 +11,6 @@
     'website': 'https://www.cybrosys.com',
     'depends': ['base', 'mail','base_automation','hr'],
     'data': [
-        'data/education_student_student_data.xml',
-        'data/education_class_room_data.xml',
-        'data/education_academic_year_data.xml',
-        'data/education_program_data.xml',
-        'data/education_class_data.xml',
-        'data/education_course_data.xml',
-        'data/education_session_data.xml',
-        'data/education_scholarship_criteria_line_data.xml',
         'views/education_scholarship_criteria_line_views.xml',
         'security/education_security_groups.xml',
         'security/ir.model.access.csv',
@@ -37,6 +29,7 @@
         'views/education_scholarship_criteria_views.xml',
         'views/education_document_view.xml',
         'views/education_class_room_view.xml',
+        'wizard/eduaction_application_reject_wizard.xml',
         'views/menus.xml',
 ],
     'license': 'AGPL-3',

@@ -87,7 +87,7 @@
               name="Document"
               parent="menu_student_configuration"
               action="action_education_document"/>
-    <menuitem id="menu_education_document_action"
+    <menuitem id="menu_education_category_action"
               name="Category"
               parent="menu_student_configuration"
               action="action_education_category"/>

@@ -48,14 +48,18 @@ class EducationTimetable(models.Model):
                 current = start
                 while current <= end:
                     if current.weekday() == day_num:
-                            self.env['education.timetable.slot'].create({
+                            slot=self.env['education.timetable.slot'].create({
                                 'template_id': template.id,
                                 'date': current,
                                 'faculty_id': line.faculty_id.id,
                                 'start_time': line.start_time,
                                 'end_time': line.end_time,
+                                'class_id': template.class_id.id,
                             })
+
+
                     current += timedelta(days=1)
+
 
         print('Timetable slot generation completed')
         return True

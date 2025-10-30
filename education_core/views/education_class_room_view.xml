@@ -9,7 +9,6 @@
                 <field name="building"/>
                 <field name="floor"/>
                 <field name="capacity"/>
-                <field name="active"/>
             </list>
         </field>
     </record>
@@ -25,7 +24,6 @@
                         <group>
                             <field name="name"/>
                             <field name="building"/>
-                            <field name="active"/>
                         </group>
                         <group>
                             <field name="floor"/>

@@ -69,14 +69,16 @@ class EducationApplication(models.Model):
                           help='Upload a photo of the student.'
                           )
     state = fields.Selection([
-        ('draft', 'Draft'),
-        ('registered', 'Registered'),
+        ('application', 'Application'),
+        ('to_review','To Review'),
+        ('verified','Verified'),
+        ('admission', 'Admission'),
         ('enrolled', 'Enrolled'),
-        ('graduated', 'Graduated'),
-        ('left', 'Left'),
-        ('cancelled', 'Cancelled'),
-    ], string='Status', default='draft', help='Current status of the student.'
+        ('rejected', 'Rejected'),
+    ], string='Status', default='application',tracking=True, help='Current status of the student.'
     )
+
+    reject_reason = fields.Text('Rejection Reason')
     notes = fields.Text(string='Notes',help='Additional notes about the student.')
 
     active = fields.Boolean(default=True, help='Uncheck to archive the student record.')
@@ -107,18 +109,6 @@ class EducationApplication(models.Model):
     partner_id = fields.Many2one('res.partner', string='Related Contact', readonly=True,
                                  help='Linked res.partner record for this student.')
 
-    def action_open_documents(self):
-        """Open documents related to this student."""
-        self.ensure_one()
-        return {
-            'type': 'ir.actions.act_window',
-            'name': 'Documents',
-            'res_model': 'education.document',
-            'view_mode': 'list,form',
-            'domain': [('student_id', '=', self.id)],
-            'context': {'default_student_id': self.id},
-        }
-
     @api.depends('dob')
     def _compute_age(self):
         for record in self:
@@ -141,7 +131,7 @@ class EducationApplication(models.Model):
             if rec.reference_no and not rec.admission_no:
                 rec.admission_no = self.env['ir.sequence'].next_by_code('education_student_admission')
                 rec.reference_no = False
-                rec.state = 'registered'
+                rec.state = 'admission'
 
             partner = rec.partner_id
             if not partner:
@@ -204,15 +194,29 @@ class EducationApplication(models.Model):
             },
         }
 
-    # @api.onchange('program_id')
-    # def _onchange_program_id(self):
-    #     """Restrict academic years based on program duration"""
-    #     for rec in self:
-    #         domain = []
-    #         if rec.program_id and rec.program_id.duration:
-    #             domain = [('duration', '=', rec.program_id.duration)]
-    #         return {'domain': {'academic_year_id': domain}}
-    #
+
+    def action_reject(self):
+        """This opens a popup wizard to ask reject reason"""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Reject Application',
+            'res_model': 'education.application.reject.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_application_id': self.id},
+        }
+
+
+    @api.onchange('state')
+    def _onchange_state_limit(self):
+        for rec in self:
+            # Allow only manual change among these 3
+            allowed_manual = ['admission', 'enrolled','rejected']
+            if rec.state in allowed_manual:
+                raise ValidationError(_("You can't change state"))
+
+
 
 
 

@@ -18,6 +18,7 @@
         'views/education_leave_request_view.xml',
         'views/education_timetable.xml',
         'views/education_timetable_line_view.xml',
+        'views/education_attendance_view.xml',
 
         'views/menu.xml',
     ],
