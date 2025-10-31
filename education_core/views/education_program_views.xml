@@ -53,6 +53,9 @@
                                 </list>
                             </field>
                         </page>
+                        <page string="Session">
+                            <field name="session_ids"/>
+                        </page>
                         <page string="Notes">
                             <field name="description"/>
                         </page>

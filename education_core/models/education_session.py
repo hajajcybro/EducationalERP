@@ -12,8 +12,8 @@ class EducationSession(models.Model):
 
     name = fields.Char(string="Session Name", required=True)
     code = fields.Char(string="Code")
-    academic_year_id = fields.Many2one(
-        'education.academic.year', string="Academic Year", required=True)  # Linked properly
+    program_id = fields.Many2one(
+        'education.program', string="Program", required=True)  # Linked properly
     start_date = fields.Date(string="Start Date", required=True)
     end_date = fields.Date(string="End Date", required=True)
     sequence = fields.Integer(string="Sequence")

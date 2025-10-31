@@ -32,9 +32,6 @@
             <xpath expr="//field[@name='website']" position="replace">
                 <field name="academic_year_id"/>
             </xpath>
-             <xpath expr="//field[@name='category_id']" position="replace">
-                <field name="active"/>
-            </xpath>
             <xpath expr="//page[@name='contact_addresses']"  position="replace">
                 <page string="Academic Info" name="academic_info">
                     <group>

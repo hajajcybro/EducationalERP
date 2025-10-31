@@ -60,11 +60,7 @@ class EducationApplication(models.Model):
         readonly=True,
         help='Link to the current enrollment record of the student.'
     )
-    guardian = fields.Char(
-        string='Guardians',
-        help='Enter the student’s guardians or parents.'
 
-    )
     photo = fields.Binary(string='Image',
                           help='Upload a photo of the student.'
                           )
@@ -108,6 +104,18 @@ class EducationApplication(models.Model):
                                     )
     partner_id = fields.Many2one('res.partner', string='Related Contact', readonly=True,
                                  help='Linked res.partner record for this student.')
+
+    guardian = fields.Char(
+        string='Guardians',
+        help='Enter the student’s guardians or parents.'
+    )
+    relation = fields.Char(string='Relation',  help="Relationship of the guardian to the applicant" )
+    father_name = fields.Char('Father Name')
+    mother_name = fields.Char('Mother Name')
+    contact_no = fields.Char('Contact Number')
+    contact_address = fields.Text('Permanent Address')
+
+
 
     @api.depends('dob')
     def _compute_age(self):
@@ -207,14 +215,15 @@ class EducationApplication(models.Model):
             'context': {'default_application_id': self.id},
         }
 
+    def action_to_review(self):
+            """Cancel the leave request."""
+            for rec in self:
+                rec.state = 'to_review'
 
-    @api.onchange('state')
-    def _onchange_state_limit(self):
-        for rec in self:
-            # Allow only manual change among these 3
-            allowed_manual = ['admission', 'enrolled','rejected']
-            if rec.state in allowed_manual:
-                raise ValidationError(_("You can't change state"))
+    def action_verified(self):
+            """Cancel the leave request."""
+            for rec in self:
+                rec.state = 'verified'
 
 
 

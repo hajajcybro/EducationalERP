@@ -9,7 +9,6 @@
                 <field name="student_id"/>
                 <field name="document_type"/>
                 <field name="issue_date"/>
-                <field name="active"/>
             </list>
         </field>
     </record>
@@ -25,15 +24,12 @@
                         <group>
                             <field name="student_id"/>
                             <field name="admission_no"/>
-                            <field name="document_type"/>
-                        </group>
-
-                        <group>
                             <field name="attachment" filename="file_name" widget="binary"/>
+                        </group>
+                        <group>
 
-                             <field name="issue_date"/>
-                            <field name="active"/>
-
+                             <field name="document_type"/>
+                            <field name="issue_date"/>
                         </group>
                     </group>
                     <notebook sting='Description'>
@@ -42,6 +38,7 @@
                         </group>
                     </notebook>
                 </sheet>
+                <chatter/>
             </form>
         </field>
     </record>

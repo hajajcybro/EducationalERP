@@ -11,9 +11,9 @@
     'website': 'https://www.cybrosys.com',
     'depends': ['base', 'mail','base_automation','hr'],
     'data': [
-        'views/education_scholarship_criteria_line_views.xml',
         'security/education_security_groups.xml',
         'security/ir.model.access.csv',
+        'views/education_scholarship_criteria_line_views.xml',
         'views/education_application.xml',
         'views/education_class_views.xml',
         'views/education_category_views.xml',

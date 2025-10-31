@@ -2,42 +2,42 @@
 <odoo>
   <data noupdate="1">
 
-    <!-- Education: Administrator -->
+    <!-- Education Module Category -->
+    <record id="privilege_education" model="res.groups.privilege">
+      <field name="name">Education</field>
+      <field name="sequence">1</field>
+    </record>
+
+    <!-- Administrator -->
     <record id="group_education_admin" model="res.groups">
-      <field name="name">Education / Administrator</field>
-      <field name="category_id" ref="base.module_category_education"/>
+      <field name="name">Administrator</field>
+      <field name="privilege_id" ref="privilege_education"/>
     </record>
 
     <!-- Admission Officer -->
     <record id="group_education_admission_officer" model="res.groups">
-      <field name="name">Education / Admission Officer</field>
-      <field name="category_id" ref="base.module_category_education"/>
+      <field name="name">Admission Officer</field>
+      <field name="privilege_id" ref="privilege_education"/>
     </record>
 
     <!-- Teacher -->
     <record id="group_education_teacher" model="res.groups">
-      <field name="name">Education / Teacher</field>
-      <field name="category_id" ref="base.module_category_education"/>
+      <field name="name">Teacher</field>
+      <field name="privilege_id" ref="privilege_education"/>
     </record>
 
-    <!-- Student (internal user role) -->
+    <!-- Student -->
     <record id="group_education_student" model="res.groups">
-      <field name="name">Education / Student</field>
-      <field name="category_id" ref="base.module_category_education"/>
+      <field name="name">Student</field>
+      <field name="privilege_id" ref="privilege_education"/>
     </record>
 
     <!-- Parent -->
     <record id="group_education_parent" model="res.groups">
-      <field name="name">Education / Parent</field>
-      <field name="category_id" ref="base.module_category_education"/>
+      <field name="name">Parent</field>
+      <field name="privilege_id" ref="privilege_education"/>
     </record>
 
-    <!-- Portal users (use Odoo's portal group as well) -->
-    <record id="group_education_portal_user" model="res.groups">
-      <field name="name">Education / Portal User</field>
-      <field name="implied_ids" eval="[(4, ref('portal.group_portal'))]"/>
-      <field name="category_id" ref="base.module_category_education"/>
-    </record>
 
   </data>
 </odoo>
