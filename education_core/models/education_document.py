@@ -7,14 +7,15 @@ class EducationDocument(models.Model):
     """ This model represents education.document."""
     _name = 'education.document'
     _description = 'Education Document'
-    _inherit = ['mail.thread']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = 'student_id'
 
     student_id = fields.Many2one(
-        'education.application',
+        'res.partner',
         string='Student',
         required=True,
         ondelete='cascade',
+        domain=[('position_role', '=', 'student')]
     )
     admission_no = fields.Char(
         string='Admission No',
@@ -48,6 +49,7 @@ class EducationDocument(models.Model):
         """Auto-update admission no based on selected student"""
         for rec in self:
             rec.admission_no = rec.student_id.admission_no if rec.student_id else False
+
 
     @api.constrains('student_id', 'document_type')
     def _check_unique_student_document(self):

@@ -9,5 +9,5 @@ class HrEmployee(models.Model):
 
     role = fields.Selection(
         selection=[('teacher', 'Teacher'), ('staff', 'Office Staff')],
-        string='Position',default='teacher'
+        string='Position',
     )

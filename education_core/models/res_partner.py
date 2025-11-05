@@ -25,10 +25,19 @@ class ResPartner(models.Model):
     roll_no = fields.Char('Roll Number')
     class_teacher_id = fields.Many2one('res.partner', string='Class Teacher',
                                        domain=[('position_role', '=', 'teacher')])
-    scholarship_id = fields.Many2one('education.scholarship',string='Scholarship')
 
+   #parent details
+    father_name = fields.Char('Father Name')
+    mother_name = fields.Char('Mother Name')
+    contact_no = fields.Char('Contact Number')
+    emergency_phone = fields.Char('Emergency Phone Number')
+    contact_address = fields.Text('Permanent Address')
+    occupation = fields.Char('Occupation', help='Job or business')
 
     #personal info
+    id_no = fields.Char('Aadhar No. / ID No.', help='Government-issued ID number')
+    relation = fields.Char(string='Relation', help="Relationship of the guardian to the applicant")
+
     dob = fields.Date('Date of Birth')
     age = fields.Integer('Age')
     gender = fields.Selection([
@@ -43,7 +52,7 @@ class ResPartner(models.Model):
         ('o+', 'O+'), ('o-', 'O-'),
     ], string='Blood Group')
     guardian = fields.Char('Guardian Name')
-    category = fields.Many2one('education.category',
+    stu_category_id = fields.Many2one('education.category',
                                string='Category',
                                help='Assign a category to the student.'
                                )
@@ -68,8 +77,8 @@ class ResPartner(models.Model):
             'name': 'Documents',
             'res_model': 'education.document',
             'view_mode': 'list,form',
-            'domain': [('student_id', '=', self.id)],
-            'context': {'default_student_id': self.id},
+            'domain': [('admission_no', '=', self.admission_no)],
+            'context': {'default_admission_no': self.admission_no},
         }
 
     def action_open_enrollment(self):

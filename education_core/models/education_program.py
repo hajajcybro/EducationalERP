@@ -3,6 +3,7 @@ from odoo import models, fields, api
 class EducationProgram(models.Model):
     _name = 'education.program'
     _description = 'Education Program'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string="Program Name", required=True)
     code = fields.Char(string="Code", required=True)
@@ -11,7 +12,7 @@ class EducationProgram(models.Model):
     description = fields.Text(string="Description")
     active = fields.Boolean(default=True, string="Active")
     session_ids = fields.One2many('education.session','name', string='Session')
-    course_ids = fields.One2many('education.course', 'program_id', string="Courses")
+    # course_ids = fields.One2many('education.course', 'program_id', string="Courses")
 
     _sql_constraints = [
         ('unique_program_code', 'unique(code)', 'Program code must be unique!'),

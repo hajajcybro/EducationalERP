@@ -56,7 +56,7 @@
                             <field name="country_id"/>
                             <field name="country_code"/>
                             <field name="zip"/>
-                            <field name="category"/>
+                            <field name="category_id"/>
                         </group>
                     </group>
                         <notebook>
@@ -65,15 +65,18 @@
                             </page>
                             <page string="Other Info">
                                 <group>
-                                    <group>
+                                    <group string="Personal Info">
+                                        <field name="id_no"/>
                                         <field name="blood_group"/>
                                         <field name="guardian"/>
                                         <field name="relation"/>
                                     </group>
-                                    <group>
+                                    <group string="Parents Info">
                                         <field name="father_name"/>
                                         <field name="mother_name"/>
+                                        <field name="occupation"/>
                                         <field name="contact_no"/>
+                                        <field name="emergency_phone"/>
                                         <field name="contact_address"/>
                                     </group>
                                 </group>

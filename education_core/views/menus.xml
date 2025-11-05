@@ -22,41 +22,73 @@
               parent="menu_student_student"
               action="action_education_enrollment"
               sequence="20"/>
-<!--    class menu-->
-    <menuitem id="menu_education_class" name="Classes"
+<!--    class/program/course/session/timetable menu-->
+
+    <menuitem id="menu_student_class_main"
+              name="Programs"
               parent="menu_student_management_root"
+              sequence="10"/>
+    <menuitem id="menu_education_program"
+              name="Programs"
+              parent="menu_student_class_main"
+              action="action_education_program"
+              sequence="10"/>
+    <menuitem id="menu_education_session"
+              name="Sessions"
+              parent="menu_student_class_main"
+              action="education_session_action"
+              sequence="10"/>
+     <menuitem id="menu_education_class" name="Class"
+              parent="menu_student_class_main"
               action="action_education_class"
-              sequence="20"/>
+              sequence="10"/>
+    <menuitem id="menu_education_course"
+              name="Courses"
+              parent="menu_student_class_main"
+              action="action_education_course"
+              sequence="40"/>
+    <menuitem id="menu_education_timetable"
+              name="Timetable"
+              parent="menu_student_class_main"
+              action="action_education_timetable"
+              sequence="10"/>
+    <menuitem id="menu_education_timetable_line"
+              name="Timetable Line"
+              parent="menu_student_class_main"
+              action="action_education_core_timetable_line"
+              sequence="10"/>
+
+
+
 <!--    faculty menu-->
-    <menuitem id="menu_education_role" name="Faculty"
+    <menuitem id="menu_education_role" name="Teachers"
               parent="menu_student_management_root"
               action="action_school_partner_role"
               sequence="10"/>
-
 
     <menuitem id="menu_scholarship_root"
               name="Scholarships"
               parent="menu_student_management_root"
               sequence="20"/>
 
-    <!-- Scholarship Main Menu -->
-    <menuitem id="menu_education_scholarship"
-              name="Scholarship Records"
-              parent="menu_scholarship_root"
-              action="action_education_scholarship"
-              sequence="10"/>
+<!--    &lt;!&ndash; Scholarship Main Menu &ndash;&gt;-->
+<!--    <menuitem id="menu_education_scholarship"-->
+<!--              name="Scholarship Records"-->
+<!--              parent="menu_scholarship_root"-->
+<!--              action="action_education_scholarship"-->
+<!--              sequence="10"/>-->
 
-    <menuitem id="menu_education_scholarship_criteria"
-              name="Eligibility Criteria"
-              parent="menu_scholarship_root"
-              action="action_education_scholarship_criteria"
-              sequence="20"/>
+<!--    <menuitem id="menu_education_scholarship_criteria"-->
+<!--              name="Eligibility Criteria"-->
+<!--              parent="menu_scholarship_root"-->
+<!--              action="action_education_scholarship_criteria"-->
+<!--              sequence="20"/>-->
 
-    <menuitem id="menu_education_scholarship_criteria_line"
-              name="Criteria line"
-              parent="menu_scholarship_root"
-              action="action_education_scholarship_criteria_line"
-              sequence="20"/>
+<!--    <menuitem id="menu_education_scholarship_criteria_line"-->
+<!--              name="Criteria line"-->
+<!--              parent="menu_scholarship_root"-->
+<!--              action="action_education_scholarship_criteria_line"-->
+<!--              sequence="20"/>-->
 
     <!--    configuration-->
     <menuitem id="menu_student_configuration"
@@ -68,21 +100,7 @@
               parent="menu_student_configuration"
               action="education_academic_year_action"
               sequence="20"/>
-    <menuitem id="menu_education_session"
-              name="Academic Sessions"
-              parent="menu_student_configuration"
-              action="education_session_action"
-              sequence="20"/>
-    <menuitem id="menu_education_program"
-              name="Programs"
-              parent="menu_student_configuration"
-              action="action_education_program"
-              sequence="30"/>
-    <menuitem id="menu_education_course"
-              name="Courses"
-              parent="menu_student_configuration"
-              action="action_education_course"
-              sequence="40"/>
+
     <menuitem id="menu_education_document_action"
               name="Document"
               parent="menu_student_configuration"

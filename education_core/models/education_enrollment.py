@@ -5,7 +5,7 @@ from odoo.exceptions import ValidationError
 class EducationEnrollment(models.Model):
     _name = 'education.enrollment'
     _description = 'Student Enrollment'
-    _inherit = ['mail.thread']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = 'student_id'
     _order = 'enrollment_date desc'
 

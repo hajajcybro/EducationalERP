@@ -34,7 +34,6 @@
                     <notebook>
                         <page string="Notes">
                             <group>
-                                <field name="active"/>
                                 <field name="notes"/>
                             </group>
                         </page>

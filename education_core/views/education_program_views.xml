@@ -43,19 +43,17 @@
                     </group>
 
                     <notebook>
-                        <page string="Courses">
-                            <field name="course_ids">
+                        <page string="Session">
+                            <field name="session_ids">
                                 <list>
                                     <field name="name"/>
-                                    <field name="code"/>
-                                    <field name="credit_hours"/>
-                                    <field name="is_elective"/>
+                                    <field name="start_date"/>
+                                    <field name="end_date"/>
+                                    <field name="state"/>
                                 </list>
                             </field>
                         </page>
-                        <page string="Session">
-                            <field name="session_ids"/>
-                        </page>
+
                         <page string="Notes">
                             <field name="description"/>
                         </page>

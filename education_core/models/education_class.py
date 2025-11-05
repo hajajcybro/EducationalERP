@@ -6,7 +6,7 @@ from odoo.exceptions import ValidationError
 class EducationClass(models.Model):
     _name = 'education.class'
     _description = 'Education Class'
-    _inherit  = 'mail.thread'
+    _inherit  = ['mail.thread', 'mail.activity.mixin']
     _order = 'name'
 
     name = fields.Char(string='Class Name',required=True,
@@ -20,7 +20,7 @@ class EducationClass(models.Model):
     capacity = fields.Integer(string='Room Capacity',  compute='_compute_capacity',
                               help='Maximum number of students that can be enrolled in this class'
                               )
-    class_teacher_id = fields.Many2one('hr.employee', string='Class Teacher',
+    class_teacher_id = fields.Many2one('hr.employee', string='Class Teacher', domain=[('role', '=', 'teacher')],
                         help = 'Assign a teacher who will be responsible for this class.',required=True,
     )
     room_id = fields.Many2one('education.class.room',string='Room No', required=True,
@@ -34,7 +34,7 @@ class EducationClass(models.Model):
         help='Uncheck to archive this class and hide it from selection lists.'
     )
     student_ids = fields.One2many('education.enrollment','current_class_id')
-
+    timetable_ids = fields.Many2one('education.timetable',string='Time Table')
 
     @api.depends('room_id')
     def _compute_capacity(self):

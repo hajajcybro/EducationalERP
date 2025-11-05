@@ -8,10 +8,10 @@ from . import education_academic_year
 from . import education_session
 from . import education_program
 from . import education_course
-from . import education_scholarship
-from . import education_scholarship_criteria
 from . import education_document
 from . import education_class_room
-from . import education_schoolarship_criteria_line
 from . import res_partner
 from . import hr_employee
+from . import education_timetable
+from . import education_timetable_line
+

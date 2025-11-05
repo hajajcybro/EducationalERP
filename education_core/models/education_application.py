@@ -7,7 +7,7 @@ from datetime import date
 class EducationApplication(models.Model):
     _name = 'education.application'
     _description = 'Education Application'
-    _inherit = 'mail.thread'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'admission_no'
 
     name = fields.Char('Student Name',
@@ -51,7 +51,7 @@ class EducationApplication(models.Model):
         ('ab+', 'AB+'), ('ab-', 'AB-'),
         ('o+', 'O+'), ('o-', 'O-'),
     ], string='Blood Group')
-    category = fields.Many2one('education.category',
+    category_id = fields.Many2one('education.category',
         string='Category',
         help='Assign a category to the student.'
     )
@@ -109,12 +109,15 @@ class EducationApplication(models.Model):
         string='Guardians',
         help='Enter the student’s guardians or parents.'
     )
+    id_no = fields.Char('Aadhar No. / ID No.', help='Government-issued ID number')
     relation = fields.Char(string='Relation',  help="Relationship of the guardian to the applicant" )
     father_name = fields.Char('Father Name')
     mother_name = fields.Char('Mother Name')
     contact_no = fields.Char('Contact Number')
-    contact_address = fields.Text('Permanent Address')
+    emergency_phone = fields.Char('Emergency Phone Number')
 
+    contact_address = fields.Text('Permanent Address')
+    occupation = fields.Char('Occupation',help='Job or business')
 
 
     @api.depends('dob')
@@ -123,7 +126,7 @@ class EducationApplication(models.Model):
             if record.dob:
                 record.age = (date.today() - record.dob).days / 365
                 if record.age <= 5:
-                    raise ValidationError('Please enter valid Date Of Birth')
+                    raise ValidationError('Please enter valid date of birth, Age must be above 5')
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -165,8 +168,16 @@ class EducationApplication(models.Model):
                     'dob': rec.dob,
                     'age': rec.age,
                     'blood_group': rec.blood_group,
-                    'category': rec.category,
+                    'stu_category_id': rec.category_id,
                     'guardian': rec.guardian,
+                    'id_no' : rec.id_no,
+                    'relation' : rec.relation,
+                    'father_name' : rec.father_name,
+                    'mother_name' : rec.mother_name,
+                    'contact_no' : rec.contact_no,
+                    'emergency_phone' : rec.emergency_phone,
+                    'contact_address' : rec.contact_address,
+                    'occupation' : rec.occupation,
                 })
 
     @api.constrains('email', 'phone')
@@ -179,7 +190,7 @@ class EducationApplication(models.Model):
         for record in self:
             if record.email and not re.match(email_pattern, record.email):
                 raise ValidationError(_('Invalid email address. Please enter a valid format like name@example.com.'))
-            if record.phone and not re.match(phone_pattern, record.phone):
+            if record.phone  and record.contact_no and not re.match(phone_pattern, record.phone):
                 raise ValidationError(_('Invalid phone number. Please enter digits only, 7–15 numbers, with optional +.'))
 
     def action_enroll(self):
