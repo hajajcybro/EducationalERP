@@ -12,7 +12,6 @@ class EducationTimetable(models.Model):
     class_id = fields.Many2one('education.class', string='Class')
     program_id = fields.Many2one('education.program', string='Program')
     session_id = fields.Many2one('education.session', string='Session')
-    line_ids = fields.One2many('education.timetable.line', 'template_id', string='Time Slots')
     active = fields.Boolean(default=True)
     note =fields.Text()
 

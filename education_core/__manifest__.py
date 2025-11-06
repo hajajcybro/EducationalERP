@@ -26,7 +26,6 @@
         'views/education_course_views.xml',
         'views/education_document_view.xml',
         'views/education_class_room_view.xml',
-        'views/education_timetable_view.xml',
         'views/education_timetable_line_view.xml',
         'wizard/eduaction_application_reject_wizard.xml',
         'views/menus.xml',

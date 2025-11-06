@@ -54,6 +54,7 @@ class EducationAcademicYear(models.Model):
             end_year = self.end_date.year
             self.name = f"{start_year}-{end_year}"
 
+
     @api.constrains('name')
     def _check_unique(self):
         for record in self:

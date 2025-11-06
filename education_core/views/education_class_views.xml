@@ -27,6 +27,7 @@
                         </group>
                         <group>
                             <field name="program_id"/>
+                            <field name="session_id"/>
                             <field name="academic_year_id"/>
                             <field name="class_teacher_id"/>
                         </group>
@@ -39,6 +40,16 @@
                         </page>
                          <page string="Students Details">
                              <field name="student_ids"/>
+                         </page>
+                         <page string="Timetable">
+                             <field name="timetable_line_ids"/>
+<!--                             <list>-->
+<!--                                 <field name="subject_id"/>-->
+<!--                                 <field name="day"/>-->
+<!--                                 <field name="start_time"/>-->
+<!--                                 <field name="end_time"/>-->
+
+<!--                             </list>-->
                          </page>
                     </notebook>
                 </sheet>

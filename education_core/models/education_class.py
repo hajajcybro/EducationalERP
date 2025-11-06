@@ -34,8 +34,8 @@ class EducationClass(models.Model):
         help='Uncheck to archive this class and hide it from selection lists.'
     )
     student_ids = fields.One2many('education.enrollment','current_class_id')
-    timetable_ids = fields.Many2one('education.timetable',string='Time Table')
-
+    session_id = fields.Many2one('education.session',string='Session')
+    timetable_line_ids = fields.One2many('education.timetable.line','class_id')
     @api.depends('room_id')
     def _compute_capacity(self):
         """Compute the class capacity based on the selected room."""

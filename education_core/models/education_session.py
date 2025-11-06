@@ -25,7 +25,7 @@ class EducationSession(models.Model):
     ], string="Status", default='draft', tracking=True)
     description = fields.Text(string="Description")
     active = fields.Boolean(default=True)
-    course_ids = fields.One2many('education.course','name', string='Course')
+    course_ids = fields.One2many('education.course','program_id', string='Course')
 
     duration_days = fields.Integer(string="Duration (Days)", compute="_compute_duration", store=True)
 

@@ -11,8 +11,7 @@ class EducationProgram(models.Model):
     credit_hours = fields.Float(string="Total Credit Hours")
     description = fields.Text(string="Description")
     active = fields.Boolean(default=True, string="Active")
-    session_ids = fields.One2many('education.session','name', string='Session')
-    # course_ids = fields.One2many('education.course', 'program_id', string="Courses")
+    session_ids = fields.One2many('education.session','program_id', string='Session')
 
     _sql_constraints = [
         ('unique_program_code', 'unique(code)', 'Program code must be unique!'),

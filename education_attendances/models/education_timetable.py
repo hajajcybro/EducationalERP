@@ -27,40 +27,41 @@ class EducationTimetable(models.Model):
 
     @api.model
     def _cron_generate_weekly_slots(self):
-        print('cron activate')
-        """Automatically generate next week's timetable slots."""
-        today = fields.Date.today()
-        templates = self.search([
-            ('start_date', '<=', today),
-            ('end_date', '>=', today),
-            ('active', '=', True)
-        ])
-        weekday_map = {
-            'monday': 0, 'tuesday': 1, 'wednesday': 2,
-            'thursday': 3, 'friday': 4
-        }
-        for template in templates:
-            start = fields.Date.from_string(today)
-            end = start + timedelta(days=7)
-
-            for line in template.line_ids:
-                day_num = weekday_map.get(line.day)
-                current = start
-                while current <= end:
-                    if current.weekday() == day_num:
-                            slot=self.env['education.timetable.slot'].create({
-                                'template_id': template.id,
-                                'date': current,
-                                'faculty_id': line.faculty_id.id,
-                                'start_time': line.start_time,
-                                'end_time': line.end_time,
-                                'class_id': template.class_id.id,
-                            })
-
-
-                    current += timedelta(days=1)
-
-
-        print('Timetable slot generation completed')
-        return True
+        print('hello')
+    #     print('cron activate')
+    #     """Automatically generate next week's timetable slots."""
+    #     today = fields.Date.today()
+    #     templates = self.search([
+    #         ('start_date', '<=', today),
+    #         ('end_date', '>=', today),
+    #         ('active', '=', True)
+    #     ])
+    #     weekday_map = {
+    #         'monday': 0, 'tuesday': 1, 'wednesday': 2,
+    #         'thursday': 3, 'friday': 4
+    #     }
+    #     for template in templates:
+    #         start = fields.Date.from_string(today)
+    #         end = start + timedelta(days=7)
+    #
+    #         for line in template.line_ids:
+    #             day_num = weekday_map.get(line.day)
+    #             current = start
+    #             while current <= end:
+    #                 if current.weekday() == day_num:
+    #                         slot=self.env['education.timetable.slot'].create({
+    #                             'template_id': template.id,
+    #                             'date': current,
+    #                             'faculty_id': line.faculty_id.id,
+    #                             'start_time': line.start_time,
+    #                             'end_time': line.end_time,
+    #                             'class_id': template.class_id.id,
+    #                         })
+    #
+    #
+    #                 current += timedelta(days=1)
+    #
+    #
+    #     print('Timetable slot generation completed')
+    #     return True
 

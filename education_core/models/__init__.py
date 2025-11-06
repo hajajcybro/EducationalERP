@@ -12,6 +12,5 @@ from . import education_document
 from . import education_class_room
 from . import res_partner
 from . import hr_employee
-from . import education_timetable
 from . import education_timetable_line
 

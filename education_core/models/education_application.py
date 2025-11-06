@@ -3,6 +3,8 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 from datetime import date
+import re
+
 
 class EducationApplication(models.Model):
     _name = 'education.application'
@@ -180,18 +182,38 @@ class EducationApplication(models.Model):
                     'occupation' : rec.occupation,
                 })
 
-    @api.constrains('email', 'phone')
+    @api.constrains('email', 'phone', 'contact_no', 'emergency_phone')
     def _check_contact_fields(self):
         """Validate email and phone formats."""
-        import re
         email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         phone_pattern = r'^\+?\d{7,15}$'
 
         for record in self:
             if record.email and not re.match(email_pattern, record.email):
                 raise ValidationError(_('Invalid email address. Please enter a valid format like name@example.com.'))
-            if record.phone  and record.contact_no and not re.match(phone_pattern, record.phone):
-                raise ValidationError(_('Invalid phone number. Please enter digits only, 7–15 numbers, with optional +.'))
+            phone_fields = {
+                'Phone': record.phone,
+                'Contact Number': record.contact_no,
+                'Emergency Phone': record.emergency_phone,
+            }
+            for field_label, value in phone_fields.items():
+                if value and not re.match(phone_pattern, value):
+                    raise ValidationError(_(
+                        'Invalid %s. Please enter digits only (7–15 numbers) with optional + sign.'
+                    ) % field_label)
+
+    @api.constrains('program_id', 'academic_year_id')
+    def _check_duration_match(self):
+        """Ensure program duration matches academic year duration."""
+        for rec in self:
+            if rec.program_id and rec.academic_year_id:
+                program_duration = rec.program_id.duration or 0.0
+                year_duration = rec.academic_year_id.duration or 0.0
+                if float(program_duration) != float(year_duration):
+                    raise ValidationError(_(
+                        "Duration mismatch: The selected program (%s years) "
+                        "does not match the academic year (%s years)."
+                    ) % (program_duration, year_duration))
 
     def action_enroll(self):
         """Open Enrollment form for this student"""
@@ -212,7 +234,6 @@ class EducationApplication(models.Model):
                 'default_current_class_id':default_class.id if default_class else False,
             },
         }
-
 
     def action_reject(self):
         """This opens a popup wizard to ask reject reason"""

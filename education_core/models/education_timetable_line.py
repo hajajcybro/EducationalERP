@@ -6,29 +6,30 @@ class EducationTimetableLine(models.Model):
     _name = 'education.timetable.line'
     _description = 'Education Timetable Line'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _rec_name = 'template_id'
+    _rec_name = 'subject_id'
 
 
-    template_id = fields.Many2one('education.timetable', required=True)
+    subject_id = fields.Many2one('education.course', required=True)
+    faculty_id = fields.Many2one('hr.employee', required=True, domain=[('role', '=', 'teacher')])
     day = fields.Selection([('monday','Monday'),('tuesday','Tuesday'),('wednesday','Wednesday'),('thursday','Thursday'),('friday','Friday')])
     start_time = fields.Float(required=True)
     end_time = fields.Float(required=True)
-    subject_id = fields.Many2one('education.course', required=True)
-    faculty_id = fields.Many2one('hr.employee', required=True, domain=[('role', '=', 'teacher')])
-    room_id = fields.Many2one('education.class.room')
+    room_id = fields.Many2one('education.class.room',help='Select the specific classroom or lab assigned to this class.'
+    )
+    class_id =fields.Many2one('education.class',string='Class')
 
-    # @api.constrains('room_id', 'start_time', 'end_time', 'day')
-    # def _check_room_availability(self):
-    #     for rec in self:
-    #         conflict = self.search([
-    #             ('id', '!=', rec.id),
-    #             ('room_id', '=', rec.room_id.id),
-    #             ('day', '=', rec.day),
-    #             ('start_time', '<', rec.end_time),
-    #             ('end_time', '>', rec.start_time)
-    #         ], limit=1)
-    #         if conflict:
-    #             raise ValidationError(f"Room {rec.room_id.name} already booked for this time slot.")
+    @api.constrains('room_id', 'start_time', 'end_time', 'day')
+    def _check_room_availability(self):
+        for rec in self:
+            conflict = self.search([
+                ('id', '!=', rec.id),
+                ('room_id', '=', rec.room_id.id),
+                ('day', '=', rec.day),
+                ('start_time', '<', rec.end_time),
+                ('end_time', '>', rec.start_time)
+            ], limit=1)
+            if conflict:
+                raise ValidationError(f"Room {rec.room_id.name} already booked for this time slot.")
 
 
     @api.constrains('start_time', 'end_time')
