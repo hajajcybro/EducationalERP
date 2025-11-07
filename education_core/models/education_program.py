@@ -8,6 +8,7 @@ class EducationProgram(models.Model):
     name = fields.Char(string="Program Name", required=True)
     code = fields.Char(string="Code", required=True)
     duration = fields.Integer(string="Duration")
+    session_duration = fields.Float(string='Session Duration(Monthly)')
     credit_hours = fields.Float(string="Total Credit Hours")
     description = fields.Text(string="Description")
     active = fields.Boolean(default=True, string="Active")

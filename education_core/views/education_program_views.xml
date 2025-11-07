@@ -34,6 +34,7 @@
                         <group string="Program Details">
                             <field name="code"/>
                             <field name="duration"/>
+                            <field name="session_duration"/>
                             <field name="credit_hours"/>
                         </group>
 

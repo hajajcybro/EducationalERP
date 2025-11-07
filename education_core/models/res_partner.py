@@ -31,7 +31,7 @@ class ResPartner(models.Model):
     mother_name = fields.Char('Mother Name')
     contact_no = fields.Char('Contact Number')
     emergency_phone = fields.Char('Emergency Phone Number')
-    contact_address = fields.Text('Permanent Address')
+    current_address = fields.Text('Permanent Address')
     occupation = fields.Char('Occupation', help='Job or business')
 
     #personal info

@@ -1,4 +1,6 @@
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError
+
 
 class EducationCourse(models.Model):
     _name = 'education.course'
@@ -20,6 +22,7 @@ class EducationCourse(models.Model):
 
     @api.constrains('duration')
     def _check_duration(self):
+        """Validate course duration is positive."""
         for record in self:
             if record.duration and record.duration <= 0:
-                raise ValueError("Duration must be a positive value.")
+                raise ValidationError(_("Duration must be a positive value."))

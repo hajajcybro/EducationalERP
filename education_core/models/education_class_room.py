@@ -5,6 +5,8 @@ from odoo.exceptions import ValidationError
 class EducationClassRoom(models.Model):
     _name = 'education.class.room'
     _description = 'Education Class Room'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+
 
     name = fields.Integer(string='Room Name', required=True)
     building = fields.Char(string='Building', help='Building or block name')

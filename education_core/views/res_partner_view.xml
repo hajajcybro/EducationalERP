@@ -69,7 +69,7 @@
                             <field name="occupation"/>
                             <field name="contact_no"/>
                             <field name="emergency_phone"/>
-                            <field name="contact_address"/>
+                            <field name="current_address"/>
                         </group>
                     </group>
                 </page>

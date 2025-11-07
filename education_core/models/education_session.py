@@ -26,8 +26,9 @@ class EducationSession(models.Model):
     description = fields.Text(string="Description")
     active = fields.Boolean(default=True)
     course_ids = fields.One2many('education.course','program_id', string='Course')
-
     duration_days = fields.Integer(string="Duration (Days)", compute="_compute_duration", store=True)
+
+    class_id = fields.Many2one('education.class', string='Class / Batch', required=True, ondelete='cascade')
 
     _sql_constraints = [
         ('unique_session_per_year', 'unique(name, academic_year_id)', 'Session name must be unique per academic year.'),

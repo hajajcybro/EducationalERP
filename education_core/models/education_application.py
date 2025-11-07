@@ -34,7 +34,7 @@ class EducationApplication(models.Model):
         readonly=True,
     )
     dob = fields.Date(
-        string='Date of Birth', required=True,
+        string='Date of Birth', required=True, store=True,
         help='Student date of birth.'
     )
     age = fields.Integer('Age',
@@ -121,14 +121,25 @@ class EducationApplication(models.Model):
     contact_address = fields.Text('Permanent Address')
     occupation = fields.Char('Occupation',help='Job or business')
 
-
     @api.depends('dob')
     def _compute_age(self):
+        """Compute age from date of birth."""
         for record in self:
             if record.dob:
-                record.age = (date.today() - record.dob).days / 365
-                if record.age <= 5:
-                    raise ValidationError('Please enter valid date of birth, Age must be above 5')
+                record.age = int((date.today() - record.dob).days / 365.25)  # More accurate
+            else:
+                record.age = 0
+
+    @api.constrains('dob')
+    def _check_age_minimum(self):
+        """Validate minimum age requirement."""
+        for record in self:
+            if record.dob:
+                age = (date.today() - record.dob).days / 365.25
+                if age < 5:
+                    raise ValidationError(_('Student must be at least 5 years old. Current age: %.1f years') % age)
+                if age > 100:
+                    raise ValidationError(_('Please enter a valid date of birth.'))
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -178,7 +189,7 @@ class EducationApplication(models.Model):
                     'mother_name' : rec.mother_name,
                     'contact_no' : rec.contact_no,
                     'emergency_phone' : rec.emergency_phone,
-                    'contact_address' : rec.contact_address,
+                    'current_address' : rec.contact_address,
                     'occupation' : rec.occupation,
                 })
 

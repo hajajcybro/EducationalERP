@@ -13,6 +13,9 @@
     'data': [
         'security/education_security_groups.xml',
         'security/ir.model.access.csv',
+        'security/res_partner_security.xml',
+        'security/hr_employee_security.xml',
+        'security/education_enrollment_security.xml',
         'views/education_application.xml',
         'views/education_class_views.xml',
         'views/education_category_views.xml',

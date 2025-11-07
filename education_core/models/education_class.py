@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api
+from odoo import models, fields, api,_
 from odoo.exceptions import ValidationError
 
 class EducationClass(models.Model):
@@ -68,3 +68,16 @@ class EducationClass(models.Model):
                         f"Academic year '{rec.academic_year_id.name}' (duration {rec.academic_year_id.duration}) "
                         f"does not match the duration of program '{rec.program_id.name}' ({rec.program_id.duration} years)."
                     )
+
+    @api.constrains('student_ids', 'capacity')
+    def _check_capacity_not_exceeded(self):
+        """Prevent enrollment beyond room capacity."""
+        for rec in self:
+            enrolled = len(rec.student_ids.filtered(lambda s: s.status == 'enrolled'))
+            if enrolled > rec.capacity:
+                raise ValidationError(_(
+                    "Class capacity exceeded!\n"
+                    "Current enrollments: %d\n"
+                    "Maximum capacity: %d\n"
+                    "Please increase room capacity or move students to another class."
+                ) % (enrolled, rec.capacity))
