@@ -8,7 +8,7 @@ class EducationClassRoom(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
 
-    name = fields.Integer(string='Room Name', required=True)
+    name = fields.Char(string='Room Name', required=True)
     building = fields.Char(string='Building', help='Building or block name')
     floor = fields.Char(string='Floor', help='Floor number', required=True)
     capacity = fields.Integer(string='Room Capacity', required=True)

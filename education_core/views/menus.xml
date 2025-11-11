@@ -22,6 +22,10 @@
               parent="menu_student_student"
               action="action_education_enrollment"
               sequence="20"/>
+    <menuitem id="menu_education_document_action"
+              name="Document"
+              parent="menu_student_student"
+              action="action_education_document"/>
 
 
    <!--    faculty menu-->
@@ -78,10 +82,7 @@
               action="education_academic_year_action"
               sequence="20"/>
 
-    <menuitem id="menu_education_document_action"
-              name="Document"
-              parent="menu_student_configuration"
-              action="action_education_document"/>
+
     <menuitem id="menu_education_category_action"
               name="Category"
               parent="menu_student_configuration"
@@ -90,6 +91,9 @@
               name="Class Room"
               parent="menu_student_configuration"
               action="action_education_class_room"/>
-
+      <menuitem id="menu_education_document_type_action"
+              name="Document Type"
+              parent="menu_student_configuration"
+              action="education_document_type_action"/>
 
 </odoo>

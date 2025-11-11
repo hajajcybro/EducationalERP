@@ -40,7 +40,6 @@
                             <field name="is_elective"/>
                             <field name="duration"/>
                             <field name="credit_hours"/>
-                            <field name="active"/>
                         </group>
                         <group string="Associations">
                             <field name="program_id"/>

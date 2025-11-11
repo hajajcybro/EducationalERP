@@ -22,16 +22,9 @@ class EducationDocument(models.Model):
         compute='_compute_admission_no',
         store=True,
     )
-    document_type = fields.Selection([
-        ('birth_certificate', 'Birth Certificate'),
-        ('transfer_certificate', 'Transfer Certificate'),
-        ('mark_sheet', 'Mark Sheet'),
-        ('id_proof', 'ID Proof'),
-        ('photo', 'Photo'),
-        ('medical_certificate', 'Medical Certificate'),
-        ('income_certificate', 'Income Certificate'),
-        ('other', 'Other'),
-    ], string='Document Type', required=True)
+    document_type = fields.Many2one('education.document.type',
+                                    string='Document Type', required=True
+                                    )
 
     reference = fields.Char(string='Reference Code')
     issue_date = fields.Date(
@@ -50,20 +43,25 @@ class EducationDocument(models.Model):
         for rec in self:
             rec.admission_no = rec.student_id.admission_no if rec.student_id else False
 
-
     @api.constrains('student_id', 'document_type')
-    def _check_unique_student_document(self):
+    def _check_document_limit(self):
+        """Restrict number of uploads of same document type per student."""
         for rec in self:
-            if rec.student_id and rec.document_type:
-                duplicate = self.search([
-                    ('id', '!=', rec.id),
-                    ('student_id', '=', rec.student_id.id),
-                    ('document_type', '=', rec.document_type)
-                ], limit=1)
-                if duplicate:
-                    raise ValidationError(
-                        f"The student '{rec.student_id.name}' already has a document of type '{rec.document_type}'."
-                    )
+            existing_docs = self.search([
+                ('id', '!=', rec.id),
+                ('student_id', '=', rec.student_id.id),
+                ('document_type', '=', rec.document_type.id)
+            ])
 
+            limit = rec.document_type.limit
 
-
+            if len(existing_docs) >= limit:
+                raise ValidationError(_(
+                    "The student '%s' has already uploaded %d '%s' document(s). "
+                    "The allowed limit is %d."
+                ) % (
+                    rec.student_id.name,
+                    len(existing_docs),
+                    rec.document_type.name,
+                    limit
+                ))

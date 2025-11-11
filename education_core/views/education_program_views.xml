@@ -26,18 +26,16 @@
                         <h1>
                             <field name="name" placeholder="Program Name..."/>
                         </h1>
-                        <label for="active" string="Active"/>
-                        <field name="active" widget="boolean_toggle" style="margin:10px;"/>
                     </div>
 
                     <group>
                         <group string="Program Details">
                             <field name="code"/>
                             <field name="duration"/>
+                            <field name="program_type"/>
                             <field name="session_duration"/>
-                            <field name="credit_hours"/>
+                            <field name="total_sessions"/>
                         </group>
-
                         <group string="Additional Information">
                             <field name="description" placeholder="Add a short description about this program..."/>
                         </group>
@@ -51,6 +49,13 @@
                                     <field name="start_date"/>
                                     <field name="end_date"/>
                                     <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Course">
+                            <field name="course_ids">
+                                <list>
+                                    <field name="name"/>
                                 </list>
                             </field>
                         </page>
