@@ -46,8 +46,8 @@ class EducationEnrollment(models.Model):
         ('enrolled', 'Enrolled'),
         ('promoted', 'Promoted'),
         ('retained', 'Retained'),
+        ('completed', 'Completed'),
         ('dropped', 'Dropped'),
-        ('completed', 'Completed')
         ], string='Status', default='draft', tracking=True
     )
     roll_number = fields.Integer(
@@ -69,6 +69,11 @@ class EducationEnrollment(models.Model):
         """Mark as enrolled"""
         for rec in self:
             rec.status = 'enrolled'
+
+    def action_dropped(self):
+        """Mark as dropped"""
+        for rec in self:
+            rec.status = 'dropped'
 
 
     def _assign_roll_number(self):

@@ -12,14 +12,9 @@
     'depends': ['education_core','mail'],
     'data': [
         'security/ir.model.access.csv',
-        'data/ir_cron_data.xml',
         'views/res_partner_view.xml',
-        'views/education_timetable_slot_view.xml',
         'views/education_leave_request_view.xml',
-        'views/education_timetable.xml',
-        'views/education_timetable_line_view.xml',
         'views/education_attendance_view.xml',
-
         'views/menu.xml',
     ],
     'license': 'AGPL-3',

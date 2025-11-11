@@ -8,10 +8,10 @@
             <form string="Leave Request">
                     <header>
                         <button name="action_submit" string="Request" type="object"  class="oe_highlight" invisible="status != 'draft'"/>
-                        <button name="action_cancel" string="Cancel" type="object"  class="btn btn-danger" invisible="status != 'submitted'"/>
-                        <button name="action_approve" string="Approve" type="object"  class="btn btn-success" invisible="status != 'submitted'"/>
-                        <button name="action_reject" string="Reject" type="object"  class="btn btn-warning" invisible="status != 'submitted'"/>
-                        <field name="status" widget="statusbar"/>
+                        <button name="action_cancel" string="Cancel" type="object"  class="oe_highlight" invisible="status != 'to_approve'" statusbar_visible="cancelled"/>
+                        <button name="action_approve" string="Approve" type="object"  class="oe_highlight" invisible="status != 'to_approve'"/>
+                        <button name="action_reject" string="Reject" type="object"  class="oe_highlight" invisible="status != 'to_approve'"  statusbar_visible="rejected"/>
+                        <field name="status" widget="statusbar" statusbar_visible="draft,to_approve,approved"/>
                     </header>
                 <sheet>
                     <group>

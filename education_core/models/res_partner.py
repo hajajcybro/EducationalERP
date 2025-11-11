@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields
+from odoo import models, fields, api
 
 class ResPartner(models.Model):
     """Extend partner to add position role"""
@@ -37,7 +37,6 @@ class ResPartner(models.Model):
     #personal info
     id_no = fields.Char('Aadhar No. / ID No.', help='Government-issued ID number')
     relation = fields.Char(string='Relation', help="Relationship of the guardian to the applicant")
-
     dob = fields.Date('Date of Birth')
     age = fields.Integer('Age')
     gender = fields.Selection([
@@ -69,6 +68,14 @@ class ResPartner(models.Model):
         help='Company automatically assigned based on current user.'
     )
 
+    #previouse academic details
+    previous_academic = fields.Char('Previous Academic')
+    previous_class = fields.Char('Previous Class')
+    Year_of_passing = fields.Char('Year Of Passing')
+    language = fields.Char('Language / Medium')
+    board = fields.Char('Board / University')
+
+
     def action_open_documents(self):
         """Open documents related to this student."""
         self.ensure_one()
@@ -92,4 +99,3 @@ class ResPartner(models.Model):
             'domain': [('admission_no', '=', self.admission_no)],
             'context': {'default_admission_no': self.admission_no},
         }
-

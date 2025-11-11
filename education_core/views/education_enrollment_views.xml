@@ -23,7 +23,10 @@
                     <button name="action_enroll" string="Enroll" type="object"
                             class="oe_highlight"
                             invisible="status != 'draft'"/>
-                    <field name="status" widget="statusbar" options="{'clickable': '1'}"/>
+                    <button name="action_dropped" string="Dropped" class="oe_highlight" type="object"
+                            invisible="status == 'dropped'" statusbar_visible="dropped"/>
+
+                    <field name="status" widget="statusbar" statusbar_visible="draft,enrolled,completed"/>
                 </header>
 
                 <sheet>

@@ -18,7 +18,7 @@ class EducationLeaveRequest(models.Model):
     reason = fields.Text(string='Reason',required=True)
     status = fields.Selection([
         ('draft', 'Draft'),
-        ('submitted', 'Approved by'),
+        ('to_approve', 'To Approve'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
         ('cancelled', 'Cancelled'),
@@ -65,7 +65,7 @@ class EducationLeaveRequest(models.Model):
     def action_submit(self):
         """Move the request to 'Submitted' state."""
         for rec in self:
-            rec.status = 'submitted'
+            rec.status = 'to_approve'
 
     def action_approve(self):
             """Approve the leave request and set approver."""

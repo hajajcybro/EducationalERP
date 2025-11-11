@@ -18,6 +18,7 @@
                         <group>
                             <field name="name"/>
                             <field name="program_id"/>
+                            <field name="academic_year_id"/>
                             <field name="sequence"/>
                         </group>
                         <group>

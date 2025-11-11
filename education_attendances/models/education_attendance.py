@@ -5,7 +5,6 @@ class EducationAttendance(models.Model):
     _name = 'education.attendance'
     _description = 'Education Attendance'
 
-    slot_id = fields.Many2one('education.timetable.slot', required=True)
     student_id = fields.Many2one('res.partner', required=True, domain=[('position_role', '=', 'student')])
     roll_no = fields.Char()
     present = fields.Boolean(string='Present/Absence', default=True)

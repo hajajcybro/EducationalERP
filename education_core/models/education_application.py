@@ -6,6 +6,9 @@ from datetime import date
 import re
 
 
+
+
+
 class EducationApplication(models.Model):
     _name = 'education.application'
     _description = 'Education Application'
@@ -121,6 +124,13 @@ class EducationApplication(models.Model):
     contact_address = fields.Text('Permanent Address')
     occupation = fields.Char('Occupation',help='Job or business')
 
+    previous_academic = fields.Char('Previous Academic')
+    previous_class = fields.Char('Previous Class')
+    Year_of_passing = fields.Char('Year Of Passing')
+    language = fields.Char('Language / Medium')
+    board = fields.Char('Board / University')
+
+
     @api.depends('dob')
     def _compute_age(self):
         """Compute age from date of birth."""
@@ -170,7 +180,6 @@ class EducationApplication(models.Model):
                     'country_id': rec.country_id.id,
                     'state_id': rec.state_id.id,
                     'position_role': 'student',
-
                 })
             rec.partner_id = partner.id
             partner.write({
@@ -190,7 +199,11 @@ class EducationApplication(models.Model):
                     'contact_no' : rec.contact_no,
                     'emergency_phone' : rec.emergency_phone,
                     'current_address' : rec.contact_address,
-                    'occupation' : rec.occupation,
+                    'previous_academic' : rec.previous_academic,
+                    'previous_class': rec.previous_class,
+                    'Year_of_passing': rec.Year_of_passing,
+                    'language': rec.language,
+                    'board': rec.board,
                 })
 
     @api.constrains('email', 'phone', 'contact_no', 'emergency_phone')
@@ -202,6 +215,7 @@ class EducationApplication(models.Model):
         for record in self:
             if record.email and not re.match(email_pattern, record.email):
                 raise ValidationError(_('Invalid email address. Please enter a valid format like name@example.com.'))
+
             phone_fields = {
                 'Phone': record.phone,
                 'Contact Number': record.contact_no,

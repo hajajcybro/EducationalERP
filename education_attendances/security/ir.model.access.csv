@@ -1,7 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_education_timetable_slot,access_education_timetable_slot,model_education_timetable_slot,base.group_user,1,1,1,1
 access_education_leave_request,access_education_leave_request,model_education_leave_request,base.group_user,1,1,1,1
-access_education_timetable,access_education_timetable,model_education_timetable,base.group_user,1,1,1,1
 access_education_attendance,access_education_attendance,model_education_attendance,base.group_user,1,1,1,1
 
-access_education_timetable_line,access_education_timetable_line,model_education_timetable_line,base.group_user,1,1,1,1

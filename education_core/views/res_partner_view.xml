@@ -40,13 +40,21 @@
             <xpath expr="//page[@name='contact_addresses']"  position="replace">
                 <page string="Academic Info" name="academic_info">
                     <group>
-                        <group string="Reference">
-                            <field name="admission_no" readonly="1"/>
+                        <group string="Previous Academic Details">
+                            <field name="previous_academic"/>
+                            <field name="previous_class"/>
+                            <field name="Year_of_passing"/>
+                            <field name="language"/>
+                            <field name="board"/>
                         </group>
+
                         <group string="Class">
                             <field name="class_id"/>
                             <field name="roll_no"/>
                             <field name="class_teacher_id"/>
+                        </group>
+                        <group string="Reference">
+                            <field name="admission_no" readonly="1"/>
                         </group>
                     </group>
                 </page>
@@ -66,11 +74,11 @@
                         <group string="Parents Info">
                             <field name="father_name"/>
                             <field name="mother_name"/>
-                            <field name="occupation"/>
                             <field name="contact_no"/>
                             <field name="emergency_phone"/>
                             <field name="current_address"/>
                         </group>
+
                     </group>
                 </page>
             </xpath>
