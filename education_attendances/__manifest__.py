@@ -15,6 +15,7 @@
         'views/res_partner_view.xml',
         'views/education_leave_request_view.xml',
         'views/education_attendance_view.xml',
+        'views/education_attendance_line_view.xml',
         'views/menu.xml',
     ],
     'license': 'AGPL-3',

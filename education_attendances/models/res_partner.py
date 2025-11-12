@@ -13,3 +13,4 @@ class ResPartner(models.Model):
             'res_model': 'education.attendance',
             'view_mode': 'list,form',
         }
+

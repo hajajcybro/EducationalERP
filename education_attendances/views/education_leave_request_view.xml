@@ -9,14 +9,18 @@
                     <header>
                         <button name="action_submit" string="Request" type="object"  class="oe_highlight" invisible="status != 'draft'"/>
                         <button name="action_cancel" string="Cancel" type="object"  class="oe_highlight" invisible="status != 'to_approve'" statusbar_visible="cancelled"/>
-                        <button name="action_approve" string="Approve" type="object"  class="oe_highlight" invisible="status != 'to_approve'"/>
-                        <button name="action_reject" string="Reject" type="object"  class="oe_highlight" invisible="status != 'to_approve'"  statusbar_visible="rejected"/>
+                        <button name="action_approve" string="Approve" type="object"  class="oe_highlight" invisible="status != 'to_approve'"
+                                groups="base.group_system,education_core.group_education_admin,education_core.group_education_admission_officer"/>
+                        <button name="action_reject" string="Reject" type="object"  class="oe_highlight" invisible="status != 'to_approve'"  statusbar_visible="rejected"
+                                groups="base.group_system,education_core.group_education_admin,education_core.group_education_admission_officer"/>
                         <field name="status" widget="statusbar" statusbar_visible="draft,to_approve,approved"/>
                     </header>
                 <sheet>
                     <group>
                         <group>
-                            <field name="applicant_id"/>
+                            <field name="applicant"/>
+                            <field name="student_id" invisible="applicant != 'student'"/>
+                            <field name="teacher_id" invisible="applicant != 'teacher'"/>
                             <field name="leave_format"/>
                             <field name="reason"/>
                         </group>
@@ -37,7 +41,7 @@
         <field name="model">education.leave.request</field>
         <field name="arch" type="xml">
             <list string="Leave Requests">
-                <field name="applicant_id"/>
+                <field name="applicant_name"/>
                 <field name="start_date"/>
                 <field name="end_date"/>
                 <field name="status"/>

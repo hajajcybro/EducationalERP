@@ -43,13 +43,6 @@
                          </page>
                          <page string="Timetable">
                              <field name="timetable_line_ids"/>
-<!--                             <list>-->
-<!--                                 <field name="subject_id"/>-->
-<!--                                 <field name="day"/>-->
-<!--                                 <field name="start_time"/>-->
-<!--                                 <field name="end_time"/>-->
-
-<!--                             </list>-->
                          </page>
                     </notebook>
                 </sheet>

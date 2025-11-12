@@ -8,9 +8,11 @@ class EducationLeaveRequest(models.Model):
     _name = 'education.leave.request'
     _description = 'Education Leave Request'
     _inherit = ['mail.thread']
-    _rec_name = 'applicant_id'
+    _rec_name = 'applicant_name'
 
-    applicant_id = fields.Many2one('res.partner', string='Applicant', required=True, domain=[('position_role', '=', 'student')])
+    applicant = fields.Selection([('student','Student'),('teacher','Teacher')])
+    student_id = fields.Many2one('res.partner', string='Name', domain=[('position_role', '=', 'student')])
+    teacher_id = fields.Many2one('hr.employee', string='Name ', domain=[('role', '=', 'teacher')])
     leave_format = fields.Selection([('full_day', 'Full Day'), ('half_day', 'Half Day')],required=True, string='Leave Format' )
     start_date = fields.Date(string='Start Date')
     end_date = fields.Date(string='End Date')
@@ -24,6 +26,8 @@ class EducationLeaveRequest(models.Model):
         ('cancelled', 'Cancelled'),
     ], string='Status', default='draft', tracking=True)
     temporary = fields.Date()
+    applicant_name = fields.Char(string='Name', compute='_compute_applicant_name', store=False)
+
 
     @api.depends("start_date", "end_date", "total_leave_days")
     def _compute_leave_day(self):
@@ -61,6 +65,17 @@ class EducationLeaveRequest(models.Model):
             if record.total_leave_days <= 0:
                 raise ValidationError("Total leave days must be greater than zero, Please check the dates")
 
+    @api.depends('student_id', 'teacher_id', 'applicant')
+    def _compute_applicant_name(self):
+        """Compute unified name for display."""
+        for rec in self:
+            if rec.applicant == 'student' and rec.student_id:
+                rec.applicant_name = rec.student_id.name
+            elif rec.applicant == 'teacher' and rec.teacher_id:
+                rec.applicant_name = rec.teacher_id.name
+            else:
+                rec.applicant_name = ''
+
 
     def action_submit(self):
         """Move the request to 'Submitted' state."""
@@ -81,3 +96,5 @@ class EducationLeaveRequest(models.Model):
             """Cancel the leave request."""
             for rec in self:
                 rec.status = 'cancelled'
+
+

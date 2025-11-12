@@ -6,9 +6,10 @@
         <field name="model">education.attendance</field>
         <field name="arch" type="xml">
             <list>
-                <field name="student_id"/>
-                <field name="roll_no"/>
-                <field name="present"/>
+                <field name="class_id"/>
+                <field name="date"/>
+                <field name="faculty_id"/>
+                <field name="state"/>
             </list>
         </field>
     </record>
@@ -19,14 +20,38 @@
         <field name="model">education.attendance</field>
         <field name="arch" type="xml">
             <form string="Student Attendance">
+                <header>
+                    <button name="action_load_students" string="Load Students"
+                            type="object" class="btn-secondary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_submit" string="Submit" type="object"
+                            class="btn-primary" invisible = "state != 'marking' "/>
+                    <button name="action_validate" string="Validate" type="object"
+                            class="btn-success"
+                           invisible = "state != 'submitted'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,marking,submitted"/>
+                </header>
                 <sheet>
-                    <group>
 
-                        <field name="student_id"/>
-<!--                        <field name="roll_no" readonly="1"/>-->
-                        <field name="present"/>
+                    <group>
+                        <field name="class_id"/>
+                        <field name="timetable_id"/>
+                        <field name="date"/>
+                        <field name="faculty_id"/>
                     </group>
+                    <notebook>
+                         <page string="Attendance">
+                             <field name="attendance_line_ids">
+                                  <list editable="bottom">
+                                    <field name="student_id"/>
+                                    <field name="status"/>
+                                    <field name="remarks"/>
+                                </list>
+                             </field>
+                         </page>
+                    </notebook>
                 </sheet>
+                <chatter/>
             </form>
         </field>
     </record>

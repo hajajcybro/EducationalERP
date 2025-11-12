@@ -6,7 +6,7 @@ class EducationTimetableLine(models.Model):
     _name = 'education.timetable.line'
     _description = 'Education Timetable Line'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _rec_name = 'subject_id'
+    _rec_name = 'display_name'
 
 
     subject_id = fields.Many2one('education.course', required=True)
@@ -17,6 +17,18 @@ class EducationTimetableLine(models.Model):
     room_id = fields.Many2one('education.class.room',help='Select the specific classroom or lab assigned to this class.'
     )
     class_id =fields.Many2one('education.class',string='Class')
+    display_name = fields.Char(string="Display Name", compute="_compute_display_name", store=True)
+
+    @api.depends('subject_id', 'faculty_id', 'day')
+    def _compute_display_name(self):
+        """Set display name as 'Subject - Teacher - Day'."""
+        for rec in self:
+            subject = rec.subject_id.name or ''
+            teacher = rec.faculty_id.name or ''
+            day = rec.day.capitalize() if rec.day else ''
+            rec.display_name = f"{subject} - {teacher} - {day}" if subject and teacher and day else \
+                f"{subject} - {teacher}" if subject and teacher else \
+                    subject or teacher or day
 
     @api.constrains('room_id', 'start_time', 'end_time', 'day')
     def _check_room_availability(self):

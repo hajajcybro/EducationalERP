@@ -25,7 +25,6 @@
                             invisible="status != 'draft'"/>
                     <button name="action_dropped" string="Dropped" class="oe_highlight" type="object"
                             invisible="status == 'dropped'" statusbar_visible="dropped"/>
-
                     <field name="status" widget="statusbar" statusbar_visible="draft,enrolled,completed"/>
                 </header>
 

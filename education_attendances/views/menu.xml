@@ -12,13 +12,18 @@
 
 <!--    timetable-->
     <menuitem id="menu_student_timetable"
-              name="Time Table"
+              name="Attendance"
               parent="menu_education_attendances_root"
               sequence="20"/>
     <menuitem id="menu_education_attendances"
-              name="Student Attendance"
+              name="Attendance"
               parent="menu_student_timetable"
               action="action_education_attendance"
+              sequence="20"/>
+    <menuitem id="menu_education_attendance_line"
+              name="Attendance Lines"
+              parent="menu_student_timetable"
+              action="action_education_attendance_line"
               sequence="20"/>
 
 <!--    <menuitem id="menu_education_timetable"-->
