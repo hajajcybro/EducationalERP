@@ -16,7 +16,14 @@ class EducationTimetableLine(models.Model):
     end_time = fields.Float(required=True)
     room_id = fields.Many2one('education.class.room',help='Select the specific classroom or lab assigned to this class.'
     )
-    class_id =fields.Many2one('education.class',string='Class')
+    class_id = fields.Many2one('education.class',string='Class')
+    program_id = fields.Many2one(
+        'education.program',
+        related='class_id.program_id',
+        store=True,
+        readonly=True
+    )
+
     display_name = fields.Char(string="Display Name", compute="_compute_display_name", store=True)
 
     @api.depends('subject_id', 'faculty_id', 'day')
@@ -30,18 +37,6 @@ class EducationTimetableLine(models.Model):
                 f"{subject} - {teacher}" if subject and teacher else \
                     subject or teacher or day
 
-    @api.constrains('room_id', 'start_time', 'end_time', 'day')
-    def _check_room_availability(self):
-        for rec in self:
-            conflict = self.search([
-                ('id', '!=', rec.id),
-                ('room_id', '=', rec.room_id.id),
-                ('day', '=', rec.day),
-                ('start_time', '<', rec.end_time),
-                ('end_time', '>', rec.start_time)
-            ], limit=1)
-            if conflict:
-                raise ValidationError(f"Room {rec.room_id.name} already booked for this time slot.")
 
 
     @api.constrains('start_time', 'end_time')
@@ -50,5 +45,4 @@ class EducationTimetableLine(models.Model):
         for rec in self:
             if rec.start_time >= rec.end_time:
                 raise ValidationError("Start time must be earlier than end time.")
-
 

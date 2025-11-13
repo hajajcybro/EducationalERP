@@ -14,7 +14,13 @@ class EducationAttendance(models.Model):
         required=True, tracking=True,
         help="Select the class for which attendance is being marked."
     )
-    timetable_id = fields.Many2one(
+    program_id = fields.Many2one(
+        'education.program',
+        related='class_id.program_id',
+        store=True,
+        readonly=True
+    )
+    timetable_line_id = fields.Many2one(
         'education.timetable.line',
         string="Timetable Slot",
         help="Choose the subject and period as per the timetable."
@@ -28,6 +34,7 @@ class EducationAttendance(models.Model):
         ('submitted', 'Submitted'),
         ('validated', 'Validated')
     ], default='draft', string="Status", tracking=True)
+    timetable_ids = fields.One2many('education.timetable.line','subject_id')
 
     def action_submit(self):
         for rec in self:
@@ -40,6 +47,22 @@ class EducationAttendance(models.Model):
         for rec in self:
             rec.state = 'validated'
             rec._update_summary()
+
+    @api.onchange('class_id')
+    def _onchange_class_id(self):
+        """Restrict timetable slots to only those of the selected class."""
+        if self.class_id:
+            return {
+                'domain': {
+                    'timetable_line_id': [('class_id', '=', self.class_id.id)]
+                }
+            }
+        else:
+            return {
+                'domain': {
+                    'timetable_line_id': []
+                }
+            }
 
     def action_load_students(self):
         """Auto-load students enrolled in this class into attendance lines."""

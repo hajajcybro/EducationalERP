@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
      <menuitem id="menu_education_attendances_root"
-              name="Attendance"
+              name="Education Attendance"
               sequence="10"/>
 <!--    student-->
     <menuitem id="menu_education_attendance"
@@ -25,23 +25,11 @@
               parent="menu_student_timetable"
               action="action_education_attendance_line"
               sequence="20"/>
-
-<!--    <menuitem id="menu_education_timetable"-->
-<!--              name="Timetable Slot"-->
-<!--              parent="menu_student_timetable"-->
-<!--              action="action_education_timetable_slot"-->
-<!--              sequence="20"/>-->
-<!--    <menuitem id="menu_education_timetable_template"-->
-<!--              name="Timetable"-->
-<!--              parent="menu_student_timetable"-->
-<!--              action="action_education_timetable_template"-->
-<!--              sequence="20"/>-->
-<!--    <menuitem id="menu_education_timetable_line"-->
-<!--              name="Timetable Lines"-->
-<!--              parent="menu_student_timetable"-->
-<!--              action="action_education_timetable_line"-->
-<!--              sequence="20"/>-->
-
+     <menuitem id="menu_attendance_summary"
+              name="Attendance Summary"
+              parent="menu_student_timetable"
+              action="action_attendance_summary"
+              sequence="20"/>
 
 <!--    leave-->
     <menuitem id="menu_education_leave"

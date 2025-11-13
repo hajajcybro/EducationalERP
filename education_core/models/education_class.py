@@ -81,3 +81,5 @@ class EducationClass(models.Model):
                     "Maximum capacity: %d\n"
                     "Please increase room capacity or move students to another class."
                 ) % (enrolled, rec.capacity))
+
+

@@ -7,6 +7,8 @@ class EducationAttendanceLine(models.Model):
     _description = 'Attendance Line'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = 'student_id'
+
+
     attendance_id = fields.Many2one('education.attendance',
                                     string="Attendance", ondelete='cascade')
     student_id = fields.Many2one('education.enrollment',
@@ -15,7 +17,7 @@ class EducationAttendanceLine(models.Model):
         ('present', 'Present'),
         ('absent', 'Absent'),
         ('late', 'Late'),
-        ('excused', 'Excused')
+        ('excused', 'Leave')
     ], string="Status", required=True,)
     remarks = fields.Char(string="Remarks")
 
