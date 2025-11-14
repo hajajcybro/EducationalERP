@@ -14,7 +14,7 @@ class EducationAttendanceSummary(models.Model):
     academic_year_id = fields.Many2one(
         'education.academic.year',
         string="Academic Year",
-        required=True,
+
     )
 
     total_present = fields.Integer(default=0)
@@ -35,3 +35,5 @@ class EducationAttendanceSummary(models.Model):
                 rec.attendance_percentage = (rec.total_present / total_days) * 100
             else:
                 rec.attendance_percentage = 0.0
+
+

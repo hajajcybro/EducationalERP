@@ -46,23 +46,34 @@ class EducationAttendance(models.Model):
         """Admin validates attendance and triggers summary updates."""
         for rec in self:
             rec.state = 'validated'
-            rec._update_summary()
+            rec._update_attendance_summary()
 
-    @api.onchange('class_id')
-    def _onchange_class_id(self):
-        """Restrict timetable slots to only those of the selected class."""
-        if self.class_id:
-            return {
-                'domain': {
-                    'timetable_line_id': [('class_id', '=', self.class_id.id)]
-                }
-            }
-        else:
-            return {
-                'domain': {
-                    'timetable_line_id': []
-                }
-            }
+    def _update_attendance_summary(self):
+        """Update or create attendance summary for each student."""
+        self.ensure_one()
+        for line in self.attendance_line_ids:
+            # Search for existing summary
+            summary = self.env['education.attendance.summary'].search([
+                ('student_id', '=', line.student_id.id),
+            ], limit=1)
+            if not summary:
+                summary = self.env['education.attendance.summary'].create({
+                    'student_id': line.student_id.id,
+                    'total_present': 0,
+                    'total_absent': 0,
+                    'total_excused': 0,
+                })
+
+                # Update counters based on status
+            if line.status == 'present':
+                summary.total_present += 1
+            elif line.status == 'absent':
+                summary.total_absent += 1
+            elif line.status == 'excused':
+                summary.total_excused += 1
+            elif line.status == 'late':
+                # If you want to count 'late' as present
+                summary.total_present += 1
 
     def action_load_students(self):
         """Auto-load students enrolled in this class into attendance lines."""
@@ -73,4 +84,6 @@ class EducationAttendance(models.Model):
             lines = [(0, 0, {'student_id': s.id, 'status': 'present'}) for s in enrollments]
             rec.attendance_line_ids = lines
             rec.state = 'marking'
+
+
 
