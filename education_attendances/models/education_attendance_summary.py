@@ -11,11 +11,24 @@ class EducationAttendanceSummary(models.Model):
         string="Student",
         required=True,
     )
+
+    program_id = fields.Many2one(
+        'education.program',
+        related='student_id.program_id',
+        store=True,
+        readonly=True
+    )
+
+    class_id = fields.Many2one(
+        'education.class',
+        related='student_id.current_class_id',
+        store=True,
+        readonly=True
+    )
     academic_year_id = fields.Many2one(
         'education.academic.year',
-        string="Academic Year",
-
-    )
+        related='student_id.academic_year_id',
+        store=True,)
 
     total_present = fields.Integer(default=0)
     total_absent = fields.Integer(default=0)

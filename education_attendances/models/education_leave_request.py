@@ -7,7 +7,7 @@ class EducationLeaveRequest(models.Model):
     """Manage student and faculty leave requests with approval workflow."""
     _name = 'education.leave.request'
     _description = 'Education Leave Request'
-    _inherit = ['mail.thread']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = 'applicant_name'
 
     applicant = fields.Selection([('student','Student'),('teacher','Teacher')])
@@ -96,5 +96,27 @@ class EducationLeaveRequest(models.Model):
             """Cancel the leave request."""
             for rec in self:
                 rec.status = 'cancelled'
+
+    @api.constrains('student_id', 'start_date', 'end_date')
+    def _check_overlapping_leave(self):
+        """Prevent overlapping leave requests for the same student."""
+        for rec in self:
+            if rec.applicant != 'student' or not rec.student_id:
+                continue
+
+            overlapping = self.search([
+                ('id', '!=', rec.id),
+                ('student_id', '=', rec.student_id.id),
+                ('status', 'not in', ['cancelled', 'rejected']),
+                ('start_date', '<=', rec.end_date),
+                ('end_date', '>=', rec.start_date),
+            ], limit=1)
+
+            if overlapping:
+                raise ValidationError(
+                    "Leave already exists from %s to %s" % (
+                        overlapping.start_date, overlapping.end_date
+                    )
+                )
 
 

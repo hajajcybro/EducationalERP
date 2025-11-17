@@ -85,5 +85,11 @@ class EducationAttendance(models.Model):
             rec.attendance_line_ids = lines
             rec.state = 'marking'
 
+    _sql_constraints = [
+        ('unique_class_date_timetable',
+         'unique(class_id, date, timetable_line_id)',
+         'Attendance already exists for this class, date, and period!')
+    ]
+
 
 
