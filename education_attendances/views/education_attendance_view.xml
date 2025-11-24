@@ -37,7 +37,7 @@
                     <group>
                         <field name="class_id"/>
                         <field name="program_id"/>
-                        <field name="timetable_line_id"  domain="[('class_id', '=', class_id)]"/>
+                        <field name="timetable_line_id"  domain="[('class_id', '=', class_id), ('day', '=', weekday)]"/>
                         <field name="date"/>
                         <field name="faculty_id"/>
                     </group>
@@ -51,9 +51,6 @@
                                 </list>
                              </field>
                          </page>
-                        <page string="Timetable">
-                             <field name="timetable_ids"/>
-                        </page>
                     </notebook>
                 </sheet>
                 <chatter/>

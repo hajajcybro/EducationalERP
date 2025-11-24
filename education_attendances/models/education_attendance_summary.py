@@ -32,7 +32,7 @@ class EducationAttendanceSummary(models.Model):
 
     total_present = fields.Integer(default=0)
     total_absent = fields.Integer(default=0)
-    total_excused = fields.Integer(default=0)
+    total_leave = fields.Integer(default=0)
 
     attendance_percentage = fields.Float(
         compute="_compute_percentage",
@@ -40,10 +40,10 @@ class EducationAttendanceSummary(models.Model):
         string="Attendance %"
     )
 
-    @api.depends('total_present', 'total_absent', 'total_excused')
+    @api.depends('total_present', 'total_absent', 'total_leave')
     def _compute_percentage(self):
         for rec in self:
-            total_days = rec.total_present + rec.total_absent + rec.total_excused
+            total_days = rec.total_present + rec.total_absent + rec.total_leave
             if total_days > 0:
                 rec.attendance_percentage = (rec.total_present / total_days) * 100
             else:

@@ -17,7 +17,7 @@ class EducationAttendanceLine(models.Model):
         ('present', 'Present'),
         ('absent', 'Absent'),
         ('late', 'Late'),
-        ('excused', 'Leave')
+        ('leave', 'Leave')
     ], string="Status", required=True,)
     remarks = fields.Char(string="Remarks")
 

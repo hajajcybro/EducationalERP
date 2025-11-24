@@ -12,7 +12,7 @@
                 <field name="program_id"/>
                 <field name="total_present"/>
                 <field name="total_absent"/>
-                <field name="total_excused"/>
+                <field name="total_leave"/>
                 <field name="attendance_percentage"/>
             </list>
         </field>
@@ -35,7 +35,7 @@
                         <group>
                             <field name="total_present"/>
                             <field name="total_absent"/>
-                            <field name="total_excused"/>
+                            <field name="total_leave"/>
                             <field name="attendance_percentage"/>
                         </group>
                     </group>

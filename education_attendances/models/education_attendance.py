@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
+import datetime
 
 class EducationAttendance(models.Model):
     _name = 'education.attendance'
@@ -34,7 +35,14 @@ class EducationAttendance(models.Model):
         ('submitted', 'Submitted'),
         ('validated', 'Validated')
     ], default='draft', string="Status", tracking=True)
-    timetable_ids = fields.One2many('education.timetable.line','subject_id')
+    timetable_ids = fields.One2many('education.timetable.line','class_id')
+    weekday = fields.Selection([
+        ('monday', 'Monday'),
+        ('tuesday', 'Tuesday'),
+        ('wednesday', 'Wednesday'),
+        ('thursday', 'Thursday'),
+        ('friday', 'Friday'),
+    ], compute='_compute_weekday', store=False, string='Day')
 
     def action_submit(self):
         for rec in self:
@@ -61,7 +69,7 @@ class EducationAttendance(models.Model):
                     'student_id': line.student_id.id,
                     'total_present': 0,
                     'total_absent': 0,
-                    'total_excused': 0,
+                    'total_leave': 0,
                 })
 
                 # Update counters based on status
@@ -69,27 +77,64 @@ class EducationAttendance(models.Model):
                 summary.total_present += 1
             elif line.status == 'absent':
                 summary.total_absent += 1
-            elif line.status == 'excused':
-                summary.total_excused += 1
+            elif line.status == 'leave':
+                summary.total_leave += 1
             elif line.status == 'late':
                 # If you want to count 'late' as present
                 summary.total_present += 1
 
     def action_load_students(self):
         """Auto-load students enrolled in this class into attendance lines."""
+        LeaveModel = self.env['education.leave.request']
         for rec in self:
             if not rec.class_id:
                 raise ValidationError(_("Select a class first."))
             enrollments = rec.class_id.student_ids
-            lines = [(0, 0, {'student_id': s.id, 'status': 'present'}) for s in enrollments]
-            rec.attendance_line_ids = lines
-            rec.state = 'marking'
+            lines = []
+            # lines = [(0, 0, {'student_id': s.id, 'status': 'present'}) for s in enrollments]
+            # rec.attendance_line_ids = lines
+            # rec.state = 'marking'
+
+            for enroll in enrollments:
+                partner = False
+                if enroll.student_id and hasattr(enroll.student_id, 'partner_id'):
+                    partner = enroll.student_id.partner_id
+                    status_val = 'present'
+                    remark = ''
+                if partner:
+                    # Search for an approved leave for this partner covering rec.date
+                    leave = LeaveModel.search([
+                        ('student_id', '=', partner.id),
+                        ('status', '=', 'approved'),
+                        ('start_date', '<=', rec.date),
+                        ('end_date', '>=', rec.date),
+                    ], limit=1)
+
+                    if leave:
+                        # Your attendance_line.status selection uses 'leave' labelled 'Leave'
+                        status_val = 'leave'
+                        remark = 'Approved Leave'
+                lines.append((0, 0, {
+                    'student_id': enroll.id,
+                    'status': status_val,
+                    'remarks': remark,
+                }))
+
+                rec.attendance_line_ids = lines
+                rec.state = 'marking'
 
     _sql_constraints = [
-        ('unique_class_date_timetable',
-         'unique(class_id, date, timetable_line_id)',
-         'Attendance already exists for this class, date, and period!')
+        ('unique_student_class',
+         'unique(student_id, class_id)',
+         'Student is already enrolled in this class.')
     ]
 
-
+    @api.depends()
+    def _compute_weekday(self):
+        for rec in self:
+            # Use attendance date (NOT system date)
+            if rec.date:
+                rec.weekday = rec.date.strftime('%A').lower()
+            else:
+                rec.weekday = datetime.datetime.today().strftime('%A').lower()
 
