@@ -69,10 +69,53 @@
         </field>
     </record>
 
+    <!--    search view-->
+      <record id="education_program_search_view" model="ir.ui.view">
+        <field name="name">education.program.search</field>
+        <field name="model">education.program</field>
+        <field name="arch" type="xml">
+            <search string="Search Programs">
+
+                <!-- Quick Search Fields -->
+                <field name="name"/>
+                <field name="code"/>
+                <field name="program_type"/>
+                <field name="duration"/>
+
+                <separator/>
+
+                <!--      CUSTOM FILTERS   -->
+                <filter name="filter_archived"
+                        string="Archived"
+                        domain="[('active','=',False)]"/>
+
+                <separator/>
+
+                <!--        GROUP BY       -->
+                <group name="group_by">
+
+                    <filter name="group_by_program_type"
+                            string="Program Type"
+                            context="{'group_by':'program_type'}"/>
+
+                    <filter name="group_by_duration"
+                            string="Duration"
+                            context="{'group_by':'duration'}"/>
+                    <filter name="group_by_session_duration"
+                            string="Session Duration"
+                            context="{'group_by':'session_duration'}"/>
+                </group>
+
+            </search>
+        </field>
+    </record>
+
     <!-- Action -->
     <record id="action_education_program" model="ir.actions.act_window">
         <field name="name">Programs</field>
         <field name="res_model">education.program</field>
         <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="education_program_search_view"/>
+
     </record>
 </odoo>

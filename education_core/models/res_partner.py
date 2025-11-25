@@ -15,7 +15,7 @@ class ResPartner(models.Model):
     program_id = fields.Many2one('education.program',string='Program', required=True)
 
     # Academic Info
-    admission_no = fields.Char(string='Admission Number')
+    admission_no = fields.Char(string='Admission Number',)
     class_id = fields.Many2one('education.class', string='Class')
     current_enrollment_id = fields.Many2one('education.enrollment',
                                             string='Current Enrollment',
@@ -99,3 +99,26 @@ class ResPartner(models.Model):
             'domain': [('admission_no', '=', self.admission_no)],
             'context': {'default_admission_no': self.admission_no},
         }
+
+    @api.model
+    def create(self, vals):
+        """Override create to assign an admission number when a new student
+        is added without one."""
+        vals_list = vals if isinstance(vals, list) else [vals]
+
+        for val in vals_list:
+            if val.get('position_role') == 'student' and not val.get('admission_no'):
+                val['admission_no'] = self.env['ir.sequence'].next_by_code('education_student_admission')
+
+        return super().create(vals_list)
+
+    def write(self, vals):
+        """Override write to generate an admission number when a partner
+        becomes a student and lacks one."""
+        for rec in self:
+            if vals.get('position_role') == 'student' and not rec.admission_no:
+                vals['admission_no'] = self.env['ir.sequence'].next_by_code('education_student_admission')
+
+        return super().write(vals)
+
+

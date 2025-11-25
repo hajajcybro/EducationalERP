@@ -6,8 +6,7 @@
         <field name="model">education.document</field>
         <field name="arch" type="xml">
             <list>
-                <field name="student_id"/>
-                <field name="document_type"/>
+                <field name="name"/>
                 <field name="issue_date"/>
             </list>
         </field>
@@ -43,10 +42,55 @@
         </field>
     </record>
 
+<!--    search view-->
+    <record id="education_document_search_view" model="ir.ui.view">
+        <field name="name">education.document.search.view</field>
+        <field name="model">education.document</field>
+        <field name="arch" type="xml">
+            <search string="Search Student Documents">
+
+                <!--   DEFAULT SEARCH      -->
+                <field name="name"/>
+                <field name="student_id"/>
+                <field name="document_type"/>
+                <field name="admission_no"/>
+
+                <!--     CUSTOM FILTERS    -->
+                <filter name="filter_no_attachment"
+                        string="Without Attachment"
+                        domain="[('attachment','=',False)]"/>
+
+                <filter name="filter_certificate"
+                        string="Certificate Only"
+                        domain="[('document_type.name','=','certificate')]"/>
+
+                <!--       GROUP BY           -->
+                <group name="group_by">
+                    <filter name="group_by_student"
+                            string="Student"
+                            context="{'group_by': 'student_id'}"/>
+
+                    <filter name="group_by_doc_type"
+                            string="Document Type"
+                            context="{'group_by': 'document_type'}"/>
+
+                    <filter name="group_by_issue"
+                            string="Issue Date"
+                            context="{'group_by': 'issue_date'}"/>
+
+                    <filter name="group_by_name"
+                            string="Student And Document"
+                            context="{'group_by': 'name'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
         <!-- Action -->
     <record id="action_education_document" model="ir.actions.act_window">
         <field name="name">Student Document</field>
         <field name="res_model">education.document</field>
         <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="education_document_search_view"/>
     </record>
 </odoo>

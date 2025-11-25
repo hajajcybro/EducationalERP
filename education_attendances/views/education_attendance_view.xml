@@ -57,11 +57,61 @@
             </form>
         </field>
     </record>
+
+<!--    search view-->
+    <record id="education_attendance_search_view" model="ir.ui.view">
+        <field name="name">education.attendance.search</field>
+        <field name="model">education.attendance</field>
+        <field name="arch" type="xml">
+            <search string="Search Attendance">
+
+                <!-- Quick Search Fields -->
+                <field name="class_id"/>
+                <field name="program_id"/>
+                <field name="faculty_id"/>
+                <field name="state"/>
+                <field name="timetable_line_id"/>
+                <field name="date"/>
+                <separator/>
+
+                <!-- group -->
+                <group name="group_by">
+
+                    <filter name="group_by_class"
+                            string="Class"
+                            context="{'group_by':'class_id'}"/>
+
+                    <filter name="group_by_program"
+                            string="Program"
+                            context="{'group_by':'program_id'}"/>
+
+                    <filter name="group_by_faculty"
+                            string="Faculty"
+                            context="{'group_by':'faculty_id'}"/>
+
+                    <filter name="group_by_state"
+                            string="Status"
+                            context="{'group_by':'state'}"/>
+
+                    <filter name="group_by_weekday"
+                            string="Day"
+                            context="{'group_by':'weekday'}"/>
+
+                    <filter name="group_by_date"
+                            string="Date"
+                            context="{'group_by':'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
 <!--      Action to open Attendance records -->
     <record id="action_education_attendance" model="ir.actions.act_window">
         <field name="name">Attendance</field>
         <field name="res_model">education.attendance</field>
         <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="education_attendance_search_view"/>
+
         <field name="help" type="html">
             <p>Manage student attendance per timetable slot.</p>
         </field>

@@ -67,6 +67,58 @@
         </field>
     </record>
 
+<!--    search view-->
+    <record id="education_session_search_view" model="ir.ui.view">
+        <field name="name">education.session.search</field>
+        <field name="model">education.session</field>
+        <field name="arch" type="xml">
+            <search string="Search Sessions">
+
+                <!-- Quick Search Fields -->
+                <field name="name"/>
+                <field name="code"/>
+                <field name="program_id"/>
+                <field name="academic_year_id"/>
+                <field name="state"/>  <!-- Status dropdown -->
+                <field name="start_date"/>
+                <field name="end_date"/>
+
+                <separator/>
+
+                <!-- Archived -->
+                <filter name="filter_archived"
+                        string="Archived"
+                        domain="[('active','=',False)]"/>
+
+                <separator/>
+
+                <!-- Status Filters (Optional) -->
+                <filter name="filter_closed"
+                        string="Closed"
+                        domain="[('state','=','closed')]"/>
+
+                <separator/>
+
+                <!-- group by-->
+                <group name="group_by">
+
+                    <filter name="group_by_program"
+                            string="Program"
+                            context="{'group_by':'program_id'}"/>
+
+                    <filter name="group_by_academic_year"
+                            string="Academic Year"
+                            context="{'group_by':'academic_year_id'}"/>
+
+                    <filter name="group_by_state"
+                            string="Status"
+                            context="{'group_by':'state'}"/>
+                </group>
+
+            </search>
+        </field>
+    </record>
+
     <!-- Action -->
     <record id="education_session_action" model="ir.actions.act_window">
         <field name="name">Education session</field>

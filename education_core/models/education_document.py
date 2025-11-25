@@ -8,7 +8,6 @@ class EducationDocument(models.Model):
     _name = 'education.document'
     _description = 'Education Document'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _rec_name = 'student_id'
 
     student_id = fields.Many2one(
         'res.partner',
@@ -36,6 +35,16 @@ class EducationDocument(models.Model):
     file_name = fields.Char(string='File Name')
     active = fields.Boolean(default=True)
     notes = fields.Text(string='Internal Notes')
+    name = fields.Char(string = 'Name', compute="_compute_name",
+    store=True)
+
+    @api.depends('student_id', 'admission_no', 'document_type')
+    def _compute_name(self):
+        for rec in self:
+            student = rec.student_id.name or ''
+            admission = rec.admission_no or ''
+            doc_type = rec.document_type.name or ''
+            rec.name = f"{student} - {admission} - {doc_type}"
 
     @api.depends('student_id')
     def _compute_admission_no(self):

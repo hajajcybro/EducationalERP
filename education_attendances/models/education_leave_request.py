@@ -2,17 +2,16 @@
 from odoo import models, fields, api
 import datetime
 from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError
 
 class EducationLeaveRequest(models.Model):
     """Manage student and faculty leave requests with approval workflow."""
     _name = 'education.leave.request'
     _description = 'Education Leave Request'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _rec_name = 'applicant_name'
+    _rec_name = 'student_id'
 
-    applicant = fields.Selection([('student','Student'),('teacher','Teacher')])
     student_id = fields.Many2one('res.partner', string='Name', domain=[('position_role', '=', 'student')])
-    teacher_id = fields.Many2one('hr.employee', string='Name ', domain=[('role', '=', 'teacher')])
     leave_format = fields.Selection([('full_day', 'Full Day'), ('half_day', 'Half Day')],required=True, string='Leave Format' )
     start_date = fields.Date(string='Start Date')
     end_date = fields.Date(string='End Date')
@@ -26,7 +25,6 @@ class EducationLeaveRequest(models.Model):
         ('cancelled', 'Cancelled'),
     ], string='Status', default='draft', tracking=True)
     temporary = fields.Date()
-    applicant_name = fields.Char(string='Name', compute='_compute_applicant_name', store=False)
 
 
     @api.depends("start_date", "end_date", "total_leave_days")
@@ -64,18 +62,6 @@ class EducationLeaveRequest(models.Model):
         for record in self:
             if record.total_leave_days <= 0:
                 raise ValidationError("Total leave days must be greater than zero, Please check the dates")
-
-    @api.depends('student_id', 'teacher_id', 'applicant')
-    def _compute_applicant_name(self):
-        """Compute unified name for display."""
-        for rec in self:
-            if rec.applicant == 'student' and rec.student_id:
-                rec.applicant_name = rec.student_id.name
-            elif rec.applicant == 'teacher' and rec.teacher_id:
-                rec.applicant_name = rec.teacher_id.name
-            else:
-                rec.applicant_name = ''
-
 
     def action_submit(self):
         """Move the request to 'Submitted' state."""
@@ -118,5 +104,11 @@ class EducationLeaveRequest(models.Model):
                         overlapping.start_date, overlapping.end_date
                     )
                 )
+
+    def write(self, vals):
+        for rec in self:
+            if rec.status == 'approved':
+                raise UserError("Approved leave cannot be modified.")
+        return super().write(vals)
 
 

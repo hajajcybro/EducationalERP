@@ -57,6 +57,53 @@
         </field>
     </record>
 
+<!--    search view-->
+     <record id="education_course_search_view" model="ir.ui.view">
+        <field name="name">education.course.search</field>
+        <field name="model">education.course</field>
+        <field name="arch" type="xml">
+            <search string="Search Courses">
+
+                <!-- Quick Search Fields -->
+                <field name="name"/>
+                <field name="code"/>
+                <field name="program_id"/>
+                <field name="is_elective"/>
+
+                <separator/>
+
+                <!-- filter -->
+                <filter name="filter_archived"
+                        string="Archived"
+                        domain="[('active','=',False)]"/>
+                <separator/>
+
+                <filter name="filter_elective"
+                        string="Elective"
+                        domain="[('is_elective','=',True)]"/>
+
+                <separator/>
+
+                <!-- group  -->
+                <group name="group_by">
+
+                    <filter name="group_by_program"
+                            string="Program"
+                            context="{'group_by':'program_id'}"/>
+
+                    <filter name="group_by_elective"
+                            string="Elective"
+                            context="{'group_by':'is_elective'}"/>
+
+                    <filter name="group_by_duration"
+                            string="Duration"
+                            context="{'group_by':'duration'}"/>
+                </group>
+
+            </search>
+        </field>
+    </record>
+
     <!-- Action -->
     <record id="action_education_course" model="ir.actions.act_window">
         <field name="name">Courses</field>

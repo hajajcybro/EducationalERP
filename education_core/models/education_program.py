@@ -30,8 +30,7 @@ class EducationProgram(models.Model):
 
     session_ids = fields.One2many('education.session', 'program_id', string='Sessions')
     course_ids = fields.One2many('education.course', 'program_id', string='All Courses')
-    # session_template_ids = fields.One2many('education.session.template',
-    #                                        'program_id', string='Session Templates')
+
 
     _sql_constraints = [
         ('unique_program_code', 'unique(code)', 'Program code must be unique!'),
@@ -59,7 +58,7 @@ class EducationProgram(models.Model):
                 rec.total_sessions = 0
                 continue
             if rec.program_type == 'custom':
-                rec.total_sessions = 1  # Always one session for the full course
+                rec.total_sessions = 1
             elif rec.duration and rec.session_duration:
                 rec.total_sessions = int(rec.duration * rec.session_duration)
             else:
