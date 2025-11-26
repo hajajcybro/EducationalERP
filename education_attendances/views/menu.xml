@@ -37,6 +37,12 @@
               parent="menu_education_attendances_root"
               action="action_education_leave_request"
               sequence="20"/>
+<!--    settings-->
+     <menuitem id="menu_edu_attendance_settings"
+              name="Settings"
+              parent="menu_education_attendances_root"
+              action="action_edu_attendance_settings"
+              sequence="99"/>
 
 </odoo>
 

@@ -12,13 +12,13 @@ class ResPartner(models.Model):
             ('student_id', '=', self.id)
         ], limit=1)
 
-        domain = [('student_id', '=', enrollment.id)] if enrollment else [('id', '=', False)]
+        # domain = [('student_id', '=', enrollment.id)] if enrollment else [('id', '=', False)]
         return {
             'type': 'ir.actions.act_window',
             'name': f'Attendance - {self.name}',
-            'res_model': 'education.attendance.line',
+            'res_model': 'education.attendance.summary',
             'view_mode': 'list,form',
-            'domain': domain,
+            'domain': [('student_id', '=', self.id)],
             'context': {'default_student_id': enrollment.id if enrollment else False}
         }
 

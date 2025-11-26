@@ -7,6 +7,8 @@ class DocumentDocument(models.Model):
     """For managing document type"""
     _name = 'education.document.type'
     _description = "Documents Type"
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+
 
     name = fields.Char(string='Name', required=True,
                        help="Name of the document type (e.g : Certificate)")

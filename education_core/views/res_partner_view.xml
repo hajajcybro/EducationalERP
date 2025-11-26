@@ -55,6 +55,7 @@
                         </group>
                         <group string="Reference">
                             <field name="admission_no" readonly="1"/>
+<!--                            <field name="current_enrollment_id" readonly="1"/>-->
                         </group>
                     </group>
                 </page>

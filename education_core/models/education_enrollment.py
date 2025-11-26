@@ -13,7 +13,6 @@ class EducationEnrollment(models.Model):
         'education.application',
         string='Student',
         required=True,
-        ondelete='cascade',
         help='Student being enrolled.'
     )
     admission_no = fields.Char(related='student_id.admission_no', string="Register No")

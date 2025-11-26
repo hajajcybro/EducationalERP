@@ -9,7 +9,7 @@
     'company': 'Cybrosys Techno Solutions',
     'maintainer': 'Cybrosys Techno Solutions',
     'website': 'https://www.cybrosys.com',
-    'depends': ['education_core','mail'],
+    'depends': ['education_core','mail','base'],
     'data': [
         'security/ir.model.access.csv',
         'views/res_partner_view.xml',
@@ -18,6 +18,7 @@
         'views/education_attendance_line_view.xml',
         'views/education_attendance_summary.xml',
         'views/menu.xml',
+        'views/res_config_settings_view.xml',
     ],
     'license': 'AGPL-3',
     'installable': True,

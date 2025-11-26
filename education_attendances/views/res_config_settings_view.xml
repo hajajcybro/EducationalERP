@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <!-- Action to open Settings wizard filtered to your module -->
+    <record id="action_edu_attendance_settings" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'module': 'education_attendances'}</field>
+    </record>
+
+    <!-- Inherit root form (the only real XML node in your system) -->
+    <record id="view_res_config_settings_edu_attendance" model="ir.ui.view">
+        <field name="name">res.config.settings.edu.attendance</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+
+        <field name="arch" type="xml">
+
+           <xpath expr="//form" position="inside">
+               <h3>Education Attendance</h3>
+
+
+                <div class="app_settings_block" string="Education Attendance">
+
+                    <div class="row mt16 o_settings_container">
+
+                        <!-- Attendance Summary Mode Column -->
+                        <div class="col-12 col-lg-6 o_setting_box">
+
+                            <div class="o_setting_left_pane">
+                                <span class="o_icon o_icon_settings"></span>
+                            </div>
+
+                            <div class="o_setting_right_pane">
+
+                                <!-- Label and Hint -->
+                                <label for="attendance_summary_mode"/>
+                                <div class="text-muted">Select summary mode.</div>
+
+                                <!-- The Selection -->
+                                <field name="attendance_summary_mode"/>
+
+                                <!-- NEW BOOLEAN HERE -->
+                                <div class="mt8"> <!-- small spacing -->
+                                    <field name="attendance_summary_enabled"/>
+                                    <label for="attendance_summary_enabled"/>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Count Excused Column -->
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <span class="o_icon o_icon_settings"></span>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="count_excused_as_present"/>
+                                <div class="text-muted">Excused = Present.</div>
+                                <field name="count_excused_as_present"/>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+        </xpath>
+
+
+        </field>
+    </record>
+</odoo>

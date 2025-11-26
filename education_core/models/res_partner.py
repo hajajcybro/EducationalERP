@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
+from datetime import date
+
 
 class ResPartner(models.Model):
     """Extend partner to add position role"""
@@ -18,13 +21,13 @@ class ResPartner(models.Model):
     admission_no = fields.Char(string='Admission Number',)
     class_id = fields.Many2one('education.class', string='Class')
     current_enrollment_id = fields.Many2one('education.enrollment',
-                                            string='Current Enrollment',
+                                            string='Enrollment ID',
                                             readonly=True,
                                             help='Link to the current enrollment record of the student.'
                                             )
-    roll_no = fields.Char('Roll Number')
-    class_teacher_id = fields.Many2one('res.partner', string='Class Teacher',
-                                       domain=[('position_role', '=', 'teacher')])
+    roll_no = fields.Char('Roll Number', readonly=True,)
+    class_teacher_id = fields.Many2one('hr.employee', string='Class Teacher', readonly=True,
+                                       domain=[('role', '=', 'teacher')])
 
    #parent details
     father_name = fields.Char('Father Name')
@@ -38,7 +41,7 @@ class ResPartner(models.Model):
     id_no = fields.Char('Aadhar No. / ID No.', help='Government-issued ID number')
     relation = fields.Char(string='Relation', help="Relationship of the guardian to the applicant")
     dob = fields.Date('Date of Birth')
-    age = fields.Integer('Age')
+    age = fields.Integer('Age',compute='_compute_age',)
     gender = fields.Selection([
         ('male', 'Male'),
         ('female', 'Female'),
@@ -120,5 +123,47 @@ class ResPartner(models.Model):
                 vals['admission_no'] = self.env['ir.sequence'].next_by_code('education_student_admission')
 
         return super().write(vals)
+
+    @api.depends('dob')
+    def _compute_age(self):
+        """Compute age from date of birth."""
+        for record in self:
+            if record.dob:
+                record.age = int((date.today() - record.dob).days / 365.25)  # More accurate
+            else:
+                record.age = 0
+
+    @api.constrains('program_id', 'academic_year_id')
+    def _check_duration_match(self):
+        """Ensure program duration matches academic year duration."""
+        for rec in self:
+            if rec.program_id and rec.academic_year_id:
+                program_duration = rec.program_id.duration or 0.0
+                year_duration = rec.academic_year_id.duration or 0.0
+                if float(program_duration) != float(year_duration):
+                    raise ValidationError(_(
+                        "Duration mismatch: The selected program (%s years) "
+                        "does not match the academic year (%s years)."
+                    ) % (program_duration, year_duration))
+
+    @api.onchange('class_id')
+    def _onchange_class_id(self):
+        if self.class_id:
+            if self.class_id.class_teacher_id:
+                self.class_teacher_id = self.class_id.class_teacher_id
+
+            # Find last student in this class
+            last_student = self.search([
+                ('class_id', '=', self.class_id.id),
+                ('roll_no', '!=', False)
+            ], order='roll_no desc', limit=1)
+
+            last_roll = int(last_student.roll_no) if last_student and last_student.roll_no else 0
+
+            # Assign next roll number
+            self.roll_no = last_roll + 1
+
+
+
 
 
