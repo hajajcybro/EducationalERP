@@ -7,46 +7,47 @@ class EducationAttendanceSummary(models.Model):
     _rec_name = 'student_id'
 
     student_id = fields.Many2one(
-        'education.enrollment',
+        'res.partner',domain=[('position_role','=','student')],
         string="Student",
         required=True,
     )
+    summary_type = fields.Selection([
+        ('daily', 'Daily'),
+        ('monthly', 'Monthly'),
+        ('annual', 'Annual'),
+        ('subject', 'Subject-wise'),
+        ('term', 'Term-wise'),
+    ], required=True)
 
-    program_id = fields.Many2one(
-        'education.program',
-        related='student_id.program_id',
-        store=True,
-        readonly=True
-    )
+    date = fields.Date()
+    month = fields.Char()
+    year = fields.Char()
 
-    class_id = fields.Many2one(
-        'education.class',
-        related='student_id.current_class_id',
-        store=True,
-        readonly=True
-    )
-    academic_year_id = fields.Many2one(
-        'education.academic.year',
-        related='student_id.academic_year_id',
-        store=True,)
+    subject_id = fields.Many2one('education.course')
 
-    total_present = fields.Integer(default=0)
-    total_absent = fields.Integer(default=0)
-    total_leave = fields.Integer(default=0)
+    # Calculated values
+    total_present = fields.Integer()
+    total_absent = fields.Integer()
+    total_leave = fields.Integer()
 
     attendance_percentage = fields.Float(
         compute="_compute_percentage",
-        store=True,
-        string="Attendance %"
+        store=True
     )
+    class_id = fields.Many2one(
+        'education.class',
+        related='student_id.class_id',
+        store=True,
+        readonly=True
+    )
+    _sql_constraints = [
+        ('unique_summary',
+         'unique(student_id, summary_type, date, month, year, subject_id, term_id)',
+         'Summary record already exists!')
+    ]
 
     @api.depends('total_present', 'total_absent', 'total_leave')
     def _compute_percentage(self):
-        for rec in self:
-            total_days = rec.total_present + rec.total_absent + rec.total_leave
-            if total_days > 0:
-                rec.attendance_percentage = (rec.total_present / total_days) * 100
-            else:
-                rec.attendance_percentage = 0.0
-
-
+            for rec in self:
+                total = rec.total_present + rec.total_absent + rec.total_leave
+                rec.attendance_percentage = (rec.total_present / total * 100) if total else 0.0

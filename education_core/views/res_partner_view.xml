@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
 
+<!--form view-->
     <record id="school_partner_teacher_form_view" model="ir.ui.view">
         <field name="name">school.partner.teacher.form.view</field>
         <field name="model">res.partner</field>

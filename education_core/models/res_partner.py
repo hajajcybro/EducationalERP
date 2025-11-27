@@ -9,7 +9,7 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     position_role = fields.Selection(
-        selection=[('teacher', 'Teacher'), ('student', 'Student')],
+        selection=[('applicant', 'Applicant'), ('student', 'Student')],
         string='Position',
     )
     email = fields.Char(string='Email', required=True, help='Student email address.')
@@ -25,8 +25,8 @@ class ResPartner(models.Model):
                                             readonly=True,
                                             help='Link to the current enrollment record of the student.'
                                             )
-    roll_no = fields.Char('Roll Number', readonly=True,)
-    class_teacher_id = fields.Many2one('hr.employee', string='Class Teacher', readonly=True,
+    roll_no = fields.Char('Roll Number')
+    class_teacher_id = fields.Many2one('hr.employee', string='Class Teacher',
                                        domain=[('role', '=', 'teacher')])
 
    #parent details
@@ -41,7 +41,7 @@ class ResPartner(models.Model):
     id_no = fields.Char('Aadhar No. / ID No.', help='Government-issued ID number')
     relation = fields.Char(string='Relation', help="Relationship of the guardian to the applicant")
     dob = fields.Date('Date of Birth')
-    age = fields.Integer('Age',compute='_compute_age',)
+    age = fields.Integer('Age',compute='_compute_age', store=True)
     gender = fields.Selection([
         ('male', 'Male'),
         ('female', 'Female'),

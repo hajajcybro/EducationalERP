@@ -5,8 +5,7 @@ class ResConfigSettings(models.TransientModel):
 
     # Attendance Summary Mode
     attendance_summary_enabled = fields.Boolean(
-        string="Enable Summary Mode",
-        default=True,
+        string="Attendance Summary Mode",
         config_parameter="edu_attendance.summary_enabled",
     )
 
@@ -16,13 +15,12 @@ class ResConfigSettings(models.TransientModel):
         ('annual', 'Annual Summary'),
         ('subject', 'Subject / Period-wise Summary'),
         ('term', 'Term / Semester-wise Summary'),
-        ('overall', 'Overall Academic Year Summary'),
-    ], string="Attendance Summary Mode",
+    ],
     default='overall',
     config_parameter='edu_attendance.summary_mode')
 
     # Attendance Policy Configuration
     count_excused_as_present = fields.Boolean(
         string="Count Excused Absences as Present",
-        default=True,
         config_parameter='edu_attendance.count_excused_as_present')
+

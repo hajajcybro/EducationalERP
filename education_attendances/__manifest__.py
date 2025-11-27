@@ -20,6 +20,12 @@
         'views/menu.xml',
         'views/res_config_settings_view.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'education_attendances/static/src/css/custom.css',
+        ],
+    },
+
     'license': 'AGPL-3',
     'installable': True,
     'application': True,

@@ -87,9 +87,6 @@ class EducationLeaveRequest(models.Model):
     def _check_overlapping_leave(self):
         """Prevent overlapping leave requests for the same student."""
         for rec in self:
-            if rec.applicant != 'student' or not rec.student_id:
-                continue
-
             overlapping = self.search([
                 ('id', '!=', rec.id),
                 ('student_id', '=', rec.student_id.id),

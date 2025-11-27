@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from http.cookiejar import domain_match
+
 from odoo import models, fields
 
 
@@ -11,7 +13,7 @@ class EducationAttendanceLine(models.Model):
 
     attendance_id = fields.Many2one('education.attendance',
                                     string="Attendance", ondelete='cascade')
-    student_id = fields.Many2one('education.enrollment',
+    student_id = fields.Many2one('res.partner', domain =[('position_role', '=', 'student')],
                                  string="Student", required=True)
     status = fields.Selection([
         ('present', 'Present'),

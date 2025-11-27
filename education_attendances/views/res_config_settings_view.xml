@@ -19,58 +19,46 @@
         <field name="arch" type="xml">
 
            <xpath expr="//form" position="inside">
-               <h3>Education Attendance</h3>
-
-
-                <div class="app_settings_block" string="Education Attendance">
-
-                    <div class="row mt16 o_settings_container">
-
-                        <!-- Attendance Summary Mode Column -->
-                        <div class="col-12 col-lg-6 o_setting_box">
-
-                            <div class="o_setting_left_pane">
-                                <span class="o_icon o_icon_settings"></span>
-                            </div>
-
-                            <div class="o_setting_right_pane">
-
-                                <!-- Label and Hint -->
-                                <label for="attendance_summary_mode"/>
-                                <div class="text-muted">Select summary mode.</div>
-
-                                <!-- The Selection -->
-                                <field name="attendance_summary_mode"/>
-
-                                <!-- NEW BOOLEAN HERE -->
-                                <div class="mt8"> <!-- small spacing -->
-                                    <field name="attendance_summary_enabled"/>
-                                    <label for="attendance_summary_enabled"/>
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <!-- Count Excused Column -->
-                        <div class="col-12 col-lg-6 o_setting_box">
-                            <div class="o_setting_left_pane">
-                                <span class="o_icon o_icon_settings"></span>
-                            </div>
-                            <div class="o_setting_right_pane">
-                                <label for="count_excused_as_present"/>
-                                <div class="text-muted">Excused = Present.</div>
-                                <field name="count_excused_as_present"/>
-                            </div>
-                        </div>
-
-                    </div>
-
+                 <div class="o_settings_section">
+                    <h2>Education Attendance</h2>
                 </div>
 
-        </xpath>
+                 <div class="app_settings_block">
+                    <div class="row mt16 o_settings_container">
+                        <!-- Left Column -->
+                        <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <span class="o_icon o_icon_attendance"></span>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <field name="attendance_summary_enabled"/>
+                                    <label for="attendance_summary_enabled"/>
+                                    <div class="text-muted">
+                                        Select summary mode.
+                                    </div>
+                                    <div class="mt8">
+                                        <field name="attendance_summary_mode"/>
+                                    </div>
+                                </div>
+                            </div>
 
+                        <!-- Right Column -->
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <span class="o_icon o_icon_attendance"></span>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <field name="count_excused_as_present"/>
+                                <label for="count_excused_as_present"/>
+                                <div class="text-muted">
+                                    Excused as Present.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
+            </xpath>
         </field>
     </record>
 </odoo>

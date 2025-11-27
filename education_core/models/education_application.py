@@ -6,9 +6,6 @@ from datetime import date
 import re
 
 
-
-
-
 class EducationApplication(models.Model):
     _name = 'education.application'
     _description = 'Education Application'
