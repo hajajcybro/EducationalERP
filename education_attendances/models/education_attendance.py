@@ -62,7 +62,6 @@ class EducationAttendance(models.Model):
         for rec in self:
             rec.state = 'validated'
             # rec._update_attendance_summary()
-
     # def _update_attendance_summary(self):
     #     """Update or create attendance summary for each student."""
     #     self.ensure_one()

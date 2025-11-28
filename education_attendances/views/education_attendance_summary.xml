@@ -54,7 +54,7 @@
         <field name="name">Attendance Summary</field>
         <field name="res_model">education.attendance.summary</field>
         <field name="view_mode">list,form</field>
-        <field name="context">{'group_by': ['program_id', 'class_id']}</field>
+        <field name="context">{'group_by': ['class_id']}</field>
     </record>
 
 </odoo>

@@ -19,10 +19,9 @@
         <field name="arch" type="xml">
 
            <xpath expr="//form" position="inside">
-                 <div class="o_settings_section">
+                 <div id="edu_attendance_settings" class="o_settings_section">
                     <h2>Education Attendance</h2>
                 </div>
-
                  <div class="app_settings_block">
                     <div class="row mt16 o_settings_container">
                         <!-- Left Column -->
