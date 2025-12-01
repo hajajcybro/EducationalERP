@@ -23,6 +23,11 @@ class EducationAttendanceLine(models.Model):
     ], string="Status", required=True,)
     remarks = fields.Char(string="Remarks")
 
+    late_minutes = fields.Integer(
+        string="Late Minutes",
+        help="Number of minutes the student was late."
+    )
+
 
 
 

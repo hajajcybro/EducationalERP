@@ -61,33 +61,8 @@ class EducationAttendance(models.Model):
         """Admin validates attendance and triggers summary updates."""
         for rec in self:
             rec.state = 'validated'
-            # rec._update_attendance_summary()
-    # def _update_attendance_summary(self):
-    #     """Update or create attendance summary for each student."""
-    #     self.ensure_one()
-    #     for line in self.attendance_line_ids:
-    #         # Search for existing summary
-    #         summary = self.env['education.attendance.summary'].search([
-    #             ('student_id', '=', line.student_id.id),
-    #         ], limit=1)
-    #         if not summary:
-    #             summary = self.env['education.attendance.summary'].create({
-    #                 'student_id': line.student_id.id,
-    #                 'total_present': 0,
-    #                 'total_absent': 0,
-    #                 'total_leave': 0,
-    #             })
-    #
-    #             # Update counters based on status
-    #         if line.status == 'present':
-    #             summary.total_present += 1
-    #         elif line.status == 'absent':
-    #             summary.total_absent += 1
-    #         elif line.status == 'leave':
-    #             summary.total_leave += 1
-    #         elif line.status == 'late':
-    #             # If you want to count 'late' as present
-    #             summary.total_present += 1
+
+        self.env['education.attendance.summary'].action_recalculate_all()
 
     def action_load_students(self):
         self.ensure_one()

@@ -48,6 +48,7 @@
                                     <field name="student_id"/>
                                     <field name="status"/>
                                     <field name="remarks"/>
+                                      <field name="late_minutes" invisible="status !='late'"/>
                                 </list>
                              </field>
                          </page>

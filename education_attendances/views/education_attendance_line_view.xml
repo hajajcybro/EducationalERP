@@ -9,6 +9,7 @@
                 <field name="student_id"/>
                 <field name="status"/>
                 <field name="remarks"/>
+
             </list>
         </field>
     </record>
@@ -24,6 +25,7 @@
                         <field name="student_id"/>
                         <field name="status"/>
                         <field name="remarks"/>
+                        <field name="late_minutes" invisible="status !='late'"/>
                     </group>
                 </sheet>
                 <chatter/>
@@ -67,6 +69,7 @@
             </search>
         </field>
     </record>
+
     <record id="action_education_attendance_line" model="ir.actions.act_window">
         <field name="name">Attendance Lines</field>
         <field name="res_model">education.attendance.line</field>

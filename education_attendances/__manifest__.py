@@ -12,6 +12,7 @@
     'depends': ['education_core','mail','base'],
     'data': [
         'security/ir.model.access.csv',
+        'data/ir_cron_data.xml',
         'views/res_partner_view.xml',
         'views/education_leave_request_view.xml',
         'views/education_attendance_view.xml',

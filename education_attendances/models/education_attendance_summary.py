@@ -29,6 +29,7 @@ class EducationAttendanceSummary(models.Model):
     total_present = fields.Integer()
     total_absent = fields.Integer()
     total_leave = fields.Integer()
+    total_late = fields.Integer('Late coming')
 
     attendance_percentage = fields.Float(
         compute="_compute_percentage",
@@ -46,15 +47,9 @@ class EducationAttendanceSummary(models.Model):
          'Summary record already exists!')
     ]
 
-    # @api.depends('total_present', 'total_absent', 'total_leave')
-    # def _compute_percentage(self):
-    #     for rec in self:
-    #         total = rec.total_present + rec.total_absent + rec.total_leave
-    #         rec.attendance_percentage = (rec.total_present / total * 100) if total else 0.0
 
     @api.depends('total_present', 'total_absent', 'total_leave')
     def _compute_percentage(self):
-        # read policy (string → boolean)
         conf = self.env['ir.config_parameter'].sudo().get_param(
             'education_attendances.count_excused_as_present'
         )
@@ -63,36 +58,55 @@ class EducationAttendanceSummary(models.Model):
             present = rec.total_present
             leave = rec.total_leave
             absent = rec.total_absent
-            # numerator
             if enable:
-                print('enable')
                 numerator = present + leave
             else:
-                print('not')
                 numerator = present
-            # denominator always includes leave
             denominator = present + leave + absent
-
             rec.attendance_percentage = (numerator / denominator * 100) if denominator else 0.0
 
+
     def action_recalculate_all(self):
-        """
-           Recalculate ALL attendance summary records
-           based on the CURRENT summary mode saved in settings.
-           """
         print('action recalculation')
-        mode = self.env['ir.config_parameter'].sudo().get_param(
-            'education_attendances.summary_mode'
-        )
+
+        ICP = self.env['ir.config_parameter'].sudo()
+        mode = ICP.get_param('education_attendances.summary_mode')
+        today = fields.Date.today()
+
         # remove old summary records
         self.search([]).unlink()
+
         lines = self.env['education.attendance.line'].search([
             ('attendance_id.state', '=', 'validated')
         ])
         if not lines:
-            print("No validated attendance found — nothing to recalculate.")
             return
 
+        # ---- SHORT FILTERING ----
+        if mode == 'daily':
+            lines = lines.filtered(lambda l: l.attendance_id.date == today)
+
+        elif mode == 'monthly':
+            lines = lines.filtered(
+                lambda l: l.attendance_id.date and
+                          l.attendance_id.date.year == today.year and
+                          l.attendance_id.date.month == today.month
+            )
+
+        elif mode == 'annual':
+            lines = lines.filtered(
+                lambda l: l.attendance_id.date and
+                          l.attendance_id.date.year == today.year
+            )
+
+        elif mode == 'subject':
+            lines = lines.filtered(
+                lambda l: l.attendance_id.date and
+                          l.attendance_id.date.year == today.year
+            )
+        if not lines:
+            return
+        # ---- BUILD SUMMARY ----
         if mode == 'daily':
             self._build_daily(lines)
         elif mode == 'monthly':
@@ -105,19 +119,17 @@ class EducationAttendanceSummary(models.Model):
     def _build_daily(self, lines):
          """One record per student per date."""
          print('daily')
+         today = fields.Date.today()
          groups = defaultdict(list)
          for line in lines:
-             date = line.attendance_id.date
-             if not date:
-                 continue
-             key = (line.student_id.id, date)
+             key = (line.student_id.id, today)
              groups[key].append(line)
 
          for (student_id, date), group_lines in groups.items():
              self._create_summary_from_lines(
                  student_id=student_id,
                  summary_type='daily',
-                 date=date,
+                 date=today,
                  lines=group_lines,
              )
 
