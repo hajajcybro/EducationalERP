@@ -39,12 +39,14 @@
                         <field name="subject_id"/>
                     </group>
 
-                    <group string="Counts">
-                        <field name="total_present"/>
-                        <field name="total_absent"/>
-                        <field name="total_leave"/>
-                        <field name="attendance_percentage"/>
-                    </group>
+<!--                    <group string="Counts">-->
+<!--                        <field name="total_present"/>-->
+<!--                        <field name="total_absent"/>-->
+<!--                        <field name="total_leave"/>-->
+<!--                        <field name="total_late"/>-->
+<!--&lt;!&ndash;                        <field name="total_present_display" readonly="1"/>&ndash;&gt;-->
+<!--                        <field name="attendance_percentage"/>-->
+<!--                    </group>-->
                 </sheet>
             </form>
         </field>

@@ -23,20 +23,20 @@
                     <h2>Education Attendance</h2>
                 </div>
                  <div class="app_settings_block">
-                    <div class="row mt16 o_settings_container">
-                        <!-- Left Column -->
-                        <div class="col-12 col-lg-6 o_setting_box">
+                     <div class="row mt16 o_settings_container">
+                         <!-- Left Column -->
+                         <div class="col-12 col-lg-6 o_setting_box">
                                 <div class="o_setting_left_pane">
                                     <span class="o_icon o_icon_attendance"></span>
                                 </div>
                                 <div class="o_setting_right_pane">
-                                    <field name="attendance_summary_enabled"/>
-                                    <label for="attendance_summary_enabled"/>
+                                    <field name="track_attendance_enabled"/>
+                                    <label for="track_attendance_enabled"/>
                                     <div class="text-muted">
-                                        Select summary mode.
+                                        Tracking  mode.
                                     </div>
                                     <div class="mt8">
-                                        <field name="attendance_summary_mode"/>
+                                        <field name="attendance_tracking_mode"/>
                                     </div>
                                 </div>
                             </div>
@@ -47,10 +47,13 @@
                                 <span class="o_icon o_icon_attendance"></span>
                             </div>
                             <div class="o_setting_right_pane">
-                                <field name="count_excused_as_present"/>
-                                <label for="count_excused_as_present"/>
+                                 <field name="minimum_attendance_enabled"/>
+                                <label for="minimum_attendance_enabled"/>
                                 <div class="text-muted">
-                                    Excused as Present.
+                                    Minimum attendance.
+                                </div>
+                                <div class="mt8">
+                                        <field name="minimum_attendance_percentage"/>
                                 </div>
                             </div>
                         </div>
