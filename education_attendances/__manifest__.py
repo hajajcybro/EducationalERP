@@ -12,12 +12,12 @@
     'depends': ['education_core','mail','base'],
     'data': [
         'security/ir.model.access.csv',
-        'data/ir_cron_data.xml',
         'views/res_partner_view.xml',
         'views/education_leave_request_view.xml',
         'views/education_attendance_view.xml',
         'views/education_attendance_line_view.xml',
         'views/education_attendance_summary.xml',
+        'wizard/attendance_summary_wizard.xml',
         'views/menu.xml',
         'views/res_config_settings_view.xml',
     ],

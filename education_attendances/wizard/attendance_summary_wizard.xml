@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_attendance_summary_wizard_form" model="ir.ui.view">
+        <field name="name">attendance.summary.wizard.form</field>
+        <field name="model">attendance.summary.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Attendance Summary Filters">
+                <sheet>
+                    <group string="Academic Filters">
+                        <field name="academic_year_id"/>
+                        <field name="program_id"/>
+                        <field name="class_id"/>
+                        <field name="subject_id"/>
+                    </group>
+                    <group string="Summary Options">
+                        <field name="summary_type"/>
+                        <field name="date_from" invisible=" summary_type != 'custom'"/>
+                        <field name="date_to" invisible=" summary_type != 'custom'"/>
+                    </group>
+                    <footer>
+                        <button name="action_open_summary" type="object" class="btn-primary" string="Summary"/>
+                        <button string="Cancel" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_attendance_summary" model="ir.actions.act_window">
+        <field name="name">Attendance Summary</field>
+        <field name="res_model">attendance.summary.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_attendance_summary_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

@@ -15,7 +15,7 @@ class ResPartner(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': f'Attendance - {self.name}',
-            'res_model': 'education.attendance.summary',
+            'res_model': 'education.attendance',
             'view_mode': 'list,form',
             'domain': [('student_id', '=', self.id)],
             'context': {'default_student_id': enrollment.id if enrollment else False}

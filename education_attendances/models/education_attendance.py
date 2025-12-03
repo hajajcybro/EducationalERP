@@ -62,7 +62,6 @@ class EducationAttendance(models.Model):
         for rec in self:
             rec.state = 'validated'
 
-        self.env['education.attendance.summary'].action_recalculate_all()
 
     def action_load_students(self):
         self.ensure_one()
