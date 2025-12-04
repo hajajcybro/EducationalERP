@@ -43,6 +43,7 @@
         </field>
     </record>
 
+<!--    search view-->
      <record id="education_timetable_line_search_view" model="ir.ui.view">
         <field name="name">education.timetable.line.search</field>
         <field name="model">education.timetable.line</field>

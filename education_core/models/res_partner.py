@@ -14,12 +14,12 @@ class ResPartner(models.Model):
     )
     email = fields.Char(string='Email', required=True, help='Student email address.')
     phone = fields.Char(string='Phone', help='Student contact number.')
-    academic_year_id = fields.Many2one('education.academic.year', string='Academic Year')
+    academic_year_id = fields.Many2one('education.academic.year', string='Academic Year',required=True,)
     program_id = fields.Many2one('education.program',string='Program', required=True)
 
     # Academic Info
     admission_no = fields.Char(string='Admission Number',)
-    class_id = fields.Many2one('education.class', string='Class')
+    class_id = fields.Many2one('education.class', string='Class',required=True)
     current_enrollment_id = fields.Many2one('education.enrollment',
                                             string='Enrollment ID',
                                             readonly=True,
@@ -38,9 +38,9 @@ class ResPartner(models.Model):
     occupation = fields.Char('Occupation', help='Job or business')
 
     #personal info
-    id_no = fields.Char('Aadhar No. / ID No.', help='Government-issued ID number')
+    id_no = fields.Char('Aadhar No. / ID No.', help='Government-issued ID number',required=True)
     relation = fields.Char(string='Relation', help="Relationship of the guardian to the applicant")
-    dob = fields.Date('Date of Birth')
+    dob = fields.Date('Date of Birth',required=True)
     age = fields.Integer('Age',compute='_compute_age', store=True)
     gender = fields.Selection([
         ('male', 'Male'),

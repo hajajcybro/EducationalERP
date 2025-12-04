@@ -14,8 +14,7 @@ class EducationAttendanceSummary(models.TransientModel):
     subject_id       = fields.Many2one('education.course', string="Subject", readonly=True)
 
     student_id = fields.Many2one('res.partner', string='Student', readonly=True,
-                                 domain = [('position_role','=',' student')]
-    )
+                                 domain = [('position_role','=',' student')])
 
     # Summary type
     summary_type = fields.Selection([

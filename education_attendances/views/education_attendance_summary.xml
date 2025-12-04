@@ -26,7 +26,6 @@
         </field>
     </record>
 
-
     <!-- FORM VIEW-->
     <record id="view_education_attendance_summary_trans_form"
             model="ir.ui.view">
@@ -65,7 +64,6 @@
         </field>
     </record>
 
-
     <!-- ACTION WINDOW -->
     <record id="action_attendance_summary_trans"
             model="ir.actions.act_window">
@@ -75,7 +73,5 @@
         <field name="view_id" ref="view_education_attendance_summary_trans_form"/>
         <field name="target">current</field>
     </record>
-
-
 
 </odoo>

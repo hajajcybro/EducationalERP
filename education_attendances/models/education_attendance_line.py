@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from http.cookiejar import domain_match
-
 from odoo import models, fields
 
 

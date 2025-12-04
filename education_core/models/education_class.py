@@ -61,6 +61,8 @@ class EducationClass(models.Model):
 
     @api.constrains('program_id', 'academic_year_id')
     def _check_program_year_duration(self):
+        """ Ensure the Academic Year duration matches the selected Program's duration.
+        Raises a ValidationError if both durations are different."""
         for rec in self:
             if rec.program_id and rec.academic_year_id:
                 if int(rec.academic_year_id.duration) != rec.program_id.duration:
