@@ -3,18 +3,15 @@ from odoo import api, fields, models
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
-    # Attendance Summary Mode
-    track_attendance_enabled = fields.Boolean(
-        string="Attendance Tracking Mode",
-        config_parameter="education_attendances.track_enabled",
-    )
     attendance_tracking_mode = fields.Selection([
         ('day', 'Day-wise'),
         ('period', 'Period-wise'),
-        ('half_day', 'Half-day'),
+        ('session_wise', 'Session Wise'),
         ('hourly', 'Hourly')
-    ], default='period', config_parameter='education_attendances.tracking_mode')
+    ], default='period',string="Attendance Tracking Mode",
+        config_parameter='education_attendances.tracking_mode')
 
+    # minimum attendance %
     minimum_attendance_enabled = fields.Boolean(
         string="Minimum Attendance Percentage",
         config_parameter="education_attendances.attendance_enabled",

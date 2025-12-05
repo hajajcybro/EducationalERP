@@ -30,8 +30,7 @@
                                     <span class="o_icon o_icon_attendance"></span>
                                 </div>
                                 <div class="o_setting_right_pane">
-                                    <field name="track_attendance_enabled"/>
-                                    <label for="track_attendance_enabled"/>
+                                    <label for="attendance_tracking_mode"/>
                                     <div class="text-muted">
                                         Tracking  mode.
                                     </div>

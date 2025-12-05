@@ -47,9 +47,12 @@
                     </group>
 
                     <group>
-                        <field name="date"/>
-                        <field name="month"/>
-                        <field name="year"/>
+                        <field name="date" invisible=" summary_type != 'date'"/>
+                        <field name="month" invisible=" summary_type != 'month'"/>
+                        <field name="year" invisible=" summary_type != 'year'"/>
+                        <field name="date_from" widget="daterange" options="{'end_date_field': 'date_to'}"
+                               invisible=" summary_type != 'custom'"/>
+                        <field name="date_to" invisible="1"/>
                     </group>
 
                     <group>
