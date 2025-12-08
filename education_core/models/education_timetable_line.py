@@ -2,6 +2,7 @@
 from odoo import models, fields ,api
 from odoo.exceptions import ValidationError
 
+
 class EducationTimetableLine(models.Model):
     _name = 'education.timetable.line'
     _description = 'Education Timetable Line'
@@ -23,8 +24,10 @@ class EducationTimetableLine(models.Model):
         store=True,
         readonly=True
     )
-
     display_name = fields.Char(string="Display Name", compute="_compute_display_name", store=True)
+
+    duration = fields.Float('Duration', compute='_compute_duration', store=True)
+
 
     @api.depends('subject_id', 'faculty_id', 'day')
     def _compute_display_name(self):
@@ -37,12 +40,19 @@ class EducationTimetableLine(models.Model):
                 f"{subject} - {teacher}" if subject and teacher else \
                     subject or teacher or day
 
-
-
     @api.constrains('start_time', 'end_time')
     def _check_time_order(self):
         """Validate that start time is earlier than end time."""
         for rec in self:
             if rec.start_time >= rec.end_time:
                 raise ValidationError("Start time must be earlier than end time.")
+
+    @api.depends('start_time','end_time')
+    def _compute_duration(self):
+        """Compute class duration in hours."""
+        for rec in self:
+            if rec.start_time and rec.end_time and rec.end_time > rec.start_time:
+                rec.duration = rec.end_time - rec.start_time
+            else:
+                rec.duration = 0.0
 

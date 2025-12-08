@@ -142,86 +142,125 @@ class AttendanceSummaryWizard(models.TransientModel):
 
     def _compute_attendance_percentage(self, summary,lines):
         """Compute attendance % for each student and return updated list."""
-        # to_create = []
-        # for vals in summary.values():
-        #     present = vals['total_present'] + vals['total_late']
-        #     leave = vals['total_leave']
-        #     absent = vals['total_absent']
-        #     total = present + leave + absent
-        #     vals['attendance_percentage'] = (present / total * 100.0) if total else 0.0
-        #     to_create.append(vals)
-        # return to_create
         tracking_mode = self.env['ir.config_parameter'].sudo().get_param(
             'education_attendances.tracking_mode')
-        print('tracking_mode',tracking_mode)
         to_create = []
-        # Group lines by student + date
-        daily_map = {}
-        for line in lines:
-            print(line)
-            key = (
-                line.student_id.id,
-                line.attendance_id.class_id.id,
-                line.attendance_id.date,
-            )
-            daily_map[key] = True  # just mark presence for that day
-
         for vals in summary.values():
             student_id = vals['student_id']
             class_id = vals['class_id']
-            print(student_id,class_id)
-            #DAY-WISE CALCULATION
-            if tracking_mode == "day":
 
+            student_lines = [
+                l for l in lines
+                if l.student_id.id == student_id
+                and l.attendance_id.class_id.id == class_id
+            ]
+
+            if tracking_mode == "day":
+                print('day')
+                daily_status = {}
+                for line in student_lines:
+                    date = line.attendance_id.date
+                    if date not in daily_status:
+                        daily_status[date] = set()
+
+                    if line.status:
+                        daily_status[date].add(line.status.lower())
                 present_days = 0
                 absent_days = 0
                 leave_days = 0
+                late_days = 0
 
-                # Loop through UNIQUE (student, class, date)
-                for (sid, cls, dt) in daily_map.keys():
-
-                    # Ensure only THIS student's class is counted
-                    if sid != student_id or cls != class_id:
-                        continue
-
-                    # Collect statuses for this student/class/date
-                    day_statuses = [
-                        l.status.lower()
-                        for l in lines
-                        if l.student_id.id == sid
-                           and l.attendance_id.class_id.id == cls
-                           and l.attendance_id.date == dt
-                    ]
-                    # Apply rules
-                    if "present" in day_statuses or "late" in day_statuses:
+                for date, statuses in daily_status.items():
+                    if "present" in statuses or "late" in statuses:
                         present_days += 1
-
-                    elif all(s == "leave" for s in day_statuses):
+                    elif statuses == {"leave"}:
                         leave_days += 1
-
-                    elif "leave" in day_statuses and "present" not in day_statuses:
-                        present_days += 0.5
+                    elif "leave" in statuses and "absent" in statuses:
+                        # Mix of leave and absent on same day
+                        leave_days += 0.5
                         absent_days += 0.5
-
-                    elif all(s == "absent" for s in day_statuses):
+                    elif "absent" in statuses:
                         absent_days += 1
                     else:
                         absent_days += 1
 
+                # Update vals to show DAYS not periods
+                vals['total_present'] = int(present_days)
+                vals['total_absent'] = int(absent_days)
+                vals['total_leave'] = int(leave_days)
+                vals['total_late'] = 0  # Included in present_days
+
                 total_days = present_days + absent_days + leave_days
                 percentage = (present_days / total_days * 100) if total_days else 0
 
-
-            #PERIOD-WISE CALCULATION (DEFAULT)
-            else:
+            elif tracking_mode == "period":
+                print('period')
+                # Use the already-calculated period counts from summary
                 present = vals['total_present'] + vals['total_late']
                 leave = vals['total_leave']
                 absent = vals['total_absent']
                 total = present + leave + absent
                 percentage = (present / total * 100) if total else 0
+
+            elif tracking_mode == "session_wise":
+                print('session')
+                session_status = {}
+                for line in student_lines:
+                    date = line.attendance_id.date
+                    period_time = line.attendance_id.timetable_line_id.start_time if hasattr(line.attendance_id,
+                                                                                             'timetable_line_id') and line.attendance_id.timetable_line_id else None
+                    session = "afternoon" if (period_time and period_time >= 12.0) else "morning"
+                    key = (date, session)
+                    if key not in session_status:
+                        session_status[key] = set()
+                    if line.status:
+                        session_status[key].add(line.status.lower())
+
+                present_sessions = absent_sessions = leave_sessions = 0
+
+                for statuses in session_status.values():
+                    if "present" in statuses or "late" in statuses:
+                        present_sessions += 1
+                    elif statuses == {"leave"}:
+                        leave_sessions += 1
+                    elif "leave" in statuses and "absent" in statuses:
+                        leave_sessions += 0.5
+                        absent_sessions += 0.5
+                    else:
+                        absent_sessions += 1
+
+                vals.update({
+                    'total_present': int(present_sessions),
+                    'total_absent': int(absent_sessions),
+                    'total_leave': int(leave_sessions),
+                    'total_late': 0
+                })
+
+                total_sessions = present_sessions + absent_sessions + leave_sessions
+                percentage = (present_sessions / total_sessions * 100) if total_sessions else 0
+
+            if tracking_mode == "hourly":
+                print("Hourly mode applied")
+                course = self.env['education.course'].browse(vals.get('subject_id'))
+                if course and course.course_type == 'credit_hour':
+                    total_hours = 0
+                    for l in student_lines:
+                        duration = l.attendance_id.timetable_line_id.duration or 0
+                        if l.status in ['present', 'late']:
+                            total_hours += duration
+
+                    required_hours = course.credit_hours
+                    vals['total_hours_attended'] = total_hours
+                    vals['required_credit_hours'] = required_hours
+                    if required_hours > 0:
+                        percentage = (total_hours / required_hours) * 100
+                    else:
+                        percentage = 0
+                    vals['attendance_percentage'] = round(percentage, 2)
+                    to_create.append(vals)
+                    continue
+            else:
+                percentage = 0
             vals['attendance_percentage'] = round(percentage, 2)
             to_create.append(vals)
         return to_create
-
-
-

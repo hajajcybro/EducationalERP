@@ -20,7 +20,6 @@ class ResConfigSettings(models.TransientModel):
         config_parameter='education_attendances.minimum_attendance',
         default=75.0)
 
-
     # Attendance Policy Configuration
     count_excused_as_present = fields.Boolean(
         string="Count Excused Leave as Present",

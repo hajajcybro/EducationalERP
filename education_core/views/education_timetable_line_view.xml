@@ -35,6 +35,7 @@
                             <field name="day"/>
                             <field name="start_time"/>
                             <field name="end_time"/>
+                            <field name="duration"/>
                             <field name="room_id"/>
                         </group>
                     </group>

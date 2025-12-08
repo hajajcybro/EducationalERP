@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from http.cookiejar import domain_match
-from odoo import models, fields
+from odoo import models, fields, api
 
 
 class EducationAttendanceLine(models.Model):
@@ -26,6 +25,7 @@ class EducationAttendanceLine(models.Model):
         string="Late Minutes",
         help="Number of minutes the student was late."
     )
+
 
 
 

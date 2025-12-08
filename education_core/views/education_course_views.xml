@@ -39,10 +39,11 @@
                         <group string="General Information">
                             <field name="is_elective"/>
                             <field name="duration"/>
-                            <field name="credit_hours"/>
                         </group>
                         <group string="Associations">
                             <field name="program_id"/>
+                             <field name="course_type"/>
+                            <field name="credit_hours" invisible="course_type != 'credit_hour'"/>
 
                         </group>
                     </group>

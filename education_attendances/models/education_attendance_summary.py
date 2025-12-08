@@ -44,3 +44,6 @@ class EducationAttendanceSummary(models.TransientModel):
     total_late    = fields.Integer(string='Late', readonly=True)
 
     attendance_percentage = fields.Float(string='Attendance %', readonly=True)
+
+
+

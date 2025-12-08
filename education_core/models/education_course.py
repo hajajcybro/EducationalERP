@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
 
@@ -16,9 +16,14 @@ class EducationCourse(models.Model):
     description = fields.Text(string="Description")
     active = fields.Boolean(default=True, string="Active")
 
-    _sql_constraints = [
-        ('unique_course_code', 'unique(code)', 'Course code must be unique!'),
-    ]
+    course_type = fields.Selection([
+        ('semester', 'Semester-based'),
+        ('credit_hour', 'Credit Hour-based'),
+    ], string='Course Type', default='semester', required=True)
+
+    _uniq_course_code = models.Constraint(
+        'unique(code)','Course code must be unique',
+    )
 
     @api.constrains('duration')
     def _check_duration(self):
@@ -26,3 +31,10 @@ class EducationCourse(models.Model):
         for record in self:
             if record.duration and record.duration <= 0:
                 raise ValidationError(_("Duration must be a positive value."))
+
+    @api.constrains('credit_hours', 'course_type')
+    def _check_credit_hours(self):
+        """Ensure credit hours are set for credit-hour courses."""
+        for record in self:
+            if record.course_type == 'credit_hour' and not record.credit_hours:
+                raise ValidationError("Credit hours must be specified for credit hour-based courses.")
