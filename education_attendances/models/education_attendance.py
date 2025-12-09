@@ -66,7 +66,7 @@ class EducationAttendance(models.Model):
     def action_load_students(self):
         self.ensure_one()
         # get students correctly from res.partner
-        students = self.class_id.student_ids.filtered(lambda s: s.position_role == 'student')
+        students = self.class_id.student_ids.filtered(lambda s: s.is_student == True)
 
         Leave = self.env['education.leave.request']
         for student in students:

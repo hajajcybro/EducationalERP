@@ -74,20 +74,19 @@ class EducationEnrollment(models.Model):
         for rec in self:
             rec.status = 'dropped'
 
-
     def _assign_roll_number(self):
         """Assign sequential roll number based on class and academic year."""
         for rec in self:
             if not rec.current_class_id or not rec.academic_year_id:
                 continue
-
-            last_enrollment = self.search([
-                ('current_class_id', '=', rec.current_class_id.id),
+            last_student = self.env['res.partner'].search([
+                ('is_student', '=', True),
+                ('class_id', '=', rec.current_class_id.id),
                 ('academic_year_id', '=', rec.academic_year_id.id),
-            ], order='roll_number desc', limit=1)
-            last_roll = last_enrollment.roll_number or 0
+                ('roll_no', '!=', False),
+            ], order="roll_no desc", limit=1)
+            last_roll = int(last_student.roll_no) if last_student else 0
             rec.roll_number = last_roll + 1
-
 
     @api.model_create_multi
     def create(self, vals_list):

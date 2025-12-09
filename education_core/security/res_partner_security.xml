@@ -12,7 +12,7 @@
     <record id="rule_res_partner_teacher_see_students" model="ir.rule">
         <field name="name">Teacher: Can View All Students</field>
         <field name="model_id" ref="base.model_res_partner"/>
-        <field name="domain_force">[('position_role', '=', 'student')]</field>
+        <field name="domain_force">[('is_student', '=', True)]</field>
         <field name="global" eval="False"/>
         <field name="groups" eval="[(4, ref('education_core.group_education_teacher'))]"/>
         <field name="perm_read" eval="True"/>

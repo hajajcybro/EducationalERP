@@ -11,7 +11,7 @@ class EducationAttendanceLine(models.Model):
 
     attendance_id = fields.Many2one('education.attendance',
                                     string="Attendance", ondelete='cascade')
-    student_id = fields.Many2one('res.partner', domain =[('position_role', '=', 'student')],
+    student_id = fields.Many2one('res.partner', domain =[('is_student', '=', True)],
                                  string="Student", required=True)
     status = fields.Selection([
         ('present', 'Present'),

@@ -43,6 +43,5 @@
               parent="menu_education_attendances_root"
               action="action_edu_attendance_settings"
               sequence="99"/>
-
 </odoo>
 

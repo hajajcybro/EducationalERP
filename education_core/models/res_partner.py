@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from email.policy import default
+
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 from datetime import date
@@ -9,9 +11,10 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     position_role = fields.Selection(
-        selection=[('applicant', 'Applicant'), ('student', 'Student')],
+        selection=[('teacher', 'Teacher'), ('student', 'Student')],
         string='Position',
     )
+    is_student = fields.Boolean('Student')
     email = fields.Char(string='Email', required=True, help='Student email address.')
     phone = fields.Char(string='Phone', help='Student contact number.')
     academic_year_id = fields.Many2one('education.academic.year', string='Academic Year',required=True,)
@@ -110,7 +113,7 @@ class ResPartner(models.Model):
         vals_list = vals if isinstance(vals, list) else [vals]
 
         for val in vals_list:
-            if val.get('position_role') == 'student' and not val.get('admission_no'):
+            if val.get('is_student') == True and not val.get('admission_no'):
                 val['admission_no'] = self.env['ir.sequence'].next_by_code('education_student_admission')
 
         return super().create(vals_list)
@@ -119,7 +122,7 @@ class ResPartner(models.Model):
         """Override write to generate an admission number when a partner
         becomes a student and lacks one."""
         for rec in self:
-            if vals.get('position_role') == 'student' and not rec.admission_no:
+            if vals.get('is_student') == True and not rec.admission_no:
                 vals['admission_no'] = self.env['ir.sequence'].next_by_code('education_student_admission')
 
         return super().write(vals)

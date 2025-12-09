@@ -193,6 +193,32 @@ class AttendanceSummaryWizard(models.TransientModel):
                 total_days = present_days + absent_days + leave_days
                 percentage = (present_days / total_days * 100) if total_days else 0
 
+            elif tracking_mode == "hourly":
+                percentage = 0.0
+
+                print("Hourly mode applied")
+                course = self.env['education.course'].browse(vals.get('subject_id'))
+                print(course.read())
+                if course and course.course_type == 'credit_hour':
+                    total_hours = 0
+                    for l in student_lines:
+                        duration = l.attendance_id.timetable_line_id.duration
+                        print(duration)
+                        if l.status in ['present', 'late']:
+                            total_hours += duration
+                    required_hours = course.credit_hours
+                    if required_hours:
+                        print('required_hours',required_hours)
+                        vals['total_hours_attended'] = total_hours
+                        vals['required_credit_hours'] = required_hours
+                        if required_hours > 0:
+                            percentage = (total_hours / required_hours) * 100
+                        else:
+                            percentage = 0
+                        vals['attendance_percentage'] = round(percentage, 2)
+                        to_create.append(vals)
+
+
             elif tracking_mode == "period":
                 print('period')
                 # Use the already-calculated period counts from summary
@@ -239,26 +265,6 @@ class AttendanceSummaryWizard(models.TransientModel):
                 total_sessions = present_sessions + absent_sessions + leave_sessions
                 percentage = (present_sessions / total_sessions * 100) if total_sessions else 0
 
-            if tracking_mode == "hourly":
-                print("Hourly mode applied")
-                course = self.env['education.course'].browse(vals.get('subject_id'))
-                if course and course.course_type == 'credit_hour':
-                    total_hours = 0
-                    for l in student_lines:
-                        duration = l.attendance_id.timetable_line_id.duration or 0
-                        if l.status in ['present', 'late']:
-                            total_hours += duration
-
-                    required_hours = course.credit_hours
-                    vals['total_hours_attended'] = total_hours
-                    vals['required_credit_hours'] = required_hours
-                    if required_hours > 0:
-                        percentage = (total_hours / required_hours) * 100
-                    else:
-                        percentage = 0
-                    vals['attendance_percentage'] = round(percentage, 2)
-                    to_create.append(vals)
-                    continue
             else:
                 percentage = 0
             vals['attendance_percentage'] = round(percentage, 2)

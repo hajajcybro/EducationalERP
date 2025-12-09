@@ -9,7 +9,6 @@ class EducationTimetableLine(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = 'display_name'
 
-
     subject_id = fields.Many2one('education.course', required=True)
     faculty_id = fields.Many2one('hr.employee', required=True, domain=[('role', '=', 'teacher')])
     day = fields.Selection([('monday','Monday'),('tuesday','Tuesday'),('wednesday','Wednesday'),('thursday','Thursday'),('friday','Friday')])
@@ -51,8 +50,17 @@ class EducationTimetableLine(models.Model):
     def _compute_duration(self):
         """Compute class duration in hours."""
         for rec in self:
-            if rec.start_time and rec.end_time and rec.end_time > rec.start_time:
-                rec.duration = rec.end_time - rec.start_time
-            else:
+            if rec.start_time is None or rec.end_time is None or rec.end_time <= rec.start_time:
                 rec.duration = 0.0
+                continue
+            sh = int(rec.start_time)
+            eh = int(rec.end_time)
+            # fractional part - convert to minutes
+            sm = int(round((rec.start_time - sh) * 60))
+            em = int(round((rec.end_time - eh) * 60))
+
+            start_minutes = sh * 60 + sm
+            end_minutes = eh * 60 + em
+            rec.duration = (end_minutes - start_minutes) / 60.0
+
 

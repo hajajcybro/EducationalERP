@@ -11,7 +11,7 @@ class EducationLeaveRequest(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = 'student_id'
 
-    student_id = fields.Many2one('res.partner', string='Name', domain=[('position_role', '=', 'student')])
+    student_id = fields.Many2one('res.partner', string='Name', domain=[('is_student', '=', 'student')])
     leave_format = fields.Selection([('full_day', 'Full Day'), ('half_day', 'Half Day')],required=True, string='Leave Format' )
     start_date = fields.Date(string='Start Date')
     end_date = fields.Date(string='End Date')

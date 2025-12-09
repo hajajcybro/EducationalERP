@@ -84,4 +84,20 @@ class EducationClass(models.Model):
                     "Please increase room capacity or move students to another class."
                 ) % (enrolled, rec.capacity))
 
+    @api.constrains('room_id')
+    def _check_room_already_allocated(self):
+        """Prevent using the same room for multiple classes (global check)."""
+        for rec in self:
+            if rec.room_id:
+                existing = self.search([
+                    ('id', '!=', rec.id),
+                    ('room_id', '=', rec.room_id.id),
+                ], limit=1)
+
+                if existing:
+                    raise ValidationError(
+                        f"Room '{rec.room_id.name}' is already assigned to class "
+                        f"'{existing.name}'. You cannot reuse the same room."
+                    )
+
 

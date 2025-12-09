@@ -111,7 +111,7 @@ class EducationApplication(models.Model):
         string='Guardians',
         help='Enter the student’s guardians or parents.'
     )
-    id_no = fields.Char('Aadhar No. / ID No.', help='Government-issued ID number')
+    id_no = fields.Char('Aadhar No. / ID No.', help='Government-issued ID number',required=True)
     relation = fields.Char(string='Relation',  help="Relationship of the guardian to the applicant" )
     father_name = fields.Char('Father Name')
     mother_name = fields.Char('Mother Name')
@@ -176,7 +176,7 @@ class EducationApplication(models.Model):
                     'zip': rec.zip,
                     'country_id': rec.country_id.id,
                     'state_id': rec.state_id.id,
-                    'position_role': 'student',
+                    'is_student': True,
                 })
             rec.partner_id = partner.id
             partner.write({
