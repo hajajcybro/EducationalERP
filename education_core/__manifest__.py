@@ -9,7 +9,7 @@
     'company': 'Cybrosys Techno Solutions',
     'maintainer': 'Cybrosys Techno Solutions',
     'website': 'https://www.cybrosys.com',
-    'depends': ['base', 'mail','base_automation','hr'],
+    'depends': ['base', 'mail','base_automation','hr','web'],
     'data': [
         'security/education_security_groups.xml',
         'security/ir.model.access.csv',
@@ -32,8 +32,16 @@
         'views/education_class_room_view.xml',
         'views/education_timetable_line_view.xml',
         'wizard/eduaction_application_reject_wizard.xml',
+        'wizard/student_report_wizard.xml',
+        'report/ir_actions_report.xml',
+        'report/student_report-template.xml',
         'views/menus.xml',
 ],
+    'assets': {
+        'web.assets_backend': [
+            'education_core/static/src/js/action_manager.js',
+        ],
+    },
     'license': 'AGPL-3',
     'installable': True,
     'application': True,

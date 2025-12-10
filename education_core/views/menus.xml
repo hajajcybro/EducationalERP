@@ -70,17 +70,27 @@
               action="action_education_core_timetable_line"
               sequence="10"/>
 
+     <!--    Report-->
+    <menuitem id="menu_student_report"
+              name="Report"
+              parent="menu_student_management_root"
+              sequence="20"/>
+    <menuitem id="menu_education_student_wizard"
+              name="Student Report"
+              parent="menu_student_report"
+              action="action_student_report_wizard"
+              sequence="20"/>
 
     <!--    configuration-->
     <menuitem id="menu_student_configuration"
               name="Configuration"
               parent="menu_student_management_root"
-              sequence="20"/>
+              sequence="30"/>
     <menuitem id="menu_education_academic_year"
               name="Academic year"
               parent="menu_student_configuration"
               action="education_academic_year_action"
-              sequence="20"/>
+              sequence="30"/>
 
 
     <menuitem id="menu_education_category_action"

@@ -24,8 +24,7 @@ class ResPartner(models.Model):
     admission_no = fields.Char(string='Admission Number',)
     class_id = fields.Many2one('education.class', string='Class',required=True)
     current_enrollment_id = fields.Many2one('education.enrollment',
-                                            string='Enrollment ID',
-                                            readonly=True,
+                                            string='Enrollment ID',readonly=True,
                                             help='Link to the current enrollment record of the student.'
                                             )
     roll_no = fields.Char('Roll Number')
