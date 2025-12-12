@@ -19,6 +19,8 @@
         <field name="arch" type="xml">
             <form string="Document">
                 <sheet>
+
+                    <field name="photo" widget="image" class="oe_avatar" alt="Avatar"/>
                     <group>
                         <group>
                             <field name="student_id"/>

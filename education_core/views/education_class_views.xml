@@ -26,12 +26,12 @@
                             <field name="name"/>
                             <field name="room_id"/>
                             <field name="capacity"/>
+                            <field name="class_teacher_id"/>
                         </group>
                         <group>
                             <field name="program_id"/>
                             <field name="session_id"/>
                             <field name="academic_year_id"/>
-                            <field name="class_teacher_id"/>
                         </group>
                     </group>
                     <notebook>

@@ -11,15 +11,12 @@ class EducationCourse(models.Model):
     code = fields.Char(string="Course Code", required=True)
     program_id = fields.Many2one('education.program', string="Program", required=True, ondelete='cascade')
     duration = fields.Integer(string="Duration (Months)")
-    credit_hours = fields.Float(string="Credit Hours")
     is_elective = fields.Boolean(string="Is Elective?", default=False)
     description = fields.Text(string="Description")
     active = fields.Boolean(default=True, string="Active")
 
-    course_type = fields.Selection([
-        ('semester', 'Semester-based'),
-        ('credit_hour', 'Credit Hour-based'),
-    ], string='Course Type', default='semester', required=True)
+    credit_hours = fields.Float(string="Credit Hours")
+    is_credit_hour = fields.Boolean(string="Credit Hour Based?")
 
     _uniq_course_code = models.Constraint(
         'unique(code)','Course code must be unique',
@@ -32,9 +29,8 @@ class EducationCourse(models.Model):
             if record.duration and record.duration <= 0:
                 raise ValidationError(_("Duration must be a positive value."))
 
-    @api.constrains('credit_hours', 'course_type')
+    @api.constrains('credit_hours', 'is_credit_hour')
     def _check_credit_hours(self):
-        """Ensure credit hours are set for credit-hour courses."""
         for record in self:
-            if record.course_type == 'credit_hour' and not record.credit_hours:
-                raise ValidationError("Credit hours must be specified for credit hour-based courses.")
+            if record.is_credit_hour and not record.credit_hours:
+                raise ValidationError(_("Credit hours must be specified when the course is credit-hour based."))

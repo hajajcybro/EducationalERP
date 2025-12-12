@@ -31,10 +31,25 @@ class EducationProgram(models.Model):
     session_ids = fields.One2many('education.session', 'program_id', string='Sessions')
     course_ids = fields.One2many('education.course', 'program_id', string='All Courses')
 
-
-    _sql_constraints = [
-        ('unique_program_code', 'unique(code)', 'Program code must be unique!'),
-    ]
+    education_type = fields.Selection(
+        [
+            ('school', 'School'),
+            ('college', 'College'),
+        ],
+        string="Type of Education",
+        required=True,
+        default='college',
+    )
+    board = fields.Selection([
+        ('cbse', 'CBSE'),
+        ('icse', 'ICSE'),
+        ('state', 'State Board'),
+    ], string="Board")
+    medium = fields.Selection([
+        ('english', 'English'),
+        ('hindi', 'Hindi'),
+        ('malayalam', 'Malayalam'),
+    ], string="Medium")
 
     @api.onchange('program_type')
     def _onchange_program_type(self):

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+   <menuitem id="menu_transport_root"
+              name="Education Transport"
+              sequence="10"/>
+   <menuitem id="menu_transport_vehicle"
+              name="Vehicles"
+              parent="menu_transport_root"
+              action="action_education_transport_vehicle"/>
+   <menuitem id="menu_transport_route"
+              name="Routes"
+              parent="menu_transport_root"
+              action="action_education_transport_route"/>
+   <menuitem id="menu_education_transport_assignment"
+              name="Assignments"
+              parent="menu_transport_root"
+              action="action_education_transport_assignment"/>
+     <menuitem id="menu_transport_stop"
+              name="Stops"
+              parent="menu_transport_root"
+              action="action_education_transport_stop"/>
+     <menuitem id="menu_transport_driver"
+              name="Driver"
+              parent="menu_transport_root"
+              action="action_driver_list"/>
+
+
+
+</odoo>

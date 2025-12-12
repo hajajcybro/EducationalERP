@@ -25,7 +25,11 @@ class EducationLeaveRequest(models.Model):
         ('cancelled', 'Cancelled'),
     ], string='Status', default='draft', tracking=True)
     temporary = fields.Date()
-
+    teacher_id = fields.Many2one(
+        'hr.employee',
+        string='Teacher',
+        domain=[('role', '=', 'teacher')],
+    )
 
     @api.depends("start_date", "end_date", "total_leave_days")
     def _compute_leave_day(self):
@@ -38,13 +42,13 @@ class EducationLeaveRequest(models.Model):
                     record.temporary = record.end_date
                     while (record.start_date <= record.temporary):
                         record.temporary -= week
-                        if record.temporary.isoweekday() not in (5, 6):
+                        if record.temporary.isoweekday() != 6:
                             days += 1
                     record.total_leave_days = days
             else:
                 if record.end_date:
                     weekday = record.end_date.weekday()
-                    if weekday in (5, 6):
+                    if weekday == 6:
                         record.total_leave_days = 0
                     else:
                         record.total_leave_days = 0.5

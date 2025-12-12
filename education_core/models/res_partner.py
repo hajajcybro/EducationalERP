@@ -80,6 +80,10 @@ class ResPartner(models.Model):
     language = fields.Char('Language / Medium')
     board = fields.Char('Board / University')
 
+    parent_email = fields.Char(string="Parent Email")
+    # Bus route
+    transportation = fields.Boolean(string='Using transportation facility')
+    bus_no = fields.Char(string='Bus NO')
 
     def action_open_documents(self):
         """Open documents related to this student."""

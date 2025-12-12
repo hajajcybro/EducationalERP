@@ -36,6 +36,7 @@ class EducationClass(models.Model):
     student_ids = fields.One2many('res.partner','class_id')
     session_id = fields.Many2one('education.session',string='Session')
     timetable_line_ids = fields.One2many('education.timetable.line','class_id')
+
     @api.depends('room_id')
     def _compute_capacity(self):
         """Compute the class capacity based on the selected room."""

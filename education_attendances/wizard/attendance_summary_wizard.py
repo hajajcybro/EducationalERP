@@ -199,7 +199,7 @@ class AttendanceSummaryWizard(models.TransientModel):
                 print("Hourly mode applied")
                 course = self.env['education.course'].browse(vals.get('subject_id'))
                 print(course.read())
-                if course and course.course_type == 'credit_hour':
+                if course and course.is_credit_hour == True:
                     total_hours = 0
                     for l in student_lines:
                         duration = l.attendance_id.timetable_line_id.duration

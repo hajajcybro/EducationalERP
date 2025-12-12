@@ -20,6 +20,7 @@
                         <group>
                             <field name="student_id"/>
                             <field name="leave_format"/>
+                            <field name="teacher_id"/>
                             <field name="reason"/>
                         </group>
                         <group>
@@ -62,6 +63,7 @@
                   date_stop="end_date"
                   color="student_id">
             <field name="student_id"/>
+            <field name="teacher_id"/>
             <field name="leave_format"/>
             <field name="reason"/>
         </calendar>

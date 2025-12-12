@@ -201,6 +201,7 @@ class EducationApplication(models.Model):
                     'Year_of_passing': rec.Year_of_passing,
                     'language': rec.language,
                     'board': rec.board,
+                    'image_1920': rec.photo,
                 })
 
     @api.constrains('email', 'phone', 'contact_no', 'emergency_phone')

@@ -22,6 +22,8 @@
         'report/ir_actions_report.xml',
         'report/attendance_report.xml',
         'views/res_config_settings_view.xml',
+        'data/mail_template.xml',
+        'data/cron.xml',
         'views/menu.xml',
     ],
     'assets': {

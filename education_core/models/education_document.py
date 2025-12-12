@@ -37,6 +37,7 @@ class EducationDocument(models.Model):
     notes = fields.Text(string='Internal Notes')
     name = fields.Char(string = 'Name', compute="_compute_name",
     store=True)
+    photo = fields.Binary(string="Photo")
 
     @api.depends('student_id', 'admission_no', 'document_type')
     def _compute_name(self):
@@ -74,3 +75,27 @@ class EducationDocument(models.Model):
                     rec.document_type.name,
                     limit
                 ))
+
+    @api.onchange('student_id')
+    def _onchange_student_id_set_photo(self):
+        """When selecting a student, auto-fill photo if student has one."""
+        if self.student_id and self.student_id.image_1920:
+            self.photo = self.student_id.image_1920
+        else:
+            self.photo = False
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """ Set the student's profile image from the uploaded photo."""
+        records = super().create(vals_list)
+        for rec in records:
+            if rec.photo:
+                rec.student_id.image_1920 = rec.photo
+        return records
+
+    def write(self, vals):
+        """When a photo is added here, update the student's profile photo too."""
+        res = super().write(vals)
+        if 'photo' in vals and vals['photo']:
+            self.student_id.image_1920 = vals['photo']
+        return res

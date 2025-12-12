@@ -71,13 +71,9 @@
               sequence="10"/>
 
      <!--    Report-->
-    <menuitem id="menu_student_report"
-              name="Report"
-              parent="menu_student_management_root"
-              sequence="20"/>
     <menuitem id="menu_education_student_wizard"
               name="Student Report"
-              parent="menu_student_report"
+              parent="menu_student_management_root"
               action="action_student_report_wizard"
               sequence="20"/>
 

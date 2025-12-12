@@ -1,0 +1,26 @@
+ # -*- coding: utf-8 -*-
+{
+    'name': 'Education Transport',
+    'version': '19.0.1.0.0',
+    'summary': 'Manage educational details and student data',
+    'category': 'Education',
+    'sequence': -332,
+    'author': 'Cybrosys Techno Solutions',
+    'company': 'Cybrosys Techno Solutions',
+    'maintainer': 'Cybrosys Techno Solutions',
+    'website': 'https://www.cybrosys.com',
+    'depends': ['education_core'],
+    'data': [
+        'security/ir.model.access.csv',
+        'views/education_transport_vehicle_views.xml',
+        'views/education_transport_route_views.xml',
+        'views/education_transport_stop_views.xml',
+        'views/education_transport_assignment_views.xml',
+        'views/hr_employee_view.xml',
+        'views/menu.xml',
+        ],
+    'license': 'AGPL-3',
+    'installable': True,
+    'application': True,
+    'auto_install': False,
+}

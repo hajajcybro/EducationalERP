@@ -8,6 +8,8 @@ class HrEmployee(models.Model):
     _inherit = 'hr.employee'
 
     role = fields.Selection(
-        selection=[('teacher', 'Teacher'), ('staff', 'Office Staff')],
+        selection=[('teacher', 'Teacher'), ('staff', 'Office Staff'),('driver','Driver'),('other','Other')],
         string='Position',
     )
+    other_role = fields.Char('Other Role')
+#

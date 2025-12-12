@@ -42,8 +42,8 @@
                         </group>
                         <group string="Associations">
                             <field name="program_id"/>
-                             <field name="course_type"/>
-                            <field name="credit_hours" invisible="course_type != 'credit_hour'"/>
+                             <field name="is_credit_hour"  widget="boolean_toggle"/>
+                            <field name="credit_hours" invisible="is_credit_hour != True"/>
 
                         </group>
                     </group>

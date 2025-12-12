@@ -58,6 +58,8 @@
                         <group string="Reference">
                             <field name="admission_no" readonly="1"/>
 <!--                            <field name="current_enrollment_id" readonly="1"/>-->
+                            <field name="transportation"/>
+                            <field name="bus_no"/>
                         </group>
                     </group>
                 </page>
@@ -76,6 +78,7 @@
                         </group>
                         <group string="Parents Info">
                             <field name="father_name"/>
+                            <field name="parent_email"/>
                             <field name="mother_name"/>
                             <field name="contact_no"/>
                             <field name="emergency_phone"/>

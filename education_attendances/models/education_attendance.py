@@ -104,3 +104,32 @@ class EducationAttendance(models.Model):
             else:
                 rec.weekday = datetime.datetime.today().strftime('%A').lower()
 
+    @api.model
+    def attendance_mail_notify(self):
+        """Check overall attendance %, notify parents if below minimum."""
+        print('cron')
+
+        params = self.env['ir.config_parameter'].sudo()
+        if params.get_param('education_attendances.attendance_enabled') != "True":
+            return
+        minimum = float(params.get_param('education_attendances.minimum_attendance') or 0)
+        print(minimum)
+        # All validated attendance lines
+        lines = self.search([('state', '=', 'validated')]).mapped('attendance_line_ids')
+        for student in lines.mapped('student_id'):
+            student_lines = lines.filtered(lambda l: l.student_id == student)
+            total = len(student_lines)
+            present = len(student_lines.filtered(lambda l: l.status == 'present'))
+            percentage = (present / total * 100) if total else 0
+
+            # Send email only if parent email exists and attendance is low
+            if student.parent_email and percentage < minimum:
+                template = self.env.ref(
+                    'education_attendances.mail_template_low_attendance',
+                    raise_if_not_found=False
+                )
+                if template:
+                    template.sudo().send_mail(student.id, force_send=True)
+            student.message_post(
+                body=f"Overall Attendance: {percentage:.2f}% (Minimum Required: {minimum}%)"
+            )

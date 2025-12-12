@@ -31,10 +31,14 @@
                     <group>
                         <group string="Program Details">
                             <field name="code"/>
-                            <field name="duration"/>
-                            <field name="program_type"/>
-                            <field name="session_duration"/>
-                            <field name="total_sessions"/>
+                            <field name="education_type"/>
+                            <field name="board" invisible = "education_type !='school'"/>
+                            <field name="medium" invisible = "education_type !='school'"/>
+                            <field name="duration" invisible = "education_type !='college'"/>
+                            <field name="program_type" invisible = "education_type !='college'"/>
+                            <field name="session_duration" invisible = "education_type !='college'"/>
+                            <field name="total_sessions" invisible = "education_type !='college'"/>
+
                         </group>
                         <group string="Additional Information">
                             <field name="description" placeholder="Add a short description about this program..."/>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="mail_template_low_attendance" model="mail.template">
+        <field name="name">Low Attendance Alert</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="email_from">${(user.email)}</field>
+<!--        <field name="email_to">${object.parent_email}</field>-->
+        <field name="email_to">${object.parent_email or ''}</field>
+        <field name="subject">Attendance Alert for ${object.name}</field>
+        <field name="body_html">
+            <![CDATA[
+            <div>
+                <p>Dear Parent,</p>
+                <p>Your child <strong>${object.name}</strong> has attendance below the required percentage today.</p>
+                <p>Please ensure regular participation.</p>
+            </div>
+            ]]>
+        </field>
+    </record>
+
+</odoo>

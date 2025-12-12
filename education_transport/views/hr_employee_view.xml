@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+   <record id="action_driver_list" model="ir.actions.act_window">
+    <field name="name">Drivers</field>
+    <field name="res_model">hr.employee</field>
+    <field name="view_mode">list,form</field>
+    <field name="domain">[('role', '=', 'driver')]</field>
+    <field name="context">{'default_role': 'driver'}</field>
+</record>
+
+</odoo>

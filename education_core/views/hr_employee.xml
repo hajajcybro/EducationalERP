@@ -8,6 +8,10 @@
         <field name="arch" type="xml">
              <xpath expr="//field[@name='category_ids']" position="replace">
                 <field name="role" filter_domain="[('role,'==','teacher')]"/>
+                  <group>
+                    <field name="other_role" invisible="role != 'other'"/>
+                 </group>
+
             </xpath>
         </field>
     </record>
