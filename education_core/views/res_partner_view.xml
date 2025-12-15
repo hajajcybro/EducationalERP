@@ -58,8 +58,8 @@
                         <group string="Reference">
                             <field name="admission_no" readonly="1"/>
 <!--                            <field name="current_enrollment_id" readonly="1"/>-->
-                            <field name="transportation"/>
-                            <field name="bus_no"/>
+                            <field name="transportation" widget="boolean_toggle"/>
+                            <field name="bus_no" invisible ="transportation != True"/>
                         </group>
                     </group>
                 </page>

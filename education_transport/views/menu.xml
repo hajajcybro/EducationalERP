@@ -6,7 +6,15 @@
    <menuitem id="menu_transport_vehicle"
               name="Vehicles"
               parent="menu_transport_root"
-              action="action_education_transport_vehicle"/>
+              action="action_education_transport_vehicle"
+             sequence="10"/>
+
+   <menuitem id="menu_transport_fleet_vehicle"
+              name="Fleet Vehicles"
+              parent="menu_transport_root"
+              action="action_fleet_vehicle"/>
+
+
    <menuitem id="menu_transport_route"
               name="Routes"
               parent="menu_transport_root"
@@ -23,6 +31,11 @@
               name="Driver"
               parent="menu_transport_root"
               action="action_driver_list"/>
+     <menuitem id="menu_transport_delay_vehicle"
+              name="Delay"
+              parent="menu_transport_root"
+              action="action_transport_delay_wizard"/>
+
 
 
 

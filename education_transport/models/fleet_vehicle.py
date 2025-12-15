@@ -3,15 +3,15 @@ from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
 
-class EduTransportVehicle(models.Model):
-    _name = 'education.transport.vehicle'
-    _description = 'Transport Vehicle'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
-    _rec_name = 'reg_no'
+class FleetVehicle(models.Model):
+    _inherit = 'fleet.vehicle'
 
+    is_transport_vehicle = fields.Boolean(
+        string="Used for Transport",
+    )
+    empl_driver_id = fields.Many2one('hr.employee', string="Driver", domain =[('role', '=', 'driver')],required = True)
     reg_no = fields.Char(string="Registration Number", required=True)
     capacity = fields.Integer(string="Capacity", required=True)
-    driver_id = fields.Many2one('hr.employee', string="Driver", domain =[('role', '=', 'driver')])
     status = fields.Selection([
         ('active', 'Active'),
         ('maintenance', 'Under Maintenance'),
@@ -47,5 +47,4 @@ class EduTransportVehicle(models.Model):
     def action_inactive(self):
         """    Deactivate the vehicle."""
         self.write({'status': 'inactive'})
-
 

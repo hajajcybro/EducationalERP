@@ -25,9 +25,9 @@
                         <button name="action_generate_pdf"
                                 type="object" string="PDF"
                                 class="btn-primary"/>
-<!--                        <button name="action_generate_xl_report"-->
-<!--                                string="XLSX" type="object"-->
-<!--                                class="btn-primary"/>-->
+                        <button name="action_generate_xl_report"
+                                string="XLSX" type="object"
+                                class="btn-primary"/>
                         <button special="cancel"
                                 string="Cancel" class="btn-secondary"/>
                     </footer>

@@ -24,7 +24,6 @@
                     <group>
                         <field name="name"/>
                         <field name="vehicle_id"/>
-                        <field name="active"/>
                     </group>
 
 <!--                    <notebook>-->

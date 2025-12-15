@@ -79,7 +79,7 @@ class StudentReportWizard(models.TransientModel):
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         sheet = workbook.add_worksheet("Student Report")
 
-        # ======= STYLES =======
+        # STYLES
         header_format = workbook.add_format({
             'bold': True,
             'font_size': 12,

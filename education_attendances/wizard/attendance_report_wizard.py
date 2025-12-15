@@ -70,30 +70,73 @@ class AttendanceReportWizard(models.TransientModel):
         }
 
     def get_xlsx_report(self, data, response):
-        _query_model = self.env['report.education_attendances.student_report_attendance']
-        report_data = _query_model._get_report_values([], data)['docs']
-
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-
         sheet = workbook.add_worksheet("Attendance Report")
 
-        header_format = workbook.add_format({'bold': True, 'bg_color': '#D9D9D9', 'border': 1, 'align': 'center'})
-        cell_format = workbook.add_format({'border': 1})
+        header = workbook.add_format({'bold': True, 'border': 1, 'align': 'center'})
+        cell = workbook.add_format({'border': 1})
 
         headers = ["Student", "Class", "Program", "Date", "Status", "Remarks"]
+        for col, h in enumerate(headers):
+            sheet.write(0, col, h, header)
 
-        for col, head in enumerate(headers):
-            sheet.write(0, col, head, header_format)
+        # ---------------- SQL QUERY ----------------
+        query = """
+                SELECT
+                    rp.name AS student_name,
+                    ec.name AS class_name,
+                    ep.name AS program_name,
+                    ea.date,
+                    ea.state AS status,
+                    ea.remarks
+                FROM education_attendance ea
+                JOIN res_partner rp ON rp.id = ea.student_id
+                LEFT JOIN education_class ec ON ec.id = ea.class_id
+                LEFT JOIN education_program ep ON ep.id = ea.program_id
+                WHERE ea.state IS NOT NULL
+            """
 
-        for row, line in enumerate(report_data, 1):
-            sheet.write(row, 0, line.get('student_name'), cell_format)
-            sheet.write(row, 1, line.get('class_name'), cell_format)
-            sheet.write(row, 2, line.get('program_name'), cell_format)
-            sheet.write(row, 3, line.get('date'), cell_format)
-            sheet.write(row, 4, line.get('status'), cell_format)
-            sheet.write(row, 5, line.get('remarks'), cell_format)
+        params = []
+
+        # Student filter (single / multiple)
+        if data.get('student_ids'):
+            query += " AND ea.student_id = ANY(%s)"
+            params.append(data['student_ids'])
+
+        # Class filter
+        if data.get('choice') == 'class' and data.get('class_id'):
+            query += " AND ea.class_id = %s"
+            params.append(data['class_id'])
+
+        # Program filter
+        if data.get('choice') == 'program' and data.get('program_id'):
+            query += " AND ea.program_id = %s"
+            params.append(data['program_id'])
+
+        # Date filters
+        if data.get('based_on') == 'custom' and data.get('date_from') and data.get('date_to'):
+            query += " AND ea.date BETWEEN %s AND %s"
+            params.extend([data['date_from'], data['date_to']])
+
+        elif data.get('based_on') == 'monthly':
+            query += " AND date_trunc('month', ea.date) = date_trunc('month', CURRENT_DATE)"
+
+        elif data.get('based_on') == 'yearly':
+            query += " AND date_part('year', ea.date) = date_part('year', CURRENT_DATE)"
+
+        query += " ORDER BY ea.date, rp.name"
+
+        self.env.cr.execute(query, params)
+        records = self.env.cr.fetchall()
+
+        # ---------------- WRITE XLSX ----------------
+        row = 1
+        for rec in records:
+            for col, value in enumerate(rec):
+                sheet.write(row, col, value or '', cell)
+            row += 1
 
         workbook.close()
-        response.stream.write(output.getvalue())
-        output.close()
+        output.seek(0)
+        response.stream.write(output)

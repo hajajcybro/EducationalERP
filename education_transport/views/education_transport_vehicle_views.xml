@@ -21,14 +21,20 @@
         <field name="model">education.transport.vehicle</field>
         <field name="arch" type="xml">
             <form string="Transport Vehicle">
+                <header>
+                   <button name="action_maintenance" type="object" string="Maintenance"
+                           class="oe_highlight" invisible="status == 'maintenance'"/>
+                     <button name="action_inactive" type="object" string="Deactivate" invisible="status == 'inactive'"/>
+                    <field name="status" widget="statusbar"/>
+                </header>
                 <sheet>
                     <group>
                         <field name="reg_no"/>
                         <field name="capacity"/>
                         <field name="driver_id"/>
-                        <field name="status"/>
                     </group>
                 </sheet>
+                <chatter/>
             </form>
         </field>
     </record>

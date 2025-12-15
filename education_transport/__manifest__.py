@@ -9,7 +9,7 @@
     'company': 'Cybrosys Techno Solutions',
     'maintainer': 'Cybrosys Techno Solutions',
     'website': 'https://www.cybrosys.com',
-    'depends': ['education_core'],
+    'depends': ['education_core','fleet'],
     'data': [
         'security/ir.model.access.csv',
         'views/education_transport_vehicle_views.xml',
@@ -17,6 +17,8 @@
         'views/education_transport_stop_views.xml',
         'views/education_transport_assignment_views.xml',
         'views/hr_employee_view.xml',
+        'views/fleet_vehicle_view.xml',
+        'views/transport_delay_wizard.xml',
         'views/menu.xml',
         ],
     'license': 'AGPL-3',

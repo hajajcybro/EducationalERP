@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_transport_delay_wizard_form" model="ir.ui.view">
+        <field name="name">transport.delay.wizard.form</field>
+        <field name="model">transport.delay.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Transport Delay Notification">
+                <group>
+                    <field name="route_id"/>
+                    <field name="delay_minutes"/>
+                    <field name="delay_reason"/>
+                </group>
+            </form>
+        </field>
+    </record>
+        <record id="action_transport_delay_wizard" model="ir.actions.act_window">
+        <field name="name">Mark Transport Delay</field>
+        <field name="res_model">transport.delay.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>
