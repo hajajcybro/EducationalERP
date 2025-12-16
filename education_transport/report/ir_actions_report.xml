@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+     <record id="action_report_transport_information" model="ir.actions.report">
+       <field name="name">Transport Report</field>
+       <field name="model">education.transport.assignment</field>
+       <field name="report_type">qweb-pdf</field>
+       <field name="report_name">education_transport.report_transport_details</field>
+       <field name="report_file">education_transport.report_transport_details</field>
+   </record>
+    <record id="action_report_vehicle_information" model="ir.actions.report">
+       <field name="name">Vehicle Report</field>
+       <field name="model">fleet.vehicle</field>
+       <field name="report_type">qweb-pdf</field>
+       <field name="report_name">education_transport.report_vehicle_details</field>
+       <field name="report_file">education_transport.report_vehicle_details</field>
+   </record>
+
+
+</odoo>

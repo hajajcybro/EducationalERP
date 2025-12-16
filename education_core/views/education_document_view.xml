@@ -19,8 +19,9 @@
         <field name="arch" type="xml">
             <form string="Document">
                 <sheet>
-
+                    <group>
                     <field name="photo" widget="image" class="oe_avatar" alt="Avatar"/>
+                    </group>
                     <group>
                         <group>
                             <field name="student_id"/>
@@ -28,8 +29,7 @@
                             <field name="attachment" filename="file_name" widget="binary"/>
                         </group>
                         <group>
-
-                             <field name="document_type"/>
+                            <field name="document_type"/>
                             <field name="issue_date"/>
                         </group>
                     </group>

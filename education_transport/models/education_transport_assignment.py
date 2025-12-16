@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields
+from odoo import models, fields, api
 
 class EducationTransportAssignment(models.Model):
     _name = 'education.transport.assignment'
@@ -13,6 +13,7 @@ class EducationTransportAssignment(models.Model):
         required=True,
         domain = [('is_student', '=', True)]
     )
+    image = fields.Image()
     route_id = fields.Many2one(
         'education.transport.route',
         string="Route",
@@ -25,3 +26,11 @@ class EducationTransportAssignment(models.Model):
     )
     active = fields.Boolean(string="Active", default=True)
     notes = fields.Text(string="Notes")
+
+    @api.onchange('student_id')
+    def _onchange_student_id_set_image(self):
+        for rec in self:
+            if rec.student_id:
+                rec.image = rec.student_id.image_1920
+            else:
+                rec.image = False

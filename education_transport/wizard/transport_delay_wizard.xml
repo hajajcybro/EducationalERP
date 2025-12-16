@@ -10,6 +10,16 @@
                     <field name="delay_minutes"/>
                     <field name="delay_reason"/>
                 </group>
+                <footer>
+                    <button name="action_send_notifications"
+                            string="Send Notification"
+                            type="object"
+                            class="btn-primary"/>
+
+                    <button string="Cancel"
+                            special="cancel"
+                            class="btn-secondary"/>
+                </footer>
             </form>
         </field>
     </record>

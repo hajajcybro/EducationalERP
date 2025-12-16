@@ -29,7 +29,7 @@
     'assets': {
         'web.assets_backend': [
             'education_attendances/static/src/css/custom.css',
-            'education_attendances/static/src/js/action_manager.js',
+            # 'education_attendances/static/src/js/action_manager.js',
         ],
     },
 

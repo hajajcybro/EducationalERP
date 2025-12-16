@@ -3,38 +3,60 @@
    <menuitem id="menu_transport_root"
               name="Education Transport"
               sequence="10"/>
-   <menuitem id="menu_transport_vehicle"
-              name="Vehicles"
+<!--    driver and vehicle-->
+
+    <menuitem id="menu_transport_vehicle"
+              name="Vehicle"
               parent="menu_transport_root"
-              action="action_education_transport_vehicle"
-             sequence="10"/>
+              sequence="10"/>
 
    <menuitem id="menu_transport_fleet_vehicle"
-              name="Fleet Vehicles"
-              parent="menu_transport_root"
+              name="Vehicles"
+              parent="menu_transport_vehicle"
               action="action_fleet_vehicle"/>
+    <menuitem id="menu_transport_driver"
+              name="Driver"
+              parent="menu_transport_vehicle"
+              action="action_driver_list"/>
 
-
-   <menuitem id="menu_transport_route"
-              name="Routes"
+<!--route & stop-->
+   <menuitem id="menu_transport_vehicle_route"
+              name="Vehicle Route"
               parent="menu_transport_root"
+              sequence="20"/>
+    <menuitem id="menu_transport_route"
+              name="Routes"
+              parent="menu_transport_vehicle_route"
               action="action_education_transport_route"/>
+    <menuitem id="menu_transport_stop"
+              name="Stops"
+              parent="menu_transport_vehicle_route"
+              action="action_education_transport_stop"/>
+
+
    <menuitem id="menu_education_transport_assignment"
               name="Assignments"
               parent="menu_transport_root"
-              action="action_education_transport_assignment"/>
-     <menuitem id="menu_transport_stop"
-              name="Stops"
-              parent="menu_transport_root"
-              action="action_education_transport_stop"/>
-     <menuitem id="menu_transport_driver"
-              name="Driver"
-              parent="menu_transport_root"
-              action="action_driver_list"/>
-     <menuitem id="menu_transport_delay_vehicle"
+              action="action_education_transport_assignment" sequence="30"/>
+
+   <menuitem id="menu_transport_delay_vehicle"
               name="Delay"
               parent="menu_transport_root"
-              action="action_transport_delay_wizard"/>
+              action="action_transport_delay_wizard" sequence="50"/>
+
+<!--    student and vehicle -->
+   <menuitem id="menu_transport_report"
+              name="Report"
+              parent="menu_transport_root"
+              sequence="50"/>
+   <menuitem id="menu_transport_report_wizard"
+              name="Student Info"
+              parent="menu_transport_report"
+              action="action_transport_report_wizard"/>
+   <menuitem id="menu_transport_vehicle_wizard"
+              name="Vehicle Info"
+              parent="menu_transport_report"
+              action="action_transport_vehicle_wizard"/>
 
 
 
