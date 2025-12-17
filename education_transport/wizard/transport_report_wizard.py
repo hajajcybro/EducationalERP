@@ -13,7 +13,7 @@ class TransportReportWizard(models.TransientModel):
 
     report_type = fields.Selection([
         ('route', 'Route-wise Student Report'),
-        ('vehicle', 'Vehicle Occupancy Report'),
+        ('vehicle', 'Vehicle Wise Report'),
     ], string="Report Type", required=True, default='route')
     route_id = fields.Many2one(
         'education.transport.route',

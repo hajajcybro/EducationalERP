@@ -39,9 +39,8 @@ class VehicleReport(models.AbstractModel):
 
         query += " GROUP BY v.id, v.reg_no, v.capacity"
 
-        # category reports (only if no vehicles selected)
         if report_type == 'over':
-            query += " HAVING COUNT(a.id) > v.capacity"
+            query += " HAVING COUNT(a.id) >= v.capacity"
 
         if report_type == 'available':
             query += " HAVING COUNT(a.id) < v.capacity"

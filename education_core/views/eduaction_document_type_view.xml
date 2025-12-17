@@ -7,13 +7,11 @@
         <field name="arch" type="xml">
             <form>
                 <sheet>
-                    <group>
                         <group>
                             <field name="name"/>
                             <field name="limit"/>
                             <field name="description"/>
                         </group>
-                    </group>
                 </sheet>
             <chatter/>
             </form>

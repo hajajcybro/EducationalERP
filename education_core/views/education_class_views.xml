@@ -30,7 +30,9 @@
                         </group>
                         <group>
                             <field name="program_id"/>
-                            <field name="session_id"/>
+                            <field name="program_type"/>
+                            <field name="division" invisible="program_type != 'school'"/>
+                            <field name="session_id" invisible="program_type != 'college'"/>
                             <field name="academic_year_id"/>
                         </group>
                     </group>

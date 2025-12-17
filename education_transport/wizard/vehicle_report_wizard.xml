@@ -16,6 +16,8 @@
                             string="Print PDF"
                             type="object"
                             class="btn-primary"/>
+                    <button name="action_generate_xl_report" string="XLSX"
+                            type="object"/>
                     <button string="Cancel"
                             special="cancel"
                             class="btn-secondary"/>

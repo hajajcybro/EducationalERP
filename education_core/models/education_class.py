@@ -37,6 +37,25 @@ class EducationClass(models.Model):
     session_id = fields.Many2one('education.session',string='Session')
     timetable_line_ids = fields.One2many('education.timetable.line','class_id')
 
+    program_type = fields.Selection(
+        [('school', 'School'), ('college', 'College')],
+        string='Program Type',
+        readonly=True
+    )
+    division = fields.Char(
+        string='Division',
+        required=True,
+        help='Class division (A, B, C, etc.)'
+    )
+
+    @api.onchange('program_id')
+    def _onchange_program_id(self):
+        """Update the program type automatically when the program is changed."""
+        if self.program_id:
+            self.program_type = self.program_id.education_type
+        else:
+            self.program_type = False
+
     @api.depends('room_id')
     def _compute_capacity(self):
         """Compute the class capacity based on the selected room."""

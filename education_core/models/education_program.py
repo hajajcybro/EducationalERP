@@ -32,10 +32,7 @@ class EducationProgram(models.Model):
     course_ids = fields.One2many('education.course', 'program_id', string='All Courses')
 
     education_type = fields.Selection(
-        [
-            ('school', 'School'),
-            ('college', 'College'),
-        ],
+        [('school', 'School'), ('college', 'College')],
         string="Type of Education",
         required=True,
         default='college',
