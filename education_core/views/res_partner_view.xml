@@ -57,7 +57,9 @@
                         </group>
                         <group string="Reference">
                             <field name="admission_no" readonly="1"/>
-<!--                            <field name="current_enrollment_id" readonly="1"/>-->
+                            <field name="last_missing_doc_mail_date" readonly="1"/>
+                        </group>
+                        <group string="Transport">
                             <field name="transportation" widget="boolean_toggle"/>
                             <field name="bus_no" invisible ="transportation != True"/>
                         </group>

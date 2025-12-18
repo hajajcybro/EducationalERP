@@ -7,12 +7,35 @@
         <field name="model">education.document</field>
         <field name="inherit_id" ref="education_core.view_education_document_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                    <button name="action_approve_doc" string="Approve"
+                            type="object" invisible="state !='draft'"
+                            class="oe_highlight"/>
+                    <button name="action_reject_doc" string="Reject"
+                            type="object" invisible="state !='draft'"
+                            class="oe_highlight"/>
+                </header>
+            </xpath>
             <xpath expr="//field[@name='admission_no']" position="after">
                 <field name="faculty_id"/>
                 <field name="program_id"/>
             </xpath>
              <xpath expr="//field[@name='issue_date']" position="after">
                  <field name="uploaded_by" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+
+<!--    list view-->
+    <record id="education_document_tree_inherit_state" model="ir.ui.view">
+        <field name="name">education.document.list.inherit.state</field>
+        <field name="model">education.document</field>
+        <field name="inherit_id" ref="education_core.view_education_document_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="state"/>
             </xpath>
         </field>
     </record>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="education_document_reject_wizard_view" model="ir.ui.view">
+        <field name="name">education.document.reject.wizard.form</field>
+        <field name="model">education.document.reject.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Reject Document">
+                <group>
+                    <field name="document_id"/>
+                    <field name="rejection_reason"/>
+                </group>
+                <footer>
+                    <button string="Confirm" name="action_confirm_reject" type="object" class="oe_highlight"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

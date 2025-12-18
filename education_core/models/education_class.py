@@ -44,7 +44,6 @@ class EducationClass(models.Model):
     )
     division = fields.Char(
         string='Division',
-        required=True,
         help='Class division (A, B, C, etc.)'
     )
 

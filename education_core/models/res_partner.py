@@ -81,9 +81,14 @@ class ResPartner(models.Model):
     board = fields.Char('Board / University')
 
     parent_email = fields.Char(string="Parent Email", required=True)
+    last_missing_doc_mail_date = fields.Date(
+        string="Last Missing Document Reminder"
+    )
+
     # Bus route
     transportation = fields.Boolean(string='Using transportation facility')
     bus_no = fields.Char(string='Bus NO')
+
 
     def action_open_documents(self):
         """Open documents related to this student."""

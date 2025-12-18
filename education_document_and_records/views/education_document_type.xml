@@ -10,6 +10,7 @@
             <xpath expr="//sheet" position="inside">
                 <group>
                     <field name="is_mandatory"/>
+                    <field name="reminder_interval_days" invisible="is_mandatory != True"/>
                     <field name="is_expirable"/>
                     <field name="expiry_mode" invisible="is_expirable != True"/>
                     <field name="validity_days" invisible="expiry_mode != 'duration'"/>
@@ -19,7 +20,7 @@
     </record>
 
     <record id="action_education_document_type_extended" model="ir.actions.act_window">
-        <field name="name">Documents</field>
+        <field name="name">Document Type</field>
         <field name="res_model">education.document.type</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
