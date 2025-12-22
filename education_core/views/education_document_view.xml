@@ -24,12 +24,13 @@
                         <group>
                             <field name="student_id"/>
                             <field name="admission_no"/>
+                            <field name="attachment" filename="file_name" widget="binary"/>
+
 
                         </group>
                         <group>
                             <field name="issue_date"/>
                             <field name="document_type"/>
-                            <field name="attachment" filename="file_name" widget="binary"/>
                         </group>
                     </group>
                     <notebook sting='Description'>

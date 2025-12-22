@@ -53,29 +53,6 @@ class EducationDocument(models.Model):
         for rec in self:
             rec.admission_no = rec.student_id.admission_no if rec.student_id else False
 
-    @api.constrains('student_id', 'document_type')
-    def _check_document_limit(self):
-        """Restrict number of uploads of same document type per student."""
-        for rec in self:
-            existing_docs = self.search([
-                ('id', '!=', rec.id),
-                ('student_id', '=', rec.student_id.id),
-                ('document_type', '=', rec.document_type.id)
-            ])
-
-            limit = rec.document_type.limit
-
-            if len(existing_docs) >= limit:
-                raise ValidationError(_(
-                    "The student '%s' has already uploaded %d '%s' document(s). "
-                    "The allowed limit is %d."
-                ) % (
-                    rec.student_id.name,
-                    len(existing_docs),
-                    rec.document_type.name,
-                    limit
-                ))
-
     @api.onchange('student_id')
     def _onchange_student_id_set_photo(self):
         """When selecting a student, auto-fill photo if student has one."""

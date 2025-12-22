@@ -9,5 +9,8 @@
     <menuitem id="menu_education_type_documents"
             name="Documents Type" parent="menu_document_management_root"
             action="action_education_document_type_extended"/>
+    <menuitem id="menu_education_report"
+            name="Report" parent="menu_document_management_root"
+            action="action_missing_document_report_wizard"/>
 
 </odoo>

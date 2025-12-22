@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+    <odoo>
+    <record id="view_missing_document_report_wizard" model="ir.ui.view">
+        <field name="name">missing.document.report.wizard.form</field>
+        <field name="model">education.document.missing.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Missing / Pending Documents Report">
+                <group>
+                    <field name="report_type"/>
+                    <field name="document_type_id"/>
+                    <field name="student_id"/>
+                    <field name="only_mandatory"/>
+                </group>
+
+                <footer>
+                    <button string="Cancel"
+                            class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_missing_document_report_wizard" model="ir.actions.act_window">
+    <field name="name">Missing / Pending Documents</field>
+    <field name="res_model">education.document.missing.report.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+</record>
+
+</odoo>

@@ -12,8 +12,7 @@
                     <field name="is_mandatory"/>
                     <field name="reminder_interval_days" invisible="is_mandatory != True"/>
                     <field name="is_expirable"/>
-                    <field name="expiry_mode" invisible="is_expirable != True"/>
-                    <field name="validity_days" invisible="expiry_mode != 'duration'"/>
+                    <field name="validity_days" invisible="is_expirable != True"/>
                 </group>
             </xpath>
         </field>

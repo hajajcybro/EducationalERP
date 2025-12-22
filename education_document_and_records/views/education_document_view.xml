@@ -25,6 +25,11 @@
              <xpath expr="//field[@name='issue_date']" position="after">
                  <field name="uploaded_by" readonly="1"/>
             </xpath>
+             <xpath expr="//field[@name='document_type']" position="after">
+                 <field name="is_expirable"/>
+                <field name="expiry_date" invisible="is_expirable != True"/>
+                 <field name="version"/>
+            </xpath>
         </field>
     </record>
 

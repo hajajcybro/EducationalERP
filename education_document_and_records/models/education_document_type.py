@@ -14,19 +14,15 @@ class EducationDocumentType(models.Model):
         default=7,
         help="Send reminder after these many days if document is still missing"
     )
-
     # expiry doc manage
     is_expirable = fields.Boolean(
         string="Has Expiry",
         help="Enable if this document type expires (e.g. Medical Certificate)"
     )
-    expiry_mode = fields.Selection(
-        [('date', 'Expiry Date'), ('duration', 'Validity Duration')],
-        string="Expiry Type"
-    )
+
     validity_days = fields.Integer(
         string="Validity (Days)",
-        help="Used only when expiry type is duration-based"
+        help="Document valid for X days after issue"
     )
 
 

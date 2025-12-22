@@ -10,4 +10,14 @@
         <field name="interval_type">days</field>
     </record>
 
+    <record id="cron_doc_expiry_2day_warning" model="ir.cron">
+        <field name="name">Document Expiry Warning (2 Days Before)</field>
+        <field name="model_id" ref="model_education_document"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_check_document_expiry()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+    </record>
+
+
 </odoo>
