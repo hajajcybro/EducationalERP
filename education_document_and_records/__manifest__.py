@@ -16,8 +16,16 @@
         'views/education_document_view.xml',
         'views/education_document_type.xml',
         'wizard/education_document_reject_wizard.xml',
+        'wizard/education_document_report_wizard.xml',
+        'report/ir_actions_report.xml',
+        'report/education_document_report_template.xml',
         'views/menu.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'education_document_and_records/static/src/js/action_manager.js',
+        ],
+    },
     'license': 'AGPL-3',
     'installable': True,
     'application': True,

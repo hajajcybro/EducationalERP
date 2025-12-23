@@ -19,7 +19,6 @@
                 </header>
             </xpath>
             <xpath expr="//field[@name='admission_no']" position="after">
-                <field name="faculty_id"/>
                 <field name="program_id"/>
             </xpath>
              <xpath expr="//field[@name='issue_date']" position="after">

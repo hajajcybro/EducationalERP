@@ -7,13 +7,13 @@
         <field name="model">education.document.type</field>
         <field name="inherit_id" ref="education_core.document_document_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//sheet" position="inside">
-                <group>
+            <xpath  expr="//field[@name='name']"  position="after">
                     <field name="is_mandatory"/>
                     <field name="reminder_interval_days" invisible="is_mandatory != True"/>
+            </xpath>
+            <xpath  expr="//field[@name='limit']"  position="after">
                     <field name="is_expirable"/>
                     <field name="validity_days" invisible="is_expirable != True"/>
-                </group>
             </xpath>
         </field>
     </record>

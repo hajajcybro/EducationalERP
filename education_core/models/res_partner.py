@@ -144,6 +144,17 @@ class ResPartner(models.Model):
             else:
                 record.age = 0
 
+    @api.constrains('dob')
+    def _check_age_minimum(self):
+        """Validate minimum age requirement."""
+        for record in self:
+            if record.dob:
+                age = (date.today() - record.dob).days / 365.25
+                if age < 5:
+                    raise ValidationError(_('Student must be at least 5 years old. Current age: %.1f years') % age)
+                if age > 100:
+                    raise ValidationError(_('Please enter a valid date of birth.'))
+
     @api.constrains('program_id', 'academic_year_id')
     def _check_duration_match(self):
         """Ensure program duration matches academic year duration."""

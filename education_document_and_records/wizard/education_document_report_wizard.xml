@@ -2,7 +2,7 @@
     <odoo>
     <record id="view_missing_document_report_wizard" model="ir.ui.view">
         <field name="name">missing.document.report.wizard.form</field>
-        <field name="model">education.document.missing.report.wizard</field>
+        <field name="model">education.document.report.wizard</field>
         <field name="arch" type="xml">
             <form string="Missing / Pending Documents Report">
                 <group>
@@ -10,9 +10,14 @@
                     <field name="document_type_id"/>
                     <field name="student_id"/>
                     <field name="only_mandatory"/>
+                    <field name="expired_doc"/>
                 </group>
-
                 <footer>
+                    <button name="action_generate_pdf_report" string="PDF"
+                             type="object" class="btn-primary"/>
+                    <button name="action_generate_xlsx_report" string="XLSX"
+                             type="object" class="btn-primary"/>
+
                     <button string="Cancel"
                             class="btn-secondary"
                             special="cancel"/>
@@ -21,8 +26,8 @@
         </field>
     </record>
     <record id="action_missing_document_report_wizard" model="ir.actions.act_window">
-    <field name="name">Missing / Pending Documents</field>
-    <field name="res_model">education.document.missing.report.wizard</field>
+    <field name="name">Documents Info</field>
+    <field name="res_model">education.document.report.wizard</field>
     <field name="view_mode">form</field>
     <field name="target">new</field>
 </record>

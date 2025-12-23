@@ -6,13 +6,10 @@ from datetime import datetime, timedelta
 class EducationDocument(models.Model):
     _inherit = 'education.document'
 
-    faculty_id = fields.Many2one(
-        'hr.employee', domain=[('role', '=', 'teacher')],
-        string='Faculty'
-    )
+
     program_id = fields.Many2one(
         'education.program',
-        string='Program'
+        string='Program',readonly='True',
     )
     uploaded_by = fields.Many2one(
         'res.users',
@@ -60,6 +57,12 @@ class EducationDocument(models.Model):
                     days=record.document_type.validity_days
                 )
 
+    @api.onchange('student_id')
+    def _onchange_student_id_set_program(self):
+        """Automatically set the program when a student is selected."""
+        if self.student_id:
+            self.program_id = self.student_id.program_id
+
     def action_approve_doc(self):
         """Mark the document as approved and finalized """
         for record in self:
@@ -92,66 +95,64 @@ class EducationDocument(models.Model):
     @api.model
     def cron_check_mandatory_documents(self):
         """ Check missing mandatory documents and notify students """
-        documentType = self.env['education.document.type']
+        DocumentType = self.env['education.document.type']
         Partner = self.env['res.partner']
         students = Partner.search([
             ('is_student', '=', True),
             ('email', '!=', False),
         ])
-        mandatory_types = documentType.search([
-            ('is_mandatory', '=', True)
-        ])
+        mandatory_types = DocumentType.search([('is_mandatory', '=', True)])
         today = fields.Date.today()
-        if mandatory_types:
-            for student in students:
-                last_mail_date = student.last_missing_doc_mail_date
-                for doc_type in mandatory_types:
-                    exists = self.search_count([
-                        ('student_id', '=', student.id),
-                        ('document_type', '=', doc_type.id),
-                    ])
-                    if not exists:
-                        interval = doc_type.reminder_interval_days
-                        if last_mail_date:
-                            print('yesaa')
-                            next_allowed_date = last_mail_date + timedelta(days=interval)
-                            if today >= next_allowed_date:
-                                print('before')
-                                self._notify_missing_document(
-                                    student, doc_type, gentle=True
-                                )
-                                student.sudo().write({
-                                    'last_missing_doc_mail_date': today + timedelta(days=9999)
-                                })
-                        self._notify_missing_document(student, doc_type)
-                        student.write({'last_missing_doc_mail_date': today})
 
-    def _notify_missing_document(self, student, doc_type, gentle=False):
-        """ Send missing mandatory document reminder to student"""
-        print('send')
+        for student in students:
+            last_mail_date = student.last_missing_doc_mail_date
 
-        if gentle:
-            subject = _("Gentle Reminder: Pending Document – %s") % doc_type.name
-            intro = _("This is a gentle reminder that the following document is still pending.")
-        else:
-            subject = _("Mandatory Document Required: %s") % doc_type.name
-            intro = _("Please upload the following mandatory document.")
+            for doc_type in mandatory_types:
+                exists = self.search_count([
+                    ('student_id', '=', student.id),
+                    ('document_type', '=', doc_type.id),
+                ])
 
+                if not exists:
+                    if not last_mail_date:
+                        self._send_missing_document_mail(student, doc_type)
+                    # Gentle reminder after interval
+                    interval = doc_type.reminder_interval_days or 0
+                    next_allowed_date = last_mail_date + timedelta(days=interval)
+
+                    if today >= next_allowed_date:
+                        self._send_gentle_missing_document_mail(student, doc_type)
+                        student.sudo().write({
+                            'last_missing_doc_mail_date': today
+                        })
+
+    def _send_gentle_missing_document_mail(self, student, doc_type):
+        """Send gentle reminder for pending mandatory document."""
+        subject = _("Gentle Reminder: Pending Document – %s") % doc_type.name
         body_html = """
             <p>Dear %s,</p>
-
-            <p>%s</p>
-    
+            <p>This is a gentle reminder that the following document is still pending.</p>
             <p><b>Document:</b> %s</p>
-    
             <p>Please upload it at your convenience.</p>
-    
             <p>Regards,<br/>Administration</p>
-        """ % (
-            student.name or '',
-            intro,
-            doc_type.name or ''
-        )
+        """ % (student.name or '', doc_type.name or '')
+
+        self.env['mail.mail'].create({
+            'subject': subject,
+            'email_to': student.email,
+            'body_html': body_html,
+        }).send()
+
+    def _send_missing_document_mail(self, student, doc_type):
+        """Send initial mandatory document reminder."""
+        subject = _("Mandatory Document Required: %s") % doc_type.name
+        body_html = """
+            <p>Dear %s,</p>
+            <p>Please upload the following mandatory document.</p>
+            <p><b>Document:</b> %s</p>
+            <p>Please upload it at your convenience.</p>
+            <p>Regards,<br/>Administration</p>
+        """ % (student.name or '', doc_type.name or '')
 
         self.env['mail.mail'].create({
             'subject': subject,
@@ -276,38 +277,51 @@ class EducationDocument(models.Model):
             'body_html': body_html,
         }).send()
 
+
     @api.model_create_multi
     def create(self, vals_list):
+        """Enforces document upload rules by blocking duplicates of approved,
+           valid documents and automatically managing document versioning."""
         today = fields.Date.today()
 
         for vals in vals_list:
             student_id = vals.get('student_id')
-            document_type = vals.get('document_type')
+            document_type_id = vals.get('document_type')
+            doc_type = self.env['education.document.type'].browse(document_type_id)
 
-            if student_id and document_type:
-                # Block upload if approved & valid document exists
-                approved_doc = self.search([
-                    ('student_id', '=', student_id),
-                    ('document_type', '=', document_type),
-                    ('state', '=', 'approved'),
-                    '|',
-                    ('expiry_date', '=', False),
-                    ('expiry_date', '>=', today),
-                ], limit=1)
+            # Count existing documents for same student & type
+            existing_docs = self.search([
+                ('student_id', '=', student_id),
+                ('document_type', '=', document_type_id),
+            ])
 
-                if approved_doc:
-                    raise ValidationError(
-                        _("An approved and valid document already exists. "
-                          "You can upload a new version only after rejection or expiry.")
-                    )
+            # Check upload limit FIRST
+            if doc_type.limit and doc_type.limit > 0:
+                if len(existing_docs) >= doc_type.limit:
 
-                # Auto-increment version
-                last_doc = self.search([
-                    ('student_id', '=', student_id),
-                    ('document_type', '=', document_type),
-                ], order='version desc', limit=1)
+                    # Check approved & valid document
+                    approved_valid_doc = self.search([
+                        ('student_id', '=', student_id),
+                        ('document_type', '=', document_type_id),
+                        ('state', '=', 'approved'),
+                        '|',
+                        ('expiry_date', '=', False),
+                        ('expiry_date', '>=', today),
+                    ], limit=1)
 
-                vals['version'] = last_doc.version + 1 if last_doc else 1
+                    if approved_valid_doc:
+                        raise ValidationError(_(
+                            "Upload limit reached. An approved and valid document "
+                            "already exists for this student and document type. "
+                            "You can upload a new version only after rejection or expiry."
+                        ))
+            # Auto-increment version
+            last_doc = existing_docs.sorted('version', reverse=True)[:1]
+            vals['version'] = last_doc.version + 1 if last_doc else 1
 
         return super().create(vals_list)
+
+
+
+
 
