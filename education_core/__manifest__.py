@@ -21,6 +21,7 @@
         'views/education_category_views.xml',
         'views/res_partner_view.xml',
         'views/hr_employee.xml',
+        'views/education_class_fecility.xml',
         'data/ir_sequence_data.xml',
         'views/education_enrollment_views.xml',
 		'views/education_academic_year_views.xml',

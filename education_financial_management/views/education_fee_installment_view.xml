@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_edu_fee_installment_tree" model="ir.ui.view">
+        <field name="name">edu.fee.installment.tree</field>
+        <field name="model">edu.fee.installment</field>
+        <field name="arch" type="xml">
+            <list string="Fee Installments" default_order="due_date">
+                <field name="name"/>
+                <field name="fee_plan_id"/>
+                <field name="due_date"/>
+                <field name="amount"/>
+                <field name="currency_id"/>
+                <field name="penalty_rule_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_edu_fee_installment_form" model="ir.ui.view">
+        <field name="name">edu.fee.installment.form</field>
+        <field name="model">edu.fee.installment</field>
+        <field name="arch" type="xml">
+            <form string="Fee Installment">
+                <sheet>
+
+                    <group>
+                        <group>
+                            <field name="fee_plan_id"/>
+                            <field name="name"/>
+                        </group>
+                        <group>
+                            <field name="due_date"/>
+                            <field name="amount"/>
+                            <field name="currency_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <field name="penalty_rule_id"/>
+                    </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_edu_fee_installment_search" model="ir.ui.view">
+        <field name="name">edu.fee.installment.search</field>
+        <field name="model">edu.fee.installment</field>
+        <field name="arch" type="xml">
+            <search string="Search Fee Installments">
+                <field name="name"/>
+                <field name="fee_plan_id"/>
+                <field name="due_date"/>
+                <field name="penalty_rule_id"/>
+
+                <group expand="0" string="Group By">
+                    <filter string="Fee Plan" context="{'group_by':'fee_plan_id'}"/>
+                    <filter string="Due Date" context="{'group_by':'due_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+
+</odoo>

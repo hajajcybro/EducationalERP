@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+     <menuitem id="menu_education_finance"
+              name="Financial Management"/>
+
+    <menuitem id="menu_education_fee_plan"
+              name="Fee Plan"
+              parent="menu_education_finance"
+              action="action_edu_fee_plan"/>
+
+    <menuitem id="menu_edu_fee_installment"
+              name="Fee Installments"
+              parent="menu_education_finance"
+              action="action_edu_fee_installment"/>
+</odoo>
+

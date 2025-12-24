@@ -14,6 +14,9 @@ class EducationClassRoom(models.Model):
     capacity = fields.Integer(string='Room Capacity', required=True)
     notes = fields.Text(string='Notes')
     active = fields.Boolean(string='Active', default=True)
+    facility_ids = fields.Many2many(
+        'education.class.facility','name',string='Facilities'
+    )
 
 
     @api.constrains('capacity')

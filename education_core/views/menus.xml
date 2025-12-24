@@ -88,7 +88,6 @@
               action="education_academic_year_action"
               sequence="30"/>
 
-
     <menuitem id="menu_education_category_action"
               name="Category"
               parent="menu_student_configuration"
@@ -97,6 +96,12 @@
               name="Class Room"
               parent="menu_student_configuration"
               action="action_education_class_room"/>
+
+    <menuitem id="menu_education_class_facility_action"
+              name="Facilities"
+              parent="menu_student_configuration"
+              action="action_education_class_facility"/>
+
       <menuitem id="menu_education_document_type_action"
               name="Document Type"
               parent="menu_student_configuration"

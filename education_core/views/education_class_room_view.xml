@@ -28,6 +28,7 @@
                         <group>
                             <field name="floor"/>
                             <field name="capacity"/>
+                            <field name="facility_ids" widget="many2many_tags"/>
                         </group>
                     </group>
                     <notebook>
