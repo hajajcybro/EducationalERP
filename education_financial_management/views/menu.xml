@@ -12,5 +12,15 @@
               name="Fee Installments"
               parent="menu_education_finance"
               action="action_edu_fee_installment"/>
+
+    <menuitem id="menu_education_fee_invoice"
+              name="Fee Invoices"
+              parent="menu_education_finance"
+              action="action_education_fee_invoice"/>
+
+    <menuitem id="menu_education_fee_penalty"
+              name="Fee Penalty Rules"
+              parent="menu_education_finance"
+              action="action_education_fee_penalty_rule"/>
 </odoo>
 

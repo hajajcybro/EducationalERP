@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_education_fee_plan,access_education_fee_plan,model_education_fee_plan,base.group_user,1,1,1,1
+access_education_fee_installment,access_education_fee_installment,model_education_fee_installment,base.group_user,1,1,1,1
+access_education_fee_invoice,access_education_fee_invoice,model_education_fee_invoice,base.group_user,1,1,1,1
+access_education_fee_penalty_rule,access_education_fee_penalty_rule,model_education_fee_penalty_rule,base.group_user,1,1,1,1

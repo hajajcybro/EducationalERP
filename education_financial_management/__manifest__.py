@@ -9,11 +9,14 @@
     'company': 'Cybrosys Techno Solutions',
     'maintainer': 'Cybrosys Techno Solutions',
     'website': 'https://www.cybrosys.com',
-    'depends': ['education_core'],
+    'depends': ['education_core','account'],
     'data': [
-         'views/education_fee_installment_view.xml',
-         'views/education_fee_plan_view.xml'
-         'views/menu.xml',
+        'security/ir.model.access.csv',
+        'views/education_fee_installment_view.xml',
+        'views/education_fee_plan_view.xml',
+        'views/education_fee_invoice_view.xml',
+        'views/education_fee_penalty_rule_view.xml',
+        'views/menu.xml',
     ],
     'license': 'AGPL-3',
     'installable': True,
