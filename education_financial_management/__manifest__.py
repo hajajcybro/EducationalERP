@@ -16,6 +16,7 @@
         'views/education_fee_plan_view.xml',
         'views/education_fee_invoice_view.xml',
         'views/education_fee_penalty_rule_view.xml',
+        'views/account_followup_line_views.xml',
         'views/menu.xml',
     ],
     'license': 'AGPL-3',

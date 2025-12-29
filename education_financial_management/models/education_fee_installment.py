@@ -30,18 +30,49 @@ class EduFeeInstallment(models.Model):
         store=True,
         readonly=True
     )
-
     installment_amount = fields.Float(
         string='Installment Amount',
         compute='_compute_installment_amount',
         store=True
     )
 
+    product_id = fields.Many2one(
+        'product.product',
+        string='Installment Product',
+        readonly=True,
+        copy=False
+    )
+
     @api.depends('fee_plan_id.amount', 'duration')
     def _compute_installment_amount(self):
-        """
-        Calculate installment amount based on total fee and duration.
-        """
+        """ Calculate installment amount based on total fee and duration."""
         for rec in self:
             if rec.duration and rec.fee_plan_id.amount:
                 rec.installment_amount = rec.fee_plan_id.amount / rec.duration
+
+    @api.model
+    def create(self, vals):
+        installment = super().create(vals)
+        duration_label = f"({installment.duration}M)"
+        Product = self.env['product.product']
+        product_name =f"{installment.name} – Installment"
+        print('product_name',product_name)
+        # Check if product already exists
+        product = Product.search([
+            ('name', '=', product_name),
+            ('default_code', '=', f"INST-{installment.id}")
+        ], limit=1)
+        print(product)
+
+        if not product:
+            product = Product.create({
+                'name': product_name,
+                'type': 'service',
+                'list_price': installment.installment_amount,
+                'standard_price': installment.installment_amount,
+                'currency_id': installment.currency_id.id,
+                'default_code': f"INST-{installment.id}",
+            })
+            print(product)
+        installment.product_id = product.id
+        return installment

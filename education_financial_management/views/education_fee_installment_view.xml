@@ -7,7 +7,6 @@
             <list string="Fee Installments">
                 <field name="name"/>
                 <field name="fee_plan_id"/>
-<!--                <field name="due_date"/>-->
                 <field name="amount"/>
                 <field name="currency_id"/>
 <!--                <field name="penalty_rule_id"/>-->

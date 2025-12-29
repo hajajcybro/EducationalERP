@@ -47,7 +47,8 @@
     <record id="action_education_document_extended" model="ir.actions.act_window">
         <field name="name">Documents</field>
         <field name="res_model">education.document</field>
-        <field name="view_mode">list,form</field><field name="help" type="html">
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
             <p class="0_view_no_content_smiling_face">create</p>
         </field>
 

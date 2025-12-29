@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api, _
+from odoo import models, fields, api, _,Command
 from odoo.exceptions import ValidationError
 
 
@@ -34,69 +34,103 @@ class EduFeeInvoice(models.Model):
         string='Installment Plan'
     )
 
-    invoice_id = fields.Many2one(
-        'account.move',
-        string='Invoice',
-        ondelete='cascade'
-    )
-
     status = fields.Selection(
         [('draft', 'Draft'),('posted', 'Posted'),('paid', 'Paid'),('cancelled', 'Cancelled')],
         string='Status',
-        default='draft',
-        tracking=True
+        store=True,
+        tracking=True,
     )
     remarks = fields.Text(string='Remarks')
     currency_id = fields.Many2one(
-        related='invoice_id.currency_id',
-        store=True,
-        readonly=True
+        'res.currency',
+        default=lambda self: self.env.company.currency_id
     )
 
     amount_total = fields.Monetary(
-        related='invoice_id.amount_total',
         string='Total Amount',
         store=True,
         readonly=True
     )
-    payment_type= fields.Selection([('installment', 'Installment'),('full', 'Full Payment')],
-        string="Installment",
+    payment_type= fields.Selection([('installment', 'Installment'),('full', 'Full Amount')],
+        string="Payment Type",
         default=False)
 
+    due_date = fields.Date(string='Due Date')
+
+    invoice_ids = fields.One2many(
+        'account.move',
+        'fee_invoice_id',
+        string='Invoices',
+        readonly=True
+    )
+
+    payment_term_id = fields.Many2one(
+        'account.payment.term',
+        string='Payment Terms'
+    )
+    hide_invoice_button = fields.Boolean(
+        string='Hide Invoice Button',
+        copy=False
+    )
+    total_invoiced_amount = fields.Monetary(
+        compute='_compute_total_invoiced_amount',
+        store=True
+    )
+
+    remaining_amount = fields.Monetary(
+        compute='_compute_remaining_amount',
+        store=True
+    )
+
+    @api.depends('invoice_ids.amount_total')
+    def _compute_total_invoiced_amount(self):
+        for rec in self:
+            rec.total_invoiced_amount = sum(rec.invoice_ids.mapped('amount_total'))
+
+    @api.depends('total_invoiced_amount')
+    def _compute_remaining_amount(self):
+        for rec in self:
+            rec.remaining_amount = (
+                rec.installment_id.fee_plan_id.amount - rec.total_invoiced_amount
+                if rec.installment_id.fee_plan_id else 0.0
+            )
+
     def action_create_invoice(self):
-        """Open customer invoice form with defaults."""
-        print('invoice button')
         self.ensure_one()
 
-        price = (
-            self.installment_id.amount
-            if self.installment_id
-            else self.fee_plan_id.amount
-        )
-        currency_id = (
-                self.fee_plan_id.currency_id.id
-                or self.env.company.currency_id.id
-        )
+        if self.payment_type == 'installment':
+            if not self.installment_id:
+                raise ValidationError(_("Please select an Installment Plan."))
+            price = self.installment_id.installment_amount
+            line_name = self.installment_id.name
 
-        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Create Invoice'),
-            'res_model': 'account.move',
-            'view_mode': 'form',
-            'target': 'current',
-            'context': {
-                'default_move_type': 'out_invoice',
-                'default_partner_id': self.student_id.id,
-                'default_currency_id': currency_id,
+        else:
+            if not self.fee_plan_id:
+                raise ValidationError(_("Please select a Fee Plan."))
+            price = self.fee_plan_id.amount
+            line_name = self.fee_plan_id.name
+            self.hide_invoice_button = True
 
-                'default_invoice_line_ids': [
-                    (0, 0, {
-                        'product_id': self.fee_plan_id.product_id.id,
-                        'name': self.fee_plan_id.name,
-                        'quantity': 1,
-                        'price_unit': price,
-                    })
-                ],
-            }
-        }
+        invoice = self.env['account.move'].create({
+            'move_type': 'out_invoice',
+            'partner_id': self.student_id.id,
+            'invoice_date': fields.Date.today(),
+            # 'invoice_date_due': self.due_date or fields.Date.today(),
+            'fee_invoice_id': self.id,
+            'invoice_payment_term_id': self.payment_term_id.id,
+            'invoice_line_ids': [Command.create({
+                'name': line_name,
+                'quantity': 1,
+                'price_unit': price,
+            })],
+        })
+
+        # Same as insurance
+        self.write({'invoice_ids': [Command.link(invoice.id)]})
+
+        if self.remaining_amount <= 1:
+            print('remainingn amount 0')
+            self.hide_invoice_button = True
+
+
 

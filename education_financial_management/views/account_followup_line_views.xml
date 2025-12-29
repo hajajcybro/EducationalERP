@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_account_followup_line_form_inherit_education" model="ir.ui.view">
+        <field name="name">account.followup.line.form.inherit.education</field>
+        <field name="model">account.followup.line</field>
+        <field name="inherit_id" ref="account_followup.view_account_followup_followup_line_form"/>
+        <field name="arch" type="xml">
+
+        </field>
+    </record>
+    
+</odoo>
