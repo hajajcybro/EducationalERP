@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _,Command
 from odoo.exceptions import ValidationError
+from datetime import timedelta
+
 
 
 class EduFeeInvoice(models.Model):
@@ -115,7 +117,7 @@ class EduFeeInvoice(models.Model):
             'move_type': 'out_invoice',
             'partner_id': self.student_id.id,
             'invoice_date': fields.Date.today(),
-            # 'invoice_date_due': self.due_date or fields.Date.today(),
+            'invoice_date_due': self.due_date or fields.Date.today(),
             'fee_invoice_id': self.id,
             'invoice_payment_term_id': self.payment_term_id.id,
             'invoice_line_ids': [Command.create({
@@ -124,7 +126,41 @@ class EduFeeInvoice(models.Model):
                 'price_unit': price,
             })],
         })
+        # penalty handle here --
+        rule = False
+        if self.payment_type == 'installment':
+            rule = self.installment_id.penalty_rule_id
+        elif self.payment_type == 'full':
+            rule = self.fee_plan_id.penalty_rule_id
 
+        # Apply penalty only if rule + product + due date exist
+        if rule and rule.product_id and invoice.invoice_date_due:
+            today = fields.Date.today()
+            penalty_start = invoice.invoice_date_due + timedelta(days=rule.grace_period)
+
+            if today > penalty_start:
+                late_days = (today - penalty_start).days
+
+                if late_days > 0:
+                    # Calculate penalty price
+                    if rule.penalty_type == 'fixed':
+                        unit_price = rule.value
+                    else:
+                        unit_price = (invoice.amount_untaxed * rule.value) / 100
+                        print(unit_price)
+
+                    # Add penalty line to invoice
+                    invoice.write({
+                        'invoice_line_ids': [
+                            Command.create({
+                                'product_id': rule.product_id.id,
+                                'name': f'{rule.name} ({late_days} days late)',
+                                'quantity': late_days,
+                                'price_unit': unit_price,
+                            })
+                        ]
+                    })
+        #             ---
         # Same as insurance
         self.write({'invoice_ids': [Command.link(invoice.id)]})
 

@@ -6,7 +6,6 @@
         <field name="arch" type="xml">
             <form string="Fee Plan">
                 <sheet>
-
                     <group>
                         <group>
                             <field name="name"/>
@@ -16,9 +15,9 @@
                         <group>
                            <field name="currency_id"/>
                             <field name="amount"/>
+                            <field name="penalty_rule_id"/>
                         </group>
                     </group>
-
                     <notebook>
                         <page string="Notes">
                             <field name="notes"/>

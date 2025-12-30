@@ -13,7 +13,6 @@ class EduFeeInstallment(models.Model):
         required=True,
         ondelete='cascade'
     )
-
     name = fields.Char(
         string='Installment Name',
         required=True
@@ -35,6 +34,10 @@ class EduFeeInstallment(models.Model):
         compute='_compute_installment_amount',
         store=True
     )
+    penalty_rule_id = fields.Many2one(
+        'education.fee.penalty.rule',
+        string='Penalty Rule'
+    )
 
     product_id = fields.Many2one(
         'product.product',
@@ -42,6 +45,7 @@ class EduFeeInstallment(models.Model):
         readonly=True,
         copy=False
     )
+
 
     @api.depends('fee_plan_id.amount', 'duration')
     def _compute_installment_amount(self):
@@ -53,17 +57,13 @@ class EduFeeInstallment(models.Model):
     @api.model
     def create(self, vals):
         installment = super().create(vals)
-        duration_label = f"({installment.duration}M)"
         Product = self.env['product.product']
         product_name =f"{installment.name} – Installment"
-        print('product_name',product_name)
         # Check if product already exists
         product = Product.search([
             ('name', '=', product_name),
             ('default_code', '=', f"INST-{installment.id}")
         ], limit=1)
-        print(product)
-
         if not product:
             product = Product.create({
                 'name': product_name,
@@ -73,6 +73,5 @@ class EduFeeInstallment(models.Model):
                 'currency_id': installment.currency_id.id,
                 'default_code': f"INST-{installment.id}",
             })
-            print(product)
         installment.product_id = product.id
         return installment

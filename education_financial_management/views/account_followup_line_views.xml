@@ -1,12 +1,22 @@
 <?xml version="1.0"?>
 <odoo>
-    <record id="view_account_followup_line_form_inherit_education" model="ir.ui.view">
-        <field name="name">account.followup.line.form.inherit.education</field>
-        <field name="model">account.followup.line</field>
-        <field name="inherit_id" ref="account_followup.view_account_followup_followup_line_form"/>
+   <record id="view_followup_line_tree_inherit" model="ir.ui.view">
+        <field name="name">account.followup.line.tree.inherit</field>
+        <field name="model">account_followup.followup.line</field>
+        <field name="inherit_id" ref="account_followup.view_account_followup_followup_line_tree"/>
         <field name="arch" type="xml">
-
+            <xpath expr="//list" position="inside">
+                <field name="custom_note"/>
+            </xpath>
         </field>
     </record>
-    
+
+     <record id="action_account_followup_line_education" model="ir.actions.act_window">
+        <field name="name">Follow Up</field>
+        <field name="res_model">account_followup.followup.line</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
 </odoo>
+
+

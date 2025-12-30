@@ -23,9 +23,11 @@
               parent="menu_education_finance"
               action="action_education_fee_penalty_rule"/>
 
-<!--    <menuitem id="menu_followup_levels_education"-->
-<!--              name="Follow-up Levels"-->
-<!--              parent="menu_education_finance"-->
-<!--              action="action_account_followup_line_education"/>-->
+    <menuitem id="menu_education_refund_request"
+              name="Refund Requests"
+              parent="menu_education_finance"
+              action="action_education_refund_request"/>
+
+
 </odoo>
 

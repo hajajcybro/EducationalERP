@@ -16,19 +16,16 @@ class EduFeePlan(models.Model):
         tracking=True,
         help='Name of the fee plan.'
     )
-
     program_id = fields.Many2one(
         'education.program',
         string='Program',
         tracking=True
     )
-
     academic_year_id = fields.Many2one(
         'education.academic.year',
         string='Academic Year',
         tracking=True
     )
-
     currency_id = fields.Many2one(
         'res.currency',
         string='Currency',
@@ -51,6 +48,10 @@ class EduFeePlan(models.Model):
         string='Fee Product',
         readonly=True,
         copy=False
+    )
+    penalty_rule_id = fields.Many2one(
+        'education.fee.penalty.rule',
+        string='Penalty Rule'
     )
 
     notes = fields.Text(string='Notes')

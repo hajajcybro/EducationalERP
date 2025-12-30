@@ -22,6 +22,7 @@
                             <field name="fee_plan_id" invisible="payment_type != 'full'"/>
                             <field name="installment_id" invisible="payment_type != 'installment'"/>
                             <field name="payment_term_id"/>
+                            <field name="due_date"/>
                         </group>
                     </group>
                     <group>
@@ -57,6 +58,35 @@
             </list>
         </field>
     </record>
+
+    <record id="view_education_fee_invoice_search" model="ir.ui.view">
+        <field name="name">education.fee.invoice.search</field>
+        <field name="model">education.fee.invoice</field>
+        <field name="arch" type="xml">
+            <search string="Fee Invoices">
+
+                <!-- Search Fields -->
+                <field name="student_id"/>
+                <field name="fee_plan_id"/>
+                <field name="installment_id"/>
+                <field name="payment_type"/>
+                <separator/>
+
+                <!-- Group By -->
+                <group name="group_by">
+                    <filter string="Student" name="group_by_student"
+                            context="{'group_by':'student_id'}"/>
+                    <filter string="Fee Plan" name="group_by_fee"
+                            context="{'group_by':'fee_plan_id'}"/>
+                    <filter string="Payment Type" name="group_by_payment"
+                            context="{'group_by':'payment_type'}"/>
+                    <filter string="Status" name="group_by_status"
+                            context="{'group_by':'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
 
     <record id="action_education_fee_invoice" model="ir.actions.act_window">
         <field name="name">Fee Invoices</field>

@@ -9,7 +9,7 @@
                 <field name="fee_plan_id"/>
                 <field name="amount"/>
                 <field name="currency_id"/>
-<!--                <field name="penalty_rule_id"/>-->
+                <field name="penalty_rule_id"/>
             </list>
         </field>
     </record>
@@ -32,6 +32,7 @@
                             <field name="amount"/>
                             <field name="duration"/>
                             <field name="installment_amount"/>
+                            <field name="penalty_rule_id"/>
                         </group>
                     </group>
                 </sheet>

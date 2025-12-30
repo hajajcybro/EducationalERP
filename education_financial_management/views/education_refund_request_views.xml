@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- list View -->
+    <record id="view_education_refund_request_tree" model="ir.ui.view">
+        <field name="name">education.refund.request.tree</field>
+        <field name="model">education.refund.request</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="student_id"/>
+                <field name="invoice_id"/>
+                <field name="refund_amount"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_education_refund_request_form" model="ir.ui.view">
+        <field name="name">education.refund.request.form</field>
+        <field name="model">education.refund.request</field>
+        <field name="arch" type="xml">
+            <form string="Refund Request">
+                <header>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,approved,processed"/>
+                </header>
+
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="student_id"/>
+                            <field name="invoice_id"/>
+                        </group>
+                        <group>
+                            <field name="refund_amount"/>
+                            <field name="currency_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="reason"/>
+                        <field name="processed_by"/>
+                        <field name="processed_date"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_education_refund_request" model="ir.actions.act_window">
+        <field name="name">Refund Requests</field>
+        <field name="res_model">education.refund.request</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>
