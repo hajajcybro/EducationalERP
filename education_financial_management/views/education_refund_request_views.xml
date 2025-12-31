@@ -24,9 +24,24 @@
                 <header>
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,approved,processed"/>
+                    <button name="action_approve" type="object" string="Approve"
+                            class="oe-highlight" invisible="state != 'draft'"/>
+                    <button name="action_reject" type="object" string="Reject"
+                            class="oe-highlight" statusbar_visible="draft,approved,rejected"
+                            invisible="state != 'draft'"/>
+                    <button name="action_processed" type="object" string="Processed"
+                            class="oe-highlight" invisible="state != 'approved'"/>
                 </header>
 
                 <sheet>
+                    <div name="button_box" position="inside">
+                            <button name="action_open_invoice"
+                                    type="object" class="oe_stat_button"
+                                    icon="fa-pencil-square-o"
+                                    invisible="state != 'processed'">
+                                 Invoice
+                            </button>
+                        </div>
                     <group>
                         <group>
                             <field name="student_id"/>
@@ -35,12 +50,14 @@
                         <group>
                             <field name="refund_amount"/>
                             <field name="currency_id"/>
+                            <field name="credit_note_id"/>
                         </group>
                     </group>
                     <group>
                         <field name="reason"/>
                         <field name="processed_by"/>
                         <field name="processed_date"/>
+                        <field name="rejection_reason" invisible="state != 'rejected'"/>
                     </group>
                 </sheet>
             </form>

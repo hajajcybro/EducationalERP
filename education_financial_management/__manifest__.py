@@ -19,6 +19,7 @@
         'views/education_refund_request_views.xml',
         'views/account_move_reversal_view.xml',
         # 'views/account_followup_line_views.xml',
+        'wizard/education_refund_reject_wizard_view.xml',
         'views/menu.xml',
     ],
     'license': 'AGPL-3',

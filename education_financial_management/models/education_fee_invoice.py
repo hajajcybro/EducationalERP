@@ -48,11 +48,16 @@ class EduFeeInvoice(models.Model):
         default=lambda self: self.env.company.currency_id
     )
 
-    amount_total = fields.Monetary(
+    amount_paid = fields.Monetary(
         string='Total Amount',
         store=True,
         readonly=True
     )
+    payment_state = fields.Selection(
+        related='invoice_ids.payment_state',
+        store=True
+    )
+
     payment_type= fields.Selection([('installment', 'Installment'),('full', 'Full Amount')],
         string="Payment Type",
         default=False)
@@ -167,6 +172,5 @@ class EduFeeInvoice(models.Model):
         if self.remaining_amount <= 1:
             print('remainingn amount 0')
             self.hide_invoice_button = True
-
 
 

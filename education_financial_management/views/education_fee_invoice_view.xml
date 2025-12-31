@@ -53,7 +53,9 @@
                 <field name="payment_type"/>
                 <field name="fee_plan_id"/>
                 <field name="installment_id"/>
-                <field name="amount_total"/>
+                <field name="total_invoiced_amount"/>
+                <field name="remaining_amount"/>
+                <field name="amount_paid"/>
                 <field name="status"/>
             </list>
         </field>
