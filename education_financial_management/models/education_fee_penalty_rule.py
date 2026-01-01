@@ -73,16 +73,6 @@ class EducationFeePenaltyRule(models.Model):
         rule.product_id = product.id
         return rule
 
-    def write(self, vals):
-        """Allow updates only to the Grace Period field after creation.
-        Other Penalty Rule fields are locked to maintain financial consistency. """
-        for rule in self:
-            allowed_fields = {'grace_period'}
-            invalid_fields = set(vals.keys()) - allowed_fields
-            if invalid_fields:
-                raise ValidationError(_(
-                    "You can only modify the Grace Period after creating a Penalty Rule."
-                ))
-        return super().write(vals)
+
 
 

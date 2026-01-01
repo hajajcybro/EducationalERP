@@ -54,9 +54,12 @@
                 <field name="fee_plan_id"/>
                 <field name="installment_id"/>
                 <field name="total_invoiced_amount"/>
-                <field name="remaining_amount"/>
+
+                <field name="outstanding_amount"/>
                 <field name="amount_paid"/>
-                <field name="status"/>
+                <field name="reverse_amount"/>
+                <field name="payment_state"/>
+
             </list>
         </field>
     </record>
@@ -67,6 +70,15 @@
         <field name="arch" type="xml">
             <search string="Fee Invoices">
 
+            <filter string="Full Payment"
+                        name="filter_full_payment"
+                        domain="[('payment_type', '=', 'full')]"/>
+
+            <filter string="Installment"
+                    name="filter_installment"
+                    domain="[('payment_type', '=', 'installment')]"/>
+
+            <separator/>
                 <!-- Search Fields -->
                 <field name="student_id"/>
                 <field name="fee_plan_id"/>
@@ -85,6 +97,8 @@
                     <filter string="Status" name="group_by_status"
                             context="{'group_by':'status'}"/>
                 </group>
+
+
             </search>
         </field>
     </record>

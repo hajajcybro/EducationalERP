@@ -57,7 +57,6 @@ class EducationRefundRequest(models.Model):
         readonly=True,
         tracking=True
     )
-
     credit_note_id = fields.Many2one(
         'account.move',
         string="Credit Note",
