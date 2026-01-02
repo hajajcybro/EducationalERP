@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_invoice_summary_wizard_form" model="ir.ui.view">
+        <field name="name">invoice.summary.wizard.form</field>
+        <field name="model">invoice.summary.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Invoice Summary">
+                <group>
+                    <group>
+                        <field name="student_ids" widget="many2many_tags"/>
+                        <field name="payment_type"/>
+                        <field name="date_filter"/>
+                    </group>
+
+                    <group>
+                        <field name="from_date"
+                               attrs="{'invisible': [('date_filter','!=','custom')]}"/>
+                        <field name="to_date"
+                               attrs="{'invisible': [('date_filter','!=','custom')]}"/>
+                        <field name="is_refund"/>
+                    </group>
+                </group>
+
+                <footer>
+                    <button name="action_generate_pdf_report"
+                            string="PDF"
+                            type="object"
+                            class="btn-primary"/>
+
+                    <button string="Cancel"
+                            class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_invoice_summary_wizard" model="ir.actions.act_window">
+    <field name="name">Invoice Summary</field>
+    <field name="res_model">invoice.summary.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+</record>
+
+
+</odoo>

@@ -3,30 +3,51 @@
      <menuitem id="menu_education_finance"
               name="Financial Management"/>
 
-    <menuitem id="menu_education_fee_plan"
-              name="Fee Plan"
-              parent="menu_education_finance"
-              action="action_edu_fee_plan"/>
-
-    <menuitem id="menu_edu_fee_installment"
-              name="Fee Installments"
-              parent="menu_education_finance"
-              action="action_edu_fee_installment"/>
 
     <menuitem id="menu_education_fee_invoice"
               name="Fee Invoices"
               parent="menu_education_finance"
               action="action_education_fee_invoice"/>
 
-    <menuitem id="menu_education_fee_penalty"
-              name="Fee Penalty Rules"
-              parent="menu_education_finance"
-              action="action_education_fee_penalty_rule"/>
-
     <menuitem id="menu_education_refund_request"
               name="Refund Requests"
               parent="menu_education_finance"
               action="action_education_refund_request"/>
+
+
+<!--    fee plan , installment and penalty rule-->
+     <menuitem id="menu_financial_fee" name="Fees"
+              parent="menu_education_finance"/>
+
+    <menuitem id="menu_education_fee_plan"
+              name="Fee Plan"
+              parent="menu_financial_fee"
+              action="action_edu_fee_plan"/>
+
+    <menuitem id="menu_edu_fee_installment"
+              name="Fee Installments"
+              parent="menu_financial_fee"
+              action="action_edu_fee_installment"/>
+    <menuitem id="menu_education_fee_penalty"
+              name="Fee Penalty Rules"
+              parent="menu_financial_fee"
+              action="action_education_fee_penalty_rule"/>
+
+
+<!-- report-->
+    <menuitem id="menu_financial_report"
+              name="Report"
+              parent="menu_education_finance"/>
+
+    <menuitem id="menu_fee_summary_wizard"
+              name="Fee Summary"
+              parent="menu_financial_report"
+              action="action_student_fee_summary_wizard"/>
+
+     <menuitem id="menu_invoice_summary_wizard"
+              name="Invoice Summary"
+              parent="menu_financial_report"
+              action="action_invoice_summary_wizard"/>
 
 
 </odoo>

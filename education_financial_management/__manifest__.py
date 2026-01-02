@@ -20,8 +20,17 @@
         'views/account_move_reversal_view.xml',
         # 'views/account_followup_line_views.xml',
         'wizard/education_refund_reject_wizard_view.xml',
+        'wizard/education_fee_summary_wizard_view.xml',
+        'wizard/education_invoice_summary_wizard.xml',
+        'report/ir_actions_report.xml',
+        'report/education_fee_summary_report.xml',
         'views/menu.xml',
     ],
+    'assets' : {
+            'web.assets_backend': [
+                'education_financial_management/static/src/js/action_manager.js',
+                                   ],
+        },
     'license': 'AGPL-3',
     'installable': True,
     'application': True,

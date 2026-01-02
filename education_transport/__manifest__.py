@@ -9,7 +9,7 @@
     'company': 'Cybrosys Techno Solutions',
     'maintainer': 'Cybrosys Techno Solutions',
     'website': 'https://www.cybrosys.com',
-    'depends': ['education_core','fleet'],
+    'depends': ['education_core','fleet','web'],
     'data': [
         'security/ir.model.access.csv',
         'views/education_transport_route_views.xml',

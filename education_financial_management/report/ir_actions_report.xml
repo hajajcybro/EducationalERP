@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+     <record id="action_report_fee_summary" model="ir.actions.report">
+       <field name="name">Summary Report</field>
+       <field name="model">education.fee.invoice</field>
+       <field name="report_type">qweb-pdf</field>
+       <field name="report_name">education_financial_management.report_fee_summary</field>
+       <field name="report_file">education_financial_management.report_fee_summary</field>
+   </record>
+
+    <record id="action_invoice_summary_report" model="ir.actions.report">
+       <field name="name">Invoice Report</field>
+       <field name="model">invoice.summary.wizard</field>
+       <field name="report_type">qweb-pdf</field>
+       <field name="report_name">education_financial_management</field>
+       <field name="report_file">education_financial_management</field>
+   </record>
+
+</odoo>
