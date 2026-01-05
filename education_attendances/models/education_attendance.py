@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
-import datetime
-
 
 class EducationAttendance(models.Model):
     _name = 'education.attendance'
     _description = 'Education Attendance'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = 'class_id'
-
 
     class_id = fields.Many2one(
         'education.class', string="Class",
@@ -45,16 +42,8 @@ class EducationAttendance(models.Model):
         ('friday', 'Friday'),
     ], compute='_compute_weekday', store=False, string='Day')
 
-    _sql_constraints = [
-        ('unique_student_class',
-         'unique(student_id, class_id)',
-         'Student is already enrolled in this class.')
-    ]
-
     def action_submit(self):
         for rec in self:
-            if not rec.attendance_line_ids:
-                raise ValidationError(_("Please mark attendance for at least one student."))
             rec.state = 'submitted'
 
     def action_validate(self):
@@ -62,15 +51,17 @@ class EducationAttendance(models.Model):
         for rec in self:
             rec.state = 'validated'
 
-
     def action_load_students(self):
+        """ Load all students of the selected class and mark their attendance.
+        Each student is marked as present by default. If the student has an
+        approved leave for the selected date, the attendance is marked as
+        leave. Attendance lines are created and the record is moved to the
+        marking state."""
         self.ensure_one()
-        # get students correctly from res.partner
-        students = self.class_id.student_ids.filtered(lambda s: s.is_student == True)
+        students = self.class_id.student_ids
 
-        Leave = self.env['education.leave.request']
         for student in students:
-            leave = Leave.search([
+            leave = self.env['education.leave.request'].search([
                 ('student_id', '=', student.id),
                 ('status', '=', 'approved'),
                 ('start_date', '<=', self.date),
@@ -83,10 +74,8 @@ class EducationAttendance(models.Model):
                     status = 'leave'
                     remarks = 'Approved Full-Day Leave'
                 elif leave.leave_format == 'half_day':
-                    # ❗ Option A — Mark as 'leave'
                     status = 'leave'
                     remarks = 'Approved Half-Day Leave'
-
             self.env['education.attendance.line'].create({
                 'attendance_id': self.id,
                 'student_id': student.id,
@@ -95,41 +84,36 @@ class EducationAttendance(models.Model):
             })
             self.state = 'marking'
 
-    @api.depends()
+    @api.depends('date')
     def _compute_weekday(self):
+        """Compute the day based on the attendance date.
+        The day is derived from the `date` field and stored in lowercase to
+        align with the model's day selection values. This ensures consistent
+        behavior when filtering or matching timetable records."""
         for rec in self:
-            # Use attendance date (NOT system date)
-            if rec.date:
-                rec.weekday = rec.date.strftime('%A').lower()
-            else:
-                rec.weekday = datetime.datetime.today().strftime('%A').lower()
+            rec.weekday = rec.date.strftime('%A').lower() if rec.date else False
 
     @api.model
     def attendance_mail_notify(self):
         """Check overall attendance %, notify parents if below minimum."""
-        print('cron')
-
         params = self.env['ir.config_parameter'].sudo()
-        if params.get_param('education_attendances.attendance_enabled') != "True":
-            return
-        minimum = float(params.get_param('education_attendances.minimum_attendance') or 0)
-        print(minimum)
-        # All validated attendance lines
-        lines = self.search([('state', '=', 'validated')]).mapped('attendance_line_ids')
-        for student in lines.mapped('student_id'):
-            student_lines = lines.filtered(lambda l: l.student_id == student)
-            total = len(student_lines)
-            present = len(student_lines.filtered(lambda l: l.status == 'present'))
-            percentage = (present / total * 100) if total else 0
-
-            # Send email only if parent email exists and attendance is low
-            if student.parent_email and percentage < minimum:
-                template = self.env.ref(
-                    'education_attendances.mail_template_low_attendance',
-                    raise_if_not_found=False
+        if params.get_param('education_attendances.attendance_enabled') == "True":
+            minimum = float(params.get_param('education_attendances.minimum_attendance') or 0)
+            # All validated attendance lines
+            lines = self.search([('state', '=', 'validated')]).mapped('attendance_line_ids')
+            for student in lines.mapped('student_id'):
+                student_lines = lines.filtered(lambda l: l.student_id == student)
+                total = len(student_lines)
+                present = len(student_lines.filtered(lambda l: l.status == 'present'))
+                percentage = (present / total * 100) if total else 0
+                # Send email only if parent email exists and attendance is low
+                if student.parent_email and percentage < minimum:
+                    template = self.env.ref(
+                        'education_attendances.mail_template_low_attendance',
+                        raise_if_not_found=False
+                    )
+                    if template:
+                        template.sudo().send_mail(student.id, force_send=True)
+                student.message_post(
+                    body=f"Overall Attendance: {percentage:.2f}% (Minimum Required: {minimum}%)"
                 )
-                if template:
-                    template.sudo().send_mail(student.id, force_send=True)
-            student.message_post(
-                body=f"Overall Attendance: {percentage:.2f}% (Minimum Required: {minimum}%)"
-            )

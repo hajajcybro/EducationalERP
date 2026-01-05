@@ -24,6 +24,9 @@
         'wizard/education_invoice_summary_wizard.xml',
         'report/ir_actions_report.xml',
         'report/education_fee_summary_report.xml',
+        'report/education_invoice_summary_report.xml',
+        'wizard/education_refund_summary_wizard.xml',
+        'report/education_refund_summary_report.xml',
         'views/menu.xml',
     ],
     'assets' : {

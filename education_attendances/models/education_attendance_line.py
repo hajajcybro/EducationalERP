@@ -8,7 +8,6 @@ class EducationAttendanceLine(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = 'student_id'
 
-
     attendance_id = fields.Many2one('education.attendance',
                                     string="Attendance", ondelete='cascade')
     student_id = fields.Many2one('res.partner', domain =[('is_student', '=', True)],
@@ -20,7 +19,6 @@ class EducationAttendanceLine(models.Model):
         ('leave', 'Leave')
     ], string="Status", required=True,)
     remarks = fields.Char(string="Remarks")
-
     late_minutes = fields.Integer(
         string="Late Minutes",
         help="Number of minutes the student was late."

@@ -44,10 +44,15 @@
               parent="menu_financial_report"
               action="action_student_fee_summary_wizard"/>
 
-     <menuitem id="menu_invoice_summary_wizard"
+    <menuitem id="menu_invoice_summary_wizard"
               name="Invoice Summary"
               parent="menu_financial_report"
               action="action_invoice_summary_wizard"/>
+
+    <menuitem id="menu_refund_summary_wizard"
+              name="Refund Summary"
+              parent="menu_financial_report"
+              action="action_refund_summary_wizard"/>
 
 
 </odoo>

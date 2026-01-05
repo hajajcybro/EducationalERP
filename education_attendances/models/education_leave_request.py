@@ -33,25 +33,16 @@ class EducationLeaveRequest(models.Model):
 
     @api.depends("start_date", "end_date", "total_leave_days")
     def _compute_leave_day(self):
-        """Compute total leave days excluding weekends."""
+        """ Compute total leave days based on leave format.
+            Full-day leave counts all days between start and end dates.
+            Half-day leave counts as 0.5 day."""
         for record in self:
             if record.leave_format == 'full_day':
                 if record.start_date and record.end_date:
-                    week = datetime.timedelta(1)
-                    days = 0
-                    record.temporary = record.end_date
-                    while (record.start_date <= record.temporary):
-                        record.temporary -= week
-                        if record.temporary.isoweekday() != 6:
-                            days += 1
-                    record.total_leave_days = days
+                    total_day = record.end_date - record.start_date
+                    record.total_leave_days = total_day.days + 1
             else:
-                if record.end_date:
-                    weekday = record.end_date.weekday()
-                    if weekday == 6:
-                        record.total_leave_days = 0
-                    else:
-                        record.total_leave_days = 0.5
+                record.total_leave_days = 0.5 if record.end_date else 0
 
     @api.constrains('start_date', 'end_date')
     def _check_date_order(self):
@@ -98,15 +89,13 @@ class EducationLeaveRequest(models.Model):
                 ('start_date', '<=', rec.end_date),
                 ('end_date', '>=', rec.start_date),
             ], limit=1)
-
             if overlapping:
-                raise ValidationError(
-                    "Leave already exists from %s to %s" % (
-                        overlapping.start_date, overlapping.end_date
-                    )
-                )
+                raise ValidationError("An existing leave already covers the selected dates.")
 
     def write(self, vals):
+        """ Prevent modification of approved leave records.
+            Once a leave request is approved, it cannot be edited to
+            ensure data integrity and approval consistency."""
         for rec in self:
             if rec.status == 'approved':
                 raise UserError("Approved leave cannot be modified.")

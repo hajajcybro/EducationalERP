@@ -9,22 +9,28 @@
                 <group>
                     <group>
                         <field name="student_ids" widget="many2many_tags"/>
-                        <field name="payment_type"/>
-                        <field name="date_filter"/>
+                        <field name="invoice_type"/>
+                        <field name="payment_state"/>
+
                     </group>
 
                     <group>
+                          <field name="date_filter"/>
                         <field name="from_date"
-                               attrs="{'invisible': [('date_filter','!=','custom')]}"/>
+                              invisible = "date_filter != 'custom'"/>
                         <field name="to_date"
-                               attrs="{'invisible': [('date_filter','!=','custom')]}"/>
-                        <field name="is_refund"/>
+                              invisible = "date_filter != 'custom'"/>
                     </group>
                 </group>
 
                 <footer>
                     <button name="action_generate_pdf_report"
                             string="PDF"
+                            type="object"
+                            class="btn-primary"/>
+
+                    <button name="action_generate_invoice_xlsx_report"
+                            string="XLSX"
                             type="object"
                             class="btn-primary"/>
 

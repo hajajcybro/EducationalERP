@@ -7,15 +7,12 @@ class EducationAttendanceSummary(models.TransientModel):
     _description = 'Education Attendance Summary'
     _rec_name = 'student_id'
 
-
-    # Academic structure
     academic_year_id = fields.Many2one('education.academic.year', string="Academic Year", readonly=True)
     program_id       = fields.Many2one('education.program', string="Program", readonly=True)
     class_id         = fields.Many2one('education.class', string="Class", readonly=True)
     subject_id       = fields.Many2one('education.course', string="Subject", readonly=True)
     student_id = fields.Many2one('res.partner', string='Student', readonly=True,
                                  domain = [('is_student','=', True)])
-    # Summary type
     summary_type = fields.Selection([
         ('daily', 'Daily'),
         ('weekly', 'Weekly'),
@@ -37,13 +34,10 @@ class EducationAttendanceSummary(models.TransientModel):
     )
     date_from = fields.Date(readonly=True)
     date_to = fields.Date(readonly=True)
-    # Attendance counts
     total_present = fields.Integer(string='Present', readonly=True)
     total_absent  = fields.Integer(string='Absent', readonly=True)
     total_leave   = fields.Integer(string='Leave', readonly=True)
     total_late    = fields.Integer(string='Late', readonly=True)
-
-    #HOURLY MODE
     total_hours_attended = fields.Float("Hours Attended")
     required_credit_hours = fields.Float("Required Credit Hours")
 

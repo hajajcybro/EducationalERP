@@ -10,10 +10,17 @@
 
     <record id="action_invoice_summary_report" model="ir.actions.report">
        <field name="name">Invoice Report</field>
-       <field name="model">invoice.summary.wizard</field>
+       <field name="model">account.move</field>
        <field name="report_type">qweb-pdf</field>
-       <field name="report_name">education_financial_management</field>
-       <field name="report_file">education_financial_management</field>
+       <field name="report_name">education_financial_management.report_invoice_summary</field>
+       <field name="report_file">education_financial_management.report_invoice_summary</field>
+   </record>
+    <record id="action_refund_summary_report" model="ir.actions.report">
+       <field name="name">Refund Report</field>
+       <field name="model">education.refund.request</field>
+       <field name="report_type">qweb-pdf</field>
+       <field name="report_name">education_financial_management.report_refund_summary</field>
+       <field name="report_file">education_financial_management.report_refund_summary</field>
    </record>
 
 </odoo>
