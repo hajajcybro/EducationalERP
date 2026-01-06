@@ -7,7 +7,6 @@ class EducationClassRoom(models.Model):
     _description = 'Education Class Room'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-
     name = fields.Char(string='Room Name', required=True)
     building = fields.Char(string='Building', help='Building or block name')
     floor = fields.Char(string='Floor', help='Floor number', required=True)
@@ -17,7 +16,6 @@ class EducationClassRoom(models.Model):
     facility_ids = fields.Many2many(
         'education.class.facility','name',string='Facilities'
     )
-
 
     @api.constrains('capacity')
     def _check_capacity(self):

@@ -59,10 +59,10 @@
               parent="menu_student_class_main"
               action="action_education_class"
               sequence="20"/>
-    <menuitem id="menu_education_course"
-              name="Courses"
+    <menuitem id="menu_education_subject"
+              name="Subject"
               parent="menu_student_class_main"
-              action="action_education_course"
+              action="action_education_subject"
               sequence="20"/>
     <menuitem id="menu_education_timetable_line"
               name="Timetable"

@@ -21,7 +21,7 @@ class AttendanceSummaryWizard(models.TransientModel):
     academic_year_id = fields.Many2one('education.academic.year', string="Academic Year")
     program_id = fields.Many2one('education.program', string="Program")
     class_id = fields.Many2one('education.class', string="Class")
-    subject_id = fields.Many2one('education.course', string="Subject")
+    subject_id = fields.Many2one('education.subject', string="Subject")
 
     @api.constrains('program_id', 'academic_year_id')
     def _check_program_year_duration(self):
@@ -197,7 +197,7 @@ class AttendanceSummaryWizard(models.TransientModel):
                 percentage = 0.0
 
                 print("Hourly mode applied")
-                course = self.env['education.course'].browse(vals.get('subject_id'))
+                course = self.env['education.subject'].browse(vals.get('subject_id'))
                 print(course.read())
                 if course and course.is_credit_hour == True:
                     total_hours = 0

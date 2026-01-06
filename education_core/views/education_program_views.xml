@@ -35,10 +35,9 @@
                             <field name="board" invisible = "education_type !='school'"/>
                             <field name="medium" invisible = "education_type !='school'"/>
                             <field name="duration" invisible = "education_type !='college'"/>
-                            <field name="program_type" invisible = "education_type !='college'"/>
-                            <field name="session_duration" invisible = "education_type !='college'"/>
-                            <field name="total_sessions" invisible = "education_type !='college'"/>
-
+                            <field name="program_type" invisible = "education_type != 'college'"/>
+                            <field name="session_duration" invisible="program_type == 'custom'"/>
+                            <field name="total_sessions" invisible="program_type == 'custom'"/>
                         </group>
                         <group string="Additional Information">
                             <field name="description" placeholder="Add a short description about this program..."/>
@@ -88,7 +87,6 @@
 
                 <separator/>
 
-                <!--      CUSTOM FILTERS   -->
                 <filter name="filter_archived"
                         string="Archived"
                         domain="[('active','=',False)]"/>

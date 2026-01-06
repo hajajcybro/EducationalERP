@@ -5,7 +5,6 @@ from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 from datetime import date
 
-
 class ResPartner(models.Model):
     """Extend partner to add position role"""
     _inherit = 'res.partner'
@@ -19,30 +18,24 @@ class ResPartner(models.Model):
     phone = fields.Char(string='Phone', help='Student contact number.')
     academic_year_id = fields.Many2one('education.academic.year', string='Academic Year',required=True,)
     program_id = fields.Many2one('education.program',string='Program', required=True)
-
-    # Academic Info
     admission_no = fields.Char(string='Admission Number',)
     class_id = fields.Many2one('education.class', string='Class',required=True)
     current_enrollment_id = fields.Many2one('education.enrollment',
-                                            string='Enrollment ID',readonly=True,
-                                            help='Link to the current enrollment record of the student.'
-                                            )
+             string='Enrollment ID',readonly=True,
+             help='Link to the current enrollment record of the student.'
+    )
     roll_no = fields.Char('Roll Number')
     class_teacher_id = fields.Many2one('hr.employee', string='Class Teacher',
                                        domain=[('role', '=', 'teacher')])
-
-   #parent details
     father_name = fields.Char('Father Name')
     mother_name = fields.Char('Mother Name')
     contact_no = fields.Char('Contact Number')
     emergency_phone = fields.Char('Emergency Phone Number')
     current_address = fields.Text('Permanent Address')
     occupation = fields.Char('Occupation', help='Job or business')
-
-    #personal info
     id_no = fields.Char('Aadhar No. / ID No.', help='Government-issued ID number',required=True)
     relation = fields.Char(string='Relation', help="Relationship of the guardian to the applicant")
-    dob = fields.Date('Date of Birth',required=True)
+    dob = fields.Date('Date of Birth')
     age = fields.Integer('Age',compute='_compute_age', store=True)
     gender = fields.Selection([
         ('male', 'Male'),
@@ -72,23 +65,17 @@ class ResPartner(models.Model):
         default=lambda self: self.env.company,
         help='Company automatically assigned based on current user.'
     )
-
-    #previouse academic details
     previous_academic = fields.Char('Previous Academic')
     previous_class = fields.Char('Previous Class')
     Year_of_passing = fields.Char('Year Of Passing')
     language = fields.Char('Language / Medium')
     board = fields.Char('Board / University')
-
     parent_email = fields.Char(string="Parent Email", required=True)
     last_missing_doc_mail_date = fields.Date(
         string="Last Missing Document Reminder"
     )
-
-    # Bus route
     transportation = fields.Boolean(string='Using transportation facility')
     bus_no = fields.Char(string='Bus NO')
-
 
     def action_open_documents(self):
         """Open documents related to this student."""
@@ -114,16 +101,21 @@ class ResPartner(models.Model):
             'context': {'default_admission_no': self.admission_no},
         }
 
+    @api.constrains('class_id')
+    def _check_capacity_not_exceeded(self):
+        """Prevent exceeding class capacity."""
+        for rec in self:
+            if len(rec.class_id.student_ids) > rec.class_id.capacity:
+                raise ValidationError(_("Class capacity exceeded."))
+
     @api.model
     def create(self, vals):
         """Override create to assign an admission number when a new student
         is added without one."""
         vals_list = vals if isinstance(vals, list) else [vals]
-
         for val in vals_list:
             if val.get('is_student') == True and not val.get('admission_no'):
                 val['admission_no'] = self.env['ir.sequence'].next_by_code('education_student_admission')
-
         return super().create(vals_list)
 
     def write(self, vals):
@@ -132,57 +124,36 @@ class ResPartner(models.Model):
         for rec in self:
             if vals.get('is_student') == True and not rec.admission_no:
                 vals['admission_no'] = self.env['ir.sequence'].next_by_code('education_student_admission')
-
         return super().write(vals)
 
     @api.depends('dob')
     def _compute_age(self):
         """Compute age from date of birth."""
-        for record in self:
-            if record.dob:
-                record.age = int((date.today() - record.dob).days / 365.25)  # More accurate
-            else:
-                record.age = 0
-
-    @api.constrains('dob')
-    def _check_age_minimum(self):
-        """Validate minimum age requirement."""
-        for record in self:
-            if record.dob:
-                age = (date.today() - record.dob).days / 365.25
-                if age < 5:
-                    raise ValidationError(_('Student must be at least 5 years old. Current age: %.1f years') % age)
-                if age > 100:
-                    raise ValidationError(_('Please enter a valid date of birth.'))
+        for rec in self:
+            rec.age = int((date.today() - rec.dob).days / 365.25) if rec.dob else 0
 
     @api.constrains('program_id', 'academic_year_id')
     def _check_duration_match(self):
-        """Ensure program duration matches academic year duration."""
+        """Ensure program duration matches academic year length."""
         for rec in self:
             if rec.program_id and rec.academic_year_id:
-                program_duration = rec.program_id.duration or 0.0
-                year_duration = rec.academic_year_id.duration or 0.0
-                if float(program_duration) != float(year_duration):
-                    raise ValidationError(_(
-                        "Duration mismatch: The selected program (%s years) "
-                        "does not match the academic year (%s years)."
-                    ) % (program_duration, year_duration))
+                year_diff = (rec.academic_year_id.end_date.year -rec.academic_year_id.start_date.year)
+                if rec.program_id.duration != year_diff:
+                    raise ValidationError(
+                        _("Program duration must match academic year duration.")
+                    )
 
     @api.onchange('class_id')
     def _onchange_class_id(self):
+        """Set class teacher and auto-assign next roll number."""
         if self.class_id:
             if self.class_id.class_teacher_id:
                 self.class_teacher_id = self.class_id.class_teacher_id
-
-            # Find last student in this class
             last_student = self.search([
                 ('class_id', '=', self.class_id.id),
                 ('roll_no', '!=', False)
             ], order='roll_no desc', limit=1)
-
             last_roll = int(last_student.roll_no) if last_student and last_student.roll_no else 0
-
-            # Assign next roll number
             self.roll_no = last_roll + 1
 
 

@@ -3,8 +3,6 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 from datetime import date
-import re
-
 
 class EducationApplication(models.Model):
     _name = 'education.application'
@@ -62,7 +60,6 @@ class EducationApplication(models.Model):
         readonly=True,
         help='Link to the current enrollment record of the student.'
     )
-
     photo = fields.Binary(string='Image',
                           help='Upload a photo of the student.'
                           )
@@ -75,15 +72,11 @@ class EducationApplication(models.Model):
         ('rejected', 'Rejected'),
     ], string='Status', default='application',tracking=True, help='Current status of the student.'
     )
-
     reject_reason = fields.Text('Rejection Reason')
     notes = fields.Text(string='Notes',help='Additional notes about the student.')
-
     active = fields.Boolean(default=True, help='Uncheck to archive the student record.')
-
     email = fields.Char(string='Email', required=True, help='Student email address.')
     phone = fields.Char(string='Phone', help='Student contact number.')
-
     street = fields.Char('Street', help='Street address.',required=True,)
     street2 = fields.Char('Street2', help='Additional street information.',required=True,)
     city = fields.Char('City', help='City of residence.')
@@ -106,7 +99,6 @@ class EducationApplication(models.Model):
                                     )
     partner_id = fields.Many2one('res.partner', string='Related Contact', readonly=True,
                                  help='Linked res.partner record for this student.')
-
     guardian = fields.Char(
         string='Guardians',
         help='Enter the student’s guardians or parents.'
@@ -117,36 +109,26 @@ class EducationApplication(models.Model):
     mother_name = fields.Char('Mother Name')
     contact_no = fields.Char('Contact Number')
     emergency_phone = fields.Char('Emergency Phone Number')
-
     contact_address = fields.Text('Permanent Address')
     occupation = fields.Char('Occupation',help='Job or business')
-
     previous_academic = fields.Char('Previous Academic')
     previous_class = fields.Char('Previous Class')
     Year_of_passing = fields.Char('Year Of Passing')
     language = fields.Char('Language / Medium')
     board = fields.Char('Board / University')
 
-
     @api.depends('dob')
     def _compute_age(self):
         """Compute age from date of birth."""
-        for record in self:
-            if record.dob:
-                record.age = int((date.today() - record.dob).days / 365.25)  # More accurate
-            else:
-                record.age = 0
+        for rec in self:
+            rec.age = int((date.today() - rec.dob).days / 365.25) if rec.dob else 0
 
     @api.constrains('dob')
-    def _check_age_minimum(self):
-        """Validate minimum age requirement."""
-        for record in self:
-            if record.dob:
-                age = (date.today() - record.dob).days / 365.25
-                if age < 5:
-                    raise ValidationError(_('Student must be at least 5 years old. Current age: %.1f years') % age)
-                if age > 100:
-                    raise ValidationError(_('Please enter a valid date of birth.'))
+    def _check_dob(self):
+        """Prevent future date of birth."""
+        for rec in self:
+            if rec.dob and rec.dob > date.today():
+                raise ValidationError(_('Date of birth cannot be in the future.'))
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -163,7 +145,6 @@ class EducationApplication(models.Model):
                 rec.admission_no = self.env['ir.sequence'].next_by_code('education_student_admission')
                 rec.reference_no = False
                 rec.state = 'admission'
-
             partner = rec.partner_id
             if not partner:
                 partner = self.env['res.partner'].create({
@@ -203,27 +184,6 @@ class EducationApplication(models.Model):
                     'board': rec.board,
                     'image_1920': rec.photo,
                 })
-
-    @api.constrains('email', 'phone', 'contact_no', 'emergency_phone')
-    def _check_contact_fields(self):
-        """Validate email and phone formats."""
-        email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-        phone_pattern = r'^\+?\d{7,15}$'
-
-        for record in self:
-            if record.email and not re.match(email_pattern, record.email):
-                raise ValidationError(_('Invalid email address. Please enter a valid format like name@example.com.'))
-
-            phone_fields = {
-                'Phone': record.phone,
-                'Contact Number': record.contact_no,
-                'Emergency Phone': record.emergency_phone,
-            }
-            for field_label, value in phone_fields.items():
-                if value and not re.match(phone_pattern, value):
-                    raise ValidationError(_(
-                        'Invalid %s. Please enter digits only (7–15 numbers) with optional + sign.'
-                    ) % field_label)
 
     @api.constrains('program_id', 'academic_year_id')
     def _check_duration_match(self):

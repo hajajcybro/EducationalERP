@@ -27,7 +27,7 @@
 		'views/education_academic_year_views.xml',
 		'views/education_session_views.xml',
         'views/education_program_views.xml',
-        'views/education_course_views.xml',
+        'views/education_subject_views.xml',
         'views/education_document_view.xml',
         'views/eduaction_document_type_view.xml',
         'views/education_class_room_view.xml',

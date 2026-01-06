@@ -7,7 +7,7 @@ from . import education_enrollment
 from . import education_academic_year
 from . import education_session
 from . import education_program
-from . import education_course
+from . import education_subject
 from . import education_document
 from . import education_class_room
 from . import res_partner

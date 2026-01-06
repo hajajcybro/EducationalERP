@@ -15,7 +15,6 @@ class EducationProgram(models.Model):
         ('trimester', 'Trimester System'),
         ('custom', 'Custom'),
     ], string='Program Type', default='semester', required=True)
-
     session_duration = fields.Float(string='Sessions per Year',
                                       help='Number of sessions/semesters per year')
     total_sessions = fields.Integer(
@@ -27,10 +26,8 @@ class EducationProgram(models.Model):
     credit_hours = fields.Float(string="Total Credit Hours")
     description = fields.Text(string="Description")
     active = fields.Boolean(default=True, string="Active")
-
     session_ids = fields.One2many('education.session', 'program_id', string='Sessions')
-    course_ids = fields.One2many('education.course', 'program_id', string='All Courses')
-
+    course_ids = fields.One2many('education.subject', 'program_id', string='All Subject')
     education_type = fields.Selection(
         [('school', 'School'), ('college', 'College')],
         string="Type of Education",
@@ -58,23 +55,12 @@ class EducationProgram(models.Model):
         elif self.program_type == 'annual':
             self.session_duration = 1
         elif self.program_type == 'custom':
-            self.session_duration = 0
+            self.session_duration = False
 
     @api.depends('duration', 'session_duration', 'program_type')
     def _compute_total_sessions(self):
-        """Compute total sessions based on duration × sessions per year.
-
-        """
+        """Compute total sessions based on duration × sessions per year."""
         for rec in self:
-            if not rec.duration:
-                rec.total_sessions = 0
-                continue
-            if rec.program_type == 'custom':
-                rec.total_sessions = 1
-            elif rec.duration and rec.session_duration:
+            if rec.duration and rec.session_duration:
                 rec.total_sessions = int(rec.duration * rec.session_duration)
-            else:
-                rec.total_sessions = 0
-
-
 

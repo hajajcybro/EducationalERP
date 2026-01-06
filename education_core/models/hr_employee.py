@@ -12,4 +12,3 @@ class HrEmployee(models.Model):
         string='Position',
     )
     other_role = fields.Char('Other Role')
-#

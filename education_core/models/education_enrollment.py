@@ -52,17 +52,8 @@ class EducationEnrollment(models.Model):
     roll_number = fields.Integer(
         string='Roll Number',
         store=True,
-
-        help='Automatically assigned roll number per class and academic year.'
-    )
+        help='Automatically assigned roll number per class and academic year.')
     remarks = fields.Text(string='Remarks')
-
-
-    _sql_constraints = [
-        ('unique_enrollment',
-         'unique(student_id,current_class_id,academic_year_id)',
-         'A student cannot be enrolled multiple times.')
-    ]
 
     def action_enroll(self):
         """Mark as enrolled"""
@@ -75,7 +66,7 @@ class EducationEnrollment(models.Model):
             rec.status = 'dropped'
 
     def _assign_roll_number(self):
-        """Assign sequential roll number based on class and academic year."""
+        """Assign the next available roll number for the class and academic year."""
         for rec in self:
             if not rec.current_class_id or not rec.academic_year_id:
                 continue
@@ -90,14 +81,13 @@ class EducationEnrollment(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        """Create enrollment and update linked student's state and current enrollment."""
+        """Create enrollment, assign roll number, and update student records."""
         records = super().create(vals_list)
         for rec in records:
             if not rec.roll_number:
                 rec._assign_roll_number()
                 rec.write({'roll_number': rec.roll_number
                 })
-
             existing = self.search([
                 ('student_id', '=', rec.student_id.id),
                 ('status', '=', 'enrolled'),
@@ -107,7 +97,6 @@ class EducationEnrollment(models.Model):
                 raise ValidationError(_(
                     "Student '%s' is already enrolled in another class (%s)."
                 ) % (rec.student_id.name, existing.current_class_id.display_name))
-
             if rec.student_id:
                 rec.student_id.write({
                     'state': 'enrolled',
@@ -120,5 +109,7 @@ class EducationEnrollment(models.Model):
                         'roll_no': rec.roll_number,
                         'class_teacher_id': rec.teacher_id.id,
                     })
-        return records
+        return records\
+
+
 

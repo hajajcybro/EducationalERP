@@ -2,7 +2,6 @@
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
-
 class EducationSession(models.Model):
     """ This model represents an Education Session for a given academic year. """
     _name = 'education.session'
@@ -26,15 +25,13 @@ class EducationSession(models.Model):
     ], string="Status", default='draft', tracking=True)
     description = fields.Text(string="Description")
     active = fields.Boolean(default=True)
-    course_ids = fields.One2many('education.course','program_id', string='Course')
+    course_ids = fields.One2many('education.subject','program_id', string='Subject')
     duration_days = fields.Integer(string="Duration (Days)", compute="_compute_duration", store=True)
-
 
     @api.depends('start_date', 'end_date')
     def _compute_duration(self):
         for rec in self:
             rec.duration_days = (rec.end_date - rec.start_date).days if rec.start_date and rec.end_date else 0
-
 
     @api.constrains('start_date', 'end_date')
     def _check_dates(self):

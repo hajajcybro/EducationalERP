@@ -10,7 +10,7 @@ class EducationAttendanceSummary(models.TransientModel):
     academic_year_id = fields.Many2one('education.academic.year', string="Academic Year", readonly=True)
     program_id       = fields.Many2one('education.program', string="Program", readonly=True)
     class_id         = fields.Many2one('education.class', string="Class", readonly=True)
-    subject_id       = fields.Many2one('education.course', string="Subject", readonly=True)
+    subject_id       = fields.Many2one('education.subject', string="Subject", readonly=True)
     student_id = fields.Many2one('res.partner', string='Student', readonly=True,
                                  domain = [('is_student','=', True)])
     summary_type = fields.Selection([

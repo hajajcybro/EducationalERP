@@ -9,7 +9,7 @@ class EducationTimetableLine(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = 'display_name'
 
-    subject_id = fields.Many2one('education.course', required=True)
+    subject_id = fields.Many2one('education.subject', required=True)
     faculty_id = fields.Many2one('hr.employee', required=True, domain=[('role', '=', 'teacher')])
     day = fields.Selection([('monday','Monday'),('tuesday','Tuesday'),('wednesday','Wednesday'),('thursday','Thursday'),('friday','Friday')])
     start_time = fields.Float(required=True)
@@ -24,9 +24,7 @@ class EducationTimetableLine(models.Model):
         readonly=True
     )
     display_name = fields.Char(string="Display Name", compute="_compute_display_name", store=True)
-
     duration = fields.Float('Duration', compute='_compute_duration', store=True)
-
 
     @api.depends('subject_id', 'faculty_id', 'day')
     def _compute_display_name(self):
@@ -46,21 +44,18 @@ class EducationTimetableLine(models.Model):
             if rec.start_time >= rec.end_time:
                 raise ValidationError("Start time must be earlier than end time.")
 
-    @api.depends('start_time','end_time')
+    @api.depends('start_time', 'end_time')
     def _compute_duration(self):
         """Compute class duration in hours."""
         for rec in self:
-            if rec.start_time is None or rec.end_time is None or rec.end_time <= rec.start_time:
-                rec.duration = 0.0
-                continue
-            sh = int(rec.start_time)
-            eh = int(rec.end_time)
-            # fractional part - convert to minutes
-            sm = int(round((rec.start_time - sh) * 60))
-            em = int(round((rec.end_time - eh) * 60))
+            duration = 0.0
+            if rec.start_time and rec.end_time and rec.end_time > rec.start_time:
+                # convert float hours to total minutes
+                start_minutes = int(rec.start_time * 60)
+                end_minutes = int(rec.end_time * 60)
+                duration = (end_minutes - start_minutes) / 60.0
+            rec.duration = duration
 
-            start_minutes = sh * 60 + sm
-            end_minutes = eh * 60 + em
-            rec.duration = (end_minutes - start_minutes) / 60.0
+
 
 

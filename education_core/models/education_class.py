@@ -36,11 +36,9 @@ class EducationClass(models.Model):
     student_ids = fields.One2many('res.partner','class_id')
     session_id = fields.Many2one('education.session',string='Session')
     timetable_line_ids = fields.One2many('education.timetable.line','class_id')
-
     program_type = fields.Selection(
         [('school', 'School'), ('college', 'College')],
-        string='Program Type',
-        readonly=True
+        string='Program Type', readonly=True
     )
     division = fields.Char(
         string='Division',
@@ -52,8 +50,6 @@ class EducationClass(models.Model):
         """Update the program type automatically when the program is changed."""
         if self.program_id:
             self.program_type = self.program_id.education_type
-        else:
-            self.program_type = False
 
     @api.depends('room_id')
     def _compute_capacity(self):
@@ -73,10 +69,7 @@ class EducationClass(models.Model):
                     ('academic_year_id', '=', rec.academic_year_id.id)
                 ], limit=1)
                 if existing:
-                    raise ValidationError((
-                        f"Room '{rec.room_id.name}' is already assigned to class "
-                        f"'{existing.name}' for academic year '{rec.academic_year_id.name}'."
-                    ))
+                    raise ValidationError('already assigned')
 
     @api.constrains('program_id', 'academic_year_id')
     def _check_program_year_duration(self):
@@ -85,38 +78,16 @@ class EducationClass(models.Model):
         for rec in self:
             if rec.program_id and rec.academic_year_id:
                 if int(rec.academic_year_id.duration) != rec.program_id.duration:
-                    raise ValidationError(
-                        f"Academic year '{rec.academic_year_id.name}' (duration {rec.academic_year_id.duration}) "
-                        f"does not match the duration of program '{rec.program_id.name}' ({rec.program_id.duration} years)."
-                    )
-
-    @api.constrains('student_ids', 'capacity')
-    def _check_capacity_not_exceeded(self):
-        """Prevent enrollment beyond room capacity."""
-        for rec in self:
-            enrolled = len(rec.student_ids.filtered(lambda s: s.status == 'enrolled'))
-            if enrolled > rec.capacity:
-                raise ValidationError(_(
-                    "Class capacity exceeded!\n"
-                    "Current enrollments: %d\n"
-                    "Maximum capacity: %d\n"
-                    "Please increase room capacity or move students to another class."
-                ) % (enrolled, rec.capacity))
+                    raise ValidationError("Program duration must match academic year duration.")
 
     @api.constrains('room_id')
     def _check_room_already_allocated(self):
-        """Prevent using the same room for multiple classes (global check)."""
+        """Prevent assigning the same room to multiple classes."""
         for rec in self:
-            if rec.room_id:
-                existing = self.search([
-                    ('id', '!=', rec.id),
-                    ('room_id', '=', rec.room_id.id),
-                ], limit=1)
-
-                if existing:
-                    raise ValidationError(
-                        f"Room '{rec.room_id.name}' is already assigned to class "
-                        f"'{existing.name}'. You cannot reuse the same room."
-                    )
+            if rec.room_id and self.search_count([
+                ('id', '!=', rec.id),
+                ('room_id', '=', rec.room_id.id),
+            ]):
+                raise ValidationError(_("Room is already assigned to another class."))
 
 

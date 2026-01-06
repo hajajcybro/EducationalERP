@@ -5,6 +5,5 @@ from . import education_fee_penalty_rule
 from . import account_move
 from . import education_refund_request
 from . import account_move_reversal
-# from . import followup_followup_line
 
 
