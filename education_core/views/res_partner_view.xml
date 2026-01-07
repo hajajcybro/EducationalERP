@@ -30,16 +30,16 @@
             </xpath>
 
 
-             <xpath expr="//field[@name='category_id']" position="replace">
+             <xpath expr="//field[@name='category_id']" position="after">
                 <field name="stu_category_id"/>
             </xpath>
-             <xpath expr="//field[@name='vat']" position="replace">
+             <xpath expr="//field[@name='vat']" position="after">
                 <field name="program_id"/>
             </xpath>
-            <xpath expr="//field[@name='website']" position="replace">
+            <xpath expr="//field[@name='website']" position="after">
                 <field name="academic_year_id"/>
             </xpath>
-            <xpath expr="//page[@name='contact_addresses']"  position="replace">
+            <xpath expr="//page[@name='contact_addresses']"  position="after" invisble="is_student != True">
                 <page string="Academic Info" name="academic_info">
                     <group>
                         <group string="Previous Academic Details">
@@ -66,8 +66,8 @@
                     </group>
                 </page>
             </xpath>
-            <xpath expr="//page[@name='sales_purchases']" position="replace">
-                <page string="Other Info" name="personal_info">name=""
+            <xpath expr="//page[@name='sales_purchases']" position="after">
+                <page string="Other Info" name="personal_info" invisble="is_student != True">
                     <group>
                         <group string="Personal Info">
                             <field name="gender"/>

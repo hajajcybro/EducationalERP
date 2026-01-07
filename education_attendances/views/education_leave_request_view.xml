@@ -8,10 +8,12 @@
             <form string="Leave Request">
                     <header>
                         <button name="action_submit" string="Request" type="object"  class="oe_highlight" invisible="status != 'draft'"/>
-                        <button name="action_cancel" string="Cancel" type="object"  class="oe_highlight" invisible="status != 'to_approve'" statusbar_visible="cancelled"/>
+                        <button name="action_cancel" string="Cancel" type="object"  class="oe_highlight" invisible="status != 'to_approve'"
+                                statusbar_visible="cancelled"/>
                         <button name="action_approve" string="Approve" type="object"  class="oe_highlight" invisible="status != 'to_approve'"
                                 groups="base.group_system,education_core.group_education_admin,education_core.group_education_admission_officer"/>
-                        <button name="action_reject" string="Reject" type="object"  class="oe_highlight" invisible="status != 'to_approve'"  statusbar_visible="rejected"
+                        <button name="action_reject" string="Reject" type="object"  class="oe_highlight" invisible="status != 'to_approve'"
+                                statusbar_visible="rejected"
                                 groups="base.group_system,education_core.group_education_admin,education_core.group_education_admission_officer"/>
                         <field name="status" widget="statusbar" statusbar_visible="draft,to_approve,approved"/>
                     </header>
@@ -20,12 +22,14 @@
                         <group>
                             <field name="student_id"/>
                             <field name="leave_format"/>
-                            <field name="teacher_id"/>
+                            <field name="session"/>
                             <field name="reason"/>
                         </group>
                         <group>
-                            <field name="start_date" invisible="leave_format == 'half_day'"/>
+                            <field name="start_date"/>
+                            <field name="leave_days" invisible="leave_format != 'both'"/>
                             <field name="end_date"/>
+                            <field name="half_day_date" invisible="leave_format != 'both'"/>
                             <field name="total_leave_days"/>
                         </group>
                     </group>
@@ -46,6 +50,7 @@
         <field name="arch" type="xml">
             <list string="Leave Requests">
                 <field name="student_id"/>
+                <field name="session"/>
                 <field name="start_date"/>
                 <field name="end_date"/>
                 <field name="status"/>
@@ -62,14 +67,10 @@
                   date_start="start_date"
                   date_stop="end_date"
                   color="student_id">
-            <field name="student_id"/>
-            <field name="teacher_id"/>
-            <field name="leave_format"/>
             <field name="reason"/>
         </calendar>
     </field>
 </record>
-
 
     <!-- Action -->
     <record id="action_education_leave_request" model="ir.actions.act_window">

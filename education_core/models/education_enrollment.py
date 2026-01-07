@@ -23,7 +23,7 @@ class EducationEnrollment(models.Model):
         readonly=True
     )
     academic_year_id = fields.Many2one('education.academic.year',related='student_id.academic_year_id',
-        string='Academic Year',
+        string='Academic Year',domain=[('state', '!=', 'closed')],
      )
     program_id = fields.Many2one('education.program',related='student_id.program_id',
         string='Program',

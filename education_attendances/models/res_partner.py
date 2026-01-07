@@ -1,9 +1,13 @@
-from odoo import models, api
+from odoo import models, fields,api
 from odoo.exceptions import ValidationError
 
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
+
+    last_attendance_mail_date = fields.Date(
+        string="Last Attendance Notification Date"
+    )
 
     def action_attendance(self):
         """Open attendance related to this student."""

@@ -5,7 +5,7 @@
         <field name="name">education.subject.tree</field>
         <field name="model">education.subject</field>
         <field name="arch" type="xml">
-            <list string="Courses" decoration-info="is_elective == True" decoration-muted="active == False">
+            <list string="Subject" decoration-info="is_elective == True" decoration-muted="active == False">
                 <field name="name"/>
                 <field name="code"/>
                 <field name="program_id"/>

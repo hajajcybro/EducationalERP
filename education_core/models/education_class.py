@@ -15,6 +15,7 @@ class EducationClass(models.Model):
                     help='Specify the education program or course this class belongs to'
                              )
     academic_year_id = fields.Many2one('education.academic.year',string='Academic Year', required=True,
+                                       domain=[('state', '!=', 'closed')],
                     help = 'Select the academic year during which this class will run'
                                    )
     capacity = fields.Integer(string='Room Capacity',  compute='_compute_capacity',

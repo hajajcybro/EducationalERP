@@ -21,3 +21,13 @@ class ResConfigSettings(models.TransientModel):
         string="Count Excused Leave as Present",
         config_parameter='education_attendances.count_excused_as_present')
 
+    attendance_notify_frequency = fields.Selection([
+        ('daily', 'Daily'),
+        ('weekly', 'Weekly'),
+        ('monthly', 'Monthly'),
+        ('yearly', 'Yearly')
+    ],
+        string="Low Attendance Notification Frequency",
+        default='monthly',
+        config_parameter='education_attendances.notify_frequency'
+    )

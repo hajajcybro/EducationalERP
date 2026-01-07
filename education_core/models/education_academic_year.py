@@ -52,4 +52,10 @@ class EducationAcademicYear(models.Model):
             if self.search([('id', '!=', record.id), ('name', '=', record.name)]):
                 raise ValidationError(f"Academic Year  '{record.name}' already exists.")
 
+    def action_set_active(self):
+        for rec in self:
+            rec.state = 'active'
 
+    def action_set_closed(self):
+        for rec in self:
+            rec.state = 'closed'

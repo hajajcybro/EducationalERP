@@ -7,9 +7,20 @@
         <field name="arch" type="xml">
             <form string="Education_academic_year">
                 <header>
-                    <field name="state" widget="statusbar" options="{'clickable': '1'}"/>
+                    <field name="state" widget="statusbar"/>
+                     <button name="action_set_active"
+                        string="Activate"
+                        type="object"
+                        class="btn-primary"
+                        invisible="state != 'draft'"/>
+
+                    <button name="action_set_closed"
+                            string="Close"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="state != 'active'"/>
                 </header>
-                <sheet>
+                    <sheet>
                     <group>
                         <group>
                             <h1>

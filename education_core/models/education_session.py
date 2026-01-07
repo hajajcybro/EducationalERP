@@ -13,7 +13,7 @@ class EducationSession(models.Model):
     code = fields.Char(string="Code")
     program_id = fields.Many2one(
         'education.program', string="Program", required=True)
-    academic_year_id = fields.Many2one('education.academic.year',string='Academic Year', required=True)
+    academic_year_id = fields.Many2one('education.academic.year',string='Academic Year', required=True, domain=[('state', '!=', 'closed')],)
     start_date = fields.Date(string="Start Date")
     end_date = fields.Date(string="End Date")
     sequence = fields.Integer(string="Sequence")

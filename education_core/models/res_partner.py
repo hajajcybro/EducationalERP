@@ -14,12 +14,12 @@ class ResPartner(models.Model):
         string='Position',
     )
     is_student = fields.Boolean('Student')
-    email = fields.Char(string='Email', required=True, help='Student email address.')
+    email = fields.Char(string='Email', help='Student email address.')
     phone = fields.Char(string='Phone', help='Student contact number.')
-    academic_year_id = fields.Many2one('education.academic.year', string='Academic Year',required=True,)
-    program_id = fields.Many2one('education.program',string='Program', required=True)
+    academic_year_id = fields.Many2one('education.academic.year', string='Academic Year',domain=[('state', '!=', 'closed')],)
+    program_id = fields.Many2one('education.program',string='Program')
     admission_no = fields.Char(string='Admission Number',)
-    class_id = fields.Many2one('education.class', string='Class',required=True)
+    class_id = fields.Many2one('education.class', string='Class')
     current_enrollment_id = fields.Many2one('education.enrollment',
              string='Enrollment ID',readonly=True,
              help='Link to the current enrollment record of the student.'
@@ -33,7 +33,7 @@ class ResPartner(models.Model):
     emergency_phone = fields.Char('Emergency Phone Number')
     current_address = fields.Text('Permanent Address')
     occupation = fields.Char('Occupation', help='Job or business')
-    id_no = fields.Char('Aadhar No. / ID No.', help='Government-issued ID number',required=True)
+    id_no = fields.Char('Aadhar No. / ID No.', help='Government-issued ID number')
     relation = fields.Char(string='Relation', help="Relationship of the guardian to the applicant")
     dob = fields.Date('Date of Birth')
     age = fields.Integer('Age',compute='_compute_age', store=True)
@@ -70,7 +70,7 @@ class ResPartner(models.Model):
     Year_of_passing = fields.Char('Year Of Passing')
     language = fields.Char('Language / Medium')
     board = fields.Char('Board / University')
-    parent_email = fields.Char(string="Parent Email", required=True)
+    parent_email = fields.Char(string="Parent Email")
     last_missing_doc_mail_date = fields.Date(
         string="Last Missing Document Reminder"
     )
