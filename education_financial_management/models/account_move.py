@@ -2,8 +2,6 @@ from odoo import models, fields,api,_
 from datetime import timedelta
 from odoo.tools.misc import formatLang
 
-
-
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
@@ -12,11 +10,6 @@ class AccountMove(models.Model):
         string='Education Fee Invoice',
         ondelete='set null'
     )
-    # due_reminder_sent = fields.Boolean(
-    #     string="Due Reminder Sent",
-    #     default=False,
-    #     copy=False
-    # )
 
     @api.model
     def _cron_send_due_tomorrow_reminder(self):

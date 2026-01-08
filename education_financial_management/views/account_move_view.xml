@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="action_student_invoices_view" model="ir.actions.act_window">
+    <field name="name">Student Invoices</field>
+    <field name="res_model">account.move</field>
+    <field name="view_mode">list,form</field>
+    <field name="domain">[
+        ('fee_invoice_id', '!=', False),
+        ('move_type', '=', 'out_invoice')]
+    </field>
+</record>
+
+</odoo>

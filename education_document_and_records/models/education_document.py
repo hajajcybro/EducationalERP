@@ -2,10 +2,8 @@ from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 from datetime import datetime, timedelta
 
-
 class EducationDocument(models.Model):
     _inherit = 'education.document'
-
 
     program_id = fields.Many2one(
         'education.program',
@@ -112,7 +110,6 @@ class EducationDocument(models.Model):
                     ('student_id', '=', student.id),
                     ('document_type', '=', doc_type.id),
                 ])
-
                 if not exists:
                     if not last_mail_date:
                         self._send_missing_document_mail(student, doc_type)
@@ -169,34 +166,25 @@ class EducationDocument(models.Model):
         """
         today = fields.Date.today()
         warning_date = today + timedelta(days=2)
-
         documents = self.search([
             ('is_expirable', '=', True),
             ('expiry_date', '!=', False),
             ('state', '=', 'approved'),
         ])
-
         warning_students = {}
         expired_students = {}
-
         for doc in documents:
             student = doc.student_id
-            if not student or not student.email:
-                continue
-
-            if doc.expiry_date == warning_date:
-                warning_students.setdefault(student, []).append(doc)
-
-            elif doc.expiry_date <= today:
-                expired_students.setdefault(student, []).append(doc)
-
-        # Send warning emails (2 days before expiry)
-        for student, docs in warning_students.items():
-            self._send_warning_email(student, docs)
-
-        # Send expired emails
-        for student, docs in expired_students.items():
-            self._send_expired_email(student, docs)
+            if  student or  student.email:
+                if doc.expiry_date == warning_date:
+                    warning_students.setdefault(student, []).append(doc)
+                elif doc.expiry_date <= today:
+                    expired_students.setdefault(student, []).append(doc)
+            # Send warning emails (2 days before expiry)
+            for student, docs in warning_students.items():
+                self._send_warning_email(student, docs)
+            for student, docs in expired_students.items():
+                self._send_expired_email(student, docs)
 
     def _send_warning_email(self, student, documents):
         """
@@ -277,28 +265,23 @@ class EducationDocument(models.Model):
             'body_html': body_html,
         }).send()
 
-
     @api.model_create_multi
     def create(self, vals_list):
         """Enforces document upload rules by blocking duplicates of approved,
            valid documents and automatically managing document versioning."""
         today = fields.Date.today()
-
         for vals in vals_list:
             student_id = vals.get('student_id')
             document_type_id = vals.get('document_type')
             doc_type = self.env['education.document.type'].browse(document_type_id)
-
             # Count existing documents for same student & type
             existing_docs = self.search([
                 ('student_id', '=', student_id),
                 ('document_type', '=', document_type_id),
             ])
-
             # Check upload limit FIRST
             if doc_type.limit and doc_type.limit > 0:
                 if len(existing_docs) >= doc_type.limit:
-
                     # Check approved & valid document
                     approved_valid_doc = self.search([
                         ('student_id', '=', student_id),
@@ -308,7 +291,6 @@ class EducationDocument(models.Model):
                         ('expiry_date', '=', False),
                         ('expiry_date', '>=', today),
                     ], limit=1)
-
                     if approved_valid_doc:
                         raise ValidationError(_(
                             "Upload limit reached. An approved and valid document "
@@ -318,7 +300,6 @@ class EducationDocument(models.Model):
             # Auto-increment version
             last_doc = existing_docs.sorted('version', reverse=True)[:1]
             vals['version'] = last_doc.version + 1 if last_doc else 1
-
         return super().create(vals_list)
 
 

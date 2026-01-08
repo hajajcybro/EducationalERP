@@ -95,50 +95,46 @@ class EducationAttendance(models.Model):
 
     @api.model
     def attendance_mail_notify(self):
-        """Check overall attendance %, notify parents if below minimum."""
         params = self.env['ir.config_parameter'].sudo()
-        today = fields.Date.today()
-        if params.get_param('education_attendances.attendance_enabled') == "True":
-            print('true')
+
+        if params.get_param('education_attendances.attendance_enabled') != "False":
             minimum = float(
                 params.get_param('education_attendances.minimum_attendance') or 0
             )
             frequency = params.get_param(
                 'education_attendances.notify_frequency', 'monthly'
             )
-            attendances = self.search([
-                ('state', '=', 'validated'),
-                ('class_id.academic_year_id.state', '=', 'closed'),
-                ('class_id.session_id.state', '=', 'closed'),
-            ]).mapped('attendance_line_ids')
-            print('attendances---',attendances)
-            for student in attendances.mapped('student_id'):
-                print('stud',student)
-                student_lines = attendances.filtered(
-                    lambda l: l.student_id == student
-                )
-                print('hhhhhhhhh',student_lines)
+            today = fields.Date.today()
+            AttendanceLine = self.env['education.attendance.line']
+            lines = AttendanceLine.search([
+                ('attendance_id.state', '=', 'validated'),
+                ('attendance_id.class_id.academic_year_id.state', '=', 'closed'),
+                ('attendance_id.class_id.session_id.state', '=', 'closed'),
+            ])
+            student_map = {}
+            for line in lines:
+                student_map.setdefault(line.student_id, []).append(line)
+            for student, student_lines in student_map.items():
                 total = len(student_lines)
-                present = len(student_lines.filtered(
-                    lambda l: l.status == 'present'
-                ))
-                print(present)
-                percentage = (present / total * 100) if total else 0
-                print(percentage)
-                send_mail = True
-                last = student.last_attendance_mail_date
-                print(last)
+                if total:
+                    present = sum(1 for l in student_lines if l.status == 'present')
+                    percentage = (present / total) * 100
+                if percentage <= minimum and student.parent_email:
+                    last = student.last_attendance_mail_date
+                    send_mail = False
                 if last:
-                    if frequency == 'daily' and last == today:
-                        send_mail = False
-                    elif frequency == 'weekly' and last.isocalendar()[1] == today.isocalendar()[1]:
-                        send_mail = False
-                    elif frequency == 'monthly' and last.month == today.month and last.year == today.year:
-                        send_mail = False
-                    elif frequency == 'yearly' and last.year == today.year:
-                        send_mail = False
-                if send_mail and student.parent_email and percentage < minimum:
-                    print('minimum')
+                    delta = (today - last).days
+                    if frequency == 'daily':
+                        send_mail = last != today
+                    elif frequency == 'weekly':
+                        send_mail = last.isocalendar()[0:2] != today.isocalendar()[0:2]
+                    elif frequency == 'monthly':
+                        send_mail = (last.year, last.month) != (today.year, today.month)
+                    elif frequency == 'yearly':
+                        send_mail = last.year != today.year
+                else:
+                    send_mail = True
+                if send_mail:
                     self.env['mail.mail'].sudo().create({
                         'subject': 'Attendance Warning',
                         'body_html': (
@@ -149,33 +145,3 @@ class EducationAttendance(models.Model):
                         'auto_delete': True,
                     }).send()
                     student.last_attendance_mail_date = today
-
-    # @api.model
-    # def attendance_mail_notify(self):
-    #     """Check overall attendance %, notify parents if below minimum."""
-        # params = self.env['ir.config_parameter'].sudo()
-        # today = fields.Date.today()
-        # if params.get_param('education_attendances.attendance_enabled') == "True":
-        #     minimum = float(params.get_param('education_attendances.minimum_attendance') or 0)
-        #     lines = self.searchself.search([
-        #                     ('state', '=', 'validated'),
-        #                     ('class_id.academic_year_id.state', '=', 'closed'),
-        #                     ('class_id.session_id.state', '=', 'closed'),
-        #                 ]).mapped('attendance_line_ids')
-        #     for student in lines.mapped('student_id'):
-        #         student_lines = lines.filtered(lambda l: l.student_id == student)
-        #         total = len(student_lines)
-        #         present = len(student_lines.filtered(lambda l: l.status == 'present'))
-        #         percentage = (present / total * 100) if total else 0
-        #         # Send email only if parent email exists and attendance is low
-        #         if student.parent_email and percentage < minimum:
-        #             self.env['mail.mail'].sudo().create({
-        #                 'subject': 'Monthly Attendance Warning',
-        #                 'body_html': (
-        #                     f"Attendance for <b>{student.name}</b>: "
-        #                     f"{percentage:.2f}% (Minimum {minimum}%)"
-        #                 ),
-        #                 'email_to': student.parent_email,
-        #                 'auto_delete': True,
-        #             }).send()
-        #             student.last_attendance_mail_date = today

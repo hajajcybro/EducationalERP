@@ -3,18 +3,21 @@
      <menuitem id="menu_education_finance"
               name="Financial Management"/>
 
+<!--    invoice and fee invoice-->
+     <menuitem id="menu_financial_invoices" name="Invoices"
+              parent="menu_education_finance"/>
 
-    <menuitem id="menu_education_fee_invoice"
-              name="Fee Invoices"
-              parent="menu_education_finance"
-              action="action_education_fee_invoice"/>
-
+     <menuitem id="menu_education_fee_invoice"
+          name="Fee Invoices" parent="menu_financial_invoices"
+               action="action_education_fee_invoice"/>
+     <menuitem id="menu_student_invoices"
+          name="Invoice"
+          action="action_student_invoices_view"
+          parent="menu_financial_invoices"/>
     <menuitem id="menu_education_refund_request"
               name="Refund Requests"
               parent="menu_education_finance"
               action="action_education_refund_request"/>
-
-
 <!--    fee plan , installment and penalty rule-->
      <menuitem id="menu_financial_fee" name="Fees"
               parent="menu_education_finance"/>
@@ -54,6 +57,10 @@
               parent="menu_financial_report"
               action="action_refund_summary_wizard"/>
 
+    <menuitem id="menu_transport_fee_root"
+              name="Transport Fees"
+              parent="menu_financial_report"
+              action="action_education_transport_fee"/>
 
 </odoo>
 

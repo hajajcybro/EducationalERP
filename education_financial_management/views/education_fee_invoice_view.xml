@@ -28,13 +28,12 @@
                     <group>
                         <field name="total_invoiced_amount" invisible="payment_type != 'installment'"/>
                         <field name="remaining_amount" invisible="payment_type != 'installment'"/>
-
                     </group>
                     <notebook>
                         <page string="Remarks">
                             <field name="remarks"/>
                         </page>
-                        <page  string="Invoice">
+                        <page  string="Invoice line">
                             <field name="invoice_ids"/>
                         </page>
                     </notebook>
@@ -54,7 +53,6 @@
                 <field name="fee_plan_id"/>
                 <field name="installment_id"/>
                 <field name="total_invoiced_amount"/>
-
                 <field name="outstanding_amount"/>
                 <field name="amount_paid"/>
                 <field name="reverse_amount"/>
