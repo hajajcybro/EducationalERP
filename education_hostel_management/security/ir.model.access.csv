@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_education_hostel,education_hostel,model_education_hostel,,1,1,1,1
+access_education_hostel_room,education_hostel_room,model_education_hostel_room,,1,1,1,1
+access_education_hostel_floor,education_hostel_floor,model_education_hostel_floor,,1,1,1,1
+access_education_hostel_application,education_hostel_application,model_education_hostel_application,,1,1,1,1
+access_education_hostel_room_allocation,education_hostel_room_allocation,model_education_hostel_room_allocation,,1,1,1,1
+access_education_hostel_food_item,education_hostel_food_item,model_education_hostel_food_item,,1,1,1,1
+access_education_hostel_mess,education_hostel_mess,model_education_hostel_mess,,1,1,1,1
+access_education_hostel_mess_food,education_hostel_mess_food,model_education_hostel_mess_food,,1,1,1,1
+access_education_room_list,education_room_list,model_education_room_list,,1,1,1,1

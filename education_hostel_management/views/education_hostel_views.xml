@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--List view-->
+    <record id="education_hostel_view_list" model="ir.ui.view">
+        <field name="name">education.hostel.view.list</field>
+        <field name="model">education.hostel</field>
+        <field name="arch" type="xml">
+            <list string="Hostel">
+                <field name="hostel_code"/>
+                <field name="phone"/>
+                <field name="vacancy"/>
+                <field name="warden_id"/>
+            </list>
+        </field>
+    </record>
+    <!--Kanban view-->
+    <!--    <record id="education_hostel_view_kanban" model="ir.ui.view">-->
+    <!--        <field name="name">education.hostel.view.kanban</field>-->
+    <!--        <field name="model">education.hostel</field>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <kanban class="oe_background_grey o_kanban_dashboard o_edu_hostel">-->
+    <!--                <field name="color"/>-->
+    <!--                <templates>-->
+    <!--                    <t t-name="kanban-box">-->
+    <!--                        <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card oe_kanban_global_click ">-->
+    <!--                            <div class="o_dropdown_kanban dropdown">-->
+    <!--                                <a class="dropdown-toggle btn" role="button"-->
+    <!--                                   data-toggle="dropdown" href="#">-->
+    <!--                                    <span class="fa fa-bars fa-lg"-->
+    <!--                                          title="Code"/>-->
+    <!--                                </a>-->
+    <!--                                <ul class="dropdown-menu" role="menu"-->
+    <!--                                    aria-labelledby="dLabel">-->
+    <!--                                    <t t-if="widget.editable">-->
+    <!--                                        <li>-->
+    <!--                                            <a type="edit">Edit</a>-->
+    <!--                                        </li>-->
+    <!--                                    </t>-->
+    <!--                                    <t t-if="widget.deletable">-->
+    <!--                                        <li>-->
+    <!--                                            <a type="delete">Delete</a>-->
+    <!--                                        </li>-->
+    <!--                                    </t>-->
+    <!--                                    <li>-->
+    <!--                                        <ul class="oe_kanban_colorpicker"-->
+    <!--                                            data-field="color"/>-->
+    <!--                                    </li>-->
+    <!--                                </ul>-->
+    <!--                            </div>-->
+    <!--                            <div class="oe_kanban_content">-->
+    <!--                                <div class="row">-->
+    <!--                                    <div class="text-center">-->
+    <!--                                        <div class="text-center">-->
+    <!--                                            <strong>-->
+    <!--                                                <field name="hostel_code"/>-->
+    <!--                                            </strong>-->
+    <!--                                        </div>-->
+    <!--                                    </div>-->
+
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                            <div class="oe_kanban_details">-->
+    <!--                                <strong>-->
+    <!--                                    <div class="text-center">-->
+    <!--                                        <div t-if="record.hostel_warden_id.value">-->
+    <!--                                            Warden:-->
+    <!--                                            <field name="hostel_warden_id"/>-->
+    <!--                                        </div>-->
+    <!--                                    </div>-->
+    <!--                                    <div class="text-center">-->
+    <!--                                        <div t-if="record.total_students.value">-->
+    <!--                                            Students:-->
+    <!--                                            <field name="total_students"/>-->
+    <!--                                        </div>-->
+    <!--                                    </div>-->
+    <!--                                    <div class="text-center">-->
+    <!--                                        <div t-if="record.total_students.value">-->
+    <!--                                            Vacancy:-->
+    <!--                                            <field name="vacancy"/>-->
+    <!--                                        </div>-->
+    <!--                                    </div>-->
+    <!--                                </strong>-->
+    <!--                            </div>-->
+    <!--                        </div>-->
+    <!--                    </t>-->
+    <!--                </templates>-->
+    <!--            </kanban>-->
+    <!--        </field>-->
+    <!--    </record>-->
+    <!--    Form view-->
+    <record id="education_hostel_view_form" model="ir.ui.view">
+        <field name="name">education.hostel.view.form</field>
+        <field name="model">education.hostel</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <!--                     <div class="oe_button_box" name="button_box">-->
+                    <!--                        <button class="oe_stat_button"-->
+                    <!--                                name="action_view_hostel_student" type="object"-->
+                    <!--                                icon="fa-group">-->
+                    <!--                            <field string="Students" name="total_students"-->
+                    <!--                                   widget="statinfo"/>-->
+                    <!--                        </button>-->
+                    <!--                    </div>-->
+                    <h1>
+                        <field name="name" placeholder="Name"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <label for="street" string="Address"/>
+                            <div class="o_address_format">
+                                <field name="street" placeholder="Street..." class="o_address_street"/>
+                                <field name="street2" placeholder="Street 2..." class="o_address_street"/>
+                                <field name="city" placeholder="City" class="o_address_city"/>
+                                <field name="state_id" class="o_address_state" placeholder="State"
+                                       options="{'no_open': True, 'no_quick_create': True}"
+                                       context="{'default_country_id': country_id}"/>
+                                <field name="zip" placeholder="ZIP" class="o_address_zip"/>
+                                <field name="country_id" placeholder="Country" class="o_address_country"
+                                       options='{"no_open": True, "no_create": True}'/>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="hostel_code"/>
+                            <field name="phone"/>
+                            <field name="mobile"/>
+                            <field name="email"/>
+                        </group>
+                    </group>
+                    <notebook colspan="4">
+                        <page name="basic_details" string="General Info">
+
+                            <group name="container_row_2">
+                                <group string="Hostel info" name="hostel_details" priority="1">
+                                    <field name="warden_id"/>
+                                    <field name="total_floors"/>
+                                    <field name="total_rooms"/>
+                                    <field name="capacity"/>
+                                    <field name="vacancy"/>
+                                    <field name="total_students"/>
+                                </group>
+                                <group string="Fee details" name="Fee Details" priority="2">
+                                    <!--                                    <field name="'currency_id"/>-->
+                                    <field name="room_rent" widget="monetary"/>
+                                    <field name="mess_fee" widget="monetary"/>
+                                    <field name="total_fee" widget="monetary"/>
+                                </group>
+
+                            </group>
+                        </page>
+                        <page string="Rooms">
+                            <field name="hostel_room_ids" readonly="1">
+                                <list string="Rooms" editable="bottom">
+                                    <field name="room_mem_rel"/>
+                                    <field name="floor" readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="education_hostel_view_kanban" model="ir.ui.view">
+        <field name="name">education.hostel.view.kanban</field>
+        <field name="model">education.hostel</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="city"/>
+                <field name="state_id"/>
+                <field name="country_id"/>
+                <field name="capacity"/>
+                <field name="vacancy"/>
+                <field name="warden_id"/>
+                <field name="phone"/>
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_card">
+                            <div class="o_kanban_header">
+                                <strong>
+                                    <field name="name"/>
+                                </strong>
+                            </div>
+
+                            <div class="o_kanban_content">
+                                <div>
+                                    <i class="fa fa-map-marker me-1"/>
+                                    <t t-if="record.city.value">
+                                        <field name="city"/>
+                                    </t>
+                                    <t t-if="record.state_id.value">
+                                        ,
+                                        <field name="state_id"/>
+                                    </t>
+                                </div>
+
+                                <div class="mt-1">
+                                    <strong>Warden:</strong>
+                                    <field name="warden_id"/>
+                                </div>
+
+                                <div class="mt-1">
+                                    <strong>Capacity:</strong>
+                                    <field name="capacity"/>
+                                </div>
+
+                                <div>
+                                    <strong>Vacancy:</strong>
+                                    <field name="vacancy"/>
+                                </div>
+
+                                <div t-if="record.phone.value" class="mt-1">
+                                    <i class="fa fa-phone me-1"/>
+                                    <field name="phone"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!--Action for the model-->
+    <record model="ir.actions.act_window" id="education_hostel_action">
+        <field name="name">Hostel</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">education.hostel</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Create Hostel.
+            </p>
+        </field>
+    </record>
+    <menuitem id="menu_hostel_root"
+              name="Hostel Management"
+              sequence="10"/>
+    <menuitem id="menu_hostel"
+              name="Hostel"
+              parent="menu_hostel_root"
+              sequence="10"/>
+    <menuitem id="menu_education_hostel"
+              parent="menu_hostel" name="Hostel"
+              action="education_hostel_action"
+              sequence="20"
+    />
+</odoo>

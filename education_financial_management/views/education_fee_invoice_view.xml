@@ -21,6 +21,10 @@
                             <field name="payment_type"/>
                             <field name="fee_plan_id" invisible="payment_type != 'full'"/>
                             <field name="installment_id" invisible="payment_type != 'installment'"/>
+                            <field name="transport_plan_id" invisible="payment_type != 'transport'"/>
+                            <field name="route_id" invisible="payment_type != 'transport'"/>
+                            <field name="stop_id" invisible="payment_type != 'transport'"/>
+
                             <field name="payment_term_id"/>
                             <field name="due_date"/>
                         </group>
@@ -52,12 +56,12 @@
                 <field name="payment_type"/>
                 <field name="fee_plan_id"/>
                 <field name="installment_id"/>
+                <field name="transport_plan_id"/>
                 <field name="total_invoiced_amount"/>
                 <field name="outstanding_amount"/>
                 <field name="amount_paid"/>
                 <field name="reverse_amount"/>
                 <field name="payment_state"/>
-
             </list>
         </field>
     </record>

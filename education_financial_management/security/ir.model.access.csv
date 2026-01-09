@@ -9,3 +9,4 @@ access_fee_summary_wizard,access_fee_summary_wizard,model_fee_summary_wizard,bas
 access_invoice_summary_wizard,access_invoice_summary_wizard,model_invoice_summary_wizard,base.group_user,1,1,1,1
 access_refund_summary_wizard,access_refund_summary_wizard,model_refund_summary_wizard,base.group_user,1,1,1,1
 
+access_education_transport_fee,access_education_transport_fee,model_education_transport_fee,base.group_user,1,1,1,1

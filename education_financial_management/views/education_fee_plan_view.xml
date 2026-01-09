@@ -23,7 +23,6 @@
                             <field name="notes"/>
                         </page>
                     </notebook>
-
                 </sheet>
                 <chatter/>
             </form>
@@ -43,32 +42,10 @@
         </field>
     </record>
 
-<!--    <record id="view_edu_fee_plan_search" model="ir.ui.view">-->
-<!--        <field name="name">education.fee.plan.search</field>-->
-<!--        <field name="model">education.fee.plan</field>-->
-<!--        <field name="arch" type="xml">-->
-<!--            <search string="Search Fee Plans">-->
-<!--                <field name="name"/>-->
-<!--                <field name="program_id"/>-->
-<!--                <field name="academic_year_id"/>-->
-
-<!--                <filter name="active" string="Active" domain="[('active','=',True)]"/>-->
-<!--                <filter name="inactive" string="Inactive" domain="[('active','=',False)]"/>-->
-
-<!--                <group expand="0" string="Group By">-->
-<!--                    <filter string="Program" context="{'group_by':'program_id'}"/>-->
-<!--                    <filter string="Academic Year" context="{'group_by':'academic_year_id'}"/>-->
-<!--                </group>-->
-<!--            </search>-->
-<!--        </field>-->
-<!--    </record>-->
-
     <record id="action_edu_fee_plan" model="ir.actions.act_window">
         <field name="name">Fee Plans</field>
         <field name="res_model">education.fee.plan</field>
         <field name="view_mode">list,form</field>
     </record>
-
-
 
 </odoo>

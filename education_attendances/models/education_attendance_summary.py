@@ -8,9 +8,9 @@ class EducationAttendanceSummary(models.TransientModel):
     _rec_name = 'student_id'
 
     academic_year_id = fields.Many2one('education.academic.year', string="Academic Year", readonly=True)
-    program_id       = fields.Many2one('education.program', string="Program", readonly=True)
-    class_id         = fields.Many2one('education.class', string="Class", readonly=True)
-    subject_id       = fields.Many2one('education.subject', string="Subject", readonly=True)
+    program_id = fields.Many2one('education.program', string="Program", readonly=True)
+    class_id = fields.Many2one('education.class', string="Class", readonly=True)
+    subject_id = fields.Many2one('education.subject', string="Subject", readonly=True)
     student_id = fields.Many2one('res.partner', string='Student', readonly=True,
                                  domain = [('is_student','=', True)])
     summary_type = fields.Selection([
@@ -40,7 +40,6 @@ class EducationAttendanceSummary(models.TransientModel):
     total_late    = fields.Integer(string='Late', readonly=True)
     total_hours_attended = fields.Float("Hours Attended")
     required_credit_hours = fields.Float("Required Credit Hours")
-
     attendance_percentage = fields.Float(string='Attendance %', readonly=True)
 
 

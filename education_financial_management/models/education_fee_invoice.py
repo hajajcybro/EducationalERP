@@ -41,7 +41,10 @@ class EduFeeInvoice(models.Model):
         'res.currency',
         default=lambda self: self.env.company.currency_id
     )
-    payment_type= fields.Selection([('installment', 'Installment'),('full', 'Full Amount')],
+    payment_type= fields.Selection([
+        ('installment', 'Installment'),
+        ('full', 'Full Amount'),
+        ('transport','Transport payment')],
         string="Payment Type",
         default=False)
     due_date = fields.Date(string='Due Date')
@@ -90,6 +93,13 @@ class EduFeeInvoice(models.Model):
         readonly=True,
         tracking=True
     )
+    route_id = fields.Many2one(
+        'education.transport.route', string='Route',readonly='True'
+    )
+    stop_id = fields.Many2one(
+        'education.transport.stop', string='Stop',readonly='True'
+    )
+    transport_plan_id = fields.Many2one('education.transport.fee','Transport Plan')
 
     @api.depends('invoice_ids.amount_total')
     def _compute_total_invoiced_amount(self):
@@ -111,12 +121,17 @@ class EduFeeInvoice(models.Model):
                 raise ValidationError(_("Please select an Installment Plan."))
             price = self.installment_id.installment_amount
             line_name = self.installment_id.name
-        else:
+        elif self.payment_type == 'full':
             if not self.fee_plan_id:
                 raise ValidationError(_("Please select a Fee Plan."))
             price = self.fee_plan_id.amount
             line_name = self.fee_plan_id.name
             self.hide_invoice_button = True
+        elif self.payment_type == 'transport':
+            price = self.transport_plan_id.amount
+            line_name = self.transport_plan_id.name
+            self.hide_invoice_button = True
+
         invoice = self.env['account.move'].create({
             'move_type': 'out_invoice',
             'partner_id': self.student_id.id,
@@ -216,3 +231,24 @@ class EduFeeInvoice(models.Model):
                 rec.payment_state = 'paid'
             else:
                 rec.payment_state = 'not_paid'
+
+    @api.onchange('student_id', 'payment_type')
+    def _onchange_student_transport_payment(self):
+        if not self.student_id or self.payment_type != 'transport':
+            self.route_id = self.stop_id = False
+            return
+        assignment = self.env['education.transport.assignment'].search([
+            ('student_id', '=', self.student_id.id),
+            ('active', '=', True),
+        ], limit=1)
+        if assignment:
+            self.route_id = assignment.route_id
+            self.stop_id = assignment.stop_id
+            self.transport_plan_id = self.env['education.transport.fee'].search([
+                ('route_id', '=', assignment.route_id.id),
+                ('stop_ids', 'in', assignment.stop_id.id),
+            ], limit=1)
+        else:
+            self.route_id = self.stop_id = False
+
+

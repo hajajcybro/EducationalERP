@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Tree View -->
+    <record id="education_hostel_mess_view_list" model="ir.ui.view">
+        <field name="name">educational.hostel.mess.list</field>
+        <field name="model">education.hostel.mess</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="mess_code"/>
+                <field name="hostel_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="education_hostel_food_mess_form" model="ir.ui.view">
+        <field name="name">educational.hostel.mess.form</field>
+        <field name="model">education.hostel.mess</field>
+        <field name="arch" type="xml">
+            <form string="Hostel Food Item">
+                <sheet>
+                    <h1>
+                        <field name="name" placeholder="Mess Name"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="mess_code"/>
+                            <field name="hostel_id"/>
+                        </group>
+                        <group>
+                        </group>
+                    </group>
+                       <notebook>
+                        <page string="Food Menu">
+                            <field name="hostel_food_menu_ids">
+                                <list string="Menu" editable="bottom">
+                                    <field name="weekday"/>
+                                    <field name="morning_food_id"/>
+                                    <field name="lunch_id"/>
+                                    <field name="snack_id"/>
+                                    <field name="dinner_id"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--     Action -->
+    <record id="action_education_hostel_mess" model="ir.actions.act_window">
+        <field name="name">Mess</field>
+        <field name="res_model">education.hostel.mess</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Create Mess.
+            </p>
+        </field>
+    </record>
+
+
+    <!-- Menu -->
+    <menuitem id="menu_education_hostel_mess"
+              parent="menu_hostel"
+              name="Mess"
+              action="action_education_hostel_mess"
+              sequence="40"
+    />
+</odoo>

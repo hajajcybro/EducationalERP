@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--Form view of model-->
+    <record id="education_hostel_floor_view_form" model="ir.ui.view">
+        <field name="name">education.hostel.floor.view.form</field>
+        <field name="model">education.hostel.floor</field>
+        <field name="arch" type="xml">
+            <form string="Floor">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="floor_no"/>
+                            <field name="hostel_id"/>
+                        </group>
+                        <group>
+                            <field name="responsible_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!--Tree view of the model-->
+    <record id="education_floor_view_list" model="ir.ui.view">
+        <field name="name">education.hostel.floor.view.tree</field>
+        <field name="model">education.hostel.floor</field>
+        <field name="arch" type="xml">
+            <list string="Floor" editable="bottom">
+                <field name="floor_no"/>
+                <field name="hostel_id"/>
+                <field name="responsible_id"/>
+            </list>
+        </field>
+    </record>
+    <!--Action for the model-->
+    <record id="action_education_hostel_floor" model="ir.actions.act_window">
+        <field name="name">Floor</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">education.hostel.floor</field>
+        <!--            <field name="view_type">form</field>-->
+        <field name="view_mode">list</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Create Floors.
+            </p>
+        </field>
+    </record>
+    <menuitem id="menu_education_hostel_floor"
+              parent="menu_hostel_configuration"
+              name="Floor"
+              action="action_education_hostel_floor"
+              sequence="30"/>
+</odoo>

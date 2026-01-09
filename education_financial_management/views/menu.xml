@@ -5,22 +5,25 @@
 
 <!--    invoice and fee invoice-->
      <menuitem id="menu_financial_invoices" name="Invoices"
-              parent="menu_education_finance"/>
+              parent="menu_education_finance" sequence="10"/>
 
      <menuitem id="menu_education_fee_invoice"
           name="Fee Invoices" parent="menu_financial_invoices"
-               action="action_education_fee_invoice"/>
+               action="action_education_fee_invoice" sequence="10"/>
      <menuitem id="menu_student_invoices"
           name="Invoice"
           action="action_student_invoices_view"
           parent="menu_financial_invoices"/>
+<!--    refund-->
     <menuitem id="menu_education_refund_request"
               name="Refund Requests"
               parent="menu_education_finance"
-              action="action_education_refund_request"/>
+              action="action_education_refund_request" sequence="20"/>
+
 <!--    fee plan , installment and penalty rule-->
      <menuitem id="menu_financial_fee" name="Fees"
-              parent="menu_education_finance"/>
+              parent="menu_education_finance"
+            sequence="30"/>
 
     <menuitem id="menu_education_fee_plan"
               name="Fee Plan"
@@ -36,11 +39,15 @@
               parent="menu_financial_fee"
               action="action_education_fee_penalty_rule"/>
 
+     <menuitem id="menu_transport_fee_root"
+              name="Transport Fees"
+              parent="menu_education_finance"
+              action="action_education_transport_fee"/>
 
 <!-- report-->
     <menuitem id="menu_financial_report"
               name="Report"
-              parent="menu_education_finance"/>
+              parent="menu_education_finance" sequence="99"/>
 
     <menuitem id="menu_fee_summary_wizard"
               name="Fee Summary"
@@ -57,10 +64,10 @@
               parent="menu_financial_report"
               action="action_refund_summary_wizard"/>
 
-    <menuitem id="menu_transport_fee_root"
-              name="Transport Fees"
-              parent="menu_financial_report"
-              action="action_education_transport_fee"/>
+     <menuitem id="menu_hostel_application"
+              name="Hostel"
+              parent="menu_education_finance"
+              action="action_hostel_application_invoices"/>
 
 </odoo>
 

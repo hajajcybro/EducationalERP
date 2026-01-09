@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data noupdate="1">
+
+    <!-- Education  Hostel Module Category -->
+    <record id="privilege_education_hostel" model="res.groups.privilege">
+      <field name="name">Hostel</field>
+      <field name="sequence">1</field>
+    </record>
+
+    <!-- Administrator -->
+    <record id="group_education_hostel_admin" model="res.groups">
+      <field name="name">Administrator</field>
+      <field name="privilege_id" ref="privilege_education_hostel"/>
+    </record>
+
+    <!-- Warden -->
+    <record id="group_education_hostel_warden" model="res.groups">
+      <field name="name">Warden</field>
+      <field name="privilege_id" ref="privilege_education_hostel"/>
+    </record>
+
+       <!-- Teacher -->
+    <record id="group_education_hostel_teacher" model="res.groups">
+      <field name="name">Teacher</field>
+      <field name="privilege_id" ref="privilege_education_hostel"/>
+    </record>
+
+    <!-- Student -->
+    <record id="group_education_student" model="res.groups">
+      <field name="name">Student</field>
+      <field name="privilege_id" ref="privilege_education_hostel"/>
+    </record>
+
+    <!-- Parent -->
+    <record id="group_education_hostel_parent" model="res.groups">
+      <field name="name">Parent</field>
+      <field name="privilege_id" ref="privilege_education_hostel"/>
+    </record>
+
+  </data>
+</odoo>

@@ -7,3 +7,4 @@ from . import education_refund_request
 from . import account_move_reversal
 from . import education_enrollment
 from . import education_transport_fee
+from . import education_hostal_application

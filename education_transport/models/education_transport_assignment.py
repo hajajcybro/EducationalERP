@@ -2,7 +2,6 @@
 from odoo import models, fields, api,_
 from odoo.exceptions import ValidationError
 
-
 class EducationTransportAssignment(models.Model):
     _name = 'education.transport.assignment'
     _description = 'Student Transport Assignment'
