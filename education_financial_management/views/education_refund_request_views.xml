@@ -60,6 +60,7 @@
                         <field name="rejection_reason" invisible="state != 'rejected'"/>
                     </group>
                 </sheet>
+                <chatter/>
             </form>
         </field>
     </record>

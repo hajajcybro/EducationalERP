@@ -15,6 +15,7 @@ class EduFeeInvoice(models.Model):
         required=True,
         tracking=True
     )
+    active = fields.Boolean(default=True)
     admission_no = fields.Char(related='student_id.admission_no', string="Register No")
     enrollment_id = fields.Many2one(
         'education.enrollment',
@@ -44,7 +45,9 @@ class EduFeeInvoice(models.Model):
     payment_type= fields.Selection([
         ('installment', 'Installment'),
         ('full', 'Full Amount'),
-        ('transport','Transport payment')],
+        ('transport','Transport payment'),
+        ('hostel', 'Hostel Payment'),
+    ],
         string="Payment Type",
         default=False)
     due_date = fields.Date(string='Due Date')
@@ -100,6 +103,10 @@ class EduFeeInvoice(models.Model):
         'education.transport.stop', string='Stop',readonly='True'
     )
     transport_plan_id = fields.Many2one('education.transport.fee','Transport Plan')
+    hostel_application_id = fields.Many2one(
+        'education.hostel.application', string='Hostel Application',
+        tracking=True
+    )
 
     @api.depends('invoice_ids.amount_total')
     def _compute_total_invoiced_amount(self):
@@ -131,6 +138,17 @@ class EduFeeInvoice(models.Model):
             price = self.transport_plan_id.amount
             line_name = self.transport_plan_id.name
             self.hide_invoice_button = True
+        elif self.payment_type == 'hostel':
+            application = self.hostel_application_id or self.env['education.hostel.application'].search([
+                ('student_id', '=', self.student_id.id),], limit=1)
+            allocate = application.allocation_detail_ids.filtered(
+                lambda a: a.state == 'allocated')[:1]
+            hostel = allocate.hostel_id if allocate else False
+            price = (hostel.room_rent or 0.0) + (hostel.mess_fee or 0.0)
+            line_name = 'Hostel & Food Fee'
+            self.hide_invoice_button = False
+        else:
+            raise ValidationError(_("Please select a Payment Type."))
 
         invoice = self.env['account.move'].create({
             'move_type': 'out_invoice',
@@ -172,8 +190,10 @@ class EduFeeInvoice(models.Model):
                         ]
                     })
         self.write({'invoice_ids': [Command.link(invoice.id)]})
-        if self.remaining_amount <= 1:
+        if self.payment_type != 'hostel'  and self.remaining_amount <= 1:
             self.hide_invoice_button = True
+
+
         return {
             'type': 'ir.actions.act_window',
             'name': 'Invoice',
@@ -251,4 +271,28 @@ class EduFeeInvoice(models.Model):
         else:
             self.route_id = self.stop_id = False
 
-
+    def unlink(self):
+        """Override unlink to log audit details before record deletion.
+        Tracks deletion of records by capturing key business-relevant
+        details for audit and compliance purposes.
+        """
+        for rec in self:
+            old_data = {
+                'Student': rec.student_id.display_name if rec.student_id else None,
+                'Admission No': rec.admission_no,
+                'Payment Type': rec.payment_type,
+                'Fee Plan': rec.fee_plan_id.display_name if rec.fee_plan_id else None,
+                'Total Invoiced Amount': rec.total_invoiced_amount,
+                'Remaining Amount': rec.remaining_amount,
+                'Due Date': rec.due_date,
+                'Status': rec.status,
+            }
+            self.env['education.audit.log'].sudo().create({
+                'user_id': self.env.user.id,
+                'action_type': 'delete',
+                'model_name': rec._name,
+                'record_id': rec.id,
+                'description': 'Record deleted',
+                'old_values': old_data,
+            })
+        return super().unlink()

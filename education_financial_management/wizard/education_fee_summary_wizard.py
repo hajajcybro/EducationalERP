@@ -25,7 +25,9 @@ class FeeSummaryWizard(models.TransientModel):
 
     payment_type = fields.Selection(
         [('all', 'All'),('full', 'Full Payment'),
-            ('installment', 'Installment'),],
+            ('installment', 'Installment'),
+         ('transport','Transport payment'),
+        ('hostel', 'Hostel Payment'),],
         string='Payment Type',
         default='all'
     )

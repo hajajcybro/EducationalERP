@@ -4,6 +4,8 @@ from odoo import models, fields, api
 class EducationTransportFee(models.Model):
     _name = 'education.transport.fee'
     _description = 'Transport Fee Rule'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+
 
     name = fields.Char(required=True)
     route_id = fields.Many2one('education.transport.route', required=True)

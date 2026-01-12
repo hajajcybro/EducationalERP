@@ -39,10 +39,19 @@
               parent="menu_financial_fee"
               action="action_education_fee_penalty_rule"/>
 
+    <menuitem id="menu_financial_fee_allocation" name="Fee Allocation"
+              parent="menu_education_finance"
+            sequence="40"/>
+
+
      <menuitem id="menu_transport_fee_root"
               name="Transport Fees"
-              parent="menu_education_finance"
+              parent="menu_financial_fee_allocation"
               action="action_education_transport_fee"/>
+     <menuitem id="menu_hostel_application"
+              name="Hostel Allocation"
+              parent="menu_financial_fee_allocation"
+              action="action_hostel_application_invoices"/>
 
 <!-- report-->
     <menuitem id="menu_financial_report"
@@ -64,10 +73,7 @@
               parent="menu_financial_report"
               action="action_refund_summary_wizard"/>
 
-     <menuitem id="menu_hostel_application"
-              name="Hostel"
-              parent="menu_education_finance"
-              action="action_hostel_application_invoices"/>
+
 
 </odoo>
 

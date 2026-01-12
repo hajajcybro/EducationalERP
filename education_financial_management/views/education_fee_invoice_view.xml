@@ -71,24 +71,25 @@
         <field name="model">education.fee.invoice</field>
         <field name="arch" type="xml">
             <search string="Fee Invoices">
-
             <filter string="Full Payment"
                         name="filter_full_payment"
                         domain="[('payment_type', '=', 'full')]"/>
-
             <filter string="Installment"
                     name="filter_installment"
                     domain="[('payment_type', '=', 'installment')]"/>
+            <filter string="Hostel Payment"
+                        name="filter_hostel_payment"
+                        domain="[('payment_type', '=', 'hostel')]"/>
+            <filter string="Transport Payment"
+                        name="filter_transport_payment"
+                        domain="[('payment_type', '=', 'transport')]"/>
 
             <separator/>
-                <!-- Search Fields -->
                 <field name="student_id"/>
                 <field name="fee_plan_id"/>
                 <field name="installment_id"/>
                 <field name="payment_type"/>
                 <separator/>
-
-                <!-- Group By -->
                 <group name="group_by">
                     <filter string="Student" name="group_by_student"
                             context="{'group_by':'student_id'}"/>
@@ -99,12 +100,9 @@
                     <filter string="Status" name="group_by_status"
                             context="{'group_by':'status'}"/>
                 </group>
-
-
             </search>
         </field>
     </record>
-
 
     <record id="action_education_fee_invoice" model="ir.actions.act_window">
         <field name="name">Fee Invoices</field>

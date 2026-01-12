@@ -18,7 +18,6 @@ class InvoiceSummary(models.AbstractModel):
                 am.invoice_date_due,
                 am.amount_total,
                 am.amount_residual,
-            
                 CASE am.payment_state
                     WHEN 'not_paid' THEN 'Not Paid'
                     WHEN 'partial' THEN 'Partially Paid'
@@ -27,7 +26,6 @@ class InvoiceSummary(models.AbstractModel):
                     WHEN 'in_payment' THEN 'In Payment'
                     ELSE am.payment_state
                 END AS payment_state
-            
             FROM account_move am
             JOIN res_partner rp ON rp.id = am.partner_id
             WHERE am.state = 'posted'

@@ -156,6 +156,26 @@ class ResPartner(models.Model):
             last_roll = int(last_student.roll_no) if last_student and last_student.roll_no else 0
             self.roll_no = last_roll + 1
 
+    def unlink(self):
+        for rec in self:
+            if rec.is_student:
+                old_data = {
+                    'Student Name': rec.name,
+                    'Admission No': rec.admission_no,
+                    'Program': rec.program_id.display_name if rec.program_id else None,
+                    'Academic Year': rec.academic_year_id.display_name if rec.academic_year_id else None,
+                    'Class': rec.class_id.display_name if rec.class_id else None,
+                    'Roll Number': rec.roll_no,
+                }
+                self.env['education.audit.log'].sudo().create({
+                    'user_id': self.env.user.id,
+                    'action_type': 'delete',
+                    'model_name': rec._name,
+                    'record_id': rec.id,
+                    'description': 'Student record deleted',
+                    'old_values': old_data,
+                })
+        return super().unlink()
 
 
 

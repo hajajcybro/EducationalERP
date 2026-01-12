@@ -123,39 +123,31 @@ class RefundSummaryWizard(models.TransientModel):
                                             AND cn.move_type = 'out_refund'
                                             AND cn.state = 'posted'
                      WHERE rp.is_student = TRUE"""
-
         if data.get('student_ids'):
             student_ids = tuple(data['student_ids'])
             if len(student_ids) == 1:
                 query += " AND rp.id = %s" % student_ids[0]
             else:
                 query += " AND rp.id IN %s" % (student_ids,)
-
         if data.get('refund_state') and data['refund_state'] != 'all':
             query += " AND rr.state = '%s'" % data['refund_state']
-
         if data.get('date_filter') == 'daily':
             query += " AND rr.create_date::date = CURRENT_DATE"
-
         elif data.get('date_filter') == 'weekly':
             query += """
                                          AND DATE_TRUNC('week', rr.create_date)
                                              = DATE_TRUNC('week', CURRENT_DATE) """
-
         elif data.get('date_filter') == 'monthly':
             query += """
                                          AND DATE_TRUNC('month', rr.create_date)
                                              = DATE_TRUNC('month', CURRENT_DATE) """
-
         elif data.get('date_filter') == 'custom':
             if data.get('from_date'):
                 query += " AND rr.create_date::date >= '%s'" % data['from_date']
             if data.get('to_date'):
                 query += " AND rr.create_date::date <= '%s'" % data['to_date']
-
         self.env.cr.execute(query)
         rows = self.env.cr.fetchall()
-
         row_no = 1
         for idx, r in enumerate(rows, start=1):
             sheet.write(row_no, 0, idx, text)  # Sl No
@@ -169,7 +161,6 @@ class RefundSummaryWizard(models.TransientModel):
             sheet.write(row_no, 8, r[7] or '-', text)  # Reason
             sheet.write(row_no, 9, r[8] or '-', text)  # Rejection Reason
             row_no += 1
-
         workbook.close()
         output.seek(0)
         response.stream.write(output.read())

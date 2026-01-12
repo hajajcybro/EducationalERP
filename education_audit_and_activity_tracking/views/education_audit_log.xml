@@ -42,10 +42,14 @@
 
                     <notebook>
                         <page string="Old Values">
-                            <field name="old_values" widget="json"/>
+                            <group>
+                                <field name="old_values" widget="json" nolabel="1"/>
+                            </group>
                         </page>
                         <page string="New Values">
-                            <field name="new_values" widget="json"/>
+                            <group>
+                                <field name="new_values" widget="json" nolabel="1"/>
+                            </group>
                         </page>
                     </notebook>
                 </sheet>
@@ -53,10 +57,47 @@
         </field>
     </record>
 
+    <record id="view_education_audit_log_search" model="ir.ui.view">
+    <field name="name">education.audit.log.search</field>
+    <field name="model">education.audit.log</field>
+    <field name="arch" type="xml">
+        <search string="Audit Logs">
+            <!-- Quick search fields -->
+            <field name="user_id"/>
+            <field name="model_name"/>
+            <field name="action_type"/>
+            <!-- Filters -->
+            <filter string="Delete"
+                    name="filter_delete"
+                    domain="[('action_type', '=', 'delete')]"/>
+            <filter string="Accounting"
+                    name="filter_payment"
+                    domain="[('action_type', '=', 'payment')]"/>
+            <separator/>
+              <!-- Group By -->
+            <group name="group_by">
+                <filter string="User" name="group_by_user"
+                        context="{'group_by': 'user_id'}"/>
+                <filter string="Model" name="group_by_model"
+                        context="{'group_by': 'model_name'}"/>
+                <filter string="Action Type" name="group_by_action"
+                        context="{'group_by': 'action_type'}"/>
+                <filter string="Date" name="group_by_date"
+                        context="{'group_by': 'timestamp:day'}"/>
+                <filter string="Month" name="group_by_Month"
+                        context="{'group_by': 'timestamp:month'}"/>
+                <filter string="Year" name="group_by_year"
+                        context="{'group_by': 'timestamp:year'}"/>
+            </group>
+        </search>
+    </field>
+</record>
+
     <record id="action_education_audit_log" model="ir.actions.act_window">
         <field name="name">Audit Logs</field>
         <field name="res_model">education.audit.log</field>
         <field name="view_mode">list,form</field>
+         <field name="context">{'group_by': ['model_name']}</field>
     </record>
 
 </odoo>
