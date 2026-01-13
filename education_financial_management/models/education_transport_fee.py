@@ -6,7 +6,6 @@ class EducationTransportFee(models.Model):
     _description = 'Transport Fee Rule'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-
     name = fields.Char(required=True)
     route_id = fields.Many2one('education.transport.route', required=True)
     stop_ids = fields.Many2many('education.transport.stop','stop_name')
@@ -18,6 +17,10 @@ class EducationTransportFee(models.Model):
 
     @api.model
     def create(self, vals):
+        """
+        Create a transport fee record and automatically create or link a
+        corresponding service product based on the route and stops.
+        """
         fee = super().create(vals)
         ProductTemplate = self.env['product.template']
         print(fee.stop_ids.read())

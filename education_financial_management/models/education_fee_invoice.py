@@ -115,6 +115,8 @@ class EduFeeInvoice(models.Model):
 
     @api.depends('total_invoiced_amount')
     def _compute_remaining_amount(self):
+        """Compute the remaining payable amount by subtracting the total invoiced amount
+        from the related fee plan amount for the selected installment."""
         for rec in self:
             rec.remaining_amount = (
                 rec.installment_id.fee_plan_id.amount - rec.total_invoiced_amount
@@ -122,6 +124,12 @@ class EduFeeInvoice(models.Model):
             )
 
     def action_create_invoice(self):
+        """
+        Create a customer invoice based on the selected payment type (installment, full,
+        transport, or hostel). Validates required configurations, calculates the payable
+        amount, applies late payment penalties when applicable, links the invoice to the
+        fee record, and controls invoice button visibility based on remaining balance.
+        """
         self.ensure_one()
         if self.payment_type == 'installment':
             if not self.installment_id:
@@ -143,7 +151,12 @@ class EduFeeInvoice(models.Model):
                 ('student_id', '=', self.student_id.id),], limit=1)
             allocate = application.allocation_detail_ids.filtered(
                 lambda a: a.state == 'allocated')[:1]
+            #for testing state change as draft because, in hostel management currently state is not declared
             hostel = allocate.hostel_id if allocate else False
+            if not hostel:
+                raise ValidationError(
+                    _("No allocated hostel found for this student.")
+                )
             price = (hostel.room_rent or 0.0) + (hostel.mess_fee or 0.0)
             line_name = 'Hostel & Food Fee'
             self.hide_invoice_button = False
@@ -236,6 +249,11 @@ class EduFeeInvoice(models.Model):
 
     @api.depends('invoice_ids.payment_state', 'amount_paid', 'total_invoiced_amount','payment_type')
     def _compute_payment_state(self):
+        """
+        Compute the overall payment state based on related invoice states, payment type,
+        and paid amount. Supports installment logic (not paid, partial, paid) and
+        falls back to invoice payment states when applicable.
+        """
         for rec in self:
             states = rec.invoice_ids.mapped('payment_state')
             if not states:
@@ -254,6 +272,8 @@ class EduFeeInvoice(models.Model):
 
     @api.onchange('student_id', 'payment_type')
     def _onchange_student_transport_payment(self):
+        """Populate transport route, stop, and fee plan based on the selected student
+        when the payment type is transport; otherwise reset transport fields."""
         if not self.student_id or self.payment_type != 'transport':
             self.route_id = self.stop_id = False
             return
@@ -296,3 +316,4 @@ class EduFeeInvoice(models.Model):
                 'old_values': old_data,
             })
         return super().unlink()
+

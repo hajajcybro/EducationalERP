@@ -5,6 +5,10 @@ class EducationEnrollment(models.Model):
     _inherit = 'education.enrollment'
 
     def action_view_fee_invoices(self):
+        """
+        Open the fee invoice view filtered by the current enrollment and
+        prefill student and enrollment details in the context.
+        """
         print(self)
         self.ensure_one()
         return {

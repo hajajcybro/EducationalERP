@@ -6,7 +6,6 @@
 <!--    invoice and fee invoice-->
      <menuitem id="menu_financial_invoices" name="Invoices"
               parent="menu_education_finance" sequence="10"/>
-
      <menuitem id="menu_education_fee_invoice"
           name="Fee Invoices" parent="menu_financial_invoices"
                action="action_education_fee_invoice" sequence="10"/>
@@ -14,7 +13,6 @@
           name="Invoice"
           action="action_student_invoices_view"
           parent="menu_financial_invoices"/>
-<!--    refund-->
     <menuitem id="menu_education_refund_request"
               name="Refund Requests"
               parent="menu_education_finance"
@@ -38,12 +36,9 @@
               name="Fee Penalty Rules"
               parent="menu_financial_fee"
               action="action_education_fee_penalty_rule"/>
-
     <menuitem id="menu_financial_fee_allocation" name="Fee Allocation"
               parent="menu_education_finance"
             sequence="40"/>
-
-
      <menuitem id="menu_transport_fee_root"
               name="Transport Fees"
               parent="menu_financial_fee_allocation"
@@ -52,6 +47,10 @@
               name="Hostel Allocation"
               parent="menu_financial_fee_allocation"
               action="action_hostel_application_invoices"/>
+    <menuitem id="menu_library_member"
+              name="Library Member"
+              parent="menu_financial_fee_allocation"
+              action="action_education_library_member"/>
 
 <!-- report-->
     <menuitem id="menu_financial_report"
@@ -62,12 +61,10 @@
               name="Fee Summary"
               parent="menu_financial_report"
               action="action_student_fee_summary_wizard"/>
-
     <menuitem id="menu_invoice_summary_wizard"
               name="Invoice Summary"
               parent="menu_financial_report"
               action="action_invoice_summary_wizard"/>
-
     <menuitem id="menu_refund_summary_wizard"
               name="Refund Summary"
               parent="menu_financial_report"

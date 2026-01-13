@@ -13,6 +13,10 @@ class AccountMove(models.Model):
 
     @api.model
     def _cron_send_due_tomorrow_reminder(self):
+        """
+        Send automated email reminders to student partners for posted customer invoices
+        with an outstanding balance that are due tomorrow.
+        """
         today = fields.Date.today()
         tomorrow = today + timedelta(days=1)
         invoices = self.search([
