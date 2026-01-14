@@ -7,6 +7,10 @@ class EducationHostelApplication(models.Model):
         string='Invoices'
     )
     def action_view_invoices(self):
+        """
+        Open the related hostel fee invoice for the student if it exists;
+        otherwise, open a new fee invoice form with hostel defaults prefilled.
+        """
         self.ensure_one()
         FeeInvoice = self.env['education.fee.invoice']
         invoice = FeeInvoice.search([

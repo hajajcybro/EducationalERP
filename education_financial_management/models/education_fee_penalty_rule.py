@@ -2,7 +2,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
-
 class EducationFeePenaltyRule(models.Model):
     _name = 'education.fee.penalty.rule'
     _description = 'Education Fee Penalty Rule'
@@ -35,7 +34,6 @@ class EducationFeePenaltyRule(models.Model):
     active = fields.Boolean(
         default=True
     )
-
     product_id = fields.Many2one(
         'product.product',
         string='Penalty Product',
@@ -57,7 +55,6 @@ class EducationFeePenaltyRule(models.Model):
         rule = super().create(vals)
         Product = self.env['product.product']
         price = rule.value if rule.penalty_type == 'fixed' else 0.0
-        #CHECK if product already exists
         product = Product.search([
             ('default_code', '=', f'PENALTY-{rule.id}')
         ], limit=1)
@@ -69,7 +66,6 @@ class EducationFeePenaltyRule(models.Model):
                 'standard_price': price,
                 'default_code': f'PENALTY-{rule.id}',
             })
-            print(product)
         rule.product_id = product.id
         return rule
 

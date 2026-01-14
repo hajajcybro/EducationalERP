@@ -6,7 +6,6 @@ class EduFeeInstallment(models.Model):
     _description = 'Fee Installment'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-
     fee_plan_id = fields.Many2one(
         'education.fee.plan',
         string='Fee Plan',
@@ -46,7 +45,6 @@ class EduFeeInstallment(models.Model):
         copy=False
     )
 
-
     @api.depends('fee_plan_id.amount', 'duration')
     def _compute_installment_amount(self):
         """ Calculate installment amount based on total fee and duration."""
@@ -56,10 +54,13 @@ class EduFeeInstallment(models.Model):
 
     @api.model
     def create(self, vals):
+        """
+        Create an installment record and ensure a corresponding service product
+        exists, creating and linking it automatically if not found.
+        """
         installment = super().create(vals)
         Product = self.env['product.product']
         product_name =f"{installment.name} – Installment"
-        # Check if product already exists
         product = Product.search([
             ('name', '=', product_name),
             ('default_code', '=', f"INST-{installment.id}")

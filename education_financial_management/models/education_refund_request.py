@@ -2,7 +2,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
-
 class EducationRefundRequest(models.Model):
     _name = 'education.refund.request'
     _description = 'Education Refund Request'
@@ -19,7 +18,8 @@ class EducationRefundRequest(models.Model):
         'account.move',
         string='Invoice',
         required=True,
-        domain=[('move_type', '=', 'out_invoice')],
+        domain=[('move_type', '=', 'out_invoice'),
+                ('fee_invoice_id.active', '=', True)],
         tracking=True
     )
     currency_id = fields.Many2one(
@@ -41,6 +41,7 @@ class EducationRefundRequest(models.Model):
         ('draft', 'Draft'),
         ('approved', 'Approved'),
         ('processed', 'Processed'),
+        ('reversed', 'Reversed'),
         ('rejected', 'Rejected'),
     ], default='draft', tracking=True)
     processed_by = fields.Many2one(
@@ -60,18 +61,24 @@ class EducationRefundRequest(models.Model):
     credit_note_id = fields.Many2one(
         'account.move',
         string="Credit Note",
+        compute='_compute_credit_note',
         readonly=True
     )
 
     @api.constrains('refund_amount', 'invoice_id')
     def _check_refund_amount(self):
         """ Validate refund requests to ensure the amount is positive,
+        Invoice must belong to selected student,
         the related invoice is fully paid, and the refund does not
         exceed the invoice total."""
         for rec in self:
+            if rec.student_id and rec.invoice_id:
+                if rec.invoice_id.partner_id != rec.student_id:
+                    raise ValidationError(
+                        _("The selected invoice does not belong to the chosen student.")
+                    )
             if rec.refund_amount <= 0:
                 raise ValidationError(_("Refund amount must be greater than zero."))
-
             if rec.invoice_id:
                 if rec.invoice_id.payment_state != 'paid':
                     raise ValidationError(
@@ -81,7 +88,6 @@ class EducationRefundRequest(models.Model):
                     raise ValidationError(
                         _("Already refund with this invoice.")
                     )
-
                 if rec.refund_amount > rec.invoice_id.amount_total:
                     raise ValidationError(
                         _("Refund amount cannot exceed the invoice total.")
@@ -91,7 +97,6 @@ class EducationRefundRequest(models.Model):
         """ Mark the refund request as approved."""
         for rec in self:
             rec.state = 'approved'
-
 
     def action_reject(self):
         """Open rejection wizard to capture rejection reason."""
@@ -132,26 +137,29 @@ class EducationRefundRequest(models.Model):
             }
         }
 
-    @api.depends('invoice_id')
+    @api.depends('invoice_id', 'invoice_id.payment_state')
     def _compute_credit_note(self):
+        """ Compute the related credit note for the refund request and
+        synchronize the refund state based on the credit note status.
+        - If a draft credit note exists, link it and keep the refund
+          request in 'processed' state.
+        - If the credit note is posted, link it and update the refund
+          request to 'reversed' state."""
         for rec in self:
             rec.credit_note_id = False
-
-            invoice = rec.invoice_id
-            if not invoice:
-                continue
-
-            # If invoice is not reversed → do nothing
-            if invoice.payment_state != 'reversed':
-                continue
-
-            # Find the posted credit note
             credit_note = self.env['account.move'].search([
                 ('move_type', '=', 'out_refund'),
-                ('reversed_entry_id', '=', invoice.id),
-                ('state', '=', 'posted'),
+                ('reversed_entry_id', '=', rec.invoice_id.id),
             ], limit=1)
+            if credit_note:
+                rec.credit_note_id = credit_note
+                if credit_note.state == 'posted':
+                    rec.state = 'reversed'
+                else:
+                    rec.state = 'processed'
 
-            rec.credit_note_id = credit_note
+
+
+
 
 

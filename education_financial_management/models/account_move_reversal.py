@@ -2,7 +2,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
-
 class AccountMoveReversal(models.TransientModel):
     _inherit = 'account.move.reversal'
 
@@ -10,11 +9,9 @@ class AccountMoveReversal(models.TransientModel):
         'res.currency',
         readonly=True
     )
-
     is_due_amount_different = fields.Boolean(
         string="Partial Refund",
     )
-
     reverse_amount = fields.Monetary(
         string='Reverse Amount',
         currency_field='currency_id',
@@ -26,16 +23,12 @@ class AccountMoveReversal(models.TransientModel):
         If a custom reverse amount is provided, replace existing
         invoice lines with a single adjusted amount line."""
         res = super().action_reverse_and_create_invoice()
-
         new_move = self.env['account.move'].browse(res.get('res_id'))
         if not new_move:
             return res
-
         if self.is_due_amount_different and self.reverse_amount:
             # Remove existing invoice lines
             new_move.invoice_line_ids.unlink()
-
-            # Add ONLY reverse amount line
             new_move.write({
                 'invoice_line_ids': [
                     (0, 0, {
@@ -45,7 +38,6 @@ class AccountMoveReversal(models.TransientModel):
                     })
                 ]
             })
-
         return res
 
     def refund_moves(self):
@@ -57,11 +49,8 @@ class AccountMoveReversal(models.TransientModel):
         res = super().refund_moves()
         credit_note_id = res.get('res_id')
         credit_note = self.env['account.move'].browse(credit_note_id)
-
         if self.is_due_amount_different and self.reverse_amount and credit_note:
             credit_note.invoice_line_ids.unlink()
-
-            # Create ONE line with reverse_amount
             self.env['account.move.line'].create({
                 'move_id': credit_note.id,
                 'name': _('Refund'),
@@ -69,10 +58,7 @@ class AccountMoveReversal(models.TransientModel):
                 'price_unit': self.reverse_amount,
                 'account_id': credit_note.journal_id.default_account_id.id,
             })
-            # Recompute totals
             credit_note._compute_amount()
-
-        # Step 3: Link to Refund Request
         refund_request_id = self.env.context.get('refund_request_id')
         if refund_request_id and credit_note:
             self.env['education.refund.request'].browse(
@@ -80,5 +66,4 @@ class AccountMoveReversal(models.TransientModel):
             ).write({
                 'credit_note_id': credit_note.id,
             })
-
         return res

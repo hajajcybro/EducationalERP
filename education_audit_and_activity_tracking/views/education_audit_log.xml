@@ -62,11 +62,9 @@
     <field name="model">education.audit.log</field>
     <field name="arch" type="xml">
         <search string="Audit Logs">
-            <!-- Quick search fields -->
             <field name="user_id"/>
             <field name="model_name"/>
             <field name="action_type"/>
-            <!-- Filters -->
             <filter string="Delete"
                     name="filter_delete"
                     domain="[('action_type', '=', 'delete')]"/>
@@ -74,7 +72,6 @@
                     name="filter_payment"
                     domain="[('action_type', '=', 'payment')]"/>
             <separator/>
-              <!-- Group By -->
             <group name="group_by">
                 <filter string="User" name="group_by_user"
                         context="{'group_by': 'user_id'}"/>

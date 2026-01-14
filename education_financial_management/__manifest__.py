@@ -9,7 +9,8 @@
     'company': 'Cybrosys Techno Solutions',
     'maintainer': 'Cybrosys Techno Solutions',
     'website': 'https://www.cybrosys.com',
-    'depends': ['education_core','account','education_transport','education_hostel_management'],
+    'depends': ['education_core','account','education_transport',
+                'education_hostel_management','education_library'],
     'data': [
         'security/ir.model.access.csv',
         'data/ir_cron.xml',
@@ -23,7 +24,7 @@
         'views/education_transport_fee_view.xml',
         'views/education_enrollment_view.xml',
         'views/education_hostel_application_view.xml',
-
+        'views/education_library_member_views.xml',
         'wizard/education_refund_reject_wizard_view.xml',
         'wizard/education_fee_summary_wizard_view.xml',
         'wizard/education_invoice_summary_wizard.xml',

@@ -2,8 +2,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
-
-
 class EduFeePlan(models.Model):
     _name = 'education.fee.plan'
     _description = 'Fee Plan'
@@ -32,7 +30,6 @@ class EduFeePlan(models.Model):
         required=True,
         default=lambda self: self.env.company.currency_id
     )
-
     installment_ids = fields.One2many(
         'education.fee.installment',
         'fee_plan_id',
@@ -42,7 +39,6 @@ class EduFeePlan(models.Model):
         string='Amount',
         store=True,
     )
-
     product_id = fields.Many2one(
         'product.product',
         string='Fee Product',
@@ -53,9 +49,7 @@ class EduFeePlan(models.Model):
         'education.fee.penalty.rule',
         string='Penalty Rule'
     )
-
     notes = fields.Text(string='Notes')
-
     active = fields.Boolean(default=True)
 
     @api.constrains('program_id', 'academic_year_id')
@@ -78,25 +72,10 @@ class EduFeePlan(models.Model):
             if rec.amount <= 0:
                 raise ValidationError("Fee amount must be greater than zero.")
 
-    @api.constrains('program_id', 'academic_year_id')
-    def _check_unique_plan(self):
-        """    Ensure only one fee plan exists per program and academic year."""
-        for rec in self:
-            domain = [
-                ('id', '!=', rec.id),
-                ('program_id', '=', rec.program_id.id),
-                ('academic_year_id', '=', rec.academic_year_id.id),
-            ]
-            if self.search_count(domain):
-                raise ValidationError(
-                    "A fee plan already exists for this Program and Academic Year."
-                )
-
     @api.model
     def create(self, vals):
         """Automatically creates or links a service product for the fee plan."""
         plan = super().create(vals)
-
         ProductTemplate = self.env['product.template']
         product_tmpl = ProductTemplate.search([
             ('name', '=', plan.name),
@@ -109,8 +88,6 @@ class EduFeePlan(models.Model):
                 'list_price': plan.amount,
                 'currency_id': plan.currency_id.id,
             })
-        # Link the single variant
         plan.product_id = product_tmpl.product_variant_id.id
-
         return plan
 
