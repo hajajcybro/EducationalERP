@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_education_scholarship_criteria,access_education_scholarship_criteria,model_education_scholarship_criteria,base.group_user,1,1,1,1
+access_education_eligibility_criteria,access_education_eligibility_criteria,model_education_eligibility_criteria,base.group_user,1,1,1,1
+access_education_scholarship,access_education_scholarship,model_education_scholarship,base.group_user,1,1,1,1
+access_education_scholarship_application,access_education_scholarship_application,model_education_scholarship_application,base.group_user,1,1,1,1

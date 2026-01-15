@@ -78,6 +78,16 @@
                             <field name="guardian"/>
                             <field name="relation"/>
                         </group>
+                        <group string="Account Info">
+                            <field name="bank_name"/>
+                            <field name="bank_branch"/>
+                            <field name="account_holder_name"/>
+                            <field name="bank_account_number"/>
+                            <field name="account_type"/>
+                            <field name="ifsc_code"/>
+                            <field name="swift_code"/>
+                            <field name="bank_address"/>
+                        </group>
                         <group string="Parents Info">
                             <field name="father_name"/>
                             <field name="parent_email"/>

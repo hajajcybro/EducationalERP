@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_education_eligibility_criteria_tree" model="ir.ui.view">
+        <field name="name">education.eligibility.criteria.tree</field>
+        <field name="model">education.eligibility.criteria</field>
+        <field name="arch" type="xml">
+            <list string="Eligibility Criteria">
+                <field name="criteria_id"/>
+                <field name="operator"/>
+                <field name="value"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_education_eligibility_criteria_form" model="ir.ui.view">
+        <field name="name">education.eligibility.criteria.form</field>
+        <field name="model">education.eligibility.criteria</field>
+        <field name="arch" type="xml">
+            <form string="Eligibility Criteria">
+                <sheet>
+                    <field name="criteria_id" placeholder="Criteria"/>
+                    <field name="operator" placeholder="Operator"/>
+                    <field name="value" placeholder="value"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_education_eligibility_criteria" model="ir.actions.act_window">
+        <field name="name">Eligibility Criteria</field>
+        <field name="res_model">education.eligibility.criteria</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

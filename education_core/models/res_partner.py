@@ -76,6 +76,34 @@ class ResPartner(models.Model):
     )
     transportation = fields.Boolean(string='Using transportation facility')
     bus_no = fields.Char(string='Bus NO')
+    bank_name = fields.Char(string='Bank Name',
+        help='Select an approved bank'
+    )
+    bank_branch = fields.Char(
+        string='Branch Name'
+    )
+    account_holder_name = fields.Char(
+        string='Account Holder Name',
+        help='Must match student or parent name'
+    )
+    bank_account_number = fields.Char(
+        string='Account Number'
+    )
+    account_type = fields.Selection([
+        ('savings', 'Savings'),
+        ('current', 'Current'),
+    ], string='Account Type', default='savings')
+    ifsc_code = fields.Char(
+        string='IFSC Code',
+        help='For Indian banks'
+    )
+    swift_code = fields.Char(
+        string='SWIFT Code',
+        help='For international banks'
+    )
+    bank_address = fields.Text(
+        string='Bank Address'
+    )
 
     def action_open_documents(self):
         """Open documents related to this student."""

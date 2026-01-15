@@ -2,8 +2,6 @@
 from odoo import models, fields,api,_
 from odoo.exceptions import ValidationError
 
-
-
 class EduTransportStop(models.Model):
     _name = 'education.transport.stop'
     _description = 'Transport Route Stop'
