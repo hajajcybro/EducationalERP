@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<odoo>
-   <menuitem id="menu_audit_and_activity_root"
-              name="Audit And Activity"/>
-
-    <menuitem id="menu_education_audit_log"
-            action="action_education_audit_log" parent="menu_audit_and_activity_root"/>
-</odoo>
-
