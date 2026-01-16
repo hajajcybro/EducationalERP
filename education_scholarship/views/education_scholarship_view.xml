@@ -36,6 +36,8 @@
                             <field name="start_date"/>
                             <field name="end_date"/>
                             <field name="academic_year_id"/>
+                            <field name="document_type_ids" widget="many2many_tags"/>
+
                         </group>
                     </group>
                     <notebook>

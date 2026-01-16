@@ -8,6 +8,7 @@
             <list string="Scholarship Applications">
                 <field name="student_id"/>
                 <field name="scholarship_id"/>
+                <field name="state"/>
             </list>
         </field>
     </record>
@@ -19,26 +20,40 @@
             <form string="Scholarship Application">
                 <header>
                     <field name="state" widget="statusbar"
-                           statusbar_visible="draft,submitted,approved,rejected"/>
-                    <button name="action_submit" string="Submit"
-                            type="object" class="btn-primary"/>
+                           statusbar_visible="draft,submitted,under_review,approved,"/>
+                    <button name="action_submit" string="Submit" type="object"
+                            invisible="state != 'draft'" class="btn-primary"/>
+                    <button name="action_review" string="Review" type="object"
+                            invisible="state != 'submitted'" class="btn-primary"/>
+                    <button name="action_check" string="Validating"  class="btn-primary"
+                            invisible="state != 'under_review'" type="object"/>
+                    <button name="action_cancel" string="Cancel" type="object"
+                            invisible="state == 'cancel'" class="btn-primary"
+                            statusbar_visible="cancel"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_exam_result" type="object" class="oe_stat_button"
+                                icon="fa-graduation-cap">
+                            <field name="exam_result_id" string="Score"/>
+                        </button>
+                        <button name="action_open_documents" type="object"
+                            class="oe_stat_button" icon="fa-folder-open">
+                            <field name="document_count" string="Documents"/>
+                        </button>
+                    </div>
                     <group>
-                        <group>
+                        <group string="Academic Info">
                             <field name="scholarship_id"/>
                             <field name="student_id"/>
                             <field name="admission_no"/>
                             <field name="program_id"/>
                             <field name="semester"/>
-                        </group>
-                        <group>
                             <field name="academic_year_id"/>
                             <field name="application_date"/>
                             <field name="category_id"/>
                             <field name="contact_email"/>
                             <field name="contact_phone"/>
-                            <field name="document_type" widget="many2many_tags"/>
                         </group>
                         <group string="Account Info">
                             <field name="bank_name"/>
@@ -50,9 +65,12 @@
                             <field name="swift_code"/>
                             <field name="bank_address"/>
                         </group>
-                        <group string="Exam Info">
-                        </group>
                     </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description"/>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>

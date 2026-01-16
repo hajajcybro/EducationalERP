@@ -14,7 +14,7 @@ class EducationEligibilityCriteria(models.Model):
         ('<', 'Less than'),
         ('<=', 'Less than or equal to'),
         ('ilike', 'Contains'),
-        ('not ilike', 'Does not contain'),
+        ('is_set', 'Is Set'),
         ('in', 'In'),
         ('not in', 'Not in'),
     ], default='=')

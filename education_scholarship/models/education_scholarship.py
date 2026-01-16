@@ -19,6 +19,9 @@ class EducationScholarship(models.Model):
         'criteria_id',
         string='Eligibility Criteria'
     )
+    document_type_ids = fields.Many2many(
+        'education.document.type',
+    )
     status = fields.Selection([
         ('draft', 'Draft'),
         ('open', 'Open for Application'),
