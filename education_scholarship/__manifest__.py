@@ -12,6 +12,7 @@
     'depends': ['education_core','education_exam'],
     'data': [
         'security/ir.model.access.csv',
+        'data/education_scholarship_product.xml',
         'views/education_scholarship_application.xml',
         'views/education_scholarship_view.xml',
         'views/education_scholarship_criteria_view.xml',

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="education_scholarship_application_tree_finance"
+            model="ir.ui.view">
+        <field name="name">education.scholarship.application.tree.finance</field>
+        <field name="model">education.scholarship.application</field>
+        <field name="inherit_id"
+               ref="education_scholarship.view_education_scholarship_application_tree"/>
+        <field name="arch" type="xml">
+             <xpath expr="." position="inside"/>
+        </field>
+    </record>
+
+
+    <record id="action_scholarship_application_finance"
+            model="ir.actions.act_window">
+        <field name="name">Scholarship Applications</field>
+        <field name="res_model">education.scholarship.application</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'approved')]</field>
+    </record>
+
+</odoo>

@@ -60,34 +60,27 @@ class EducationScholarshipApplication(models.Model):
         string='Application Date'
     )
 
-    bank_name = fields.Char(string='Bank Name',  related='student_id.bank_name',
+    bank_name = fields.Char(string='Bank Name',
                             help='Select an approved bank'
                             )
-    bank_branch = fields.Char(
-        string='Branch Name', related='student_id.bank_branch',
-    )
+    bank_branch = fields.Char( string='Branch Name')
     account_holder_name = fields.Char(
-        string='Account Holder Name', related='student_id.account_holder_name',
+        string='Account Holder Name',
         help='Must match student or parent name'
     )
     bank_account_number = fields.Char(
-        string='Account Number',related='student_id.bank_account_number',
-    )
+        string='Account Number')
     account_type = fields.Selection([
         ('savings', 'Savings'),
         ('current', 'Current'),
     ], string='Account Type', default='savings')
     ifsc_code = fields.Char(
-        string='IFSC Code',related='student_id.ifsc_code',
-        help='For Indian banks'
+        string='IFSC Code', help='For Indian banks'
     )
     swift_code = fields.Char(
-        string='SWIFT Code',related='student_id.swift_code',
-        help='For international banks'
-    )
+        string='SWIFT Code' )
     bank_address = fields.Text(
-        string='Bank Address',related='student_id.bank_address',
-    )
+        string='Bank Address')
     exam_result_id = fields.Many2one('education.exam.result',
         string='Exam Result',readonly=True,
         help='Latest exam result of the student'
@@ -97,6 +90,8 @@ class EducationScholarshipApplication(models.Model):
         string='Documents',
         compute='_compute_document_count'
     )
+    remaining_amount = fields.Float(string="Remaining Amount")
+    last_reset_date = fields.Date(string="Last Reset Date")
 
     def _compute_document_count(self):
         Document = self.env['education.document']
@@ -159,6 +154,11 @@ class EducationScholarshipApplication(models.Model):
                 lines.append(f"Scholarship Amount  : {scholarship.scholarship_amount}")
             if scholarship.start_date or scholarship.end_date:
                 lines.append(f"Validity Period  : {scholarship.start_date} to {scholarship.end_date}")
+            if scholarship.application_duration:
+                duration_label = dict(
+                    scholarship._fields['application_duration'].selection
+                ).get(scholarship.application_duration)
+                lines.append(f"Application Duration : {duration_label}")
             if scholarship.academic_year_id:
                 lines.append(f"Academic Year  : {scholarship.academic_year_id.name}")
             if scholarship.eligibility_ids:
@@ -179,6 +179,8 @@ class EducationScholarshipApplication(models.Model):
 
     def action_check(self):
         for rec in self:
+            if not self.scholarship_id:
+                ValidationError('Please select the scholarship')
             if not rec.exam_result_id:
                 exam_result = self.env['education.exam.result'].search(
                     [('student_id', '=', rec.student_id.id)],
@@ -209,6 +211,8 @@ class EducationScholarshipApplication(models.Model):
                         rec.state = 'rejected'
                         return
                 rec.state = 'approved'
+                rec.remaining_amount = rec.scholarship_id.scholarship_amount
+                rec.last_reset_date = fields.Date.today()
 
 
 

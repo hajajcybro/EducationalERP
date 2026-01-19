@@ -28,6 +28,12 @@ class EducationScholarship(models.Model):
         ('expired', 'Expired'),
     ], string='Status', default='draft')
     description =fields.Text(string='Description')
+    application_duration = fields.Selection([
+        ('one_time', 'One-time'),
+        ('per_semester', 'Per Semester'),
+        ('per_year', 'Per Academic Year'),
+        ('recurring', 'Recurring (Every Payment)'),
+    ], required=True, default='one_time')
 
     def action_open(self):
         for record in self:

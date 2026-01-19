@@ -51,6 +51,10 @@
               name="Library Member"
               parent="menu_financial_fee_allocation"
               action="action_education_library_member"/>
+    <menuitem id="menu_scholarship_application_finance"
+              name="Scholarship"
+              parent="menu_financial_fee_allocation"
+              action="action_scholarship_application_finance"/>
 
 <!-- report-->
     <menuitem id="menu_financial_report"
@@ -69,8 +73,6 @@
               name="Refund Summary"
               parent="menu_financial_report"
               action="action_refund_summary_wizard"/>
-
-
 
 </odoo>
 

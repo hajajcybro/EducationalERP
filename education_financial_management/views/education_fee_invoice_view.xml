@@ -24,10 +24,17 @@
                             <field name="transport_plan_id" invisible="payment_type != 'transport'"/>
                             <field name="route_id" invisible="payment_type != 'transport'"/>
                             <field name="stop_id" invisible="payment_type != 'transport'"/>
-
                             <field name="payment_term_id"/>
                             <field name="due_date"/>
                         </group>
+                        <group>
+                                <field name="has_scholarship"/>
+                                <field name="scholarship_amount"/>
+                                <field name="remaining_scholarship_amount"/>
+                                <field name="apply_scholarship" invisible="has_scholarship == False"/>
+                                <field name="scholarship_apply_type" invisible="apply_scholarship == False"/>
+                                <field name="scholarship_custom_amount" invisible="scholarship_apply_type != 'partial'"/>
+                            </group>
                     </group>
                     <group>
                         <field name="total_invoiced_amount" invisible="payment_type != 'installment'"/>

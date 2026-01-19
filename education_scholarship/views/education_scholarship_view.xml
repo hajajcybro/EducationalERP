@@ -31,6 +31,7 @@
                             <field name="name"/>
                             <field name="scholarship_amount"/>
                             <field name="number_of_awards"/>
+                            <field name="application_duration"/>
                         </group>
                         <group>
                             <field name="start_date"/>

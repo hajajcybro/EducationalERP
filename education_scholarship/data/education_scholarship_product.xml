@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <record id="product_scholarship_adjustment" model="product.product">
+        <field name="name">Scholarship</field>
+        <field name="type">service</field>
+        <field name="list_price">0.0</field>
+        <field name="sale_ok">False</field>
+    </record>
+</odoo>

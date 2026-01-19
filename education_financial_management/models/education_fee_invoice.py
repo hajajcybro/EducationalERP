@@ -107,6 +107,33 @@ class EduFeeInvoice(models.Model):
         'education.hostel.application', string='Hostel Application',
         tracking=True
     )
+    #scholarship manage
+    apply_scholarship = fields.Boolean(
+        string="Apply Scholarship",
+        default=False
+    )
+    has_scholarship = fields.Boolean(
+        compute="_compute_has_scholarship",
+        store=False
+    )
+    scholarship_amount = fields.Float(
+        compute="_compute_has_scholarship",
+        store=False
+    )
+    scholarship_apply_type = fields.Selection([
+        ('full', 'Use Full Scholarship Amount'),
+        ('auto', 'Use Fee-wise Amount (Auto)'),
+        ('partial', 'Use Partial Amount'),
+    ], string="Scholarship Usage")
+
+    scholarship_custom_amount = fields.Float(
+        string="Scholarship Amount to Apply"
+    )
+    remaining_scholarship_amount = fields.Monetary(
+        string="Remaining Scholarship Amount",
+        compute="_compute_remaining_scholarship_amount",
+        currency_field='currency_id'
+    )
 
     @api.depends('invoice_ids.amount_total')
     def _compute_total_invoiced_amount(self):
@@ -162,7 +189,6 @@ class EduFeeInvoice(models.Model):
             self.hide_invoice_button = False
         else:
             raise ValidationError(_("Please select a Payment Type."))
-
         invoice = self.env['account.move'].create({
             'move_type': 'out_invoice',
             'partner_id': self.student_id.id,
@@ -176,6 +202,31 @@ class EduFeeInvoice(models.Model):
                 'price_unit': price,
             })],
         })
+        # scholarship management
+        if self.apply_scholarship and self.has_scholarship:
+            discount = 0.0
+            if self.scholarship_apply_type in ('full', 'auto'):
+                discount = min(self.scholarship_amount, price)
+            elif self.scholarship_apply_type == 'partial':
+                discount = min(
+                    self.scholarship_custom_amount,
+                    self.scholarship_amount,
+                    price
+                )
+            if discount > 0:
+                scholarship_product = self.env['product.product'].search(
+                    [('name', '=', 'Scholarship')], limit=1
+                )
+                invoice.write({
+                    'invoice_line_ids': [
+                        Command.create({
+                            'product_id': scholarship_product.id,
+                            'quantity': 1,
+                            'price_unit': -discount,
+                        })
+                    ]
+                })
+
         rule = False
         if self.payment_type == 'installment':
             rule = self.installment_id.penalty_rule_id
@@ -205,8 +256,6 @@ class EduFeeInvoice(models.Model):
         self.write({'invoice_ids': [Command.link(invoice.id)]})
         if self.payment_type != 'hostel'  and self.remaining_amount <= 1:
             self.hide_invoice_button = True
-
-
         return {
             'type': 'ir.actions.act_window',
             'name': 'Invoice',
@@ -317,3 +366,34 @@ class EduFeeInvoice(models.Model):
             })
         return super().unlink()
 
+    @api.depends('student_id')
+    def _compute_has_scholarship(self):
+        """Check whether the selected student has any approved scholarship.
+        If an approved scholarship application exists for the student,
+        mark `has_scholarship` as True and set the scholarship amount.
+        Otherwise, reset the values."""
+        for rec in self:
+            rec.has_scholarship = False
+            rec.scholarship_amount = 0.0
+            if rec.student_id:
+                application = self.env['education.scholarship.application'].search([
+                    ('student_id', '=', rec.student_id.id),('state', '=', 'approved'),
+                ], limit=1)
+                if application and application.scholarship_id.scholarship_amount > 0:
+                    rec.has_scholarship = True
+                    rec.scholarship_amount = application.scholarship_id.scholarship_amount
+
+    @api.depends('invoice_ids.state','scholarship_amount')
+    def _compute_remaining_scholarship_amount(self):
+        scholarship_product = self.env['product.product'].search(
+            [('name', '=', 'Scholarship')], limit=1
+        )
+        for rec in self:
+            total = rec.scholarship_amount or 0.0
+            used = 0.0
+            if scholarship_product:
+                for inv in rec.invoice_ids.filtered(lambda m: m.state != 'cancel'):
+                    for line in inv.invoice_line_ids:
+                        if line.product_id == scholarship_product:
+                            used += abs(line.price_subtotal)
+            rec.remaining_scholarship_amount = max(total - used, 0.0)
