@@ -54,6 +54,9 @@
                             <field name="category_id"/>
                             <field name="contact_email"/>
                             <field name="contact_phone"/>
+                            <field name="last_reset_session_id"/>
+                            <field name="last_reset_academic_year_id"/>
+                            <field name="last_reset_date"/>
                         </group>
                         <group string="Account Info">
                             <field name="bank_name"/>

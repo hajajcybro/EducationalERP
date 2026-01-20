@@ -132,13 +132,22 @@ class EduFeeInvoice(models.Model):
     remaining_scholarship_amount = fields.Monetary(
         string="Remaining Scholarship Amount",
         compute="_compute_remaining_scholarship_amount",
-        currency_field='currency_id'
     )
 
-    @api.depends('invoice_ids.amount_total')
+    @api.depends('invoice_ids.invoice_line_ids.price_subtotal')
     def _compute_total_invoiced_amount(self):
+        """Compute the total invoiced amount for the record.
+        This method sums the positive subtotal values of all invoice lines
+        from non-cancelled invoices linked to the record. Discount or
+        adjustment lines with negative amounts are excluded to ensure
+        that only actual charge amounts are counted."""
         for rec in self:
-            rec.total_invoiced_amount = sum(rec.invoice_ids.mapped('amount_total'))
+            total = 0.0
+            for inv in rec.invoice_ids.filtered(lambda m: m.state != 'cancel'):
+                for line in inv.invoice_line_ids:
+                    if line.price_subtotal > 0:
+                        total += line.price_subtotal
+            rec.total_invoiced_amount = total
 
     @api.depends('total_invoiced_amount')
     def _compute_remaining_amount(self):
@@ -151,11 +160,23 @@ class EduFeeInvoice(models.Model):
             )
 
     def action_create_invoice(self):
-        """
-        Create a customer invoice based on the selected payment type (installment, full,
-        transport, or hostel). Validates required configurations, calculates the payable
-        amount, applies late payment penalties when applicable, links the invoice to the
-        fee record, and controls invoice button visibility based on remaining balance.
+        """Create a customer invoice for the fee record based on the selected
+        payment type.
+
+        This method checks that the required setup is completed for the selected
+        payment type (installment, full, transport, or hostel). It calculates the
+        payable amount and prepares the invoice line details, then creates the
+        customer invoice and links it to the fee record..
+
+        If scholarship application is enabled, the method applies the approved
+        scholarship as a negative invoice line based on the configured
+        application type (full, automatic, or partial), ensuring that the
+        available scholarship balance is not exceeded and updating the
+        remaining scholarship amount accordingly.
+
+        The method also evaluates applicable late payment penalty rules based
+        on the invoice due date and applies penalties when the grace period
+        is exceeded.
         """
         self.ensure_one()
         if self.payment_type == 'installment':
@@ -204,13 +225,29 @@ class EduFeeInvoice(models.Model):
         })
         # scholarship management
         if self.apply_scholarship and self.has_scholarship:
+            application = self.env['education.scholarship.application'].search([
+                ('student_id', '=', self.student_id.id),
+                ('state', '=', 'approved'),
+            ], limit=1)
+
+            application.check_and_reset_scholarship()  #-<
+            if not application or application.scholarship_remaining_amount <= 0:
+                raise ValidationError(_("No remaining scholarship amount available."))
+            if self.scholarship_apply_type == 'partial':
+                if self.scholarship_custom_amount <= 0:
+                    raise ValidationError(_("Scholarship amount must be greater than zero."))
+
+                if self.scholarship_custom_amount > application.scholarship_remaining_amount:
+                    raise ValidationError(_(
+                        "Scholarship amount to apply cannot exceed the remaining scholarship balance."
+                    ))
             discount = 0.0
             if self.scholarship_apply_type in ('full', 'auto'):
-                discount = min(self.scholarship_amount, price)
+                discount = min(application.scholarship_remaining_amount, price)
             elif self.scholarship_apply_type == 'partial':
                 discount = min(
                     self.scholarship_custom_amount,
-                    self.scholarship_amount,
+                    application.scholarship_remaining_amount,
                     price
                 )
             if discount > 0:
@@ -226,6 +263,7 @@ class EduFeeInvoice(models.Model):
                         })
                     ]
                 })
+                application.scholarship_remaining_amount -= discount
 
         rule = False
         if self.payment_type == 'installment':
@@ -242,7 +280,6 @@ class EduFeeInvoice(models.Model):
                         unit_price = rule.value
                     else:
                         unit_price = (invoice.amount_untaxed * rule.value) / 100
-                        print(unit_price)
                     invoice.write({
                         'invoice_line_ids': [
                             Command.create({
@@ -267,6 +304,10 @@ class EduFeeInvoice(models.Model):
 
     @api.depends('invoice_ids.amount_total', 'invoice_ids.amount_residual')
     def _compute_amount_paid(self):
+        """Compute the total amount paid for the record.
+        This method calculates the paid amount by summing the difference
+        between the total and residual amounts of all posted invoices
+        linked to the record."""
         for rec in self:
             paid = 0.0
             for inv in rec.invoice_ids.filtered(lambda m: m.state == 'posted'):
@@ -275,6 +316,9 @@ class EduFeeInvoice(models.Model):
 
     @api.depends('invoice_ids.amount_residual')
     def _compute_outstanding_amount(self):
+        """Compute the total outstanding amount for the record.
+        This method sums the residual amounts of all posted invoices
+        linked to the record to determine the outstanding balance."""
         for rec in self:
             rec.outstanding_amount = sum(
                 rec.invoice_ids.filtered(lambda m: m.state == 'posted')
@@ -283,6 +327,10 @@ class EduFeeInvoice(models.Model):
 
     @api.depends('invoice_ids.state', 'invoice_ids.move_type', 'invoice_ids.reversed_entry_id', 'invoice_ids.amount_total',)
     def _compute_reverse_amount(self):
+        """Calculate the total refund amount associated with the record.
+        The method identifies posted customer credit notes created as
+        reversals of the record’s customer invoices and sums their total
+        amounts to determine the reversed value."""
         for rec in self:
             refund_total = 0.0
             invoices = rec.invoice_ids.filtered(
@@ -383,17 +431,20 @@ class EduFeeInvoice(models.Model):
                     rec.has_scholarship = True
                     rec.scholarship_amount = application.scholarship_id.scholarship_amount
 
-    @api.depends('invoice_ids.state','scholarship_amount')
+    @api.depends('student_id')
     def _compute_remaining_scholarship_amount(self):
-        scholarship_product = self.env['product.product'].search(
-            [('name', '=', 'Scholarship')], limit=1
-        )
+        """ Compute the remaining scholarship amount for the record.
+        The value is derived from the approved scholarship application
+        linked to the selected student. If an approved application exists,
+        the remaining scholarship balance from that application is assigned.
+        If no student or approved application is found, the remaining
+        scholarship amount is set to zero."""
         for rec in self:
-            total = rec.scholarship_amount or 0.0
-            used = 0.0
-            if scholarship_product:
-                for inv in rec.invoice_ids.filtered(lambda m: m.state != 'cancel'):
-                    for line in inv.invoice_line_ids:
-                        if line.product_id == scholarship_product:
-                            used += abs(line.price_subtotal)
-            rec.remaining_scholarship_amount = max(total - used, 0.0)
+            rec.remaining_scholarship_amount = 0.0
+            if rec.student_id:
+                application = self.env['education.scholarship.application'].search([
+                    ('student_id', '=', rec.student_id.id),
+                    ('state', '=', 'approved'),
+                ], limit=1)
+                if application:
+                    rec.remaining_scholarship_amount = application.scholarship_remaining_amount

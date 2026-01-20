@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_scholarship_report_wizard_form" model="ir.ui.view">
+        <field name="name">scholarship.wizard.form</field>
+        <field name="model">scholarship.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Scholarship Report">
+                <group>
+                    <group string="Academic Information">
+                        <field name="academic_year_id"/>
+                        <field name="session_id"/>
+                        <field name="program_id"/>
+                    </group>
+                    <group string="Scholarship Information">
+                        <field name="scholarship_id"/>
+                        <field name="application_duration"/>
+                        <field name="application_state"/>
+                    </group>
+                    <group string="Application Details">
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                        <field name="student_id"/>
+                        <field name="has_remaining_amount"/>
+                    </group>
+
+                </group>
+
+                <footer>
+                    <button
+                        string="Cancel"
+                        special="cancel"
+                        class="btn-secondary"
+                    />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Wizard Action -->
+    <record id="action_scholarship_report_wizard" model="ir.actions.act_window">
+        <field name="name">Scholarship Report</field>
+        <field name="res_model">scholarship.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_scholarship_report_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

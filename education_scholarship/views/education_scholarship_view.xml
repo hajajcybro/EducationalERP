@@ -48,6 +48,9 @@
                         <page string="Eligibility Criteria">
                             <field name="eligibility_ids" widget="many2many_tree"/>
                         </page>
+                        <page string="Student">
+                            <field name="approved_student_ids"/>
+                        </page>
                     </notebook>
                 </sheet>
             </form>

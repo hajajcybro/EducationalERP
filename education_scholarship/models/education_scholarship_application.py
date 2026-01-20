@@ -90,7 +90,12 @@ class EducationScholarshipApplication(models.Model):
         string='Documents',
         compute='_compute_document_count'
     )
-    remaining_amount = fields.Float(string="Remaining Amount")
+    scholarship_remaining_amount = fields.Float(string="Remaining Amount")
+
+    # Add these fields after last_reset_date
+    last_reset_session_id = fields.Many2one('education.session', string="Last Reset Session")
+    last_reset_academic_year_id = fields.Many2one('education.academic.year',
+         string="Last Reset Academic Year")
     last_reset_date = fields.Date(string="Last Reset Date")
 
     def _compute_document_count(self):
@@ -211,10 +216,43 @@ class EducationScholarshipApplication(models.Model):
                         rec.state = 'rejected'
                         return
                 rec.state = 'approved'
-                rec.remaining_amount = rec.scholarship_id.scholarship_amount
+                rec.scholarship_remaining_amount = rec.scholarship_id.scholarship_amount
                 rec.last_reset_date = fields.Date.today()
+                rec.last_reset_session_id = rec.student_id.class_id.session_id
+                rec.last_reset_academic_year_id = rec.student_id.academic_year_id
 
+    def check_and_reset_scholarship(self):
+        """Check if scholarship should be reset based on application_duration
+        Call this before applying scholarship to invoice"""
+        self.ensure_one()
+        if self.state != 'approved':
+            return
+        duration = self.scholarship_id.application_duration
+        today = fields.Date.today()
 
+        # Recurring: Always reset to full amount
+        if duration == 'recurring':
+            self.scholarship_remaining_amount = self.scholarship_id.scholarship_amount
+            self.last_reset_date = today
+            return
 
+        # One-time: Never reset
+        if duration == 'one_time':
+            return
 
+        # Per Semester: Reset when semester changes
+        if duration == 'per_semester':
+            current_session = self.student_id.class_id.session_id
+            if current_session and current_session != self.last_reset_session_id:
+                self.scholarship_remaining_amount = self.scholarship_id.scholarship_amount
+                self.last_reset_date = today
+                self.last_reset_session_id = current_session
+
+        # Per Year: Reset when academic year changes
+        elif duration == 'per_year':
+            current_year = self.student_id.academic_year_id
+            if current_year and current_year != self.last_reset_academic_year_id:
+                self.scholarship_remaining_amount = self.scholarship_id.scholarship_amount
+                self.last_reset_date = today
+                self.last_reset_academic_year_id = current_year
 

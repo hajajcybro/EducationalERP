@@ -34,6 +34,12 @@ class EducationScholarship(models.Model):
         ('per_year', 'Per Academic Year'),
         ('recurring', 'Recurring (Every Payment)'),
     ], required=True, default='one_time')
+    approved_student_ids = fields.One2many(
+        'education.scholarship.application',
+        'scholarship_id',
+        string='Approved Students',
+        domain=[('state', '=', 'approved')]
+    )
 
     def action_open(self):
         for record in self:

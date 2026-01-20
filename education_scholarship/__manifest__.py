@@ -17,6 +17,8 @@
         'views/education_scholarship_view.xml',
         'views/education_scholarship_criteria_view.xml',
         'views/education_scholarship_eligibility_criteria_view.xml',
+        'wizard/education_scholarship_wizard.xml',
+        'report/ir_actions_report.xml',
         'views/education_menu.xml',
     ],
     'license': 'AGPL-3',
