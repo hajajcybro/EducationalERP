@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="scholarship_report_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h3 style="text-align:center;">Scholarship Report</h3>
+                    <table class="table table-sm table-bordered mt-4">
+                        <thead>
+                            <tr class="text-center">
+                                <th>Student</th>
+                                <th>Academic Year</th>
+                                <th>Program</th>
+                                <th>Session</th>
+                                <th>Scholarship</th>
+                                <th>Duration</th>
+                                <th>Status</th>
+                                <th>Application Date</th>
+                                <th>Amount</th>
+                                <th>Remaining</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-if="docs">
+                                <t t-foreach="docs" t-as="row">
+                                    <tr class="text-center">
+                                        <td><t t-esc="row[0]"/></td>
+                                        <td><t t-esc="row[1]"/></td>
+                                        <td><t t-esc="row[2]"/></td>
+                                        <td><t t-esc="row[3]"/></td>
+                                        <td><t t-esc="row[4]"/></td>
+                                        <td><t t-esc="row[5]"/></td>
+                                        <td><t t-esc="row[6]"/></td>
+                                        <td><t t-esc="row[7]"/></td>
+                                        <td><t t-esc="row[8]"/></td>
+                                        <td><t t-esc="row[9]"/></td>
+                                    </tr>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <tr>
+                                    <td colspan="10" style="text-align:center; padding:10px;">
+                                        <strong>No scholarship records found for selected filters</strong>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

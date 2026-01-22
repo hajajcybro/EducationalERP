@@ -13,24 +13,19 @@
                     </group>
                     <group string="Scholarship Information">
                         <field name="scholarship_id"/>
-                        <field name="application_duration"/>
                         <field name="application_state"/>
                     </group>
                     <group string="Application Details">
                         <field name="date_from"/>
                         <field name="date_to"/>
-                        <field name="student_id"/>
+                        <field name="student_ids" widget="many2many_tags"/>
                         <field name="has_remaining_amount"/>
                     </group>
-
                 </group>
-
                 <footer>
-                    <button
-                        string="Cancel"
-                        special="cancel"
-                        class="btn-secondary"
-                    />
+                    <button name="action_generate_scholarship_report" string="PDF" type="object" class="btn-primary"/>
+                    <button name="action_generate_scholarship_XLSX_report" string="XLSX" type="object" class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
                 </footer>
             </form>
         </field>
@@ -41,7 +36,6 @@
         <field name="name">Scholarship Report</field>
         <field name="res_model">scholarship.wizard</field>
         <field name="view_mode">form</field>
-        <field name="view_id" ref="view_scholarship_report_wizard_form"/>
         <field name="target">new</field>
     </record>
 

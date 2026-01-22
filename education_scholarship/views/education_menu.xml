@@ -14,6 +14,10 @@
               parent="menu_education_scholarship_root"
               action="action_education_scholarship_application"
               sequence="15"/>
+     <menuitem id="menu_education_scholarship_report"
+              parent="menu_education_scholarship_root"
+              action="action_scholarship_report_wizard"
+              name="Report"/>
 
     <menuitem id="menu_education_scholarship_settings"
               parent="menu_education_scholarship_root"
@@ -30,9 +34,6 @@
               action="action_education_eligibility_criteria"
               sequence="20"/>
 
-    <menuitem id="menu_education_scholarship_report"
-              parent="menu_education_scholarship_root"
-              action="action_scholarship_report_wizard"
-              name="Report" sequence="80"/>
+
 
 </odoo>

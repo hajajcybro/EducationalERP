@@ -19,8 +19,14 @@
         'views/education_scholarship_eligibility_criteria_view.xml',
         'wizard/education_scholarship_wizard.xml',
         'report/ir_actions_report.xml',
+        'report/scholarship_report_template.xml',
         'views/education_menu.xml',
     ],
+    'assets' : {
+                'web.assets_backend': [
+                    'education_scholarship/static/src/js/action_manager.js',
+                                       ],
+        },
     'license': 'AGPL-3',
     'installable': True,
     'application': True,

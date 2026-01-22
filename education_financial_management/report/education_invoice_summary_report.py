@@ -7,8 +7,7 @@ class InvoiceSummary(models.AbstractModel):
     @api.model
     def _get_report_values(self, docids, data=None):
         print("self")
-        query="""
-                    SELECT
+        query=""" SELECT
                 am.id AS invoice_id,
                 rp.name AS student_name,
                 rp.admission_no,
@@ -30,33 +29,23 @@ class InvoiceSummary(models.AbstractModel):
             JOIN res_partner rp ON rp.id = am.partner_id
             WHERE am.state = 'posted'
               AND rp.is_student = TRUE"""
-
-        # ---------- Student filter ----------
         if data.get('student_ids'):
             student_ids = tuple(data['student_ids'])
             if len(student_ids) == 1:
                 query += " AND rp.id = %s" % student_ids[0]
             else:
                 query += " AND rp.id IN %s" % (student_ids,)
-
-        # ---------- Invoice type ----------
         if data.get('invoice_type') and data['invoice_type'] != 'all':
             query += " AND am.move_type = '%s'" % data['invoice_type']
-
-        # ---------- Payment state ----------
         if data.get('payment_state') and data['payment_state'] != 'all':
             query += " AND am.payment_state = '%s'" % data['payment_state']
-
-        # ---------- Date filters ----------
         if data.get('date_filter') == 'daily':
             query += " AND am.invoice_date = CURRENT_DATE"
-
         elif data.get('date_filter') == 'weekly':
             query += """
                      AND DATE_TRUNC('week', am.invoice_date)
                          = DATE_TRUNC('week', CURRENT_DATE)
                  """
-
         elif data.get('date_filter') == 'monthly':
             query += """
                      AND DATE_TRUNC('month', am.invoice_date)

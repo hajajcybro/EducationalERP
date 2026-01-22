@@ -5,7 +5,6 @@ class RefundReport(models.AbstractModel):
 
     @api.model
     def _get_report_values(self, docids,data=None):
-        print("self")
         query="""SELECT
                 rr.id AS refund_id,
                 rp.name AS student_name,
