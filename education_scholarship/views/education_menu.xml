@@ -16,13 +16,12 @@
               sequence="15"/>
      <menuitem id="menu_education_scholarship_report"
               parent="menu_education_scholarship_root"
-              action="action_scholarship_report_wizard"
-              name="Report"/>
-
+              action="action_scholarship_report_wizard" name="Report"
+              groups="education_core.group_education_admin,education_core.group_education_admission_officer,education_core.group_education_teacher"/>
     <menuitem id="menu_education_scholarship_settings"
               parent="menu_education_scholarship_root"
-              name="Settings" sequence="99"/>
-
+              name="Settings" sequence="99"
+              groups="education_core.group_education_admin,education_core.group_education_admission_officer,education_core.group_education_teacher"/>
     <menuitem id="menu_education_scholarship_criteria"
               name="Scholarship Criteria"
               parent="menu_education_scholarship_settings"
@@ -33,7 +32,4 @@
               parent="menu_education_scholarship_settings"
               action="action_education_eligibility_criteria"
               sequence="20"/>
-
-
-
 </odoo>

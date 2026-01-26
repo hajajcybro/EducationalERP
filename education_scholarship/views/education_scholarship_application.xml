@@ -24,9 +24,11 @@
                     <button name="action_submit" string="Submit" type="object"
                             invisible="state != 'draft'" class="btn-primary"/>
                     <button name="action_review" string="Review" type="object"
-                            invisible="state != 'submitted'" class="btn-primary"/>
+                            invisible="state != 'submitted'" class="btn-primary"
+                            groups="education_core.group_education_admin,education_core.group_education_teacher"/>
                     <button name="action_check" string="Validating"  class="btn-primary"
-                            invisible="state != 'under_review'" type="object"/>
+                            invisible="state != 'under_review'" type="object"
+                            groups="education_core.group_education_admin,education_core.group_education_teacher"/>
                     <button name="action_cancel" string="Cancel" type="object"
                             invisible="state == 'cancel'" class="btn-primary"
                             statusbar_visible="cancel"/>

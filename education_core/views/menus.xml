@@ -75,13 +75,14 @@
               name="Student Report"
               parent="menu_student_management_root"
               action="action_student_report_wizard"
-              sequence="20"/>
+              sequence="20"
+              groups="education_core.group_education_admin,education_core.group_education_admission_officer,education_core.group_education_teacher"/>
 
     <!--    configuration-->
     <menuitem id="menu_student_configuration"
               name="Configuration"
-              parent="menu_student_management_root"
-              sequence="30"/>
+              parent="menu_student_management_root" sequence="30"
+              groups="education_core.group_education_admin,education_core.group_education_admission_officer,education_core.group_education_teacher"/>
     <menuitem id="menu_education_academic_year"
               name="Academic year"
               parent="menu_student_configuration"

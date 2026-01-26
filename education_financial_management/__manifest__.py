@@ -14,6 +14,7 @@
                 'education_scholarship'],
     'data': [
         'security/ir.model.access.csv',
+        'security/security_group.xml',
         'data/ir_cron.xml',
         'views/education_fee_installment_view.xml',
         'views/education_fee_plan_view.xml',

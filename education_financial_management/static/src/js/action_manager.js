@@ -6,9 +6,10 @@ import { download } from "@web/core/network/download";
 
 console.log("Education XLSX handler loaded");
 
-registry
-    .category("ir.actions.report handlers")
-    .add("education_xlsx", async (action) => {
+const category = registry.category("ir.actions.report handlers");
+
+try {
+    category.add("education_xlsx", async (action) => {
 
         if (action.report_type !== "xlsx") {
             return false;
@@ -27,3 +28,7 @@ registry
 
         return true;
     });
+
+} catch (err) {
+    console.warn("education_xlsx handler already exists — skipping duplicate");
+}

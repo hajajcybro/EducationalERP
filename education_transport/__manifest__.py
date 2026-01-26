@@ -12,6 +12,7 @@
     'depends': ['education_core','fleet','web'],
     'data': [
         'security/ir.model.access.csv',
+        'security/security_group.xml',
         'views/education_transport_route_views.xml',
         'views/education_transport_stop_views.xml',
         'views/education_transport_assignment_views.xml',

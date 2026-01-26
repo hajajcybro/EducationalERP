@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-        <!-- Teacher View-->
+
   <record id="rule_teacher_own_record" model="ir.rule">
         <field name="name">Teacher: access own record only</field>
         <field name="model_id" ref="hr.model_hr_employee"/>
