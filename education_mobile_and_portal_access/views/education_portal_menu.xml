@@ -1,0 +1,11 @@
+<odoo>
+  <menuitem id="education_portal_root"
+            name="Education Portal"
+            parent="portal.portal_menu_root"
+            sequence="10"/>
+
+  <menuitem id="student_profile_menu"
+            name="My Profile"
+            parent="education_portal_root"
+            action="student_profile_action"/>
+</odoo>
