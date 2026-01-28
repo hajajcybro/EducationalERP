@@ -7,7 +7,7 @@ from datetime import date
 class EducationApplication(models.Model):
     _name = 'education.application'
     _description = 'Education Application'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin',]
     _order = 'admission_no'
 
     name = fields.Char('Student Name',

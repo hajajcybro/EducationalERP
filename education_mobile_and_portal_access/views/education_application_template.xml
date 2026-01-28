@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="application_form" name="Student Application Form">
+        <t t-call="website.layout">
+            <div class="container mt-5">
+                <h2>Student Application Form</h2>
+
+                <form action="/student/application/submit" method="post">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" name="name" class="form-control" required="1"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="email" class="form-control" required="1"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="text" name="phone" class="form-control"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Date of Birth</label>
+                        <input type="date" name="dob" class="form-control"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Address</label>
+                        <textarea name="address" class="form-control"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Program</label>
+                        <select name="program" class="form-control">
+                            <t t-foreach="programs" t-as="prog">
+                                <option t-att-value="prog.id">
+                                    <t t-esc="prog.name"/>
+                                </option>
+                            </t>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Academic Year</label>
+                        <select name="year" class="form-control">
+                            <t t-foreach="years" t-as="year">
+                                <option t-att-value="year.id">
+                                    <t t-esc="year.name"/>
+                                </option>
+                            </t>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-3">
+                        Submit Application
+                    </button>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <!-- Success Page -->
+    <template id="application_success" name="Application Success">
+        <t t-call="website.layout">
+            <div class="container mt-5 text-center">
+                <h3>Application Submitted Successfully</h3>
+                <p>We will contact you soon.</p>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -9,7 +9,7 @@
     'company': 'Cybrosys Techno Solutions',
     'maintainer': 'Cybrosys Techno Solutions',
     'website': 'https://www.cybrosys.com',
-    'depends': ['base', 'mail','base_automation','hr','web'],
+    'depends': ['base', 'mail','base_automation','hr','web',],
     'data': [
         'security/education_security_groups.xml',
         'security/ir.model.access.csv',

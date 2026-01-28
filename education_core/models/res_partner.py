@@ -105,19 +105,19 @@ class ResPartner(models.Model):
         string='Bank Address'
     )
     # Mobile / Portal Fields
-    edu_mobile_token = fields.Char(
-        string="Mobile Auth Token",
-        help="Token for mobile authentication"
-    )
-
-    last_mobile_login = fields.Datetime(
-        string="Last Mobile Login"
-    )
-
-    push_notification_enabled = fields.Boolean(
-        string="Push Notifications Enabled",
-        default=True
-    )
+    # edu_mobile_token = fields.Char(
+    #     string="Mobile Auth Token",
+    #     help="Token for mobile authentication"
+    # )
+    #
+    # last_mobile_login = fields.Datetime(
+    #     string="Last Mobile Login"
+    # )
+    #
+    # push_notification_enabled = fields.Boolean(
+    #     string="Push Notifications Enabled",
+    #     default=True
+    # )
 
     def action_open_documents(self):
         """Open documents related to this student."""

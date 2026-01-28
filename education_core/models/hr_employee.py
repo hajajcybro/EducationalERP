@@ -13,19 +13,19 @@ class HrEmployee(models.Model):
     )
     other_role = fields.Char('Other Role')
     # Mobile / Portal Fields
-    edu_mobile_token = fields.Char(
-        string="Mobile Auth Token",
-        help="Token for mobile authentication"
-    )
-
-    last_mobile_login = fields.Datetime(
-        string="Last Mobile Login"
-    )
-
-    push_notification_enabled = fields.Boolean(
-        string="Push Notifications Enabled",
-        default=True
-    )
+    # edu_mobile_token = fields.Char(
+    #     string="Mobile Auth Token",
+    #     help="Token for mobile authentication"
+    # )
+    #
+    # last_mobile_login = fields.Datetime(
+    #     string="Last Mobile Login"
+    # )
+    #
+    # push_notification_enabled = fields.Boolean(
+    #     string="Push Notifications Enabled",
+    #     default=True
+    # )
 
     def unlink(self):
         """ Override unlink to log audit details when deleting staff records.
