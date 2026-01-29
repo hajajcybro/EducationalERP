@@ -6,4 +6,17 @@
       <field name="parent_id" ref="website.main_menu"/>
       <field name="sequence" type="int">10</field>
   </record>
+
+  <record id="menu_portal_published_exams" model="website.menu">
+    <field name="name">Published Exams</field>
+    <field name="url">/my/published-exams</field>
+    <field name="parent_id" ref="website.main_menu"/>
+  </record>
+
+  <record id="menu_portal_exam_results" model="website.menu">
+      <field name="name">My Exam Results</field>
+      <field name="url">/my/exam-results</field>
+      <field name="parent_id" ref="website.main_menu"/>
+  </record>
+
 </odoo>

@@ -9,9 +9,11 @@
     'company': 'Cybrosys Techno Solutions',
     'maintainer': 'Cybrosys Techno Solutions',
     'website': 'https://www.cybrosys.com',
-    'depends': ['base', 'mail','website','education_core' ,'portal',],
+    'depends': ['base', 'mail','website','education_core' ,'portal','education_exam'],
     'data': [
         'views/education_application_template.xml',
+        'views/education_student_exam_template.xml',
+        'views/education_student_exam_result_template.xml',
         'views/education_menu.xml',
     ],
     'installable': True,
