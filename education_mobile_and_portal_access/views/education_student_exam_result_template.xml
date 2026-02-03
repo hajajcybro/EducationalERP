@@ -15,7 +15,6 @@
 
                         <p class="text-muted">
                             Total Marks: <strong><t t-esc="r.total_marks_scored"/></strong>
-                            &nbsp; | &nbsp;
                             Result:
                             <span class="badge bg-success" t-if="r.overall_pass_fail">Pass</span>
                             <span class="badge bg-danger" t-if="not r.overall_pass_fail">Fail</span>
@@ -50,7 +49,6 @@
                     </div>
                 </t>
             </t>
-
             <t t-if="not results">
                 <p class="text-muted">No exam results available.</p>
             </t>
