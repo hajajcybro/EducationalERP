@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <template id="portal_my_home_library_card"
+          inherit_id="portal.portal_my_home">
+
+    <xpath expr="//div[@id='portal_common_category']" position="inside">
+
+        <div class="o_portal_index_card col-12 col-md-6 order-2">
+            <a href="/my/library"
+               class="d-flex gap-3 p-3 pe-2 px-md-3 h-100 rounded text-decoration-none alert alert-primary align-items-center">
+                <div class="o_portal_icon">
+                    <i class="fa fa-book fa-2x"/>
+                </div>
+                <div>
+                    <h5 class="mb-1">Library</h5>
+                    <small>View your library details</small>
+                </div>
+            </a>
+        </div>
+        <div class="o_portal_index_card col-12 col-md-6 order-2">
+            <a href="/my/exams"
+               class="d-flex gap-3 p-3 pe-2 px-md-3 h-100 rounded text-decoration-none alert alert-primary align-items-center">
+                <div class="o_portal_icon">
+                    <i class="fa fa-edit fa-2x"/>
+                </div>
+                <div>
+                    <h5 class="mb-1">Exams</h5>
+                    <small>View published exams and your results</small>
+                </div>
+            </a>
+        </div>
+        <div class="o_portal_index_card col-12 col-md-6 order-2">
+            <a href="/my/leave"
+               class="d-flex gap-3 p-3 pe-2 px-md-3 h-100 rounded text-decoration-none alert alert-primary align-items-center">
+                <div class="o_portal_icon">
+                    <i class="fa fa-calendar-check fa-2x"/>
+                </div>
+                <div>
+                    <h5 class="mb-1">Leave</h5>
+                    <small>Apply leave and view history</small>
+                </div>
+            </a>
+        </div>
+
+<!--        <div class="col-md-6 mb-3">-->
+<!--            <a href="/my/exams" class="text-decoration-none">-->
+<!--                <div class="card shadow-sm border-0 h-100">-->
+<!--                    <div class="card-body">-->
+<!--                        <h5 class="card-title">Exams</h5>-->
+<!--                        <p class="card-text text-muted">-->
+<!--                            View published exams and your results-->
+<!--                        </p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </a>-->
+<!--        </div>-->
+
+    </xpath>
+
+</template>
+
+
+
+</odoo>
+
