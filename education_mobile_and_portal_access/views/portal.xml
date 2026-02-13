@@ -42,6 +42,30 @@
                 </div>
             </a>
         </div>
+        <div class="o_portal_index_card col-12 col-md-6 order-2">
+            <a href="/my/hostel"
+               class="d-flex gap-3 p-3 pe-2 px-md-3 h-100 rounded text-decoration-none alert alert-primary align-items-center">
+                <div class="o_portal_icon">
+                    <i class="fa fa-building fa-2x"/>
+                </div>
+                <div>
+                    <h5 class="mb-1">Hostel</h5>
+                    <small>View Hostel and Payment history</small>
+                </div>
+            </a>
+        </div>
+        <div class="o_portal_index_card col-12 col-md-6 order-2">
+            <a href="/my/scholarship"
+               class="d-flex gap-3 p-3 pe-2 px-md-3 h-100 rounded text-decoration-none alert alert-primary align-items-center">
+                <div class="o_portal_icon">
+                    <i class="fa fa-graduation-cap fa-2x"/>
+                </div>
+                <div>
+                    <h5 class="mb-1">Scholarships</h5>
+                    <small>View scholarships and your applications</small>
+                </div>
+            </a>
+        </div>
 
 <!--        <div class="col-md-6 mb-3">-->
 <!--            <a href="/my/exams" class="text-decoration-none">-->

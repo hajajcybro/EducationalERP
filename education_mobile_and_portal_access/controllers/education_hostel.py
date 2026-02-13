@@ -45,3 +45,45 @@ class HostelApplicationWebsite(http.Controller):
         return request.render(
             'education_mobile_and_portal_access.application_success'
         )
+
+    @http.route(['/my/hostel'], type='http', auth='user', website=True)
+    def portal_hostel(self, **kwargs):
+        partner = request.env.user.partner_id
+
+        application = request.env['education.hostel.application'].sudo().search([
+            ('student_id', '=', partner.id),
+            # ('state', '=', 'allocated')
+        ], limit=1)
+        allocation = False
+        hostel = False
+        room = False
+        if application:
+            allocation = request.env['education.hostel.room.allocation'].sudo().search([
+                ('hostel_application_id', '=', application.id),
+                ('vacated_date', '=', False)
+            ], limit=1)
+            if allocation:
+                hostel = allocation.hostel_id
+                room = allocation.room_id
+        hostel_fee = request.env['education.fee.invoice'].sudo().search([
+            ('student_id', '=', partner.id),
+            ('payment_type', '=', 'hostel'),
+            ('status', '!=', 'paid'),
+        ], limit=1)
+
+        pending_amount = 0.0
+        if hostel_fee:
+            pending_amount = hostel_fee.outstanding_amount
+
+        return request.render(
+            'education_mobile_and_portal_access.portal_hostel',
+            {
+                'application': application,
+                'allocation': allocation,
+                'hostel': hostel,
+                'room': room,
+                'hostel_fee': hostel_fee,
+                'pending_amount': pending_amount,
+            }
+        )
+

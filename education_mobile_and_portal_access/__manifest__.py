@@ -24,6 +24,11 @@
         'views/education_leave_template.xml',
         'views/education_leave_form_template.xml',
         'views/education_leave_history.xml',
+        'views/education_hostel_template.xml',
+        'views/education_scholarship_template.xml',
+        'views/education_scholarship_published.xml',
+        'views/education_scholarship_application.xml',
+        'views/education_scholarship_details.xml',
 
         'views/education_menu.xml',
     ],

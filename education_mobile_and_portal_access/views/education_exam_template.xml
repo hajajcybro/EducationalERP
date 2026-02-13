@@ -15,7 +15,6 @@
                         </div>
                     </a>
                 </div>
-
                 <t t-if="is_student">
                     <div class="col-md-6 mb-3">
                         <a href="/my/exam-results" class="text-decoration-none">

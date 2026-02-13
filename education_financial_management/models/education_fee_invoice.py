@@ -197,14 +197,10 @@ class EduFeeInvoice(models.Model):
         elif self.payment_type == 'hostel':
             application = self.hostel_application_id or self.env['education.hostel.application'].search([
                 ('student_id', '=', self.student_id.id),], limit=1)
-            allocate = application.allocation_detail_ids.filtered(
-                lambda a: a.state == 'allocated')[:1]
-            #for testing state change as draft because, in hostel management currently state is not declared
-            hostel = allocate.hostel_id if allocate else False
-            if not hostel:
-                raise ValidationError(
-                    _("No allocated hostel found for this student.")
-                )
+            if application.state != 'allocated':
+                raise ValidationError(_("Hostel is not allocated for this student."))
+            allocate = application.allocation_detail_ids[:1]
+            hostel = allocate.hostel_id
             price = (hostel.room_rent or 0.0) + (hostel.mess_fee or 0.0)
             line_name = 'Hostel & Food Fee'
             self.hide_invoice_button = False
