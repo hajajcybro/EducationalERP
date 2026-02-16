@@ -4,17 +4,12 @@
         <t t-call="portal.portal_layout">
             <div class="container mt-4">
                 <h2>My Scholarship</h2>
-
                 <t t-if="application">
-
                     <div class="card shadow-sm mt-4 p-4 border-primary">
-
                         <h4 class="text-primary">
                             <t t-esc="application.scholarship_id.name"/>
                         </h4>
-
                         <hr/>
-
                         <div class="row">
 
                             <div class="col-md-6 mb-3">
@@ -26,12 +21,10 @@
                                 <strong>Remaining Amount:</strong><br/>
                                 ₹ <t t-esc="application.scholarship_remaining_amount"/>
                             </div>
-
                             <div class="col-md-6 mb-3">
                                 <strong>Application Duration:</strong><br/>
                                 <t t-esc="dict(application.scholarship_id._fields['application_duration'].selection).get(application.scholarship_id.application_duration)"/>
                             </div>
-
                             <div class="col-md-6 mb-3">
                                 <strong>Academic Year:</strong><br/>
                                 <t t-esc="application.scholarship_id.academic_year_id.name"/>

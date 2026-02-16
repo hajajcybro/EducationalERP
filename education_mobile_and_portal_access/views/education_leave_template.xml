@@ -3,8 +3,19 @@
     <template id="portal_leave_home">
     <t t-call="portal.portal_layout">
         <div class="container mt-4">
-            <h3>Leave</h3>
 
+            <h3>Attendance Info</h3>
+             <div class="row mt-4">
+                <div class="col-md-6">
+                    <a href="/my/my-attendance" class="text-decoration-none">
+                        <div class="card shadow-sm p-4">
+                            <h5>Attendance</h5>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <h3>Leave</h3>
             <div class="row mt-4">
 
                 <div class="col-md-6">
@@ -22,7 +33,6 @@
                         </div>
                     </a>
                 </div>
-
             </div>
         </div>
     </t>

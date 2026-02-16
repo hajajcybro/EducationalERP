@@ -80,7 +80,7 @@ class ScholarshipPortal(http.Controller):
                 })
         return request.redirect('/application_success')
 
-    @http.route('/my/scholarship/details', type='http', auth='user', website=True)
+    @http.route('/my/my-scholarship', type='http', auth='user', website=True)
     def portal_my_scholarship(self, **kwargs):
 
         partner = request.env.user.partner_id
