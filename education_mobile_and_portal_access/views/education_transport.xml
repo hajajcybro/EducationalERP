@@ -4,55 +4,28 @@
         <t t-call="portal.portal_layout">
             <div class="container mt-4">
                 <h3 class="mb-4">Transport Details</h3>
-
                 <t t-if="transport">
-
-                    <!-- ROUTE + STOP -->
                     <div class="card shadow-sm p-4">
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <strong>Route:</strong><br/>
-                                <t t-esc="route.name"/>
-                            </div>
-
-                            <div class="col-md-6">
-                                <strong>Your Stop:</strong><br/>
-                                <t t-esc="stop.stop_name"/>
-                            </div>
+                        <div class="mb-2">
+                            <strong>Route:</strong>
+                            <t t-esc="route.name"/>
                         </div>
-
-                        <hr/>
-
-                        <!-- VEHICLE -->
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <strong>Vehicle No:</strong><br/>
-                                <t t-esc="route.vehicle_id.reg_no"/>
-                            </div>
-
-                            <div class="col-md-6">
-                                <strong>Driver:</strong><br/>
-                                <t t-esc="route.vehicle_id.empl_driver_id.name"/>
-                            </div>
+                        <div class="mb-2">
+                            <strong>Vehicle No:</strong>
+                            <t t-esc="route.vehicle_id.reg_no"/>
                         </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <strong>Driver Mobile:</strong><br/>
-                                <t t-esc="route.vehicle_id.empl_driver_id.mobile_phone"/>
-                            </div>
-
-                            <div class="col-md-6">
-                                <strong>Status:</strong><br/>
-                                <t t-esc="route.vehicle_id.status"/>
-                            </div>
+                        <div class="mb-2">
+                            <strong>Driver:</strong>
+                            <t t-esc="route.vehicle_id.empl_driver_id.name"/>
+                        </div>
+                        <div class="mb-2">
+                            <strong>Driver Mobile:</strong>
+                            <t t-esc="route.vehicle_id.empl_driver_id.mobile_phone"/>
                         </div>
                     </div>
-
                     <!-- ROUTE PLAN -->
                     <div class="card shadow-sm mt-4 p-4">
                         <h5>Route Plan</h5>
-
                         <table class="table table-bordered mt-3">
                             <thead>
                                 <tr>
@@ -95,7 +68,6 @@
                             </div>
                         </div>
                     </t>
-
                 </t>
 
                 <t t-if="not transport">
@@ -103,9 +75,10 @@
                         No active transport assignment found.
                     </div>
                 </t>
-
             </div>
         </t>
     </template>
 
 </odoo>
+
+

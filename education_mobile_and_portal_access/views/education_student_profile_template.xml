@@ -27,19 +27,6 @@
                         </div>
                     </a>
                 </div>
-                <t t-if="is_student">
-                    <div class="col-md-6 mb-3">
-                        <a href="/my/exam-results" class="text-decoration-none">
-                            <div class="card shadow-sm border-0 h-100">
-                                <div class="card-body">
-                                    <i class="fa fa-clipboard-check fa-2x mb-3 text-success"/>
-                                    <h5>My Results</h5>
-                                    <p class="text-muted">View your results</p>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </t>
             </div>
         </div>
     </t>
