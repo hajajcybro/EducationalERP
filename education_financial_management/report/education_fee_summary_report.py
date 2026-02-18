@@ -44,7 +44,7 @@ class FeeSummaryReport(models.AbstractModel):
                 FROM account_move_line aml JOIN account_move am ON am.id = aml.move_id
                 WHERE aml.reconciled = TRUE AND am.state = 'posted'
                 GROUP BY am.fee_invoice_id) pay ON pay.fee_invoice_id = efi.id     
-            WHERE rp.is_student = TRUE
+            WHERE rp.position_role = 'student'
             """
         print(query)
         if data.get('student_ids'):

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_education_library_reservation_tree" model="ir.ui.view">
+        <field name="name">education.library.reservation.tree</field>
+        <field name="model">education.library.reservation</field>
+        <field name="arch" type="xml">
+            <list string="Reservations"
+                  decoration-info="status=='pending'"
+                  decoration-success="status=='available'"
+                  decoration-muted="status in ['fulfilled','cancelled']"
+                  decoration-warning="status=='expired'">
+                <field name="name"/>
+                <field name="book_id"/>
+                <field name="member_id"/>
+                <field name="reservation_date"/>
+                <field name="priority" string="Queue Position"/>
+                <field name="available_date"/>
+                <field name="expiry_date"/>
+                <field name="days_waiting"/>
+                <field name="status" widget="badge"
+                       decoration-info="status=='pending'"
+                       decoration-success="status in ['available','fulfilled']"
+                       decoration-warning="status=='expired'"
+                       decoration-muted="status=='cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_education_library_reservation_form" model="ir.ui.view">
+        <field name="name">education.library.reservation.form</field>
+        <field name="model">education.library.reservation</field>
+        <field name="arch" type="xml">
+            <form string="Reservation">
+                <header>
+                    <button name="action_cancel_reservation" string="Cancel" type="object"
+                            class="btn-secondary"
+                            invisible="status not in ['pending', 'available']"
+                            confirm="Are you sure you want to cancel this reservation?"/>
+                    <button name="action_mark_available" string="Mark Available" type="object"
+                            class="oe_highlight"
+                            invisible="status != 'pending'"
+                            groups="base.group_system"/>
+                    <button name="action_mark_expired" string="Mark Expired" type="object"
+                            class="btn-warning"
+                            invisible="status != 'available'"
+                            groups="base.group_system"
+                            confirm="This will expire the reservation and notify the next person in queue. Continue?"/>
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="pending,available,fulfilled"/>
+                </header>
+                <sheet>
+
+                    <widget name="web_ribbon" title="Available - Collect Soon!"
+                            bg_color="text-bg-success"
+                            invisible="status != 'available'"/>
+                    <widget name="web_ribbon" title="Expiring Soon!"
+                            bg_color="text-bg-warning"
+                            invisible="not is_expiring_soon or status != 'available'"/>
+                    <widget name="web_ribbon" title="Expired"
+                            bg_color="text-bg-danger"
+                            invisible="status != 'expired'"/>
+                    <widget name="web_ribbon" title="Cancelled"
+                            bg_color="text-bg-secondary"
+                            invisible="status != 'cancelled'"/>
+
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="book_id"
+                                   options="{'no_create': True}"
+                                   readonly="status != 'pending'"/>
+                            <field name="member_id"
+                                   options="{'no_create': True}"
+                                   readonly="status != 'pending'"/>
+                            <field name="isbn"/>
+                        </group>
+                        <group>
+                            <field name="reservation_date" readonly="1"/>
+                            <field name="priority" readonly="1"/>
+                            <field name="days_waiting" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group invisible="status not in ['available','fulfilled','expired']">
+                        <group>
+                            <field name="available_date" readonly="1"/>
+                            <field name="expiry_date" readonly="1"/>
+                            <field name="is_expiring_soon" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="collection_date" readonly="1"/>
+                            <field name="transaction_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Notes">
+                            <field name="notes" placeholder="Additional notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_education_library_reservation_search" model="ir.ui.view">
+        <field name="name">education.library.reservation.search</field>
+        <field name="model">education.library.reservation</field>
+        <field name="arch" type="xml">
+            <search string="Search Reservations">
+                <!-- QUICK SEARCH FIELDS -->
+                <field name="name"/>
+                <field name="book_id"/>
+                <field name="member_id"/>
+                <field name="isbn"/>
+                <separator/>
+
+                <!-- FILTERS -->
+                <filter name="filter_pending"
+                        string="Pending"
+                        domain="[('status','=','pending')]"/>
+                <filter name="filter_available"
+                        string="Available"
+                        domain="[('status','=','available')]"/>
+                <filter name="filter_fulfilled"
+                        string="Fulfilled"
+                        domain="[('status','=','fulfilled')]"/>
+                <filter name="filter_expired"
+                        string="Expired"
+                        domain="[('status','=','expired')]"/>
+                <filter name="filter_cancelled"
+                        string="Cancelled"
+                        domain="[('status','=','cancelled')]"/>
+                <separator/>
+                <filter name="filter_my_reservations"
+                        string="My Reservations"
+                        domain="[('member_id.partner_id.user_ids','in',[uid])]"/>
+                <separator/>
+
+                <!-- GROUP BY -->
+                <group name="group_by">
+                    <filter name="group_by_status"
+                            string="Status"
+                            context="{'group_by':'status'}"/>
+                    <filter name="group_by_book"
+                            string="Book"
+                            context="{'group_by':'book_id'}"/>
+                    <filter name="group_by_member"
+                            string="Member"
+                            context="{'group_by':'member_id'}"/>
+                    <filter name="group_by_reservation_date"
+                            string="Reservation Date"
+                            context="{'group_by':'reservation_date'}"/>
+                    <filter name="group_by_available_date"
+                            string="Available Date"
+                            context="{'group_by':'available_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_education_library_reservation" model="ir.actions.act_window">
+        <field name="name">Reservations</field>
+        <field name="res_model">education.library.reservation</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_pending': 1}</field>
+    </record>
+
+    <record id="action_education_library_reservation_pending" model="ir.actions.act_window">
+        <field name="name">Pending Reservations</field>
+        <field name="res_model">education.library.reservation</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('status','=','pending')]</field>
+    </record>
+
+    <record id="action_education_library_reservation_available" model="ir.actions.act_window">
+        <field name="name">Available for Collection</field>
+        <field name="res_model">education.library.reservation</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('status','=','available')]</field>
+    </record>
+
+    <record id="action_education_library_reservation_my" model="ir.actions.act_window">
+        <field name="name">My Reservations</field>
+        <field name="res_model">education.library.reservation</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('member_id.partner_id.user_ids','in',[uid])]</field>
+        <field name="context">{'search_default_pending': 1}</field>
+    </record>
+</odoo>

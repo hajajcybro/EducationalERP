@@ -10,7 +10,7 @@ class EducationRefundRequest(models.Model):
 
     student_id = fields.Many2one(
         'res.partner',
-        string='Student',domain=[('is_student', '=', True)],
+        string='Student',domain=[('position_role', '=', 'student')],
         required=True,
         tracking=True
     )

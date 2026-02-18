@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Library Usage Report -->
+    <record id="action_report_usage" model="ir.actions.report">
+        <field name="name">Library Usage Report</field>
+        <field name="model">library.usage.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">education_library.report_library_usage</field>
+        <field name="report_file">education_library.report_library_usage</field>
+    </record>
+
+    <!-- Library Stock Report -->
+    <record id="action_report_stock" model="ir.actions.report">
+        <field name="name">Library Stock Report</field>
+        <field name="model">library.stock.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">education_library.report_library_stock</field>
+        <field name="report_file">education_library.report_library_stock</field>
+    </record>
+
+    <!-- Library Overdue Books Report -->
+    <record id="action_report_overdue" model="ir.actions.report">
+        <field name="name">Library Overdue Books Report</field>
+        <field name="model">library.overdue.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">education_library.report_library_overdue</field>
+        <field name="report_file">education_library.report_library_overdue</field>
+    </record>
+
+</odoo>

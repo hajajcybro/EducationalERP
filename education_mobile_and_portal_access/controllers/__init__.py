@@ -1,3 +1,4 @@
+from . import portal_utils
 from . import education_student_application
 from . import education_exam
 from . import education_hostel

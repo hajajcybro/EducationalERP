@@ -18,7 +18,7 @@ class AttendanceReportWizard(models.TransientModel):
 
     student_ids = fields.Many2many(
         'res.partner',
-        domain=[('is_student', '=', True)],
+        domain=[('position_role', '=', 'student')],
         string="Students"
     )
     class_id = fields.Many2one('education.class', string="Class")

@@ -12,7 +12,7 @@ class EducationTransportAssignment(models.Model):
         'res.partner',
         string="Student",
         required=True,
-        domain = [('is_student', '=', True),('transportation', '=', True)]
+        domain = [('position_role', '=', 'student'),('transportation', '=', True)]
     )
     image = fields.Image()
     route_id = fields.Many2one(

@@ -13,7 +13,7 @@ class EducationDocument(models.Model):
         string='Student',
         required=True,
         ondelete='cascade',
-        domain=[('is_student', '=', True)]
+        domain=[('position_role', '=', 'student')]
     )
     admission_no = fields.Char(
         string='Admission No',

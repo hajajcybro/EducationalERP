@@ -12,7 +12,7 @@ class RefundSummaryWizard(models.TransientModel):
     student_ids = fields.Many2many(
         'res.partner',
         string='Students',
-        domain=[('is_student', '=', True)]
+        domain=[('position_role', '=', 'student')]
     )
     refund_state = fields.Selection(
         [
@@ -122,7 +122,7 @@ class RefundSummaryWizard(models.TransientModel):
                                         ON cn.reversed_entry_id = am.id
                                             AND cn.move_type = 'out_refund'
                                             AND cn.state = 'posted'
-                     WHERE rp.is_student = TRUE"""
+                     WHERE rp.position_role = 'student'"""
         if data.get('student_ids'):
             student_ids = tuple(data['student_ids'])
             if len(student_ids) == 1:

@@ -28,7 +28,7 @@ class InvoiceSummary(models.AbstractModel):
             FROM account_move am
             JOIN res_partner rp ON rp.id = am.partner_id
             WHERE am.state = 'posted'
-              AND rp.is_student = TRUE"""
+              AND rp.position_role = 'student'"""
         if data.get('student_ids'):
             student_ids = tuple(data['student_ids'])
             if len(student_ids) == 1:

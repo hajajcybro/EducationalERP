@@ -1,15 +1,15 @@
 from odoo import http
 from odoo.http import request
-
+from .portal_utils import get_student_partner
 
 class TransportExamPortal(http.Controller):
 
 
     @http.route(['/my/transport'], type='http', auth='user', website=True)
     def portal_transport(self, **kwargs):
-        partner = request.env.user.partner_id
+        partner = get_student_partner()
 
-        if not partner.is_student:
+        if not partner.position_role == 'student':
             return request.redirect('/my')
 
         transport = request.env['education.transport.assignment'].sudo().search([

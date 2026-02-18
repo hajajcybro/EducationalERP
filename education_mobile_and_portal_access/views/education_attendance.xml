@@ -3,7 +3,7 @@
     <template id="portal_attendance_calendar">
     <t t-call="portal.portal_layout">
         <div class="container mt-4">
-            <h2>My Attendance</h2>
+            <h2>Attendance</h2>
             <div id="attendance_calendar"></div>
         </div>
 

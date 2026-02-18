@@ -21,7 +21,7 @@
                         </a>
                     </div>
 
-                    <t t-if="is_student">
+                    <t t-if="student">
                         <div class="col-md-4 mb-3">
                             <a href="/scholarship/application" class="text-decoration-none">
                                 <div class="card shadow-sm h-100">
@@ -37,7 +37,7 @@
                         </div>
                     </t>
 
-                    <t t-if="is_student">
+                    <t t-if="student">
                         <div class="col-md-4 mb-3">
                             <a href="/my/my-scholarship" class="text-decoration-none">
                                 <div class="card shadow-sm h-100">

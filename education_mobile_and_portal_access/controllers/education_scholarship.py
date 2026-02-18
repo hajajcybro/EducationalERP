@@ -6,11 +6,11 @@ class ScholarshipPortal(http.Controller):
     @http.route(['/my/scholarship'], type='http', auth='user', website=True)
     def portal_scholarship(self, **kwargs):
         partner = request.env.user.partner_id
-        is_student = partner.is_student
+        student = partner.position_role == 'student'
         return request.render(
             'education_mobile_and_portal_access.portal_scholarship_home',
             {
-                'is_student': is_student,
+                'student': student,
             }
         )
 
@@ -85,7 +85,7 @@ class ScholarshipPortal(http.Controller):
 
         partner = request.env.user.partner_id
 
-        if not partner.is_student:
+        if not partner.position_role == 'student':
             return request.redirect('/my')
 
         application = request.env['education.scholarship.application'].sudo().search([

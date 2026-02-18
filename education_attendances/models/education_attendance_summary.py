@@ -12,7 +12,7 @@ class EducationAttendanceSummary(models.TransientModel):
     class_id = fields.Many2one('education.class', string="Class", readonly=True)
     subject_id = fields.Many2one('education.subject', string="Subject", readonly=True)
     student_id = fields.Many2one('res.partner', string='Student', readonly=True,
-                                 domain = [('is_student','=', True)])
+                                 domain = [('position_role','=', 'student')])
     summary_type = fields.Selection([
         ('daily', 'Daily'),
         ('weekly', 'Weekly'),

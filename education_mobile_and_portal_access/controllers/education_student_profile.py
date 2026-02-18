@@ -1,14 +1,16 @@
 from odoo import http
 from odoo.http import request
+from .portal_utils import get_student_partner
+
 
 class StudentPortalController(http.Controller):
     @http.route(['/my/profile'], type='http', auth='user', website=True)
     def portal_student_profile(self, **kwargs):
-        partner = request.env.user.partner_id
+        partner = get_student_partner()
         documents = request.env['education.document'].sudo().search([
             ('student_id', '=', partner.id),('state', '=', 'approved')
         ])
-        if not partner.is_student:
+        if not partner.position_role == 'student':
             return request.redirect('/my')
         return request.render('education_mobile_and_portal_access.portal_student_profile', {
             'student': partner,
@@ -17,8 +19,8 @@ class StudentPortalController(http.Controller):
 
     @http.route(['/my/document/update'], type='http', auth='user', website=True)
     def portal_add_document_form(self, **kwargs):
-        partner = request.env.user.partner_id
-        if not partner.is_student:
+        partner = get_student_partner()
+        if not partner.position_role == 'student':
             return request.redirect('/my')
         doc_types = request.env['education.document.type'].sudo().search([])
         return request.render(
@@ -30,7 +32,7 @@ class StudentPortalController(http.Controller):
 
     @http.route(['/my/document/submit'],type='http', auth='user', methods=['POST'], website=True, csrf=True)
     def portal_submit_document(self, **post):
-        partner = request.env.user.partner_id
+        partner = get_student_partner()
         document_type = int(post.get('document_type'))
         file = post.get('attachment')
         if file:
@@ -45,7 +47,7 @@ class StudentPortalController(http.Controller):
 
     @http.route(['/my/document/download/<int:doc_id>'], type='http', auth='user', website=True)
     def portal_download_document(self, doc_id, **kwargs):
-        partner = request.env.user.partner_id
+        partner = get_student_partner()
         document = request.env['education.document'].sudo().search([
             ('id', '=', doc_id),
             ('student_id', '=', partner.id),

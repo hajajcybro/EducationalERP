@@ -1,12 +1,12 @@
 from odoo import http
 from odoo.http import request
+from .portal_utils import get_student_partner
 
 class LibraryPortal(http.Controller):
 
     @http.route(['/my/library'], type='http', auth='user', website=True)
     def portal_library_home(self, **kwargs):
         partner = request.env.user.partner_id
-        # is_member = partner.is_student
         member = request.env['education.library.member'].sudo().search([
             ('partner_id', '=', partner.id),
             ('state', '=', 'active')

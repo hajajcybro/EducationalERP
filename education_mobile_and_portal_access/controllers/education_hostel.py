@@ -1,5 +1,6 @@
 from odoo import http
 from odoo.http import request
+from .portal_utils import get_student_partner
 
 
 class HostelApplicationWebsite(http.Controller):
@@ -8,7 +9,7 @@ class HostelApplicationWebsite(http.Controller):
     def hostel_application_form(self):
         hostels = request.env['education.hostel'].sudo().search([])
         partner = request.env.user.partner_id
-        if not partner.is_student:
+        if partner.position_role != 'student':
             return request.redirect('/my')
         existing = request.env['education.hostel.application'].sudo().search([
             ('student_id', '=', partner.id),
@@ -29,7 +30,7 @@ class HostelApplicationWebsite(http.Controller):
                 csrf=True)
     def hostel_application_submit(self, **post):
         partner = request.env.user.partner_id
-        if not partner.is_student:
+        if not partner.position_role == 'student':
             return request.redirect('/my')
         request.env['education.hostel.application'].sudo().create({
             'student_id': partner.id,
@@ -48,7 +49,9 @@ class HostelApplicationWebsite(http.Controller):
 
     @http.route(['/my/hostel'], type='http', auth='user', website=True)
     def portal_hostel(self, **kwargs):
-        partner = request.env.user.partner_id
+        partner = get_student_partner()
+        if not partner:
+            return request.redirect('/my')
 
         application = request.env['education.hostel.application'].sudo().search([
             ('student_id', '=', partner.id),
@@ -84,6 +87,7 @@ class HostelApplicationWebsite(http.Controller):
                 'room': room,
                 'hostel_fee': hostel_fee,
                 'pending_amount': pending_amount,
+                'student': partner,
             }
         )
 

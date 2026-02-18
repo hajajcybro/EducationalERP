@@ -9,7 +9,7 @@
             <a href="/my/profile"
                class="d-flex gap-3 p-3 pe-2 px-md-3 h-100 rounded text-decoration-none alert alert-primary align-items-center">
                 <div class="o_portal_icon">
-                    <i class="fa fa-book fa-2x"/>
+                    <i class="fa fa-user-circle fa-2x"/>
                 </div>
                 <div>
                     <h5 class="mb-1">My Profile</h5>

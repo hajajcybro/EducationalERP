@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--   Form view for education exam valuation   -->
+    <record id="education_exam_valuation_view_form" model="ir.ui.view">
+        <field name="name">education.exam.valuation.view.form</field>
+        <field name="model">education.exam.valuation</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_complete" type="object"
+                            invisible="not is_mark_sheet_created or state != 'draft'"
+                            class="oe_highlight" string="Complete"/>
+                    <button name="action_cancel" type="object"
+                            invisible="state != 'draft'"
+                            string="Cancel"/>
+                    <field name="state" readonly="1" widget="statusbar"
+                           statusbar_visible="draft,published,cancel"/>
+                </header>
+                <sheet>
+                    <h1>
+                        <field name="name" readonly="1"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="exam_id" readonly="state != 'draft'"/>
+                            <field name="program_id" readonly="state != 'draft'"/>
+                            <field name="session_id" readonly="state != 'draft'"/>
+                            <field name="course_id" readonly="state != 'draft'"/>
+                            <field name="class_id" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="employee_id" readonly="state != 'draft'"/>
+                            <field name="max_mark" readonly="state != 'draft'"/>
+                            <field name="pass_mark" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <div style="padding-bottom: 10px;">
+                        <button style="padding: 1px 5px;"
+                                invisible="state == 'cancel' or is_mark_sheet_created "
+                                string="Create Mark Sheet"
+                                name="action_create_mark_sheet" type="object"
+                                class="oe_highlight"/>
+                    </div>
+                    <notebook invisible="not is_mark_sheet_created ">
+                        <page string="Mark Sheet">
+                            <field name="valuation_line_ids"
+                                   context="{'list_view_ref': 'education_exam_valuation_line_view_tree'}"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="education_exam_valuation_line_view_tree" model="ir.ui.view">
+        <field name="name">education.exam.valuation.line.view.tree</field>
+        <field name="model">education.exam.valuation.line</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="student_id"/>
+                <field name="mark_scored"/>
+                <field name="new_mark" optional="hide"/>
+                <field name="pass_or_fail"
+                       widget="boolean_toggle"/>
+                <field name="valuation_id"
+                       column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!--   List view for education exam  valuation -->
+    <record id="education_exam_valuation_view_tree" model="ir.ui.view">
+        <field name="name">education.exam.valuation.view.list</field>
+        <field name="model">education.exam.valuation</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="program_id"/>
+                <field name="class_id"/>
+                <field name="employee_id"/>
+                <field name="course_id"/>
+                <field name="max_mark"/>
+                <field name="pass_mark"/>
+            </list>
+        </field>
+    </record>
+
+    <!--  Menu Items for education exam  Valuation -->
+    <record id="action_edu_exam_valuation" model="ir.actions.act_window">
+        <field name="name">Exam Valuation</field>
+        <field name="res_model">education.exam.valuation</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!--  Action for education exam  Valuation -->
+
+    <menuitem id="menu_exam_valuation"
+              name="Valuation"
+              parent="menu_examination"
+              action="action_edu_exam_valuation"
+              sequence="20"
+              groups="education_core.group_education_teacher,education_core.group_education_admin"
+    />
+
+</odoo>

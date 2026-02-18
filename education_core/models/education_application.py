@@ -157,7 +157,7 @@ class EducationApplication(models.Model):
                     'zip': rec.zip,
                     'country_id': rec.country_id.id,
                     'state_id': rec.state_id.id,
-                    'is_student': True,
+                    'position_role': 'student',
                 })
             rec.partner_id = partner.id
             partner.write({

@@ -14,7 +14,7 @@ class FeeSummaryWizard(models.TransientModel):
     student_ids = fields.Many2many(
         'res.partner',
         string='Students',
-        domain=[('is_student', '=', True)]
+        domain=[('position_role', '=', 'student')]
     )
     date_filter = fields.Selection(
         [('daily', 'Daily'), ('weekly', 'Weekly'),('monthly', 'Monthly'),('custom', 'Custom'),],
@@ -128,7 +128,7 @@ class FeeSummaryWizard(models.TransientModel):
                 FROM account_move_line aml JOIN account_move am ON am.id = aml.move_id
                 WHERE aml.reconciled = TRUE AND am.state = 'posted'
                 GROUP BY am.fee_invoice_id) pay ON pay.fee_invoice_id = efi.id     
-            WHERE rp.is_student = TRUE
+            WHERE rp.position_role = 'student'
                 """
 
         if data.get('student_ids'):

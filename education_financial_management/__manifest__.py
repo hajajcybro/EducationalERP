@@ -13,8 +13,8 @@
                 'education_hostel_management','education_library',
                 'education_scholarship'],
     'data': [
-        'security/ir.model.access.csv',
         'security/security_group.xml',
+        'security/ir.model.access.csv',
         'data/ir_cron.xml',
         'views/education_fee_installment_view.xml',
         'views/education_fee_plan_view.xml',

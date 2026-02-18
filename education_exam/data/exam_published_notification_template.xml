@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="email_template_exam_result_published" model="mail.template">
+            <field name="name">Exam Result Published</field>
+            <field name="model_id" ref="model_education_exam_valuation"/>
+
+            <field name="email_from">
+                {{ user.email_formatted or user.company_id.email_formatted }}
+            </field>
+
+            <field name="partner_to" eval="False"/>
+            <field name="use_default_to" eval="False"/>
+
+            <field name="subject">
+                {{ object.exam_id.name }} - Result Published
+            </field>
+
+            <field name="body_html" type="html">
+                <div>
+                    <p>
+                        Dear
+                        <strong>
+                            <t t-out="ctx.get('student_name', 'Student')"/>
+                        </strong>,
+                        <br/><br/>
+
+                        We are pleased to inform you that the examination result
+                        has been published.
+                        <br/><br/>
+
+                        <strong>Exam:</strong>
+                        <t t-out="object.exam_id.name"/><br/>
+
+                        <strong>Course:</strong>
+                        <t t-out="object.course_id.name"/><br/>
+
+                        <strong>Class:</strong>
+                        <t t-out="object.class_id.name"/><br/>
+
+                        <br/>
+                        Please log in to the student portal to view the detailed
+                        marks and result status.
+                        <br/><br/>
+
+                        Best regards,<br/>
+                        <t t-out="user.company_id.name"/>
+                    </p>
+                </div>
+            </field>
+
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

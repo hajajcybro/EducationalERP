@@ -71,7 +71,7 @@ class EducationEnrollment(models.Model):
             if not rec.current_class_id or not rec.academic_year_id:
                 continue
             last_student = self.env['res.partner'].search([
-                ('is_student', '=', True),
+                ('position_role', '=', 'student'),
                 ('class_id', '=', rec.current_class_id.id),
                 ('academic_year_id', '=', rec.academic_year_id.id),
                 ('roll_no', '!=', False),

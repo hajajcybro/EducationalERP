@@ -13,7 +13,7 @@ class EducationScholarshipApplication(models.Model):
     )
     student_id = fields.Many2one(
         'res.partner', required=True,
-        string='Student',domain=[('is_student', '=', True)],
+        string='Student',domain=[('position_role', '=', 'student')],
     )
     admission_no = fields.Char(
         related='student_id.admission_no', required=True,

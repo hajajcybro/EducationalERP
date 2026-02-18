@@ -96,7 +96,7 @@ class EducationDocument(models.Model):
         DocumentType = self.env['education.document.type']
         Partner = self.env['res.partner']
         students = Partner.search([
-            ('is_student', '=', True),
+            ('position_role', '=', 'student'),
             ('email', '!=', False),
         ])
         mandatory_types = DocumentType.search([('is_mandatory', '=', True)])

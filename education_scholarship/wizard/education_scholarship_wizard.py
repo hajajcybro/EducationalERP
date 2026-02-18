@@ -35,7 +35,7 @@ class ScholarshipWizard(models.TransientModel):
     student_ids = fields.Many2many(
         'res.partner',
         string='Student',
-        domain=[('is_student', '=', True)]
+        domain=[('position_role', '=', 'student')]
     )
     has_remaining_amount = fields.Selection([
         ('yes', 'Has Remaining Amount'),

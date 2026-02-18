@@ -23,7 +23,7 @@ class MissingDocumentReportWizard(models.TransientModel):
     student_id = fields.Many2one(
         'res.partner',
         string='Student',
-        domain=[('is_student', '=', True)]
+        domain=[('position_role', '=', 'student')]
     )
 
     only_mandatory = fields.Boolean(
@@ -123,7 +123,7 @@ class MissingDocumentReportWizard(models.TransientModel):
                   WHEN d.expiry_date IS NOT NULL AND d.expiry_date < CURRENT_DATE THEN 'Expired'
                   ELSE 'Valid'  END AS document_status FROM res_partner rp CROSS JOIN education_document_type dt LEFT JOIN LATERAL (
                   SELECT d1.* FROM education_document d1 WHERE d1.student_id = rp.id AND d1.document_type = dt.id
-                  ORDER BY d1.version DESC LIMIT 1) d ON TRUE  WHERE rp.is_student = TRUE"""
+                  ORDER BY d1.version DESC LIMIT 1) d ON TRUE  WHERE rp.position_role = 'student'"""
 
         if data.get('document_type_id'):
             query += " AND dt.id = %s" % data.get('document_type_id')

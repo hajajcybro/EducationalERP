@@ -13,7 +13,7 @@ class DocumentReport(models.AbstractModel):
                   WHEN d.expiry_date IS NOT NULL AND d.expiry_date < CURRENT_DATE THEN 'Expired'
                   ELSE 'Valid'  END AS document_status FROM res_partner rp CROSS JOIN education_document_type dt LEFT JOIN LATERAL (
                   SELECT d1.* FROM education_document d1 WHERE d1.student_id = rp.id AND d1.document_type = dt.id
-                  ORDER BY d1.version DESC LIMIT 1) d ON TRUE  WHERE rp.is_student = TRUE"""
+                  ORDER BY d1.version DESC LIMIT 1) d ON TRUE  WHERE rp.position_role = 'student' """
         data = data or {}
         params = []
 

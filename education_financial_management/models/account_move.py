@@ -26,7 +26,7 @@ class AccountMove(models.Model):
         ])
         for invoice in invoices:
             partner = invoice.partner_id
-            if partner and partner.is_student:
+            if partner and partner.position_role == 'student':
                 due_dates = invoice.line_ids.mapped('date_maturity')
                 due_dates = [d for d in due_dates if d] or [invoice.invoice_date_due]
                 if tomorrow in due_dates:

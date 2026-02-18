@@ -12,6 +12,12 @@
               name="Student"
               parent="menu_student_student"
               action="action_school_partner_student"/>
+
+   <menuitem id="menu_education_parent_role"
+              name="Parent"
+              parent="menu_student_student"
+              action="action_school_partner_parent"/>
+
     <menuitem id="menu_education_students"
               name="Application"
               parent="menu_student_student"

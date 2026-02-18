@@ -13,7 +13,7 @@ class InvoiceSummaryWizard(models.TransientModel):
     student_ids = fields.Many2many(
         'res.partner',
         string='Students',
-        domain=[('is_student', '=', True)]
+        domain=[('position_role', '=', 'student')]
     )
 
     date_filter = fields.Selection(
@@ -144,7 +144,7 @@ class InvoiceSummaryWizard(models.TransientModel):
                     FROM account_move am
                              JOIN res_partner rp ON rp.id = am.partner_id
                     WHERE am.state = 'posted'
-                      AND rp.is_student = TRUE """
+                      AND rp.position_role = 'student' """
 
         if data.get('student_ids'):
             if len(data['student_ids']) == 1:

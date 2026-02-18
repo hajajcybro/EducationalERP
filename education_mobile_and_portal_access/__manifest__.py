@@ -3,7 +3,7 @@
     'name': 'Education Mobile & Portal Access',
     'version': '19.0.1.0.0',
     'category': 'Education',
-    'sequence':-329,
+    'sequence': -327,
     'description': '''Manage portal and mobile access''',
     'author': 'Cybrosys Techno Solutions',
     'company': 'Cybrosys Techno Solutions',

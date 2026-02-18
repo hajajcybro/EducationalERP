@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.library</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="90"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Library" string="Library" name="education_library">
+
+                    <!-- Transaction Settings -->
+                    <block title="Transaction Settings" name="library_transaction_settings">
+                        <setting id="library_fine_setting"
+                                 help="Configure default fine amount for overdue books">
+                            <field name="library_fine_per_day" class="oe_inline"/>
+                            <span class="text-muted ms-2">per day</span>
+                        </setting>
+
+                        <setting id="library_borrow_period_setting"
+                                 help="Set default borrowing periods for different member types">
+                            <div class="mt-2">
+                                <label for="library_student_borrow_days" string="Student Borrow Period"/>
+                                <field name="library_student_borrow_days" class="oe_inline ms-2"/>
+                                <span class="text-muted ms-1">days</span>
+                            </div>
+                            <div class="mt-2">
+                                <label for="library_faculty_borrow_days" string="Faculty/Staff Borrow Period"/>
+                                <field name="library_faculty_borrow_days" class="oe_inline ms-2"/>
+                                <span class="text-muted ms-1">days</span>
+                            </div>
+                        </setting>
+
+                        <setting id="library_max_renewals_setting"
+                                 help="Maximum number of times a book can be renewed">
+                            <label for="library_max_renewals"/>
+                            <field name="library_max_renewals" class="oe_inline ms-2"/>
+                        </setting>
+                    </block>
+
+                    <!-- Reservation Settings -->
+                    <block title="Reservation Settings" name="library_reservation_settings">
+                        <setting id="library_reservation_expiry_setting"
+                                 help="Time limit for collecting reserved books">
+                            <label for="library_reservation_expiry_hours"/>
+                            <field name="library_reservation_expiry_hours" class="oe_inline ms-2"/>
+                            <span class="text-muted ms-1">hours</span>
+                        </setting>
+
+                        <setting id="library_max_reservations_setting"
+                                 help="Maximum active reservations allowed per member">
+                            <label for="library_max_reservations_per_member"/>
+                            <field name="library_max_reservations_per_member" class="oe_inline ms-2"/>
+                        </setting>
+                    </block>
+
+                    <!-- Membership Settings -->
+                    <block title="Membership Settings" name="library_membership_settings">
+                        <setting id="library_membership_duration_setting"
+                                 help="Default membership duration for different member types">
+                            <div class="mt-2">
+                                <label for="library_student_membership_years" string="Student Membership"/>
+                                <field name="library_student_membership_years" class="oe_inline ms-2"/>
+                                <span class="text-muted ms-1">year(s)</span>
+                            </div>
+                            <div class="mt-2">
+                                <label for="library_faculty_membership_years" string="Faculty/Staff Membership"/>
+                                <field name="library_faculty_membership_years" class="oe_inline ms-2"/>
+                                <span class="text-muted ms-1">year(s)</span>
+                            </div>
+                        </setting>
+                    </block>
+
+                    <!-- Fine Invoice Settings -->
+                    <block title="Fine &amp; Invoice Settings" name="library_invoice_settings">
+                        <setting id="library_fine_product_setting"
+                                 help="Product used when creating fine invoices">
+                            <label for="library_fine_product_id"/>
+                            <field name="library_fine_product_id"
+                                   class="oe_inline ms-2"
+                                   domain="[('type', '=', 'service')]"/>
+                        </setting>
+                    </block>
+
+                    <!-- Email Notification Settings -->
+                    <block title="Email Notifications" name="library_email_settings">
+                        <setting id="library_due_reminders_setting"
+                                 help="Automatically send reminders one day before due date">
+                            <field name="library_send_due_reminders"/>
+                            <div class="text-muted mt-1">
+                                Send email reminders to members one day before their books are due
+                            </div>
+                        </setting>
+
+                        <setting id="library_overdue_notifications_setting"
+                                 help="Automatically notify members when books become overdue">
+                            <field name="library_send_overdue_notifications"/>
+                            <div class="text-muted mt-1">
+                                Send email notifications when books are not returned on time
+                            </div>
+                        </setting>
+
+                        <setting id="library_reservation_notifications_setting"
+                                 help="Send reservation related notifications">
+                            <field name="library_send_reservation_notifications"/>
+                            <div class="text-muted mt-1">
+                                Send emails when reservations are created, available, or expired
+                            </div>
+                        </setting>
+                    </block>
+
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Menu for Settings -->
+    <record id="action_library_config_settings" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'module': 'education_library'}</field>
+    </record>
+
+</odoo>

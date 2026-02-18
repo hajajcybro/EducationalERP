@@ -1,5 +1,7 @@
 from odoo import http
 from odoo.http import request
+from .portal_utils import get_student_partner
+
 
 class StudentLeavePortal(http.Controller):
 
@@ -11,18 +13,18 @@ class StudentLeavePortal(http.Controller):
 
     @http.route(['/my/my-attendance'], type='http', auth='user', website=True)
     def portal_attendance(self, **kwargs):
-        partner = request.env.user.partner_id
-        if not partner.is_student:
+        partner = get_student_partner()
+        if not partner.position_role =='student':
             return request.redirect('/my')
 
         return request.render(
             'education_mobile_and_portal_access.portal_attendance_calendar'
         )
 
-    @http.route('/my/my-attendance/events',type='json',auth='user',website=True)
+    @http.route('/my/my-attendance/events',type='jsonrpc',auth='user',website=True)
     def portal_attendance_events(self):
-        partner = request.env.user.partner_id
-        if not partner.is_student:
+        partner = get_student_partner()
+        if not partner.position_role == 'student':
             return []
         attendance_lines = request.env['education.attendance.line'].sudo().search([
             ('student_id', '=', partner.id),
@@ -48,6 +50,9 @@ class StudentLeavePortal(http.Controller):
 
     @http.route(['/my/leave/apply'], type='http', auth='user', website=True)
     def portal_leave_apply_form(self, **kwargs):
+        partner = request.env.user.partner_id
+        if partner.position_role != 'student':
+            return request.redirect('/my')
         return request.render(
             'education_mobile_and_portal_access.portal_leave_apply_form'
         )
@@ -55,7 +60,6 @@ class StudentLeavePortal(http.Controller):
     @http.route(['/my/leave/submit'], type='http', auth='user', website=True, csrf=True)
     def portal_leave_submit(self, **post):
         partner = request.env.user.partner_id
-
         request.env['education.leave.request'].sudo().create({
             'student_id': partner.id,
             'leave_format': post.get('leave_format'),
@@ -68,8 +72,7 @@ class StudentLeavePortal(http.Controller):
 
     @http.route(['/my/leave/history'], type='http', auth='user', website=True)
     def portal_leave_history(self, **kwargs):
-        partner = request.env.user.partner_id
-
+        partner = get_student_partner()
         leaves = request.env['education.leave.request'].sudo().search([
             ('student_id', '=', partner.id)
         ])

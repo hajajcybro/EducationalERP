@@ -24,7 +24,7 @@ class StudentReportWizard(models.TransientModel):
     student_ids = fields.Many2many(
         'res.partner',
         string='Students',
-        domain=[('is_student', '=', True)]
+        domain=[('position_role', '=', 'student')]
     )
     program_id = fields.Many2one('education.program', string="Program")
 

@@ -14,7 +14,7 @@ class StudentReport(models.AbstractModel):
                     LEFT JOIN education_program ep ON rp.program_id = ep.id
                     LEFT JOIN education_academic_year eay  ON rp.academic_year_id = eay.id
                     WHERE 
-                    rp.is_student = TRUE
+                    rp.position_role = 'student'
                     AND rp.active = TRUE
                      """
         if data:

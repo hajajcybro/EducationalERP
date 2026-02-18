@@ -1,0 +1,643 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Email Template: Reservation Created -->
+    <record id="email_template_reservation_created" model="mail.template">
+        <field name="name">Library: Reservation Created</field>
+        <field name="model_id" ref="model_education_library_reservation"/>
+        <field name="email_from">{{ (object.create_uid.email_formatted or user.email_formatted) }}</field>
+        <field name="email_to">{{ object.member_id.email }}</field>
+        <field name="subject">Book Reservation Confirmed - {{ object.book_id.title }}</field>
+        <field name="body_html" type="html">
+            <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; background-color: #f5f5f5; padding: 20px;">
+                <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <!-- Header -->
+                    <div style="background-color: #0066cc; padding: 30px; text-align: center;">
+                        <h1 style="color: white; margin: 0; font-size: 28px;">Reservation Confirmed</h1>
+                    </div>
+
+                    <!-- Content -->
+                    <div style="padding: 30px;">
+                        <p style="font-size: 16px; color: #333; margin: 0 0 20px 0;">
+                            Hello <strong><t t-out="object.member_id.name"/></strong>,
+                        </p>
+
+                        <p style="font-size: 14px; color: #666; margin: 0 0 20px 0;">
+                            Your reservation has been successfully created. Here are the details:
+                        </p>
+
+                        <!-- Book Details Box -->
+                        <div style="background-color: #f8f9fa; border-left: 4px solid #0066cc; padding: 20px; margin: 20px 0; border-radius: 4px;">
+                            <h3 style="margin: 0 0 15px 0; color: #0066cc; font-size: 18px;">
+                                <t t-out="object.book_id.title"/>
+                            </h3>
+                            <table style="width: 100%; font-size: 14px; color: #666;">
+                                <tr>
+                                    <td style="padding: 5px 0;"><strong>Author(s):</strong></td>
+                                    <td style="padding: 5px 0;"><t t-out="object.book_id.authors or 'N/A'"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 5px 0;"><strong>ISBN:</strong></td>
+                                    <td style="padding: 5px 0;"><t t-out="object.book_id.isbn or 'N/A'"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 5px 0;"><strong>Category:</strong></td>
+                                    <td style="padding: 5px 0;"><t t-out="object.book_id.category_id.name or 'N/A'"/></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Reservation Info -->
+                        <div style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 20px; margin: 20px 0; border-radius: 4px;">
+                            <h4 style="margin: 0 0 10px 0; color: #856404;">Queue Information</h4>
+                            <p style="margin: 0; font-size: 14px; color: #856404;">
+                                <strong>Your Position:</strong> <t t-out="object.priority"/><br/>
+                                <strong>Reservation Number:</strong> <t t-out="object.name"/><br/>
+                                <strong>Reservation Date:</strong> <t t-out="object.reservation_date"/>
+                            </p>
+                        </div>
+
+                        <p style="font-size: 14px; color: #666; margin: 20px 0;">
+                            <strong>What happens next?</strong><br/>
+                            You will receive an email notification when the book becomes available for collection.
+                            You'll have 48 hours to collect the book once notified.
+                        </p>
+
+                        <!-- Important Note -->
+                        <div style="background-color: #e7f3ff; border-left: 4px solid #2196F3; padding: 15px; margin: 20px 0; border-radius: 4px;">
+                            <p style="margin: 0; font-size: 13px; color: #0d47a1;">
+                                <strong>Important:</strong> Please ensure your contact information is up to date to receive notifications.
+                            </p>
+                        </div>
+
+                        <p style="font-size: 14px; color: #666; margin: 20px 0 0 0;">
+                            Best regards,<br/>
+                            <strong>Library Team</strong>
+                        </p>
+                    </div>
+
+                    <!-- Footer -->
+                    <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #e0e0e0;">
+                        <p style="margin: 0; font-size: 12px; color: #999;">
+                            This is an automated message. Please do not reply to this email.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </field>
+    </record>
+
+    <!-- Email Template: Book Available for Collection -->
+    <record id="email_template_reservation_available" model="mail.template">
+        <field name="name">Library: Book Available for Collection</field>
+        <field name="model_id" ref="model_education_library_reservation"/>
+        <field name="email_from">{{ (object.create_uid.email_formatted or user.email_formatted) }}</field>
+        <field name="email_to">{{ object.member_id.email }}</field>
+        <field name="subject">Your Reserved Book is Ready! - {{ object.book_id.title }}</field>
+        <field name="body_html" type="html">
+            <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; background-color: #f5f5f5; padding: 20px;">
+                <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <!-- Header -->
+                    <div style="background-color: #28a745; padding: 30px; text-align: center;">
+                        <h1 style="color: white; margin: 0; font-size: 28px;">Your Book is Ready!</h1>
+                    </div>
+
+                    <!-- Content -->
+                    <div style="padding: 30px;">
+                        <p style="font-size: 16px; color: #333; margin: 0 0 20px 0;">
+                            Great news, <strong><t t-out="object.member_id.name"/></strong>!
+                        </p>
+
+                        <p style="font-size: 14px; color: #666; margin: 0 0 20px 0;">
+                            The book you reserved is now available for collection at the library.
+                        </p>
+
+                        <!-- Book Details -->
+                        <div style="background-color: #e8f5e9; border-left: 4px solid #28a745; padding: 20px; margin: 20px 0; border-radius: 4px;">
+                            <h3 style="margin: 0 0 15px 0; color: #1b5e20; font-size: 18px;">
+                                <t t-out="object.book_id.title"/>
+                            </h3>
+                            <table style="width: 100%; font-size: 14px; color: #2e7d32;">
+                                <tr>
+                                    <td style="padding: 5px 0;"><strong>Author(s):</strong></td>
+                                    <td style="padding: 5px 0;"><t t-out="object.book_id.authors or 'N/A'"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 5px 0;"><strong>Reservation Number:</strong></td>
+                                    <td style="padding: 5px 0;"><t t-out="object.name"/></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Important: Collection Deadline -->
+                        <div style="background-color: #fff3e0; border: 2px solid #ff9800; padding: 20px; margin: 20px 0; border-radius: 4px; text-align: center;">
+                            <h4 style="margin: 0 0 10px 0; color: #e65100; font-size: 18px;">Collection Deadline</h4>
+                            <p style="margin: 0; font-size: 16px; color: #e65100;">
+                                <strong>Please collect by: <t t-out="object.expiry_date"/></strong>
+                            </p>
+                            <p style="margin: 10px 0 0 0; font-size: 13px; color: #bf360c;">
+                                You have 48 hours from the time this book became available.
+                            </p>
+                        </div>
+
+                        <div style="background-color: #ffebee; border-left: 4px solid #f44336; padding: 15px; margin: 20px 0; border-radius: 4px;">
+                            <p style="margin: 0; font-size: 13px; color: #c62828;">
+                                <strong>Important:</strong> If you do not collect the book by the deadline,
+                                your reservation will be cancelled and the book will be offered to the next person in the queue.
+                            </p>
+                        </div>
+
+                        <p style="font-size: 14px; color: #666; margin: 20px 0;">
+                            <strong>How to collect:</strong><br/>
+                            1. Visit the library circulation desk<br/>
+                            2. Provide your member ID or reservation number: <strong><t t-out="object.name"/></strong><br/>
+                            3. The librarian will issue the book to you
+                        </p>
+
+                        <p style="font-size: 14px; color: #666; margin: 20px 0 0 0;">
+                            We look forward to seeing you!<br/>
+                            <strong>Library Team</strong>
+                        </p>
+                    </div>
+
+                    <!-- Footer -->
+                    <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #e0e0e0;">
+                        <p style="margin: 0; font-size: 12px; color: #999;">
+                            This is an automated message. Please do not reply to this email.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </field>
+    </record>
+
+    <!-- Email Template: Reservation Expiry Reminder -->
+    <record id="email_template_reservation_expiry_reminder" model="mail.template">
+        <field name="name">Library: Reservation Expiry Reminder</field>
+        <field name="model_id" ref="model_education_library_reservation"/>
+        <field name="email_from">{{ (object.create_uid.email_formatted or user.email_formatted) }}</field>
+        <field name="email_to">{{ object.member_id.email }}</field>
+        <field name="subject">Reminder: Collect Your Book Before {{ object.expiry_date }}</field>
+        <field name="body_html" type="html">
+            <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; background-color: #f5f5f5; padding: 20px;">
+                <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <!-- Header -->
+                    <div style="background-color: #ff9800; padding: 30px; text-align: center;">
+                        <h1 style="color: white; margin: 0; font-size: 28px;">Reminder: Book Expires Soon!</h1>
+                    </div>
+
+                    <!-- Content -->
+                    <div style="padding: 30px;">
+                        <p style="font-size: 16px; color: #333; margin: 0 0 20px 0;">
+                            Hello <strong><t t-out="object.member_id.name"/></strong>,
+                        </p>
+
+                        <p style="font-size: 14px; color: #666; margin: 0 0 20px 0;">
+                            This is a friendly reminder that your reserved book is still waiting for you at the library.
+                        </p>
+
+                        <!-- Book Info -->
+                        <div style="background-color: #fff3e0; border-left: 4px solid #ff9800; padding: 20px; margin: 20px 0; border-radius: 4px;">
+                            <h3 style="margin: 0 0 10px 0; color: #e65100; font-size: 18px;">
+                                <t t-out="object.book_id.title"/>
+                            </h3>
+                            <p style="margin: 0; font-size: 14px; color: #ef6c00;">
+                                <strong>Reservation Number:</strong> <t t-out="object.name"/>
+                            </p>
+                        </div>
+
+                        <!-- Urgent Notice -->
+                        <div style="background-color: #ffebee; border: 2px solid #f44336; padding: 20px; margin: 20px 0; border-radius: 4px; text-align: center;">
+                            <h4 style="margin: 0 0 10px 0; color: #c62828; font-size: 18px;">Your reservation expires tomorrow!</h4>
+                            <p style="margin: 0; font-size: 16px; color: #c62828;">
+                                <strong>Last date to collect: <t t-out="object.expiry_date"/></strong>
+                            </p>
+                        </div>
+
+                        <p style="font-size: 14px; color: #666; margin: 20px 0;">
+                            <strong>What happens if I don't collect?</strong><br/>
+                            If the book is not collected by the deadline, your reservation will be automatically
+                            cancelled and the book will be offered to the next person in the queue.
+                        </p>
+
+                        <p style="font-size: 14px; color: #666; margin: 20px 0;">
+                            <strong>Quick action:</strong><br/>
+                            Please visit the library circulation desk as soon as possible with your
+                            reservation number: <strong><t t-out="object.name"/></strong>
+                        </p>
+
+                        <p style="font-size: 14px; color: #666; margin: 20px 0 0 0;">
+                            Thank you,<br/>
+                            <strong>Library Team</strong>
+                        </p>
+                    </div>
+
+                    <!-- Footer -->
+                    <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #e0e0e0;">
+                        <p style="margin: 0; font-size: 12px; color: #999;">
+                            This is an automated reminder. Please do not reply to this email.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </field>
+    </record>
+
+    <!-- Email Template: Reservation Expired -->
+    <record id="email_template_reservation_expired" model="mail.template">
+        <field name="name">Library: Reservation Expired</field>
+        <field name="model_id" ref="model_education_library_reservation"/>
+        <field name="email_from">{{ (object.create_uid.email_formatted or user.email_formatted) }}</field>
+        <field name="email_to">{{ object.member_id.email }}</field>
+        <field name="subject">Reservation Expired - {{ object.book_id.title }}</field>
+        <field name="body_html" type="html">
+            <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; background-color: #f5f5f5; padding: 20px;">
+                <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <!-- Header -->
+                    <div style="background-color: #dc3545; padding: 30px; text-align: center;">
+                        <h1 style="color: white; margin: 0; font-size: 28px;">Reservation Expired</h1>
+                    </div>
+
+                    <!-- Content -->
+                    <div style="padding: 30px;">
+                        <p style="font-size: 16px; color: #333; margin: 0 0 20px 0;">
+                            Hello <strong><t t-out="object.member_id.name"/></strong>,
+                        </p>
+
+                        <p style="font-size: 14px; color: #666; margin: 0 0 20px 0;">
+                            Unfortunately, your reservation has expired as the book was not collected within the 48-hour window.
+                        </p>
+
+                        <!-- Book Details -->
+                        <div style="background-color: #f8d7da; border-left: 4px solid #dc3545; padding: 20px; margin: 20px 0; border-radius: 4px;">
+                            <h3 style="margin: 0 0 15px 0; color: #721c24; font-size: 18px;">
+                                <t t-out="object.book_id.title"/>
+                            </h3>
+                            <table style="width: 100%; font-size: 14px; color: #721c24;">
+                                <tr>
+                                    <td style="padding: 5px 0;"><strong>Reservation Number:</strong></td>
+                                    <td style="padding: 5px 0;"><t t-out="object.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 5px 0;"><strong>Available Date:</strong></td>
+                                    <td style="padding: 5px 0;"><t t-out="object.available_date"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 5px 0;"><strong>Expiry Date:</strong></td>
+                                    <td style="padding: 5px 0;"><t t-out="object.expiry_date"/></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <p style="font-size: 14px; color: #666; margin: 20px 0;">
+                            The book has been allocated to the next person in the queue.
+                        </p>
+
+                        <div style="background-color: #d1ecf1; border-left: 4px solid #17a2b8; padding: 15px; margin: 20px 0; border-radius: 4px;">
+                            <p style="margin: 0; font-size: 13px; color: #0c5460;">
+                                <strong>Want to reserve again?</strong> You can create a new reservation
+                                if you're still interested in this book.
+                            </p>
+                        </div>
+
+                        <p style="font-size: 14px; color: #666; margin: 20px 0 0 0;">
+                            Best regards,<br/>
+                            <strong>Library Team</strong>
+                        </p>
+                    </div>
+
+                    <!-- Footer -->
+                    <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #e0e0e0;">
+                        <p style="margin: 0; font-size: 12px; color: #999;">
+                            This is an automated message. Please do not reply to this email.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </field>
+    </record>
+
+    <!-- Email Template: Reservation Cancelled -->
+    <record id="email_template_reservation_cancelled" model="mail.template">
+        <field name="name">Library: Reservation Cancelled</field>
+        <field name="model_id" ref="model_education_library_reservation"/>
+        <field name="email_from">{{ (object.create_uid.email_formatted or user.email_formatted) }}</field>
+        <field name="email_to">{{ object.member_id.email }}</field>
+        <field name="subject">Reservation Cancelled - {{ object.book_id.title }}</field>
+        <field name="body_html" type="html">
+            <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; background-color: #f5f5f5; padding: 20px;">
+                <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <!-- Header -->
+                    <div style="background-color: #6c757d; padding: 30px; text-align: center;">
+                        <h1 style="color: white; margin: 0; font-size: 28px;">Reservation Cancelled</h1>
+                    </div>
+
+                    <!-- Content -->
+                    <div style="padding: 30px;">
+                        <p style="font-size: 16px; color: #333; margin: 0 0 20px 0;">
+                            Hello <strong><t t-out="object.member_id.name"/></strong>,
+                        </p>
+
+                        <p style="font-size: 14px; color: #666; margin: 0 0 20px 0;">
+                            Your book reservation has been cancelled successfully.
+                        </p>
+
+                        <!-- Book Details -->
+                        <div style="background-color: #e2e3e5; border-left: 4px solid #6c757d; padding: 20px; margin: 20px 0; border-radius: 4px;">
+                            <h3 style="margin: 0 0 15px 0; color: #383d41; font-size: 18px;">
+                                <t t-out="object.book_id.title"/>
+                            </h3>
+                            <p style="margin: 0; font-size: 14px; color: #383d41;">
+                                <strong>Reservation Number:</strong> <t t-out="object.name"/>
+                            </p>
+                        </div>
+
+                        <p style="font-size: 14px; color: #666; margin: 20px 0;">
+                            If you cancelled this reservation by mistake or would like to reserve the book again,
+                            please create a new reservation through our system.
+                        </p>
+
+                        <p style="font-size: 14px; color: #666; margin: 20px 0 0 0;">
+                            Thank you,<br/>
+                            <strong>Library Team</strong>
+                        </p>
+                    </div>
+
+                    <!-- Footer -->
+                    <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #e0e0e0;">
+                        <p style="margin: 0; font-size: 12px; color: #999;">
+                            This is an automated message. Please do not reply to this email.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </field>
+    </record>
+
+    <!-- Email Template: Book Issued from Reservation -->
+    <record id="email_template_reservation_fulfilled" model="mail.template">
+        <field name="name">Library: Book Issued (From Reservation)</field>
+        <field name="model_id" ref="model_education_library_reservation"/>
+        <field name="email_from">{{ (object.create_uid.email_formatted or user.email_formatted) }}</field>
+        <field name="email_to">{{ object.member_id.email }}</field>
+        <field name="subject">Book Issued - {{ object.book_id.title }}</field>
+        <field name="body_html" type="html">
+            <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; background-color: #f5f5f5; padding: 20px;">
+                <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <!-- Header -->
+                    <div style="background-color: #28a745; padding: 30px; text-align: center;">
+                        <h1 style="color: white; margin: 0; font-size: 28px;">✅ Book Issued Successfully!</h1>
+                    </div>
+
+                    <!-- Content -->
+                    <div style="padding: 30px;">
+                        <p style="font-size: 16px; color: #333; margin: 0 0 20px 0;">
+                            Hello <strong><t t-out="object.member_id.name"/></strong>,
+                        </p>
+
+                        <p style="font-size: 14px; color: #666; margin: 0 0 20px 0;">
+                            Great! Your reserved book has been successfully issued to you. Happy reading!
+                        </p>
+
+                        <!-- Book Details -->
+                        <div style="background-color: #d4edda; border-left: 4px solid #28a745; padding: 20px; margin: 20px 0; border-radius: 4px;">
+                            <h3 style="margin: 0 0 15px 0; color: #155724; font-size: 18px;">
+                                <t t-out="object.book_id.title"/>
+                            </h3>
+                            <table style="width: 100%; font-size: 14px; color: #155724;">
+                                <tr>
+                                    <td style="padding: 5px 0;"><strong>Reservation Number:</strong></td>
+                                    <td style="padding: 5px 0;"><t t-out="object.name"/></td>
+                                </tr>
+                                <tr t-if="object.transaction_id">
+                                    <td style="padding: 5px 0;"><strong>Transaction Number:</strong></td>
+                                    <td style="padding: 5px 0;"><t t-out="object.transaction_id.name"/></td>
+                                </tr>
+                                <tr t-if="object.transaction_id">
+                                    <td style="padding: 5px 0;"><strong>Issue Date:</strong></td>
+                                    <td style="padding: 5px 0;"><t t-out="object.transaction_id.issue_date"/></td>
+                                </tr>
+                                <tr t-if="object.transaction_id">
+                                    <td style="padding: 5px 0;"><strong>Due Date:</strong></td>
+                                    <td style="padding: 5px 0;"><t t-out="object.transaction_id.due_date"/></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Important Reminder -->
+                        <div style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 4px;">
+                            <p style="margin: 0; font-size: 13px; color: #856404;">
+                                <strong>Important Reminder:</strong> Please return the book on or before the due date
+                                to avoid late fees. You can renew the book if no one else has reserved it.
+                            </p>
+                        </div>
+
+                        <p style="font-size: 14px; color: #666; margin: 20px 0 0 0;">
+                            Enjoy your reading!<br/>
+                            <strong>Library Team</strong>
+                        </p>
+                    </div>
+
+                    <!-- Footer -->
+                    <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #e0e0e0;">
+                        <p style="margin: 0; font-size: 12px; color: #999;">
+                            This is an automated message. Please do not reply to this email.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </field>
+    </record>
+
+
+    <!-- Email Template: Due Date Reminder (1 day before) -->
+    <record id="email_template_transaction_due_reminder" model="mail.template">
+        <field name="name">Library: Book Due Tomorrow</field>
+        <field name="model_id" ref="model_education_library_transaction"/>
+        <field name="email_from">{{ (object.create_uid.email_formatted or user.email_formatted) }}</field>
+        <field name="email_to">{{ object.member_id.email }}</field>
+        <field name="subject">Reminder: Book Due Tomorrow - {{ object.book_id.title }}</field>
+        <field name="body_html" type="html">
+            <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; background-color: #f5f5f5; padding: 20px;">
+                <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <!-- Header -->
+                    <div style="background-color: #ff9800; padding: 30px; text-align: center;">
+                        <h1 style="color: white; margin: 0; font-size: 28px;">Book Due Tomorrow!</h1>
+                    </div>
+
+                    <!-- Content -->
+                    <div style="padding: 30px;">
+                        <p style="font-size: 16px; color: #333; margin: 0 0 20px 0;">
+                            Hello <strong><t t-out="object.member_id.name"/></strong>,
+                        </p>
+
+                        <p style="font-size: 14px; color: #666; margin: 0 0 20px 0;">
+                            This is a friendly reminder that the following book is due tomorrow.
+                        </p>
+
+                        <!-- Book Details -->
+                        <div style="background-color: #fff3e0; border-left: 4px solid #ff9800; padding: 20px; margin: 20px 0; border-radius: 4px;">
+                            <h3 style="margin: 0 0 15px 0; color: #e65100; font-size: 18px;">
+                                <t t-out="object.book_id.title"/>
+                            </h3>
+                            <table style="width: 100%; font-size: 14px; color: #ef6c00;">
+                                <tr>
+                                    <td style="padding: 5px 0;"><strong>Author(s):</strong></td>
+                                    <td style="padding: 5px 0;"><t t-out="object.book_id.authors or 'N/A'"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 5px 0;"><strong>Transaction #:</strong></td>
+                                    <td style="padding: 5px 0;"><t t-out="object.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 5px 0;"><strong>Issue Date:</strong></td>
+                                    <td style="padding: 5px 0;"><t t-out="object.issue_date"/></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Due Date Alert -->
+                        <div style="background-color: #ffebee; border: 2px solid #f44336; padding: 20px; margin: 20px 0; border-radius: 4px; text-align: center;">
+                            <h4 style="margin: 0 0 10px 0; color: #c62828; font-size: 18px;">Due Date</h4>
+                            <p style="margin: 0; font-size: 20px; color: #c62828;">
+                                <strong><t t-out="object.due_date"/></strong>
+                            </p>
+                            <p style="margin: 10px 0 0 0; font-size: 13px; color: #bf360c;">
+                                Please return the book by tomorrow to avoid late fees.
+                            </p>
+                        </div>
+
+                        <div style="background-color: #e3f2fd; border-left: 4px solid #2196F3; padding: 15px; margin: 20px 0; border-radius: 4px;">
+                            <p style="margin: 0; font-size: 13px; color: #0d47a1;">
+                                <strong>Need more time?</strong> You can renew this book
+                                <t t-if="object.renewal_count &lt; object.max_renewals">
+                                    (<t t-out="object.max_renewals - object.renewal_count"/> renewal<t t-if="object.max_renewals - object.renewal_count > 1">s</t> remaining)
+                                </t>
+                                <t t-else="">
+                                    (no renewals remaining)
+                                </t>
+                                if it hasn't been reserved by someone else.
+                            </p>
+                        </div>
+
+                        <p style="font-size: 14px; color: #666; margin: 20px 0;">
+                            <strong>Late Fee Information:</strong><br/>
+                            Fine per day: <strong><t t-out="object.fine_per_day"/> ₹</strong><br/>
+                            Please return on time to avoid additional charges.
+                        </p>
+
+                        <p style="font-size: 14px; color: #666; margin: 20px 0 0 0;">
+                            Thank you,<br/>
+                            <strong>Library Team</strong>
+                        </p>
+                    </div>
+
+                    <!-- Footer -->
+                    <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #e0e0e0;">
+                        <p style="margin: 0; font-size: 12px; color: #999;">
+                            This is an automated reminder. Please do not reply to this email.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </field>
+    </record>
+
+    <!-- Email Template: Overdue Notification -->
+    <record id="email_template_transaction_overdue" model="mail.template">
+        <field name="name">Library: Book Overdue</field>
+        <field name="model_id" ref="model_education_library_transaction"/>
+        <field name="email_from">{{ (object.create_uid.email_formatted or user.email_formatted) }}</field>
+        <field name="email_to">{{ object.member_id.email }}</field>
+        <field name="subject">OVERDUE: Please Return - {{ object.book_id.title }}</field>
+        <field name="body_html" type="html">
+            <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; background-color: #f5f5f5; padding: 20px;">
+                <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <!-- Header -->
+                    <div style="background-color: #dc3545; padding: 30px; text-align: center;">
+                        <h1 style="color: white; margin: 0; font-size: 28px;">Book Overdue</h1>
+                    </div>
+
+                    <!-- Content -->
+                    <div style="padding: 30px;">
+                        <p style="font-size: 16px; color: #333; margin: 0 0 20px 0;">
+                            Hello <strong><t t-out="object.member_id.name"/></strong>,
+                        </p>
+
+                        <p style="font-size: 14px; color: #666; margin: 0 0 20px 0;">
+                            This book is now overdue. Please return it as soon as possible.
+                        </p>
+
+                        <!-- Book Details -->
+                        <div style="background-color: #f8d7da; border-left: 4px solid #dc3545; padding: 20px; margin: 20px 0; border-radius: 4px;">
+                            <h3 style="margin: 0 0 15px 0; color: #721c24; font-size: 18px;">
+                                <t t-out="object.book_id.title"/>
+                            </h3>
+                            <table style="width: 100%; font-size: 14px; color: #721c24;">
+                                <tr>
+                                    <td style="padding: 5px 0;"><strong>Author(s):</strong></td>
+                                    <td style="padding: 5px 0;"><t t-out="object.book_id.authors or 'N/A'"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 5px 0;"><strong>Transaction #:</strong></td>
+                                    <td style="padding: 5px 0;"><t t-out="object.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 5px 0;"><strong>Issue Date:</strong></td>
+                                    <td style="padding: 5px 0;"><t t-out="object.issue_date"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 5px 0;"><strong>Due Date:</strong></td>
+                                    <td style="padding: 5px 0;"><t t-out="object.due_date"/></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Overdue Alert -->
+                        <div style="background-color: #fff3cd; border: 2px solid #ffc107; padding: 20px; margin: 20px 0; border-radius: 4px; text-align: center;">
+                            <h4 style="margin: 0 0 10px 0; color: #856404; font-size: 18px;">Days Overdue</h4>
+                            <p style="margin: 0; font-size: 24px; color: #856404;">
+                                <strong><t t-out="object.days_overdue"/> Day<t t-if="object.days_overdue > 1">s</t></strong>
+                            </p>
+                        </div>
+
+                        <!-- Fine Information -->
+                        <div style="background-color: #ffebee; border-left: 4px solid #f44336; padding: 20px; margin: 20px 0; border-radius: 4px;">
+                            <h4 style="margin: 0 0 10px 0; color: #c62828;">Current Fine</h4>
+                            <p style="margin: 0; font-size: 18px; color: #c62828;">
+                                <strong><t t-out="object.fine_amount"/> ₹</strong>
+                            </p>
+                            <p style="margin: 10px 0 0 0; font-size: 13px; color: #bf360c;">
+                                Fine rate: <t t-out="object.fine_per_day"/> ₹ per day
+                            </p>
+                        </div>
+
+                        <p style="font-size: 14px; color: #666; margin: 20px 0;">
+                            <strong>Action Required:</strong><br/>
+                            Please visit the library and return this book immediately to avoid additional fines.
+                        </p>
+
+                        <div style="background-color: #e7f3ff; border-left: 4px solid #2196F3; padding: 15px; margin: 20px 0; border-radius: 4px;">
+                            <p style="margin: 0; font-size: 13px; color: #0d47a1;">
+                                <strong>Note:</strong> Fines continue to accumulate daily until the book is returned.
+                                Your borrowing privileges may be suspended if the book is not returned soon.
+                            </p>
+                        </div>
+
+                        <p style="font-size: 14px; color: #666; margin: 20px 0 0 0;">
+                            Thank you for your cooperation,<br/>
+                            <strong>Library Team</strong>
+                        </p>
+                    </div>
+
+                    <!-- Footer -->
+                    <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #e0e0e0;">
+                        <p style="margin: 0; font-size: 12px; color: #999;">
+                            This is an automated notification. Please do not reply to this email.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </field>
+    </record>
+
+</odoo>

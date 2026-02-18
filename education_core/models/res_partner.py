@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from email.policy import default
-
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 from datetime import date
@@ -10,10 +8,10 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     position_role = fields.Selection(
-        selection=[('teacher', 'Teacher'), ('student', 'Student')],
+        selection=[('parent', 'Parent'), ('student', 'Student')],
         string='Position',
     )
-    is_student = fields.Boolean('Student')
+    # is_student = fields.Boolean('Student')
     email = fields.Char(string='Email', help='Student email address.')
     phone = fields.Char(string='Phone', help='Student contact number.')
     academic_year_id = fields.Many2one('education.academic.year', string='Academic Year',domain=[('state', '!=', 'closed')],)
@@ -48,7 +46,7 @@ class ResPartner(models.Model):
         ('ab+', 'AB+'), ('ab-', 'AB-'),
         ('o+', 'O+'), ('o-', 'O-'),
     ], string='Blood Group')
-    guardian = fields.Char('Guardian Name')
+    guardian = fields.Many2one('res.partner',domain =[('position_role', '=', 'parent')])
     stu_category_id = fields.Many2one('education.category',
                                string='Category',
                                help='Assign a category to the student.'
@@ -156,7 +154,7 @@ class ResPartner(models.Model):
         is added without one."""
         vals_list = vals if isinstance(vals, list) else [vals]
         for val in vals_list:
-            if val.get('is_student') == True and not val.get('admission_no'):
+            if val.get('position_role') == 'student' and not val.get('admission_no'):
                 val['admission_no'] = self.env['ir.sequence'].next_by_code('education_student_admission')
         return super().create(vals_list)
 
@@ -164,7 +162,7 @@ class ResPartner(models.Model):
         """Override write to generate an admission number when a partner
         becomes a student and lacks one."""
         for rec in self:
-            if vals.get('is_student') == True and not rec.admission_no:
+            if vals.get('position_role') == 'student' and not rec.admission_no:
                 vals['admission_no'] = self.env['ir.sequence'].next_by_code('education_student_admission')
         return super().write(vals)
 
@@ -200,7 +198,7 @@ class ResPartner(models.Model):
 
     def unlink(self):
         for rec in self:
-            if rec.is_student:
+            if rec.position_role == 'student':
                 old_data = {
                     'Student Name': rec.name,
                     'Admission No': rec.admission_no,
@@ -218,7 +216,3 @@ class ResPartner(models.Model):
                     'old_values': old_data,
                 })
         return super().unlink()
-
-
-
-

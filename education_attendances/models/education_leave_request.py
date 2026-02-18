@@ -11,7 +11,7 @@ class EducationLeaveRequest(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = 'reason'
 
-    student_id = fields.Many2one('res.partner', string='Name', domain=[('is_student', '=', True)])
+    student_id = fields.Many2one('res.partner', string='Name', domain=[('position_role', '=', 'student')])
     leave_format = fields.Selection([
         ('full_day', 'Full Day'),
         ('half_day', 'Half Day'),
@@ -37,7 +37,7 @@ class EducationLeaveRequest(models.Model):
     session = fields.Selection([
         ('forenoon', 'Forenoon'),
         ('afternoon', 'Afternoon'),
-    ], string="Session",required=True)
+    ], string="Session")
 
     half_day_date = fields.Date(string='Half-Day Date')
     leave_days = fields.Integer(

@@ -1,6 +1,7 @@
 from odoo import http
 from odoo.http import request
 from odoo import fields, models
+from .portal_utils import get_student_partner
 
 
 class StudentExamPortal(http.Controller):
@@ -8,10 +9,12 @@ class StudentExamPortal(http.Controller):
     @http.route(['/my/exams'], type='http', auth='user', website=True)
     def portal_exam_home(self, **kwargs):
         partner = request.env.user.partner_id
-        is_student = partner.is_student
+        student = get_student_partner()
+        user_role = partner.position_role
         return request.render(
             'education_mobile_and_portal_access.portal_exam_home', {
-                'is_student': is_student,
+                'student': student,
+                'user_role': user_role,
             }
         )
 
@@ -27,9 +30,10 @@ class StudentExamPortal(http.Controller):
 
     @http.route('/my/exam-results', auth='user', website=True)
     def exam_results(self):
-        partner = request.env.user.partner_id
+        # partner = request.env.user.partner_id
+        student = get_student_partner()
         results = request.env['education.exam.result'].sudo().search([
-            ('student_id', '=', partner.id)
+            ('student_id', '=', student.id)
         ])
         return request.render('education_mobile_and_portal_access.portal_exam_results', {
             'results': results

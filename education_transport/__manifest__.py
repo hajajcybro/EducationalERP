@@ -11,8 +11,8 @@
     'website': 'https://www.cybrosys.com',
     'depends': ['education_core','fleet','web'],
     'data': [
-        'security/ir.model.access.csv',
         'security/security_group.xml',
+        'security/ir.model.access.csv',
         'views/education_transport_route_views.xml',
         'views/education_transport_stop_views.xml',
         'views/education_transport_assignment_views.xml',

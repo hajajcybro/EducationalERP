@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="seq_revaluation" model="ir.sequence">
+        <field name="name">Revaluation Application Sequence</field>
+        <field name="code">education.exam.revaluation</field>
+        <field name="prefix">Reval</field>
+        <field name="padding">4</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+    <record id="seq_revaluation_creation" model="ir.sequence">
+        <field name="name">Revaluation Sequence</field>
+        <field name="code">education.exam.revaluation.creation</field>
+        <field name="prefix">Re</field>
+        <field name="padding">4</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+     <record id="seq_exam_result" model="ir.sequence">
+        <field name="name">Exam Result Sequence</field>
+        <field name="code">education.exam.result</field>
+        <field name="prefix">Result-</field>
+        <field name="padding">4</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+</odoo>
