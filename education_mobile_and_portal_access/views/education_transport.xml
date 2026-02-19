@@ -36,14 +36,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <t t-foreach="stops" t-as="s">
+<!--                                <t t-foreach="stops" t-as="s">-->
                                     <tr>
-                                        <td><t t-esc="s.sequence"/></td>
-                                        <td><t t-esc="s.stop_name"/></td>
-                                        <td><t t-esc="s.pickup_time"/></td>
-                                        <td><t t-esc="s.drop_time"/></td>
+                                        <td><t t-esc="stop.sequence"/></td>
+                                        <td><t t-esc="stop.stop_name"/></td>
+                                        <td><t t-esc="stop.pickup_time"/></td>
+                                        <td><t t-esc="stop.drop_time"/></td>
                                     </tr>
-                                </t>
+<!--                                </t>-->
                             </tbody>
                         </table>
                     </div>

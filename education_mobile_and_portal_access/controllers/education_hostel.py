@@ -7,6 +7,11 @@ class HostelApplicationWebsite(http.Controller):
 
     @http.route('/hostel/application', type='http', auth='user', website=True)
     def hostel_application_form(self):
+        """
+        Display hostel application form for students.
+        Restricts access to student role and prevents duplicate submissions.
+        Redirects unauthorized or existing applicants to portal dashboard.
+        """
         hostels = request.env['education.hostel'].sudo().search([])
         partner = request.env.user.partner_id
         if partner.position_role != 'student':
@@ -15,20 +20,21 @@ class HostelApplicationWebsite(http.Controller):
             ('student_id', '=', partner.id),
             ('state', '!=', 'draft')
         ], limit=1)
-
         if existing:
             return request.redirect('/my')
         return request.render(
             'education_mobile_and_portal_access.hostel_application_form',
             {'hostels': hostels}
         )
-    @http.route('/hostel/application/submit',
-                type='http',
-                auth='user',
-                methods=['POST'],
-                website=True,
-                csrf=True)
+
+    @http.route('/hostel/application/submit',type='http',auth='user', methods=['POST'],website=True,csrf=True)
     def hostel_application_submit(self, **post):
+        """
+        Handle hostel application submission.
+        Allows only students to apply, creates a draft
+        application using the logged-in user's details,
+        and renders a success page. Redirects others to /my.
+        """
         partner = request.env.user.partner_id
         if not partner.position_role == 'student':
             return request.redirect('/my')
@@ -49,6 +55,17 @@ class HostelApplicationWebsite(http.Controller):
 
     @http.route(['/my/hostel'], type='http', auth='user', website=True)
     def portal_hostel(self, **kwargs):
+        """
+            Render the Hostel Details page in the student portal.
+            This controller retrieves the logged-in student's hostel application,
+            active room allocation (if any), and pending hostel fee details.
+            Workflow:
+            - Fetch the current student partner using helper method.
+            - Redirect to '/my' if no student record is found.
+            - Retrieve the latest hostel application for the student.
+            - Fetch active room allocation (non-vacated).
+            - Retrieve unpaid hostel fee invoices.
+            """
         partner = get_student_partner()
         if not partner:
             return request.redirect('/my')

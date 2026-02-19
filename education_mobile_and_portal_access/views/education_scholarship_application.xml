@@ -4,7 +4,11 @@
         <t t-call="portal.portal_layout">
             <div class="container mt-4">
                 <h2>Apply Scholarship</h2>
-
+                <t t-if="error">
+                    <div class="alert alert-danger" role="alert">
+                        <t t-esc="error"/>
+                    </div>
+                </t>
                 <form action="/scholarship/application/submit"
                       method="post"
                       enctype="multipart/form-data">

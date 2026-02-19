@@ -6,48 +6,52 @@
                 <h3 class="mb-4">Hostel Details</h3>
                 <t t-if="allocation">
                     <div class="card shadow-sm p-4">
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <strong>Hostel Name:</strong><br/>
-                                <t t-esc="hostel.name"/>
-                            </div>
-                            <div class="col-md-6">
-                                <strong>Allocated Room:</strong><br/>
-                                <t t-esc="room.room_no"/>
-                            </div>
-                        </div>
+                            <div class="row">
 
-                        <hr/>
+                                <!-- LEFT SIDE -->
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <strong>Hostel Name:</strong>
+                                        <span class="ms-2"><t t-esc="hostel.name"/></span>
+                                    </div>
 
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                <strong>Room Rent:</strong><br/>
-                                <t t-esc="hostel.room_rent"/>
-                            </div>
-                            <div class="col-md-4">
-                                <strong>Mess Fee:</strong><br/>
-                                <t t-esc="hostel.mess_fee"/>
-                            </div>
-                            <div class="col-md-4">
-                                <strong>Total Fee:</strong><br/>
-                                <t t-esc="hostel.total_fee"/>
-                            </div>
-                        </div>
+                                    <div class="mb-3">
+                                        <strong>Allocated Room:</strong>
+                                        <span class="ms-2"><t t-esc="room.room_no"/></span>
+                                    </div>
 
-                        <hr/>
+                                    <div class="mb-3">
+                                        <strong>Warden:</strong>
+                                        <span class="ms-2">
+                                            <t t-if="hostel.warden_id">
+                                                <t t-esc="hostel.warden_id.name"/>
+                                            </t>
+                                        </span>
+                                    </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <strong>Warden:</strong><br/>
-                                <t t-if="hostel.warden_id">
-                                    <t t-esc="hostel.warden_id.name"/>
-                                </t>
+                                    <div>
+                                        <strong>Hostel Phone:</strong>
+                                        <span class="ms-2"><t t-esc="hostel.phone"/></span>
+                                    </div>
+                                </div>
+                                <!-- RIGHT SIDE -->
+                                <div class="col-md-6 border-start ps-4">
+                                    <div class="mb-3">
+                                        <strong>Room Rent:</strong>
+                                        <span class="ms-2"><t t-esc="hostel.room_rent"/></span>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <strong>Mess Fee:</strong>
+                                        <span class="ms-2"><t t-esc="hostel.mess_fee"/></span>
+                                    </div>
+
+                                    <div>
+                                        <strong>Total Fee:</strong>
+                                        <span class="ms-2"><t t-esc="hostel.total_fee"/></span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <strong>Hostel Phone:</strong><br/>
-                                <t t-esc="hostel.phone"/>
-                            </div>
-                        </div>
                     </div>
                 </t>
 

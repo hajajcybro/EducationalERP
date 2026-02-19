@@ -6,6 +6,14 @@ class LibraryPortal(http.Controller):
 
     @http.route(['/my/library'], type='http', auth='user', website=True)
     def portal_library_home(self, **kwargs):
+        """
+            Render the Library Home page in the portal.
+            - Retrieves the logged-in user's partner record.
+            - Checks whether the user has an active education.library.member record.
+            - Determines membership status based on state = 'active'.
+            - Passes the membership flag (is_member) to the template
+              to control portal visibility and access options.
+            """
         partner = request.env.user.partner_id
         member = request.env['education.library.member'].sudo().search([
             ('partner_id', '=', partner.id),
@@ -31,6 +39,16 @@ class LibraryPortal(http.Controller):
 
     @http.route(['/my/library/history'], type='http', auth='user', website=True)
     def portal_library_history(self, **kwargs):
+        """
+          Display the Library History page in the portal.
+          - Retrieves the logged-in user's partner record.
+          - Checks for an active education.library.member record.
+          - Fetches all related library transactions (issue/return records).
+          - Retrieves book reservations linked to the member.
+          - Fetches related customer invoices (account.move with move_type = 'out_invoice')
+            generated for library services.
+          - Renders the library history template with all related records.
+          """
         partner = request.env.user.partner_id
         member = request.env['education.library.member'].sudo().search([
             ('partner_id', '=', partner.id),

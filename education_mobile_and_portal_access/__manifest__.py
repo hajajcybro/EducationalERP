@@ -18,7 +18,6 @@
         'views/education_library_template.xml',
         'views/education_library_book_template.xml',
         'views/education_library_myhistory.xml',
-        'views/education_exam_template.xml',
         'views/education_exam_published_template.xml',
         'views/education_exam_result_template.xml',
         'views/education_exam_revaluation_application.xml',
@@ -26,14 +25,13 @@
         'views/education_leave_form_template.xml',
         'views/education_leave_history.xml',
         'views/education_attendance.xml',
-
         'views/education_hostel_template.xml',
         'views/education_scholarship_template.xml',
         'views/education_scholarship_published.xml',
         'views/education_scholarship_application.xml',
         'views/education_scholarship_details.xml',
         'views/education_transport.xml',
-        'views/education_student_profile_template.xml',
+        'views/education_exam_template.xml',
         'views/education_student_profile.xml',
         'views/education_student_document.xml',
 
