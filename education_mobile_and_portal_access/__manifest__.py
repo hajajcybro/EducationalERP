@@ -10,7 +10,11 @@
     'maintainer': 'Cybrosys Techno Solutions',
     'website': 'https://www.cybrosys.com',
     'depends': ['base', 'mail','website','education_core' ,'portal',
-                'education_exam','education_hostel_management','education_attendances'],
+                'education_exam','education_hostel_management',
+                'education_attendances','education_library',
+                'education_scholarship','education_transport',
+                'education_notification','education_financial_management'
+                ],
     'data': [
         'views/education_application_template.xml',
         'views/education_hostel_application_template.xml',
@@ -34,12 +38,12 @@
         'views/education_exam_template.xml',
         'views/education_student_profile.xml',
         'views/education_student_document.xml',
-
         'views/education_menu.xml',
     ],
     'assets': {
         'web.assets_frontend': [
             'education_mobile_and_portal_access/static/src/js/education_attendance.js',
+            'education_mobile_and_portal_access/static/src/js/education_portal.js',
         ],
     },
 

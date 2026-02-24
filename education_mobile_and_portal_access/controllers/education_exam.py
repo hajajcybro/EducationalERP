@@ -3,7 +3,6 @@ from odoo.http import request
 from odoo import fields, models
 from .portal_utils import get_student_partner
 
-
 class StudentExamPortal(http.Controller):
 
     @http.route(['/my/exams'], type='http', auth='user', website=True)
@@ -49,6 +48,7 @@ class StudentExamPortal(http.Controller):
         results = request.env['education.exam.result'].sudo().search([
             ('student_id', '=', student.id)
         ])
+        print(results)
         return request.render('education_mobile_and_portal_access.portal_exam_results', {
             'results': results
         })

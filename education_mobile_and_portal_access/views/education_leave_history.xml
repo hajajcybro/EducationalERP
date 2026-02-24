@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <template id="portal_leave_history">
-    <t t-call="portal.portal_layout">
-        <div class="container mt-4">
-            <h3>My Leave History</h3>
+        <t t-call="portal.portal_layout">
+            <div class="container mt-4">
+                <h3>My Leave History</h3>
 
-            <t t-if="leaves">
+                <t t-if="leaves">
                 <table class="table table-bordered mt-3">
                     <thead>
                         <tr>

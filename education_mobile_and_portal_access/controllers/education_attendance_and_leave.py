@@ -13,6 +13,16 @@ class StudentLeavePortal(http.Controller):
             This route displays the main attendance entry page
             accessible to authenticated users through the portal.
             """
+        partner = request.env.user.partner_id
+        unread_notifications = request.env['edu.notification'].sudo().search([
+            ('module', '=', 'attendance'),
+            ('recipient_ids', 'in', partner.id),
+            ('read_by_partner_ids', 'not in', partner.id)
+        ])
+        if unread_notifications:
+            unread_notifications.sudo().write({
+                'read_by_partner_ids': [(4, partner.id)]
+            })
         return request.render(
             'education_mobile_and_portal_access.portal_leave_home'
         )
@@ -107,7 +117,7 @@ class StudentLeavePortal(http.Controller):
         })
         return request.redirect('/my')
 
-    @http.route(['/my/leave/history'], type='http', auth='user', website=True)
+    @http.route(['/my/leave/history'], auth='user', website=True)
     def portal_leave_history(self, **kwargs):
         """
             Display the Leave History page in the student portal.
@@ -116,9 +126,15 @@ class StudentLeavePortal(http.Controller):
             - Renders the leave history template with leave records.
             """
         partner = get_student_partner()
+        # partner = request.env.user.partner_id
+
+        # Sudo is used to bypass record rules and fetch records for the portal view
         leaves = request.env['education.leave.request'].sudo().search([
-            ('student_id', '=', partner.id)
+            ('student_id', '=', partner.id),
         ])
+        print(leaves.student_id)
+        print(partner)
+        # print(student)
         return request.render(
             'education_mobile_and_portal_access.portal_leave_history',
             {'leaves': leaves}
