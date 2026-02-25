@@ -5,8 +5,6 @@ odoo.define('education_mobile_and_portal_access.portal_dashboard', function (req
 
     // This event listens for when the page is loaded or restored from the browser's "Back" button cache
     window.addEventListener('pageshow', function (event) {
-
-        // event.persisted is true if the page was loaded from browser cache (clicking "Back")
         if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
 
             // 1. Find all Odoo loading spinners and forcefully hide them

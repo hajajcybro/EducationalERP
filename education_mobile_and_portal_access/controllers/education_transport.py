@@ -17,6 +17,20 @@ class TransportExamPortal(http.Controller):
             - Renders the transport portal template with all related data.
         """
         partner = get_student_partner()
+        # Fetch unread transport notifications
+        unread_notifications = request.env['edu.notification'].sudo().search([
+            ('module', '=', 'transport'),
+            ('status', 'in', ['pending', 'sent']),
+            ('recipient_ids', 'in', partner.id),
+            ('read_by_partner_ids', 'not in', partner.id)
+        ])
+
+        alert_messages = [n.message for n in unread_notifications if n.message]
+
+        # Mark all as read
+        for notif in unread_notifications:
+            notif.sudo().write({'read_by_partner_ids': [(4, partner.id)]})
+
         if not partner:
             return request.redirect('/my')
         transport = request.env['education.transport.assignment'].sudo().search([
@@ -46,6 +60,7 @@ class TransportExamPortal(http.Controller):
                 'stops': stops,
                 'transport_fee': transport_fee,
                 'pending_amount': pending_amount,
+                'alert_messages': alert_messages,
             }
         )
 

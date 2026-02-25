@@ -3,6 +3,16 @@
     <template id="portal_exam_home">
     <t t-call="portal.portal_layout">
         <div class="container mt-4">
+            <t t-if="alert_messages">
+                <t t-foreach="alert_messages" t-as="msg">
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <i class="fa fa-bell me-2"/>
+                        <t t-esc="msg"/>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"/>
+                    </div>
+                </t>
+            </t>
+
             <h2>Exams</h2>
             <div class="row mt-4">
                 <div class="col-md-6 mb-3">

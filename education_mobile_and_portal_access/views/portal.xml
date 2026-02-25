@@ -12,7 +12,14 @@
                     <i class="fa fa-user-circle fa-2x"/>
                 </div>
                 <div>
-                    <h5 class="mb-1">My Profile</h5>
+                    <h5 class="mb-1">My Profile
+                    <t t-if="unread_profile and unread_profile > 0">
+                        <span class="badge rounded-pill bg-danger ms-2"
+                              style="font-size: 0.7rem; vertical-align: middle;">
+                            <t t-esc="unread_profile"/> New
+                        </span>
+                    </t>
+                    </h5>
                     <small>Profile and Document</small>
                 </div>
             </a>
@@ -24,7 +31,14 @@
                     <i class="fa fa-book fa-2x"/>
                 </div>
                 <div>
-                    <h5 class="mb-1">Library</h5>
+                    <h5 class="mb-1">Library
+                    <t t-if="unread_library and unread_library > 0">
+                        <span class="badge rounded-pill bg-danger ms-2"
+                              style="font-size: 0.7rem; vertical-align: middle;">
+                            <t t-esc="unread_library"/> New
+                        </span>
+                    </t>
+                    </h5>
                     <small>View your library details</small>
                 </div>
             </a>
@@ -36,7 +50,14 @@
                     <i class="fa fa-edit fa-2x"/>
                 </div>
                 <div>
-                    <h5 class="mb-1">Exams</h5>
+                    <h5 class="mb-1">Exams
+                        <t t-if="unread_exam and unread_exam > 0">
+                            <span class="badge rounded-pill bg-danger ms-2"
+                                  style="font-size: 0.7rem; vertical-align: middle;">
+                                <t t-esc="unread_exam"/> New
+                            </span>
+                        </t>
+                    </h5>
                     <small>View published exams and your results</small>
                 </div>
             </a>
@@ -81,7 +102,14 @@
                     <i class="fa fa-graduation-cap fa-2x"/>
                 </div>
                 <div>
-                    <h5 class="mb-1">Scholarships</h5>
+                    <h5 class="mb-1">Scholarships
+                    <t t-if="unread_scholarship and unread_scholarship > 0">
+                        <span class="badge rounded-pill bg-danger ms-2"
+                              style="font-size: 0.7rem; vertical-align: middle;">
+                            <t t-esc="unread_scholarship"/> New
+                        </span>
+                    </t>
+                    </h5>
                     <small>View scholarships and your applications</small>
                 </div>
             </a>
@@ -93,7 +121,14 @@
                     <i class="fa fa-bus fa-2x"/>
                 </div>
                 <div>
-                    <h5 class="mb-1">Transport</h5>
+                    <h5 class="mb-1">Transport
+                     <t t-if="unread_transport and unread_transport > 0">
+                        <span class="badge rounded-pill bg-danger ms-2"
+                              style="font-size: 0.7rem; vertical-align: middle;">
+                            <t t-esc="unread_transport"/> New
+                        </span>
+                    </t>
+                    </h5>
                     <small>View transport info</small>
                 </div>
             </a>
@@ -115,8 +150,5 @@
     </xpath>
 
 </template>
-
-
-
 </odoo>
 

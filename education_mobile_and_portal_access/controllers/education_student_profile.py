@@ -18,11 +18,26 @@ class StudentPortalController(http.Controller):
         documents = request.env['education.document'].sudo().search([
             ('student_id', '=', partner.id),('state', '=', 'approved')
         ])
+        unread_notifications = request.env['edu.notification'].sudo().search([
+            ('module', '=', 'document'),
+            ('status', 'in', ['pending', 'sent']),
+            ('recipient_ids', 'in', partner.id),
+            ('read_by_partner_ids', 'not in', partner.id)
+        ])
+
+        alert_messages = [n.message for n in unread_notifications if n.message]
+
+        # Mark all as read
+        for notif in unread_notifications:
+            notif.sudo().write({'read_by_partner_ids': [(4, partner.id)]})
+
         if not partner.position_role == 'student':
             return request.redirect('/my')
         return request.render('education_mobile_and_portal_access.portal_student_profile', {
             'student': partner,
             'documents': documents,
+            'alert_messages': alert_messages,
+
         })
 
     @http.route(['/my/document/update'], type='http', auth='user', website=True)

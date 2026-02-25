@@ -3,6 +3,16 @@
 <template id="portal_library_home" name="Portal Library Home">
     <t t-call="portal.portal_layout">
         <div class="container">
+            <t t-if="alert_messages">
+                <t t-foreach="alert_messages" t-as="msg">
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <i class="fa fa-bell me-2"/>
+                        <t t-esc="msg"/>
+                        <button type="button" class="btn-close"
+                                data-bs-dismiss="alert" aria-label="Close"/>
+                    </div>
+                </t>
+            </t>
             <h2 class="mb-4">Library</h2>
             <div class="row g-3">
                 <!-- Books -->

@@ -9,11 +9,12 @@
     'company': 'Cybrosys Techno Solutions',
     'maintainer': 'Cybrosys Techno Solutions',
     'website': 'https://www.cybrosys.com',
-    'depends': ['base', 'mail','website','education_core' ,'portal',
-                'education_exam','education_hostel_management',
+    'depends': ['base', 'mail','website','education_core' ,
+                'portal','education_exam','education_hostel_management',
                 'education_attendances','education_library',
                 'education_scholarship','education_transport',
-                'education_notification','education_financial_management'
+                'education_notification','education_financial_management',
+                'education_document_and_records',
                 ],
     'data': [
         'views/education_application_template.xml',

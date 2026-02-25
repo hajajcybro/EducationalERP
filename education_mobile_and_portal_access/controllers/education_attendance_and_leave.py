@@ -23,8 +23,12 @@ class StudentLeavePortal(http.Controller):
             unread_notifications.sudo().write({
                 'read_by_partner_ids': [(4, partner.id)]
             })
+        alert_messages = [notif.message for notif in unread_notifications if notif.message]
+        values = {
+            'alert_messages': alert_messages,
+        }
         return request.render(
-            'education_mobile_and_portal_access.portal_leave_home'
+            'education_mobile_and_portal_access.portal_leave_home',values
         )
 
     @http.route(['/my/my-attendance'], type='http', auth='user', website=True)

@@ -22,3 +22,4 @@ class EducationLeaveRequestInherit(models.Model):
                     })
                     notif.action_send()  # Triggers the send function in your notification module
         return res
+

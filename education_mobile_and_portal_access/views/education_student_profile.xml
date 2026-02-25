@@ -4,6 +4,16 @@
         <t t-call="portal.portal_layout">
             <div class="container mt-4">
                 <h3 class="mb-4">My Profile</h3>
+                <t t-if="alert_messages">
+                    <t t-foreach="alert_messages" t-as="msg">
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <i class="fa fa-bell me-2"/>
+                            <t t-esc="msg"/>
+                            <button type="button" class="btn-close"
+                                    data-bs-dismiss="alert" aria-label="Close"/>
+                        </div>
+                    </t>
+                </t>
                 <t t-if="request.params.get('message') == 'submitted'">
                     <div class="alert alert-info">
                         Your document has been submitted successfully.
@@ -23,7 +33,7 @@
                         <div class="col-md-6">
                             <p><strong>Father Name:</strong> <t t-esc="student.father_name"/></p>
                             <p><strong>Mother Name:</strong> <t t-esc="student.mother_name"/></p>
-                            <p><strong>Guardian:</strong> <t t-esc="student.guardian"/></p>
+                            <p><strong>Guardian:</strong> <t t-esc="student.guardian.name"/></p>
                             <p><strong>Relation:</strong> <t t-esc="student.relation"/></p>
                             <p><strong>Date of Birth:</strong> <t t-esc="student.dob"/></p>
                             <p><strong>Age:</strong> <t t-esc="student.age"/></p>
