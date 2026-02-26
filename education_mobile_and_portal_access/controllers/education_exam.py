@@ -32,6 +32,7 @@ class StudentExamPortal(http.Controller):
             'education_mobile_and_portal_access.portal_exam_home', {
                 'student': student,
                 'user_role': user_role,
+                'alert_messages': alert_messages,
             }
         )
 

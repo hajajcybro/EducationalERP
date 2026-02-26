@@ -5,3 +5,4 @@ from . import education_library
 from . import education_scholarship
 from . import education_transport
 from . import education_document
+from . import education_fee_invoice

@@ -110,7 +110,6 @@ class EducationApplication(models.Model):
     contact_no = fields.Char('Contact Number')
     emergency_phone = fields.Char('Emergency Phone Number')
     contact_address = fields.Text('Permanent Address')
-    occupation = fields.Char('Occupation',help='Job or business')
     previous_academic = fields.Char('Previous Academic')
     previous_class = fields.Char('Previous Class')
     Year_of_passing = fields.Char('Year Of Passing')

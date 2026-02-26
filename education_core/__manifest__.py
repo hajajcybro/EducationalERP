@@ -9,7 +9,8 @@
     'company': 'Cybrosys Techno Solutions',
     'maintainer': 'Cybrosys Techno Solutions',
     'website': 'https://www.cybrosys.com',
-    'depends': ['base', 'mail','base_automation','hr','web',],
+    'depends': ['base', 'mail','base_automation','hr','web','portal',
+                'website','education_document_and_records'],
     'data': [
         'security/education_security_groups.xml',
         'security/ir.model.access.csv',
@@ -36,6 +37,9 @@
         'wizard/student_report_wizard.xml',
         'report/ir_actions_report.xml',
         'report/student_report-template.xml',
+        'views/portal_education_application.xml',
+        'views/portal.xml',
+        'views/portal_education_student_profile.xml',
         'views/menus.xml',
 ],
     'assets': {

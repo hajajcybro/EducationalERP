@@ -90,7 +90,14 @@
                     <i class="fa fa-building fa-2x"/>
                 </div>
                 <div>
-                    <h5 class="mb-1">Hostel</h5>
+                    <h5 class="mb-1">Hostel
+                    <t t-if="unread_hostel and unread_hostel > 0">
+                        <span class="badge rounded-pill bg-danger ms-2"
+                              style="font-size: 0.7rem; vertical-align: middle;">
+                            New
+                        </span>
+                    </t>
+                    </h5>
                     <small>View Hostel and Payment history</small>
                 </div>
             </a>
@@ -133,20 +140,6 @@
                 </div>
             </a>
         </div>
-
-<!--        <div class="col-md-6 mb-3">-->
-<!--            <a href="/my/exams" class="text-decoration-none">-->
-<!--                <div class="card shadow-sm border-0 h-100">-->
-<!--                    <div class="card-body">-->
-<!--                        <h5 class="card-title">Exams</h5>-->
-<!--                        <p class="card-text text-muted">-->
-<!--                            View published exams and your results-->
-<!--                        </p>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </a>-->
-<!--        </div>-->
-
     </xpath>
 
 </template>

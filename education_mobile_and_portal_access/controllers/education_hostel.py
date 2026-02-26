@@ -69,6 +69,14 @@ class HostelApplicationWebsite(http.Controller):
         partner = get_student_partner()
         if not partner:
             return request.redirect('/my')
+        unread = request.env['edu.notification'].sudo().search([
+            ('module', '=', 'hostel'),
+            ('status', 'in', ['pending', 'sent']),
+            ('recipient_ids', 'in', partner.id),
+            ('read_by_partner_ids', 'not in', partner.id)
+        ])
+        if unread:
+            unread.sudo().write({'read_by_partner_ids': [(4, partner.id)]})
 
         application = request.env['education.hostel.application'].sudo().search([
             ('student_id', '=', partner.id),

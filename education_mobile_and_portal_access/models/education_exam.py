@@ -9,8 +9,6 @@ class EducationExamNotification(models.Model):
     """
     _inherit = 'education.exam'
 
-    from odoo import models
-
     class EducationExamNotification(models.Model):
         """
         Inherits education.exam to send portal notifications when:
@@ -56,16 +54,12 @@ class EducationExamNotification(models.Model):
             the parent method creates results and sets state = 'published'.
             """
             res = super().action_complete()
-
             # At this point state is 'published', notify each student
             for line in self.valuation_line_ids:
                 student = line.student_id  # res.partner directly
                 if not student:
                     continue
-
-                # Determine pass/fail message
                 result_text = 'Pass' if line.pass_or_fail == 'pass' else 'Fail'
-
                 notif = self.env['edu.notification'].sudo().create({
                     'name': f'Exam Result Published: {self.exam_id.name}',
                     'message': (
