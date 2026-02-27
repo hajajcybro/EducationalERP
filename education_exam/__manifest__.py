@@ -29,6 +29,11 @@
         'report/ir_actions_report.xml',
         'report/student_exam_result_template.xml',
         'report/student_class_wise_report_template.xml',
+        'views/portal.xml',
+        'views/portal_education_exam.xml',
+        'views/portal_education_exam_published.xml',
+        'views/portal_education_exam_result.xml',
+        'views/portal_education_exam_revaluation.xml',
 
     ],
     'license': 'AGPL-3',

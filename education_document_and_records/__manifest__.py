@@ -19,6 +19,9 @@
         'wizard/education_document_report_wizard.xml',
         'report/ir_actions_report.xml',
         'report/education_document_report_template.xml',
+        'views/portal.xml',
+        'views/portal_education_document.xml',
+        'views/portal_education_document_upload.xml',
         'views/menu.xml',
     ],
     'assets': {

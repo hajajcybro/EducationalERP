@@ -24,6 +24,8 @@
         'report/ir_actions_report.xml',
         'report/transport_report_template.xml',
         'report/vehicle_report_template.xml',
+        'views/portal.xml',
+        'views/portal_education_transport.xml',
         'views/menu.xml',
         ],
     'assets' : {

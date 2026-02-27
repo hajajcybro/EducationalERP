@@ -15,7 +15,8 @@
     ''',
     'author': 'Your Company',
     'website': 'https://www.yourcompany.com',
-    'depends': ['base', 'mail','sale','account'],
+    'depends': ['base', 'mail','sale','account',
+                'website','portal'],
     'data': [
         'security/library_security.xml',
         'security/ir.model.access.csv',
@@ -36,6 +37,10 @@
         'report/library_stock_report_template.xml',
         'wizards/library_overdue_wizard_views.xml',
         'report/library_overdue_books_template.xml',
+        'views/portal.xml',
+        'views/portal_education_library.xml',
+        'views/portal_education_library_book.xml',
+        'views/portal_education_library_history.xml',
         'views/education_library_menus.xml',
 ],
     'assets': {

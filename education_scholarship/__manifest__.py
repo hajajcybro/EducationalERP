@@ -20,6 +20,11 @@
         'wizard/education_scholarship_wizard.xml',
         'report/ir_actions_report.xml',
         'report/scholarship_report_template.xml',
+        'views/portal.xml',
+        'views/portal_education_scholarship.xml',
+        'views/portal_education_scholarship_details.xml',
+        'views/portal_education_scholarship_published.xml',
+        'views/portal_education_scholarship_template.xml',
         'views/education_menu.xml',
     ],
     'assets' : {

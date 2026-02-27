@@ -9,9 +9,11 @@
     'company': 'Cybrosys Techno Solutions',
     'maintainer': 'Cybrosys Techno Solutions',
     'website': 'https://www.cybrosys.com',
-    'depends': ['education_core','mail','base','web'],
+    'depends': ['education_core','mail','base','web',
+                'website','portal'],
     'data': [
         'security/ir.model.access.csv',
+        'data/cron.xml',
         'views/res_partner_view.xml',
         'views/education_leave_request_view.xml',
         'views/education_attendance_view.xml',
@@ -22,15 +24,20 @@
         'report/ir_actions_report.xml',
         'report/attendance_report.xml',
         'views/res_config_settings_view.xml',
-        'data/mail_template.xml',
-        'data/cron.xml',
+        'views/portal.xml',
+        'views/poratl_education_leave.xml',
+        'views/portal_education_attendance.xml',
+        'views/portal_education_leave_history.xml',
+        'views/portal_education_leave_template.xml',
         'views/menu.xml',
     ],
     'assets': {
         'web.assets_backend': [
             # 'education_attendances/static/src/js/action_manager.js',
             'education_attendances/static/src/css/custom.css',
-
+        ],
+        'web.assets_frontend': [
+            'education_attendances/static/src/js/education_attendance.js',
         ],
     },
 
