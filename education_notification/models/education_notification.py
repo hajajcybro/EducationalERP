@@ -49,7 +49,7 @@ class EduNotification(models.Model):
     )
     class_id = fields.Many2one('education.class', string="Class", help='Choose a class to send mail/SMS to a particular class.')
     # Tracks which students have viewed this notification in the portal
-    read_by_partner_ids = fields.Many2many('res.partner', 'edu_notif_read_rel', string="Read By")
+    read_by_partner_ids = fields.Many2many('res.partner', 'edu_notif_read_rel', string="Read By Portal Users")
 
     @api.onchange('class_id')
     def _onchange_class_id(self):

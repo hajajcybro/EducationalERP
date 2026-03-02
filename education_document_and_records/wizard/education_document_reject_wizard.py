@@ -39,13 +39,13 @@ class EducationDocumentRejectWizard(models.TransientModel):
             self.rejection_reason,
             self.env.user.name
         )
-
-        mail = self.env['mail.mail'].create({
-            'subject': subject,
-            'email_to': student.email,
-            'body_html': body_html,
-        })
-        mail.send()
-        return {'type': 'ir.actions.act_window_close'}
+        if student and student.email:
+            mail = self.env['mail.mail'].create({
+                'subject': subject,
+                'email_to': student.email,
+                'body_html': body_html,
+            })
+            mail.send()
+            return {'type': 'ir.actions.act_window_close'}
 
 

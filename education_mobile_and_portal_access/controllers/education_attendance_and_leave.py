@@ -9,7 +9,6 @@ class StudentLeavePortal(http.Controller):
     def portal_leave_home(self, **kwargs):
         """
             Render the Attendance home page in the website portal.
-
             This route displays the main attendance entry page
             accessible to authenticated users through the portal.
             """

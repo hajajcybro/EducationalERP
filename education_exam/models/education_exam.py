@@ -3,9 +3,7 @@ from odoo.exceptions import UserError, ValidationError
 
 
 class EducationExam(models.Model):
-    """
-        Model representing Education Exams.
-    """
+    """Model representing Education Exams."""
     _name = 'education.exam'
     _description = 'Education Exam'
     _inherit = ['mail.thread', 'mail.activity.mixin']
@@ -33,17 +31,14 @@ class EducationExam(models.Model):
 
     def action_confirm(self):
         """This function is used to confirm exam"""
-
         if not self.course_line_ids:
             raise UserError(_('Please Add Courses'))
-
         self.name = (
             f"{self.program_id.name}-"
             f"{self.session_id.name}-"
             f"{self.exam_type_id.name}-"
             f"{self.start_date}"
         )
-
         # Find students of the class
         students = self.env['res.partner'].search([
             ('class_id', '=', self.class_id.id), ('position_role', '=', 'student')
@@ -65,6 +60,7 @@ class EducationExam(models.Model):
         self.name = str(self.program_id.name) + '-' + str(self.session_id.name) + '-' + str(
             self.exam_type_id.name) + '-' + str(self.start_date)
         self.state = 'published'
+        self._send_exam_published_notifications()
 
     def action_cancel(self):
         """This function is used to cancel exam"""
@@ -97,21 +93,13 @@ class EducationExam(models.Model):
 
 
     def cron_send_result_email(self):
-        print("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII",self)
         exam_ids = self.search([('state', '=', 'published'),('valuation_completed','=',False)])
-        print("kkkkkkkkkkkkkkkkkkkkkkkkkkkk",exam_ids)
         for exam_id in exam_ids:
-            print("iiiiiiiiiiiiiii",exam_id,exam_id.valuation_completed,
-                  exam_id.class_id)
             result_ids = self.env['education.exam.result'].search(
                 [('exam_id', '=', exam_id.id),
                  ('class_id', '=', exam_id.class_id.id),('valuation_completed','=',False),])
-            print("ooooooooooooooo",result_ids)
             for result in result_ids:
-                print("eeee",result.result_line_ids)
-                print("yyyyyyyyyyyyyy",exam_id.course_line_ids)
                 if len(result.result_line_ids) == len(exam_id.course_line_ids):
-                    print("uuuuuuuuuuuuuuuuu")
                     student_email = result.student_id.email
                     template = self.env.ref(
                         'education_exam.email_template_exam_result_published'
@@ -133,6 +121,29 @@ class EducationExam(models.Model):
                     )
                     exam_id.valuation_completed= True
                     result.valuation_completed= True
+
+    def _send_exam_published_notifications(self):
+        """Send in-app notifications to students when an exam is published."""
+        students = self.env['res.partner'].search([
+            ('class_id', '=', self.class_id.id),
+            ('position_role', '=', 'student')
+        ])
+        recipient_ids = [(4, stud.id) for stud in students]
+        if recipient_ids:
+            notif = self.env['edu.notification'].sudo().create({
+                'name': f'New Exam Published: {self.name}',
+                'message': (
+                    f'A new exam "{self.name}" has been published. '
+                    f'Please check the Exams section for details.'
+                ),
+                'recipient_ids': recipient_ids,
+                'module': 'exam',
+                'notification_type': 'in_app',
+                'status': 'draft',
+            })
+            notif.action_send()
+
+
 
 
 

@@ -10,7 +10,7 @@
     'maintainer': 'Cybrosys Techno Solutions',
     'website': 'https://www.cybrosys.com',
     'depends': ['education_core','mail','base','web',
-                'website','portal'],
+                'website','portal','education_notification'],
     'data': [
         'security/ir.model.access.csv',
         'data/cron.xml',

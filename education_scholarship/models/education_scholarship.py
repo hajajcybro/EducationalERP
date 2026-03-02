@@ -44,6 +44,24 @@ class EducationScholarship(models.Model):
     def action_open(self):
         for record in self:
             record.status = 'open'
+        students = self.env['res.partner'].sudo().search([
+            ('position_role', '=', 'student'),
+            ('active', '=', True),
+        ])
+        if students:
+            recipient_ids = [(4, s.id) for s in students]
+            notif = self.env['edu.notification'].sudo().create({
+                'name': f'New Scholarship: {self.name}',
+                'message': (
+                    f'A new scholarship "{self.name}" is now open for applications. '
+                    f'Please check the Published Scholarships section.'
+                ),
+                'recipient_ids': recipient_ids,
+                'module': 'scholarship',
+                'notification_type': 'in_app',
+                'status': 'draft',
+            })
+            notif.action_send()
 
     def action_expire(self):
         for record in self:

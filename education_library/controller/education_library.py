@@ -19,19 +19,20 @@ class LibraryPortal(http.Controller):
             ('partner_id', '=', partner.id),
             ('state', '=', 'active')
         ], limit=1)
-        # unread_notifications = request.env['edu.notification'].sudo().search([
-        #     ('module', '=', 'library'),
-        #     ('status', 'in', ['pending', 'sent']),
-        #     ('recipient_ids', 'in', partner.id),
-        #     ('read_by_partner_ids', 'not in', partner.id)
-        # ])
-        # alert_messages = [n.message for n in unread_notifications if n.message]
-        # for notif in unread_notifications:
-        #     notif.sudo().write({'read_by_partner_ids': [(4, partner.id)]})
+        unread_notifications = request.env['edu.notification'].sudo().search([
+            ('module', '=', 'library'),
+            ('status', 'in', ['pending', 'sent']),
+            ('recipient_ids', 'in', partner.id),
+            ('read_by_partner_ids', 'not in', partner.id)
+        ])
+        alert_messages = [n.message for n in unread_notifications if n.message]
+        for notif in unread_notifications:
+            notif.sudo().write({'read_by_partner_ids': [(4, partner.id)]})
         is_member = bool(member)
         return request.render(
             'education_library.portal_library_home', {
                 'is_member': is_member,
+                'alert_messages' : alert_messages,
             }
         )
 

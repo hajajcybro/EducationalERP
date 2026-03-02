@@ -80,7 +80,6 @@ class EducationExamValuation(models.Model):
                 [('exam_id', '=', self.exam_id.id),
                  ('class_id', '=', self.class_id.id),
                  ('student_id', '=', students.student_id.id)])
-            print("search_result",students)
             mark_percentage = 0.0
             if self.max_mark:
                 mark_percentage = (students.mark_scored / self.max_mark)
@@ -89,7 +88,6 @@ class EducationExamValuation(models.Model):
                     ('percentage_from', '<=', mark_percentage),
                     ('percentage_to', '>=', mark_percentage)
                 ])
-
             if len(search_result) < 1:
                 result_data = {
                     # 'name': self.name,
@@ -122,9 +120,25 @@ class EducationExamValuation(models.Model):
                     'grade_id': grade.id,
                 }
                 exam_result_line_obj.create(result_line_data)
+
         self.state = 'published'
-
-
+        # Send in-app notification to each student
+        for line in self.valuation_line_ids:
+            student = line.student_id
+            if not student:
+                continue
+            notif = self.env['edu.notification'].sudo().create({
+                'name': f'Exam Result Published: {self.exam_id.name}',
+                'message': (
+                    f'Your result for "{self.exam_id.name}" has been published. '
+                    f'Please check the Exam Results section.'
+                ),
+                'recipient_ids': [(4, student.id)],
+                'module': 'exam',
+                'notification_type': 'in_app',
+                'status': 'draft',
+            })
+            notif.action_send()
 
     def action_create_mark_sheet(self):
         """
@@ -154,28 +168,23 @@ class EducationExamValuation(models.Model):
         records = super().create(vals_list)
         for rec in records:
             parts = []
-
             # Program / Session / Class
             if rec.program_id:
                 parts.append(rec.program_id.name)
                 if rec.session_id:
                     parts.append(rec.session_id.name)
-
             if rec.class_id:
                 if rec.program_id:
                     parts.append(rec.class_id.name)
                 else:
                     parts = [rec.class_id.name]
-
             # Exam details
             if rec.exam_id and rec.exam_id.start_date and rec.exam_id.end_date:
                 exam_type = rec.exam_id.exam_type_id.name
                 start = rec.exam_id.start_date.strftime('%d-%m-%Y')
                 end = rec.exam_id.end_date.strftime('%d-%m-%Y')
                 parts.append(f"{exam_type}-{start} To {end}")
-
             rec.name = "-".join(parts)
-
         return records
 
 

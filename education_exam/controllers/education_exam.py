@@ -15,10 +15,24 @@ class StudentExamPortal(http.Controller):
         partner = request.env.user.partner_id
         student = get_student_partner()
         user_role = partner.position_role
+        unread_notifications = request.env['edu.notification'].sudo().search([
+            ('module', '=', 'exam'),
+            ('status', 'in', ['pending', 'sent']),
+            ('recipient_ids', 'in', partner.id),
+            ('read_by_partner_ids', 'not in', partner.id)
+        ])
+
+        alert_messages = [n.message for n in unread_notifications if n.message]
+
+        # Mark all as read
+        for notif in unread_notifications:
+            notif.sudo().write({'read_by_partner_ids': [(4, partner.id)]})
+
         return request.render(
             'education_exam.portal_exam_home', {
                 'student': student,
                 'user_role': user_role,
+                'alert_messages': alert_messages,
             }
         )
 

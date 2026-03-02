@@ -12,22 +12,22 @@ class ScholarshipPortal(http.Controller):
            - Passes a boolean flag to the template to control
              student-specific scholarship access and visibility.
            """
-        partner = request.env.user.partner_id
+        partner = get_student_partner()
         student = partner.position_role == 'student'
-        # unread_notifications = request.env['edu.notification'].sudo().search([
-        #     ('module', '=', 'scholarship'),
-        #     ('status', 'in', ['pending', 'sent']),
-        #     ('recipient_ids', 'in', partner.id),
-        #     ('read_by_partner_ids', 'not in', partner.id)
-        # ])
-        # alert_messages = [n.message for n in unread_notifications if n.message]
-        # # Mark all as read
-        # for notif in unread_notifications:
-        #     notif.sudo().write({'read_by_partner_ids': [(4, partner.id)]})
+        unread_notifications = request.env['edu.notification'].sudo().search([
+            ('module', '=', 'scholarship'),
+            ('status', 'in', ['pending', 'sent']),
+            ('recipient_ids', 'in', partner.id),
+            ('read_by_partner_ids', 'not in', partner.id)
+        ])
+        alert_messages = [n.message for n in unread_notifications if n.message]
+        for notif in unread_notifications:
+            notif.sudo().write({'read_by_partner_ids': [(4, partner.id)]})
         return request.render(
             'education_scholarship.portal_scholarship_home',
             {
                 'student': student,
+                'alert_messages':alert_messages,
             }
         )
 

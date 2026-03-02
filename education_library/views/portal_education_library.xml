@@ -15,7 +15,6 @@
             </t>
             <h2 class="mb-4">Library</h2>
             <div class="row g-3">
-                <!-- Books -->
                 <div class="col-md-6">
                     <div class="card shadow-sm h-100">
                         <a href="/my/library/books"
@@ -25,13 +24,12 @@
                         </a>
                     </div>
                 </div>
-                <!-- My History (Only if Member) -->
                 <t t-if="is_member">
                     <div class="col-md-6">
                         <div class="card shadow-sm h-100">
                             <a href="/my/library/history"
                                class="text-decoration-none p-4 d-block">
-                                <h5>My History</h5>
+                                <h5>Activity</h5>
                                 <p>Issued and returned books</p>
                             </a>
                         </div>

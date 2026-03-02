@@ -11,8 +11,7 @@
                     <i class="fa fa-calendar-check-o fa-2x"/>
                 </div>
                 <div>
-                    <h5 class="mb-1">Attendance
-                    </h5>
+                    <h5 class="mb-1">Attendance</h5>
                     <small>View attendance and leave details</small>
                 </div>
             </a>
@@ -25,6 +24,13 @@
                 </div>
                 <div>
                     <h5 class="mb-1">Leave
+                        <t t-if="unread_attendance and unread_attendance &gt; 0">
+                            <span class="badge bg-danger text-white ms-2"
+                                  style="font-size: 0.8rem; cursor: help;"
+                                  t-att-title="attendance_message">
+                                <t t-esc="unread_attendance"/> New
+                            </span>
+                        </t>
                     </h5>
                     <small>Apply leave and view leave info</small>
                 </div>

@@ -1,6 +1,6 @@
-from odoo import models, fields, api, _
+from odoo import models, fields, api
 from odoo.exceptions import ValidationError
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 class EducationDocument(models.Model):
     _inherit = 'education.document'
@@ -65,6 +65,19 @@ class EducationDocument(models.Model):
         """Mark the document as approved and finalized """
         for record in self:
             record.state ='approved'
+            partner = record.student_id
+            if partner:
+                # Create notification record  - aprove
+                notif = self.env['edu.notification'].sudo().create({
+                    'name': f'Document Approved: {record.document_type.name}',
+                    'message': f'Your document "{record.document_type.name}" has been approved.',
+                    'recipient_ids': [(4, partner.id)],
+                    'module': 'document',
+                    'notification_type': 'in_app',
+                    'status': 'draft',
+                })
+                # Send notification (change status → sent)
+                notif.action_send()
 
     def write(self, vals):
         """Block updates once the document is approved."""
@@ -74,6 +87,23 @@ class EducationDocument(models.Model):
                 raise ValidationError(
                     "Documents  cannot be modified."
                 )
+        # Create notification record - reject
+        if vals.get('state') == 'rejected':
+            for rec in self:
+                partner = rec.student_id
+                if partner:
+                    notif = self.env['edu.notification'].sudo().create({
+                        'name': f'Document Rejected: {rec.document_type.name}',
+                        'message': (
+                            f'Your document "{rec.document_type.name}" was not approved. '
+                            f'Please upload a new version.'
+                        ),
+                        'recipient_ids': [(4, partner.id)],
+                        'module': 'document',
+                        'notification_type': 'in_app',
+                        'status': 'draft',
+                    })
+                    notif.action_send()
         return super().write(vals)
 
     def action_reject_doc(self):
@@ -175,7 +205,7 @@ class EducationDocument(models.Model):
         expired_students = {}
         for doc in documents:
             student = doc.student_id
-            if  student or  student.email:
+            if student and student.email:
                 if doc.expiry_date == warning_date:
                     warning_students.setdefault(student, []).append(doc)
                 elif doc.expiry_date <= today:
@@ -220,10 +250,26 @@ class EducationDocument(models.Model):
             </p>
         """
         self.env['mail.mail'].create({
-            'subject': _("Document Expiry Alert"),
+            'subject': ("Document Expiry Alert"),
             'email_to': student.email,
             'body_html': body_html,
         }).send()
+
+        for doc in documents:
+            days_left = (doc.expiry_date - today).days
+            notif = self.env['edu.notification'].sudo().create({
+                'name': f'Document Expiring Soon: {doc.document_type.name}',
+                'message': (
+                    f'Your document "{doc.document_type.name}" will expire in '
+                    f'{days_left} day(s) on {doc.expiry_date}. '
+                    f'Please upload a renewed version.'
+                ),
+                'recipient_ids': [(4, student.id)],
+                'module': 'document',
+                'notification_type': 'in_app',
+                'status': 'draft',
+            })
+            notif.action_send()
 
     def _send_expired_email(self, student, documents):
         """
@@ -260,7 +306,7 @@ class EducationDocument(models.Model):
             </p>
         """
         self.env['mail.mail'].create({
-            'subject': _("URGENT: Expired Documents"),
+            'subject': ("URGENT: Expired Documents"),
             'email_to': student.email,
             'body_html': body_html,
         }).send()
@@ -292,7 +338,7 @@ class EducationDocument(models.Model):
                         ('expiry_date', '>=', today),
                     ], limit=1)
                     if approved_valid_doc:
-                        raise ValidationError(_(
+                        raise ValidationError((
                             "Upload limit reached. An approved and valid document "
                             "already exists for this student and document type. "
                             "You can upload a new version only after rejection or expiry."

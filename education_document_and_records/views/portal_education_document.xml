@@ -3,6 +3,17 @@
     <template id="portal_student_document" name="Student Profile">
         <t t-call="portal.portal_layout">
             <div class="container mt-4">
+                <t t-if="alert_messages">
+                    <div class="container mt-3">
+                        <t t-foreach="alert_messages" t-as="msg">
+                            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                <i class="fa fa-bell me-2"/>
+                                <t t-esc="msg"/>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"/>
+                            </div>
+                        </t>
+                    </div>
+                </t>
                 <t t-if="request.params.get('message') == 'submitted'">
                     <div class="alert alert-info">
                         Your document has been submitted successfully.

@@ -171,6 +171,20 @@ class EducationLibraryReservation(models.Model):
         self.message_post(
             body=_('Book is now available for collection. Please collect by %s.') % expiry_date
         )
+        partner = self.member_id.partner_id
+        if partner:
+            notif = self.env['edu.notification'].sudo().create({
+                'name': f'Book Available: {self.book_id.title}',
+                'message': (
+                    f'Your reserved book "{self.book_id.title}" is now available for collection. '
+                    f'Please collect it before {self.expiry_date}.'
+                ),
+                'recipient_ids': [(4, partner.id)],
+                'module': 'library',
+                'notification_type': 'in_app',
+                'status': 'draft',
+            })
+            notif.action_send()
 
     def action_mark_fulfilled(self, transaction_id):
         """Mark reservation as fulfilled when book is issued"""

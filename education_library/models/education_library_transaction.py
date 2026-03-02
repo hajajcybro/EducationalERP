@@ -227,6 +227,23 @@ class EducationLibraryTransaction(models.Model):
             if self.book_id.copies_available > 0:
                 self.book_id.state = 'available'
             self.message_post(body=_('Book returned. Fine: %s') % self.fine_amount)
+        # Send in-app notification only if a fine was generated
+        if self.fine_amount > 0:
+            partner = self.member_id.partner_id
+            if partner:
+                notif = self.env['edu.notification'].sudo().create({
+                    'name': f'Library Fine: {self.book_id.title}',
+                    'message': (
+                        f'You have a fine of ₹{self.fine_amount} for the late return of '
+                        f'"{self.book_id.title}" ({self.days_overdue} day(s) overdue). '
+                        f'Please check the ActivityF section for details.'
+                    ),
+                    'recipient_ids': [(4, partner.id)],
+                    'module': 'library',
+                    'notification_type': 'in_app',
+                    'status': 'draft',
+                })
+                notif.action_send()
 
     def action_renew(self):
         """Renew the book - extend due date"""
@@ -319,6 +336,7 @@ class EducationLibraryTransaction(models.Model):
             self.message_post(body=_('Cannot send notification - member has no email address.'))
             return
 
+
         try:
             template = self.env.ref('education_library.email_template_transaction_overdue')
             template.send_mail(
@@ -331,6 +349,20 @@ class EducationLibraryTransaction(models.Model):
             )
             self.write({'overdue_notification_sent': True})
             self.message_post(body=_('Overdue notification email sent to %s') % self.member_id.email)
+            partner = self.member_id.partner_id
+            if partner:
+                notif = self.env['edu.notification'].sudo().create({
+                    'name': f'Book Overdue: {self.book_id.title}',
+                    'message': (
+                        f'Please return the book "{self.book_id.title}" as it is overdue. '
+                        f'For further details, please check your Library Activity.'
+                    ),
+                    'recipient_ids': [(4, partner.id)],
+                    'module': 'library',
+                    'notification_type': 'in_app',
+                    'status': 'draft',
+                })
+                notif.action_send()
         except Exception as e:
             self.message_post(body=_('Failed to send overdue notification: %s') % str(e))
 

@@ -11,6 +11,12 @@
                         </div>
                         <div>
                             <h5 class="mb-1">My Document
+                                <t t-if="unread_profile and unread_profile > 0">
+                                    <span class="badge rounded-pill bg-danger ms-2"
+                                          style="font-size: 0.7rem; vertical-align: middle;">
+                                        <t t-esc="unread_profile"/> New
+                                    </span>
+                                </t>
                             </h5>
                             <small>Document Info</small>
                         </div>

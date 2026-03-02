@@ -2,27 +2,26 @@ from odoo import http
 from odoo.http import request
 from .portal_utils import get_student_partner
 
-
 class StudentLeavePortal(http.Controller):
 
     @http.route(['/my/leave'], type='http', auth='user', website=True)
     def portal_leave_home(self, **kwargs):
         partner = request.env.user.partner_id
-        # unread_notifications = request.env['edu.notification'].sudo().search([
-        #     ('module', '=', 'attendance'),
-        #     ('recipient_ids', 'in', partner.id),
-        #     ('read_by_partner_ids', 'not in', partner.id)
-        # ])
-        # if unread_notifications:
-        #     unread_notifications.sudo().write({
-        #         'read_by_partner_ids': [(4, partner.id)]
-        #     })
-        # # alert_messages = [notif.message for notif in unread_notifications if notif.message]
-        # values = {
-        #     'alert_messages': alert_messages,
-        # }
+        unread_notifications = request.env['edu.notification'].sudo().search([
+            ('module', '=', 'attendance'),
+            ('recipient_ids', 'in', partner.id),
+            ('read_by_partner_ids', 'not in', partner.id)
+        ])
+        if unread_notifications:
+            unread_notifications.sudo().write({
+                'read_by_partner_ids': [(4, partner.id)]
+            })
+        alert_messages = [notif.message for notif in unread_notifications if notif.message]
+        values = {
+            'alert_messages': alert_messages,
+        }
         return request.render(
-            'education_attendances.portal_leave_home',
+            'education_attendances.portal_leave_home',values
         )
 
     @http.route(['/my/leave/apply'], type='http', auth='user', website=True)

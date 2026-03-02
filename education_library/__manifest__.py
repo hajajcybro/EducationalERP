@@ -16,7 +16,7 @@
     'author': 'Your Company',
     'website': 'https://www.yourcompany.com',
     'depends': ['base', 'mail','sale','account',
-                'website','portal'],
+                'website','portal','education_notification'],
     'data': [
         'security/library_security.xml',
         'security/ir.model.access.csv',
