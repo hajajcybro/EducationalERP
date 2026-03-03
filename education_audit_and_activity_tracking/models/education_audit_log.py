@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
-from odoo.tools import format_datetime
 
 class EducationAuditLog(models.Model):
     _name = 'education.audit.log'
@@ -23,6 +22,11 @@ class EducationAuditLog(models.Model):
             ('logout', 'Logout'),
             ('approval', 'Approval'),
             ('payment', 'Payment'),
+            ('failed_login', 'Failed Login'),
+            ('account_locked', 'Account Locked'),
+            ('password_reset', 'Password Reset'),
+            ('session_expired', 'Session Expired'),
+            ('force_logout', 'Force Logout (by Admin)'),
         ],
         string='Action Type',
         required=True,
@@ -58,5 +62,25 @@ class EducationAuditLog(models.Model):
     new_values = fields.Json(
         string='New Values',
         help='New values after the action.'
+    )
+    source = fields.Selection(
+        selection=[
+            ('internal', 'Internal (Backend)'),
+            ('portal', 'Portal (External)'),
+        ],
+        string='Source',
+        default='internal',
+        index=True,
+        help='Where the action was triggered from.'
+    )
+    severity = fields.Selection(
+        selection=[
+            ('info', 'Info'),
+            ('warning', 'Warning'),
+            ('critical', 'Critical'),
+        ],
+        string='Severity',
+        default='info',
+        help='Severity level of the event.'
     )
 

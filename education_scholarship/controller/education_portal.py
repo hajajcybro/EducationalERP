@@ -1,12 +1,15 @@
 from odoo.addons.portal.controllers.portal import CustomerPortal
 from odoo.http import request
+from .portal_utils import get_student_partner
 
 class CustomPortalDashboard(CustomerPortal):
 
     def _prepare_home_portal_values(self, counters):
         # Get default values first
         values = super()._prepare_home_portal_values(counters)
-        partner = request.env.user.partner_id
+        partner = get_student_partner()
+        if not partner:
+            return values
         unread_scholarship = request.env['edu.notification'].sudo().search([
             ('module', '=', 'scholarship'),
             ('status', 'in', ['pending', 'sent']),

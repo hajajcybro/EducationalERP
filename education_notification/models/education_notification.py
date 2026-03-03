@@ -17,7 +17,7 @@ class EduNotification(models.Model):
     ], required=True, default="in_app")
     module = fields.Selection([
         ("attendance", "Attendance"),
-        ("fee", "Fee"),
+        ("financial", "financial"),
         ("exam", "Exam"),
         ("hostel", "Hostel"),
         ("transport", "Transport"),

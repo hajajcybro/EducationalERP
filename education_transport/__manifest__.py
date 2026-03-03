@@ -9,7 +9,7 @@
     'company': 'Cybrosys Techno Solutions',
     'maintainer': 'Cybrosys Techno Solutions',
     'website': 'https://www.cybrosys.com',
-    'depends': ['education_core','fleet','web'
+    'depends': ['education_core','fleet','web',
                 'education_notification'],
     'data': [
         'security/security_group.xml',

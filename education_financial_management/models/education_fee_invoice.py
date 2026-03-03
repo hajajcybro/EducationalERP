@@ -289,6 +289,23 @@ class EduFeeInvoice(models.Model):
         self.write({'invoice_ids': [Command.link(invoice.id)]})
         if self.payment_type != 'hostel'  and self.remaining_amount <= 1:
             self.hide_invoice_button = True
+        # Send in-app notification to the student when a new invoice is created
+        partner = self.student_id
+        if partner:
+            notif = self.env['edu.notification'].sudo().create({
+                'name': f'New Invoice: {line_name}',
+                'message': (
+                    f'A new invoice of {price} has been created for "{line_name}". '
+                    f'Due Date: {self.due_date or fields.Date.today()}. '
+                    f'Please make the payment before the due date.'
+                ),
+                'recipient_ids': [(4, partner.id)],
+                'module': 'financial',
+                'notification_type': 'in_app',
+                'status': 'draft',
+            })
+            notif.action_send()
+
         return {
             'type': 'ir.actions.act_window',
             'name': 'Invoice',

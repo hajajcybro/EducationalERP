@@ -11,7 +11,8 @@
     'website': 'https://www.cybrosys.com',
     'depends': ['education_core','account','education_transport',
                 'education_hostel_management','education_library',
-                'education_scholarship'],
+                'education_scholarship','education_notification',
+                'website','portal'],
     'data': [
         'security/security_group.xml',
         'security/ir.model.access.csv',
@@ -36,6 +37,7 @@
         'report/education_invoice_summary_report.xml',
         'wizard/education_refund_summary_wizard.xml',
         'report/education_refund_summary_report.xml',
+        'views/portal.xml',
         'views/menu.xml',
     ],
     'assets' : {

@@ -28,3 +28,19 @@ class EducationRefundRejectWizard(models.TransientModel):
             'state': 'rejected',
             'rejection_reason': self.reason,
         })
+        # Send in-app notification to the student when refund request is rejected
+        refund = self.refund_request_id
+        partner = refund.student_id
+        if partner:
+            notif = self.env['edu.notification'].sudo().create({
+                'name': 'Refund Request Rejected',
+                'message': (
+                    f'Your refund request of {refund.refund_amount} was rejected. '
+                    f'Reason: {self.reason}'
+                ),
+                'recipient_ids': [(4, partner.id)],
+                'module': 'financial',
+                'notification_type': 'in_app',
+                'status': 'draft',
+            })
+            notif.action_send()

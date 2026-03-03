@@ -52,3 +52,17 @@ class AccountMove(models.Model):
                         message_type='email',
                         subtype_xmlid='mail.mt_comment',
                     )
+                    # Send in-app notification to remind the student about invoice payment due tomorrow
+                    notif = self.env['edu.notification'].sudo().create({
+                        'name': f'Payment Due Tomorrow: {invoice.name or ""}',
+                        'message': (
+                            f'Your invoice {invoice.name or ""} with outstanding amount '
+                            f'{amount} is due tomorrow ({invoice.invoice_date_due}). '
+                            f'Please make the payment to avoid penalties.'
+                        ),
+                        'recipient_ids': [(4, partner.id)],
+                        'module': 'financial',
+                        'notification_type': 'in_app',
+                        'status': 'draft',
+                    })
+                    notif.action_send()

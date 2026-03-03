@@ -97,6 +97,22 @@ class EducationRefundRequest(models.Model):
         """ Mark the refund request as approved."""
         for rec in self:
             rec.state = 'approved'
+            # Send in-app notification to the student when refund request is approved
+            partner = rec.student_id
+            if partner:
+                notif = self.env['edu.notification'].sudo().create({
+                    'name': 'Refund Request Approved',
+                    'message': (
+                        f'Your refund request of {rec.refund_amount} '
+                        f'has been approved and will be processed shortly.'
+                    ),
+                    'recipient_ids': [(4, partner.id)],
+                    'module': 'financial',
+                    'notification_type': 'in_app',
+                    'status': 'draft',
+                })
+                notif.action_send()
+
 
     def action_reject(self):
         """Open rejection wizard to capture rejection reason."""
@@ -147,16 +163,17 @@ class EducationRefundRequest(models.Model):
           request to 'reversed' state."""
         for rec in self:
             rec.credit_note_id = False
-            credit_note = self.env['account.move'].search([
-                ('move_type', '=', 'out_refund'),
-                ('reversed_entry_id', '=', rec.invoice_id.id),
-            ], limit=1)
-            if credit_note:
-                rec.credit_note_id = credit_note
-                if credit_note.state == 'posted':
-                    rec.state = 'reversed'
-                else:
-                    rec.state = 'processed'
+            if rec.invoice_id:
+                credit_note = self.env['account.move'].search([
+                    ('move_type', '=', 'out_refund'),
+                    ('reversed_entry_id', '=', rec.invoice_id.id),
+                ], limit=1)
+                if credit_note:
+                    rec.credit_note_id = credit_note.id
+                    if credit_note.state == 'posted':
+                        rec.state = 'reversed'
+                    else:
+                        rec.state = 'processed'
 
 
 
