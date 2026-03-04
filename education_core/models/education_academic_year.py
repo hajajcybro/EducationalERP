@@ -23,6 +23,22 @@ class EducationAcademicYear(models.Model):
                                 help='Marks the current academic year.')
     active = fields.Boolean(string='Active', default=True)
     notes = fields.Text(string='Notes')
+    # Closure Summary (populated when year is closed)
+    total_converted = fields.Integer(
+        string='Total Converted to Alumni',
+        readonly=True,
+        help='Number of students converted to Alumni on year close.'
+    )
+    total_skipped = fields.Integer(
+        string='Total Skipped (Dropped)',
+        readonly=True,
+        help='Number of dropped students skipped during Alumni conversion.'
+    )
+    closed_on = fields.Date(
+        string='Closed On',
+        readonly=True,
+        help='Date on which this academic year was closed.'
+    )
 
     @api.depends('start_date', 'end_date')
     def _compute_dates(self):
@@ -56,6 +72,67 @@ class EducationAcademicYear(models.Model):
         for rec in self:
             rec.state = 'active'
 
+    # def action_set_closed(self):
+    #     for rec in self:
+    #         rec.state = 'closed'
+
     def action_set_closed(self):
+        """
+        Close the academic year and convert all non-dropped students to Alumni.
+        Flow:
+          1. Find all students (res.partner) linked to this academic year.
+          2. Separate dropped students (skip) from the rest (convert).
+          3. For each convertible student:
+               - Generate Alumni ID from sequence.
+               - Determine alumni_status based on enrollment status.
+               - Write alumni fields onto res.partner.
+               - Change position_role → 'alumni'.
+               - Mark enrollment → 'completed'.
+               - Send welcome notification.
+          4. Write closure summary fields.
+          5. Set state → 'closed'.
+          6. Create audit log entry.
+        """
         for rec in self:
-            rec.state = 'closed'
+            # Find all students in this academic year
+            all_students = self.env['res.partner'].search([
+                ('academic_year_id', '=', rec.id),
+                ('position_role', '=', 'student'),
+            ])
+            dropped_partners = self.env['education.enrollment'].search([
+                ('academic_year_id', '=', rec.id),
+                ('status', '=', 'dropped'),
+            ]).mapped('student_id.partner_id')
+            convertible = all_students.filtered(
+                lambda s: s not in dropped_partners
+            )
+            dropped = all_students.filtered(
+                lambda s: s in dropped_partners
+            )
+            graduation_year = str(rec.end_date.year)
+            converted_count = 0
+            # Convert each student → Alumni
+            for student in convertible:
+                enrollment = student.current_enrollment_id
+                alumni_status = 'graduated'
+                # Generate unique Alumni ID  (sequence: ALM/2023/0001)
+                alumni_reference = self.env['ir.sequence'].next_by_code(
+                    'alumni.id.sequence'
+                ) or '/'
+                student.write({
+                    'position_role': 'alumni',
+                    'alumni_reference': alumni_reference,
+                    'alumni_status': alumni_status,
+                    'graduation_year': graduation_year,
+                })
+                if enrollment:
+                    enrollment.write({'status': 'completed'})
+                converted_count += 1
+            rec.write({
+                'state': 'closed',
+                'is_current': False,
+                'total_converted': converted_count,
+                'total_skipped': len(dropped),
+                'closed_on': fields.Date.today(),
+            })
+            

@@ -17,26 +17,31 @@ class TransportExamPortal(http.Controller):
             - Renders the transport portal template with all related data.
         """
         partner = get_student_partner()
-        if not partner:
-            return request.redirect('/my')
-        transport = request.env['education.transport.assignment'].sudo().search([
-            ('student_id', '=', partner.id),('active', '=', True)
-        ], limit=1)
+        transport = False
         route = False
         stop = False
         stops = False
-        if transport:
-            route = transport.route_id
-            stop = transport.stop_id
-            stops = route.stops.sorted(key=lambda s: s.sequence)
-        # transport_fee = request.env['education.fee.invoice'].sudo().search([
-        #     ('student_id', '=', partner.id),
-        #     ('payment_type', '=', 'transport'),
-        #     ('status', '!=', 'paid'),
-        # ], limit=1)
-        # pending_amount = 0.0
-        # if transport_fee:
-        #     pending_amount = transport_fee.outstanding_amount
+        if partner:
+            transport = request.env['education.transport.assignment'].sudo().search([
+                ('student_id', '=', partner.id),('active', '=', True)
+            ], limit=1)
+            if transport:
+                route = transport.route_id
+                stop = transport.stop_id
+                stops = route.stops.sorted(key=lambda s: s.sequence)
+            # Fetch unread transport notifications for this student
+            notifications = request.env['edu.notification'].sudo().search([
+                ('module', '=', 'transport'),
+                ('status', 'in', ['pending', 'sent']),
+                ('recipient_ids', 'in', partner.id),
+                ('read_by_partner_ids', 'not in', partner.id),
+            ])
+            # Mark them as read now that the student is viewing the page
+            for notif in notifications:
+                notif.sudo().write({
+                    'read_by_partner_ids': [(4, partner.id)]
+                })
+            alert_messages = notifications.mapped('message')
         return request.render(
             'education_transport.portal_transport',
             {
@@ -44,8 +49,8 @@ class TransportExamPortal(http.Controller):
                 'route': route,
                 'stop': stop,
                 'stops': stops,
-                # 'transport_fee': transport_fee,
-                # 'pending_amount': pending_amount,
+                'alert_messages': alert_messages,
+                'is_student': bool(partner),
             }
         )
 

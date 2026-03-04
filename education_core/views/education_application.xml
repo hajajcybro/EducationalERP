@@ -69,7 +69,7 @@
                                         <field name="id_no"/>
                                         <field name="blood_group"/>
                                         <field name="emergency_phone"/>
-                                        <field name="guardian"/>
+                                        <field name="guardian_id"/>
                                         <field name="relation"/>
                                     </group>
                                     <group string="Parents Info">

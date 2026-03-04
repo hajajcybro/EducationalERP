@@ -14,7 +14,7 @@ class LibraryPortal(http.Controller):
             - Passes the membership flag (is_member) to the template
               to control portal visibility and access options.
             """
-        partner = request.env.user.partner_id
+        partner = get_student_partner()
         member = request.env['education.library.member'].sudo().search([
             ('partner_id', '=', partner.id),
             ('state', '=', 'active')

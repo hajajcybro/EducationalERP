@@ -21,3 +21,33 @@ def get_student_partner():
         return student
     # Return empty recordset if nothing found
     return request.env['res.partner']
+
+def get_alumni_partner():
+    """
+    Returns the correct alumni res.partner for the logged-in user.
+      - Alumni → returns own partner
+      - Others → returns empty recordset
+    """
+    partner = request.env.user.partner_id
+    if partner.position_role == 'alumni':
+        return partner
+    return request.env['res.partner']
+
+def get_portal_redirect(partner):
+    """
+    Given a partner, return the correct portal home URL based on role.
+    Use this to guard routes — redirect if wrong role lands on wrong page.
+
+    Usage:
+        partner = request.env.user.partner_id
+        if partner.position_role != 'alumni':
+            return request.redirect(get_portal_redirect(partner))
+    """
+    role = partner.position_role if partner else None
+    if role == 'student':
+        return '/my/profile'
+    elif role == 'parent':
+        return '/my/profile'
+    elif role == 'alumni':
+        return '/my/alumni'
+    return '/my'

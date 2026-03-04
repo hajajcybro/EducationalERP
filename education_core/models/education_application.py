@@ -99,8 +99,8 @@ class EducationApplication(models.Model):
                                     )
     partner_id = fields.Many2one('res.partner', string='Related Contact', readonly=True,
                                  help='Linked res.partner record for this student.')
-    guardian = fields.Char(
-        string='Guardians',
+    guardian_id = fields.Many2one('res.partner',
+        string='Guardians',domain=[('position_role', '=', 'parent')],
         help='Enter the student’s guardians or parents.'
     )
     id_no = fields.Char('Aadhar No. / ID No.', help='Government-issued ID number',required=True)
@@ -168,7 +168,7 @@ class EducationApplication(models.Model):
                     'age': rec.age,
                     'blood_group': rec.blood_group,
                     'stu_category_id': rec.category_id,
-                    'guardian': rec.guardian,
+                    'guardian_id': rec.guardian_id.id,
                     'id_no' : rec.id_no,
                     'relation' : rec.relation,
                     'father_name' : rec.father_name,

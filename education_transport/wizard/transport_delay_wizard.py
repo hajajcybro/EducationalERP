@@ -33,58 +33,51 @@ class TransportDelayWizard(models.TransientModel):
                 partner_ids.append(partner.id)
         if not partner_ids:
             raise UserError(_('No parent email addresses are configured.'))
-        # Create and send via edu.notification
-        notification = self.env['edu.notification'].sudo().create({
-            'name': f'Transport Delay Alert – {self.route_id.name}',
-            'message': (
-                f"Dear Parent,\n\n"
-                f"Please be informed that the school transport route "
-                f"{self.route_id.name} is delayed.\n\n"
-                f"Expected Delay: {self.delay_minutes} minutes\n"
-                f"Reason: {self.delay_reason}\n\n"
-                f"Thank you for your cooperation.\n\n"
-                f"Regards,\nTransport Administration"
-            ),
-            'notification_type': 'email',
-            'module': 'transport',
-            'recipient_ids': [(6, 0, partner_ids)],
-            'scheduled_date': fields.Datetime.now(),
-        })
-        notification.action_send()
-        # print(assignments)
-        # Mail = self.env['mail.mail']
-        # email_sent = False
-        #
-        # for assign in assignments:
-        #     parent = assign.student_id.parent_email
-        #     if parent:
-        #         print(parent)
-        #         email_sent = True
-        #         Mail.create({
-        #             'subject': f'Transport Delay Alert – {self.route_id.name}',
-        #             'email_to': parent,
-        #             'body_html': f"""
-        #                        <p>Dear Parent,</p>
-        #                        <p>Please be informed that the school transport route
-        #                        <b>{self.route_id.name}</b> is delayed.</p>
-        #                        <p>
-        #                            <b>Expected Delay:</b> {self.delay_minutes} minutes<br/>
-        #                            <b>Reason:</b> {self.delay_reason}
-        #                        </p>
-        #                        <p>Thank you for your cooperation.</p>
-        #                        <p>
-        #                            Regards,<br/>
-        #                            <b>Transport Administration</b>
-        #                        </p>
-        #                    """
-        #         }).send()
-        #
-        # if not email_sent:
-        #     print('no email')
-        #     raise UserError(
-        #         _('No parent email addresses are configured.')
-        #     )
-
+        print(assignments)
+        Mail = self.env['mail.mail']
+        email_sent = False
+        for assign in assignments:
+            parent = assign.student_id.parent_email
+            if parent:
+                print(parent)
+                email_sent = True
+                Mail.create({
+                    'subject': f'Transport Delay Alert – {self.route_id.name}',
+                    'email_to': parent,
+                    'body_html': f"""
+                               <p>Dear Parent,</p>
+                               <p>Please be informed that the school transport route
+                               <b>{self.route_id.name}</b> is delayed.</p>
+                               <p>
+                                   <b>Expected Delay:</b> {self.delay_minutes} minutes<br/>
+                                   <b>Reason:</b> {self.delay_reason}
+                               </p>
+                               <p>Thank you for your cooperation.</p>
+                               <p>
+                                   Regards,<br/>
+                                   <b>Transport Administration</b>
+                               </p>
+                           """
+                }).send()
+            student = assign.student_id
+            notif = self.env['edu.notification'].sudo().create({
+                'name': f'Transport Delay: {self.route_id.name}',
+                'message': (
+                    f'Your transport route "{self.route_id.name}" is delayed by '
+                    f'{self.delay_minutes} minute(s). '
+                    f'Reason: {self.delay_reason}'
+                ),
+                'recipient_ids': [(4, student.id)],
+                'module': 'transport',
+                'notification_type': 'in_app',
+                'status': 'draft',
+            })
+            notif.action_send()
+        if not email_sent:
+            print('no email')
+            raise UserError(
+                _('No parent email addresses are configured.')
+            )
         return {'type': 'ir.actions.act_window_close'}
 
 

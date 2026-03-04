@@ -5,32 +5,6 @@ from .portal_utils import get_student_partner
 
 class StudentAttendancePortal(http.Controller):
 
-    # @http.route(['/my/attendance'], type='http', auth='user', website=True)
-    # def portal_attendance_home(self, **kwargs):
-    #     """
-    #         Render the Attendance home page in the website portal.
-    #
-    #         This route displays the main attendance entry page
-    #         accessible to authenticated users through the portal.
-    #         """
-    #     partner = request.env.user.partner_id
-    #     # unread_notifications = request.env['edu.notification'].sudo().search([
-    #     #     ('module', '=', 'attendance'),
-    #     #     ('recipient_ids', 'in', partner.id),
-    #     #     ('read_by_partner_ids', 'not in', partner.id)
-    #     # ])
-    #     # if unread_notifications:
-    #     #     unread_notifications.sudo().write({
-    #     #         'read_by_partner_ids': [(4, partner.id)]
-    #     #     })
-    #     # alert_messages = [notif.message for notif in unread_notifications if notif.message]
-    #     # values = {
-    #     #     'alert_messages': alert_messages,
-    #     # }
-    #     return request.render(
-    #         'education_attendances.portal_attendance_home',
-    #     )
-
     @http.route(['/my/my-attendance'], type='http', auth='user', website=True)
     def portal_attendance(self, **kwargs):
         """

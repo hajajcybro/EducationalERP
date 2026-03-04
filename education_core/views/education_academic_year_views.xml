@@ -38,6 +38,11 @@
                             <field name="is_current"/>
                             <field name="active" invisible="1"/>
                         </group>
+                        <group string="Closure Summary" invisible="state != 'closed'">
+                            <field name="total_converted"/>
+                            <field name="total_skipped"/>
+                            <field name="closed_on"/>
+                        </group>
                     </group>
                     <notebook>
                         <page string="Notes">

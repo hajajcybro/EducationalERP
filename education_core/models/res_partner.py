@@ -8,7 +8,7 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     position_role = fields.Selection(
-        selection=[('parent', 'Parent'), ('student', 'Student')],
+        selection=[('parent', 'Parent'), ('student', 'Student'),('alumni', 'Alumni')],
         string='Position',
     )
     # is_student = fields.Boolean('Student')
@@ -46,7 +46,7 @@ class ResPartner(models.Model):
         ('ab+', 'AB+'), ('ab-', 'AB-'),
         ('o+', 'O+'), ('o-', 'O-'),
     ], string='Blood Group')
-    guardian = fields.Many2one('res.partner',domain =[('position_role', '=', 'parent')])
+    guardian_id = fields.Many2one('res.partner',domain =[('position_role', '=', 'parent')])
     stu_category_id = fields.Many2one('education.category',
                                string='Category',
                                help='Assign a category to the student.'
@@ -102,19 +102,26 @@ class ResPartner(models.Model):
     bank_address = fields.Text(
         string='Bank Address'
     )
-    # Mobile / Portal Fields
-    # edu_mobile_token = fields.Char(
-    #     string="Mobile Auth Token",
-    #     help="Token for mobile authentication"
-    # )
-    #
-    # last_mobile_login = fields.Datetime(
-    #     string="Last Mobile Login"
-    # )
-    #
-    # push_notification_enabled = fields.Boolean(
-    #     string="Push Notifications Enabled",
-    #     default=True
+    # Alumni Fields (populated on academic year close)
+    alumni_id = fields.Char(
+        string='Alumni ID',
+        readonly=True,
+        copy=False,
+        help='Auto-generated Alumni ID assigned when academic year is closed.'
+    )
+    alumni_status = fields.Selection([
+        ('graduated', 'Graduated'),
+        ('graduated_with_backlog', 'Graduated with Backlog'),
+    ], string='Alumni Status', readonly=True,
+        help='Set automatically when academic year is closed.')
+    graduation_year = fields.Char(
+        string='Graduation Year',
+        readonly=True,
+        help='Year in which the academic year batch was closed / graduated.'
+    )
+    # alumni_reference = fields.Char(
+    #     string='Alumni Reference',
+    #     readonly=True,
     # )
 
     def action_open_documents(self):
