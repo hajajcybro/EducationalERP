@@ -15,7 +15,7 @@ def get_student_partner():
     elif partner.position_role == 'parent':
         # Find the student who has this user as their guardian
         student = request.env['res.partner'].sudo().search([
-            ('guardian', '=', partner.id),
+            ('guardian_id', '=', partner.id),
             ('position_role', '=', 'student')
         ], limit=1)
         return student

@@ -17,4 +17,5 @@ class CustomPortalDashboard(CustomerPortal):
             ('read_by_partner_ids', 'not in', partner.id)
         ])
         values['unread_exam'] = len(unread_exam)
+        values['position_role'] = partner.position_role
         return values

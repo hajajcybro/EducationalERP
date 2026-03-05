@@ -15,4 +15,4 @@ from . import hr_employee
 from . import education_timetable_line
 from . import education_document_type
 from . import education_class_facility
-
+from . import alumni_job_post

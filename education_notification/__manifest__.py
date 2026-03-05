@@ -14,7 +14,8 @@
         'security/ir.model.access.csv',
         'views/education_notification_views.xml',
         'views/mailing_mailing_views.xml',
-
+        'views/portal_templates.xml',
+        'views/portal_announcements.xml',
     ],
     'license': 'AGPL-3',
     'installable': True,

@@ -40,6 +40,7 @@
         'views/portal_education_application.xml',
         'views/portal.xml',
         'views/portal_education_student_profile.xml',
+        'views/portal_alumni_templates.xml',
         'views/menus.xml',
 ],
     'assets': {

@@ -27,23 +27,20 @@ class AlumniPortalController(http.Controller):
         partner, redirect = self._get_alumni_or_redirect()
         if redirect:
             return redirect
-
         # Unread notifications count
-        unread_notifications = request.env['edu.notification'].sudo().search([
-            ('module', '=', 'alumni'),
-            ('status', 'in', ['pending', 'sent']),
-            ('recipient_ids', 'in', partner.id),
-            ('read_by_partner_ids', 'not in', partner.id),
-        ])
-
+        # unread_notifications = request.env['edu.notification'].sudo().search([
+        #     ('module', '=', 'alumni'),
+        #     ('status', 'in', ['pending', 'sent']),
+        #     ('recipient_ids', 'in', partner.id),
+        #     ('read_by_partner_ids', 'not in', partner.id),
+        # ])
         # Active job postings count
         job_count = request.env['alumni.job.post'].sudo().search_count([
             ('state', '=', 'published'),
         ])
-
-        return request.render('education_alumni.portal_alumni_dashboard', {
+        return request.render('education_core.portal_alumni_dashboard', {
             'alumni': partner,
-            'unread_count': len(unread_notifications),
+            # 'unread_count': len(unread_notifications),
             'job_count': job_count,
         })
 
@@ -58,37 +55,8 @@ class AlumniPortalController(http.Controller):
         if redirect:
             return redirect
 
-        return request.render('education_alumni.portal_alumni_profile', {
+        return request.render('education_core.portal_alumni_profile', {
             'alumni': partner,
-        })
-
-    @http.route(['/my/alumni/notifications'], type='http', auth='user', website=True)
-    def alumni_notifications(self, **kwargs):
-        """
-        Alumni notification dashboard.
-        Shows all announcements and alerts sent to this alumni by admin.
-        Marks fetched notifications as read.
-        """
-        partner, redirect = self._get_alumni_or_redirect()
-        if redirect:
-            return redirect
-
-        notifications = request.env['edu.notification'].sudo().search([
-            ('module', '=', 'alumni'),
-            ('status', 'in', ['pending', 'sent']),
-            ('recipient_ids', 'in', partner.id),
-        ], order='id desc')
-
-        # Mark all as read
-        for notif in notifications:
-            if partner.id not in notif.read_by_partner_ids.ids:
-                notif.sudo().write({
-                    'read_by_partner_ids': [(4, partner.id)]
-                })
-
-        return request.render('education_alumni.portal_alumni_notifications', {
-            'alumni': partner,
-            'notifications': notifications,
         })
 
     @http.route(['/my/alumni/jobs'], type='http', auth='user', website=True)
@@ -105,7 +73,30 @@ class AlumniPortalController(http.Controller):
             ('state', '=', 'published'),
         ], order='id desc')
 
-        return request.render('education_alumni.portal_alumni_jobs', {
+        return request.render('education_core.portal_alumni_jobs', {
             'alumni': partner,
             'jobs': jobs,
+        })
+
+    @http.route(['/my/alumni/jobs/new'], type='http', auth='user', website=True, methods=['GET', 'POST'])
+    def alumni_jobs_new(self, **post):
+        """ Allow alumni to submit a new job posting """
+        partner, redirect = self._get_alumni_or_redirect()
+        if redirect:
+            return redirect
+
+        # If form is submitted
+        if request.httprequest.method == 'POST':
+            request.env['alumni.job.post'].sudo().create({
+                'job_title': post.get('job_title'),
+                'company_name': post.get('company_name'),
+                'description': post.get('description'),
+                'posted_by_id': partner.id,
+                'state': 'published',  # Or 'draft' if you want Admin to approve it first
+            })
+            return request.redirect('/my/alumni/jobs')
+
+        # If just loading the page, render the form
+        return request.render('education_core.portal_alumni_job_submit', {
+            'alumni': partner,
         })

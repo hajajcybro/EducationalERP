@@ -10,13 +10,13 @@ def get_student_partner():
     3. If neither -> Return empty recordset.
     """
     partner = request.env.user.partner_id
-    if partner.position_role == 'student':
+    if partner.position_role in ('student', 'alumni'):
         return partner
     elif partner.position_role == 'parent':
         # Find the student who has this user as their guardian
         student = request.env['res.partner'].sudo().search([
-            ('guardian', '=', partner.id),
-            ('position_role', '=', 'student')
+            ('guardian_id', '=', partner.id),
+            ('position_role', 'in', ['student', 'alumni']),
         ], limit=1)
         return student
     # Return empty recordset if nothing found

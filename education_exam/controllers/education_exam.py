@@ -62,6 +62,8 @@ class StudentExamPortal(http.Controller):
         results = request.env['education.exam.result'].sudo().search([
             ('student_id', '=', student.id)
         ])
+        if student.position_role == 'alumni':
+            return request.redirect('/my/alumni/exam/supply')
         print(results)
         return request.render('education_exam.portal_exam_results', {
             'results': results
@@ -124,5 +126,22 @@ class StudentExamPortal(http.Controller):
         })
         return request.render('education_exam.application_success')
 
-
+    @http.route('/my/exam-results', auth='user', website=True)
+    def exam_results(self):
+        """
+            Display the logged-in student's exam results.
+            - Retrieves the student partner record.
+            - Fetches exam results linked to the student.
+            - Renders the exam results template with result records.
+            """
+        student = get_student_partner()
+        results = request.env['education.exam.result'].sudo().search([
+            ('student_id', '=', student.id)
+        ])
+        if student.position_role == 'alumni':
+            return request.redirect('/my/alumni/exam/supply')
+        print(results)
+        return request.render('education_exam.portal_exam_results', {
+            'results': results
+        })
 

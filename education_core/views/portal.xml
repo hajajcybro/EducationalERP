@@ -3,19 +3,35 @@
     <template id="portal_my_home_library_card"
           inherit_id="portal.portal_my_home">
         <xpath expr="//div[@id='portal_common_category']" position="inside">
-            <div class="o_portal_index_card col-12 col-md-6 order-2">
-                <a href="/my/profile"
-                   class="d-flex gap-3 p-3 pe-2 px-md-3 h-100 rounded text-decoration-none alert alert-primary align-items-center">
-                    <div class="o_portal_icon">
-                        <i class="fa fa-user-circle fa-2x"/>
-                    </div>
-                    <div>
-                        <h5 class="mb-1">My Profile
-                        </h5>
-                        <small>Profile Info</small>
-                    </div>
-                </a>
-            </div>
+            <t t-if="position_role in ['student', 'parent']">
+                <div class="o_portal_index_card col-12 col-md-6 order-2">
+                    <a href="/my/profile"
+                       class="d-flex gap-3 p-3 pe-2 px-md-3 h-100 rounded text-decoration-none alert alert-primary align-items-center">
+                        <div class="o_portal_icon">
+                            <i class="fa fa-user-circle fa-2x"/>
+                        </div>
+                        <div>
+                            <h5 class="mb-1">My Profile
+                            </h5>
+                            <small>Profile Info</small>
+                        </div>
+                    </a>
+                </div>
+            </t>
+            <!-- Show Alumni Dashboard Card ONLY for Alumni -->
+            <t t-if="position_role == 'alumni'">
+                <div class="o_portal_index_card col-12 col-md-6 order-2">
+                    <a href="/my/alumni" class="d-flex gap-3 p-3 pe-2 px-md-3 h-100 rounded text-decoration-none alert alert-success align-items-center">
+                        <div class="o_portal_icon">
+                            <i class="fa fa-graduation-cap fa-2x"/>
+                        </div>
+                        <div>
+                            <h5 class="mb-1">Alumni Dashboard</h5>
+                            <small>Jobs, Updates &amp; Network</small>
+                        </div>
+                    </a>
+                </div>
+            </t>
         </xpath>
     </template>
 </odoo>

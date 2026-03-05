@@ -24,6 +24,7 @@ class EduNotification(models.Model):
         ("library", "Library"),
         ("scholarship", "Scholarship"),
         ("document", "Document"),
+        ("alumni", "Alumni"),
         ("general", "General"),
     ], default="general")
     status = fields.Selection([
@@ -50,10 +51,21 @@ class EduNotification(models.Model):
     class_id = fields.Many2one('education.class', string="Class", help='Choose a class to send mail/SMS to a particular class.')
     # Tracks which students have viewed this notification in the portal
     read_by_partner_ids = fields.Many2many('res.partner', 'edu_notif_read_rel', string="Read By Portal Users")
-
+    academic_year_id = fields.Many2one(
+        'education.academic.year',
+        string='Academic Year',
+        help="Select the academic year to notify past students/alumni."
+    )
     @api.onchange('class_id')
     def _onchange_class_id(self):
         self.recipient_ids  = self.class_id.student_ids
+
+    @api.onchange('academic_year_id', 'module')
+    def _onchange_academic_year_id(self):
+        if self.academic_year_id:
+            domain = [('academic_year_id', '=', self.academic_year_id.id)]
+            partners = self.env['res.partner'].search(domain)
+            self.recipient_ids = partners
 
     def action_send(self):
         self.ensure_one()

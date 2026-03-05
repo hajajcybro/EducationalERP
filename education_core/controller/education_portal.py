@@ -8,11 +8,5 @@ class CustomPortalDashboard(CustomerPortal):
         # Get default values first
         values = super()._prepare_home_portal_values(counters)
         partner = request.env.user.partner_id
-        unread_profile = request.env['edu.notification'].sudo().search([
-            ('module', '=', 'document'),
-            ('status', 'in', ['pending', 'sent']),
-            ('recipient_ids', 'in', partner.id),
-            ('read_by_partner_ids', 'not in', partner.id)
-        ])
-        values['unread_profile'] = len(unread_profile)
+        values['position_role'] = partner.position_role
         return values

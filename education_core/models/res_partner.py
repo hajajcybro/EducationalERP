@@ -119,10 +119,10 @@ class ResPartner(models.Model):
         readonly=True,
         help='Year in which the academic year batch was closed / graduated.'
     )
-    # alumni_reference = fields.Char(
-    #     string='Alumni Reference',
-    #     readonly=True,
-    # )
+    alumni_reference = fields.Char(
+        string='Alumni Reference',
+        readonly=True,
+    )
 
     def action_open_documents(self):
         """Open documents related to this student."""
