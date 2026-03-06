@@ -34,7 +34,7 @@
         'views/portal_education_exam_published.xml',
         'views/portal_education_exam_result.xml',
         'views/portal_education_exam_revaluation.xml',
-
+        'views/alumni_supply_registration.xml',
     ],
     'license': 'AGPL-3',
     'installable': True,

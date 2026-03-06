@@ -10,5 +10,6 @@ from . import education_exam_result_line
 from . import education_exam_revaluation
 from . import education_exam_revaluation_creation
 from . import education_exam_grade
+from . import alumni_supply_registration
 
 

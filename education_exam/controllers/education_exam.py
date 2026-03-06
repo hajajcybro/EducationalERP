@@ -62,11 +62,15 @@ class StudentExamPortal(http.Controller):
         results = request.env['education.exam.result'].sudo().search([
             ('student_id', '=', student.id)
         ])
-        if student.position_role == 'alumni':
-            return request.redirect('/my/alumni/exam/supply')
-        print(results)
+        supply_exams = request.env['education.exam'].sudo().search([
+            ('state', '=', 'published'),
+            ('exam_type_id.name', 'ilike', 'Supply')
+        ])
+        has_active_supply = bool(supply_exams)
         return request.render('education_exam.portal_exam_results', {
-            'results': results
+            'results': results,
+            'is_alumni': student.position_role == 'alumni',
+            'has_active_supply': has_active_supply,
         })
 
     @http.route(['/exam/revaluation'], type='http', auth='user', website=True)
@@ -77,11 +81,15 @@ class StudentExamPortal(http.Controller):
            - Filters exams based on the student's class.
            - Displays the revaluation form with available exams.
            """
-        partner = request.env.user.partner_id
-        student_class = partner.class_id
-        exams = request.env['education.exam'].sudo().search([
-            ('class_id', '=', student_class.id),
-        ])
+        partner = get_student_partner()
+        if partner.position_role == 'alumni':
+            # Fetch exams from their actual past results
+            past_results = request.env['education.exam.result'].sudo().search([('student_id', '=', student.id)])
+            exams = past_results.mapped('exam_id')
+        else:
+            exams = request.env['education.exam'].sudo().search([
+                ('class_id', '=',  partner.class_id.id),
+            ])
         return request.render('education_exam.portal_revaluation_form', {
             'exams': exams,
         })
@@ -126,22 +134,41 @@ class StudentExamPortal(http.Controller):
         })
         return request.render('education_exam.application_success')
 
-    @http.route('/my/exam-results', auth='user', website=True)
-    def exam_results(self):
-        """
-            Display the logged-in student's exam results.
-            - Retrieves the student partner record.
-            - Fetches exam results linked to the student.
-            - Renders the exam results template with result records.
-            """
-        student = get_student_partner()
-        results = request.env['education.exam.result'].sudo().search([
-            ('student_id', '=', student.id)
-        ])
-        if student.position_role == 'alumni':
-            return request.redirect('/my/alumni/exam/supply')
-        print(results)
-        return request.render('education_exam.portal_exam_results', {
-            'results': results
-        })
-
+    # @http.route(['/my/alumni/exam/supply'], type='http', auth='user', website=True)
+    # def portal_supply_form(self, **kwargs):
+    #     student = get_student_partner()
+    #     if student.position_role != 'alumni':
+    #         return request.redirect('/my/exams')
+    #     failed_lines = request.env['education.exam.result.line'].sudo().search([
+    #         ('result_id.student_id', '=', student.id),
+    #         ('pass_or_fail', '=', False)
+    #     ])
+    #     failed_courses = failed_lines.mapped('course_id')
+    #     available_exams = request.env['education.exam'].sudo().search([
+    #         ('state', '=', 'published'),
+    #         ('exam_type_id.name', 'ilike', 'Supply')
+    #     ])
+    #     return request.render('education_exam.portal_supply_form', {
+    #         'student': student,
+    #         'failed_courses': failed_courses,
+    #         'available_exams': available_exams,
+    #     })
+    #
+    # @http.route('/my/alumni/exam/supply/submit', type='http', auth='user', website=True, csrf=True)
+    # def portal_supply_submit(self, **post):
+    #     student = get_student_partner()
+    #     exam_id = int(post.get('exam_id'))
+    #     course_id = int(post.get('course_id'))
+    #     exam = request.env['education.exam'].sudo().browse(exam_id)
+    #
+    #     # Assuming you created an `education.exam.supplementary` model (as discussed previously)
+    #     request.env['education.exam.supplementary'].sudo().create({
+    #         'student_id': student.id,
+    #         'exam_id': exam_id,
+    #         'course_id': course_id,
+    #         'program_id': exam.program_id.id,
+    #         'session_id': exam.session_id.id,
+    #         'state': 'draft',
+    #     })
+    #
+    #     return request.render('education_exam.application_success')

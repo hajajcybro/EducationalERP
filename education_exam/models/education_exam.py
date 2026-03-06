@@ -39,12 +39,13 @@ class EducationExam(models.Model):
             f"{self.exam_type_id.name}-"
             f"{self.start_date}"
         )
+        is_supply = self.exam_type_id and ('SUPPLY' in self.exam_type_id.name or 'Supply' in self.exam_type_id.name)
         # Find students of the class
         students = self.env['res.partner'].search([
             ('class_id', '=', self.class_id.id), ('position_role', '=', 'student')
         ])
 
-        if not students:
+        if not students and not is_supply:
             raise UserError(_('No students found in this class.'))
 
         template = self.env.ref('education_exam.email_template_exam_published')

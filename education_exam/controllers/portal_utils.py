@@ -16,7 +16,7 @@ def get_student_partner():
         # Find the student who has this user as their guardian
         student = request.env['res.partner'].sudo().search([
             ('guardian_id', '=', partner.id),
-            ('position_role', 'in', ['student', 'alumni']),
+            ('position_role', '=', 'student'),
         ], limit=1)
         return student
     # Return empty recordset if nothing found
