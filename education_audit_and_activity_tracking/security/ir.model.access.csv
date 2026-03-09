@@ -1,4 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-
-access_education_audit_log_admin,access_education_audit_log_admin,model_education_audit_log,education_core.group_education_admin,1,1,1,1
-access_education_audit_log_officer,access_education_audit_log_officer,model_education_audit_log,education_core.group_education_admission_officer,1,1,1,1

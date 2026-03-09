@@ -1,1 +1,0 @@
-from .import education_exam_result_class_wizard
