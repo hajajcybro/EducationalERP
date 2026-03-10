@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="portal_leave_home">
+    <t t-call="portal.portal_layout">
+        <div class="container mt-4">
+            <t t-if="alert_messages">
+                <t t-foreach="alert_messages" t-as="msg">
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <i class="fa fa-bell me-2"/>
+                        <t t-esc="msg"/>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"/>
+                    </div>
+                </t>
+            </t>
+
+            <h3>Attendance Info</h3>
+             <div class="row mt-4">
+                <div class="col-md-6">
+                    <a href="/my/my-attendance" class="text-decoration-none">
+                        <div class="card shadow-sm p-4">
+                            <h5>Attendance</h5>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <h3>Leave</h3>
+            <div class="row mt-4">
+
+                <div class="col-md-6">
+                    <a href="/my/leave/apply" class="text-decoration-none">
+                        <div class="card shadow-sm p-4">
+                            <h5>Apply Leave</h5>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-md-6">
+                    <a href="/my/leave/history" class="text-decoration-none">
+                        <div class="card shadow-sm p-4">
+                            <h5>My Leave History</h5>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </t>
+</template>
+
+</odoo>

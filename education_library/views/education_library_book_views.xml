@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_education_library_book_tree" model="ir.ui.view">
+        <field name="name">education.library.book.tree</field>
+        <field name="model">education.library.book</field>
+        <field name="arch" type="xml">
+            <list string="Books" decoration-muted="copies_available == 0">
+                <field name="title"/>
+                <field name="authors"/>
+                <field name="isbn"/>
+                <field name="category_id"/>
+                <field name="copies_total"/>
+                <field name="copies_available"
+                       decoration-danger="copies_available == 0"
+                       decoration-warning="copies_available &lt; 3 and copies_available &gt; 0"
+                       decoration-success="copies_available &gt;= 3"/>
+                <field name="copies_issued"/>
+                <field name="pending_reservations" string="Reserved"/>
+                <field name="state" widget="badge"
+                       decoration-success="state=='available'"
+                       decoration-warning="state=='issued'"
+                       decoration-danger="state in ['lost','damaged']"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_education_library_book_form" model="ir.ui.view">
+        <field name="name">education.library.book.form</field>
+        <field name="model">education.library.book</field>
+        <field name="arch" type="xml">
+            <form string="Book">
+                <header>
+                    <button name="action_reserve_book" string="Reserve Book" type="object"
+                            class="btn-warning"
+                            invisible="copies_available &gt; 0"
+                            />
+                    <button name="action_mark_available" string="Mark Available" type="object"
+                            class="btn-success"
+                            invisible="state == 'available' or copies_available == 0"
+                            groups="base.group_user"
+                            />
+                    <button name="action_mark_damaged" string="Mark Damaged" type="object"
+                            class="btn-danger"
+                            invisible="state == 'damaged'"
+                            groups="base.group_user"
+                            />
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_transactions" type="object"
+                                class="oe_stat_button" icon="fa-exchange">
+                            <field name="transaction_count" widget="statinfo" string="Transactions"/>
+                        </button>
+                        <button name="action_view_reservations" type="object"
+                                class="oe_stat_button" icon="fa-bookmark"
+                                invisible="reservation_count == 0">
+                            <field name="reservation_count" widget="statinfo" string="Reservations"/>
+                        </button>
+                        <button name="action_view_current_reservations" type="object"
+                                class="oe_stat_button" icon="fa-clock-o"
+                                invisible="pending_reservations == 0">
+                            <field name="pending_reservations" widget="statinfo" string="Pending"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="No Copies Available" bg_color="text-bg-danger"
+                            invisible="copies_available &gt; 0 or pending_reservations == 0"/>
+                    <widget name="web_ribbon" title="Reserved by Others" bg_color="text-bg-warning"
+                            invisible="copies_available &gt; 0 or pending_reservations == 0"/>
+
+                    <field name="photo" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h1><field name="title"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="authors"/>
+                            <field name="isbn"/>
+                            <field name="barcode"/>
+                            <field name="category_id"/>
+                        </group>
+                        <group>
+                            <field name="publisher"/>
+                            <field name="publish_date"/>
+                            <field name="edition"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Availability">
+                            <field name="copies_total"/>
+                            <field name="copies_available"
+                                   class="text-success"
+                                   style="font-weight: bold;"/>
+                            <field name="copies_issued"/>
+                            <field name="has_reservations" invisible="1"/>
+                        </group>
+                        <group string="Reservations" invisible="not has_reservations">
+                            <field name="pending_reservations" string="Pending Queue"/>
+                            <div class="text-muted" invisible="pending_reservations == 0">
+                                <i class="fa fa-info-circle" title="fa"/>
+                                <field name="pending_reservations" readonly="1"/> people waiting
+                            </div>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description" placeholder="Book description..."/>
+                        </page>
+                        <page string="Transactions">
+                            <field name="transaction_ids">
+                                <list decoration-info="status=='issued'"
+                                      decoration-danger="status=='overdue'"
+                                      decoration-muted="status=='returned'">
+                                    <field name="name"/>
+                                    <field name="member_id"/>
+                                    <field name="issue_date"/>
+                                    <field name="due_date"/>
+                                    <field name="return_date"/>
+                                    <field name="is_from_reservation" string="From Res."/>
+                                    <field name="status" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Reservations" invisible="reservation_count == 0">
+                            <field name="reservation_ids">
+                                <list decoration-info="status=='pending'"
+                                      decoration-success="status=='available'"
+                                      decoration-muted="status in ['fulfilled','cancelled']">
+                                    <field name="name"/>
+                                    <field name="member_id"/>
+                                    <field name="reservation_date"/>
+                                    <field name="priority" string="Position"/>
+                                    <field name="days_waiting"/>
+                                    <field name="status" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+     <record id="view_education_library_book_search" model="ir.ui.view">
+        <field name="name">education.library.book.search</field>
+        <field name="model">education.library.book</field>
+        <field name="arch" type="xml">
+            <search string="Search Books">
+                <!-- QUICK SEARCH FIELDS -->
+                <field name="title"/>
+                <field name="authors"/>
+                <field name="isbn"/>
+                <field name="publisher"/>
+                <field name="category_id"/>
+                <field name="barcode"/>
+                <separator/>
+
+                <!-- FILTERS -->
+                <filter name="filter_state_available"
+                        string="Available"
+                        domain="[('state','=','available')]"/>
+                <filter name="filter_state_issued"
+                        string="Issued"
+                        domain="[('state','=','issued')]"/>
+                <filter name="filter_state_lost"
+                        string="Lost"
+                        domain="[('state','=','lost')]"/>
+                <filter name="filter_state_damaged"
+                        string="Damaged"
+                        domain="[('state','=','damaged')]"/>
+                <separator/>
+                <filter name="filter_archived"
+                        string="Archived"
+                        domain="[('active','=',False)]"/>
+                <separator/>
+
+                <!-- GROUP BY -->
+                <group name="group_by">
+                    <filter name="group_by_category"
+                            string="Category"
+                            context="{'group_by':'category_id'}"/>
+                    <filter name="group_by_publisher"
+                            string="Publisher"
+                            context="{'group_by':'publisher'}"/>
+                    <filter name="group_by_state"
+                            string="Status"
+                            context="{'group_by':'state'}"/>
+                    <filter name="group_by_publish_date"
+                            string="Publish Date"
+                            context="{'group_by':'publish_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_education_library_book" model="ir.actions.act_window">
+        <field name="name">Books</field>
+        <field name="res_model">education.library.book</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

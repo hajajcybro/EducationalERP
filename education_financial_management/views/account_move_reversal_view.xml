@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_account_move_reversal_form_inherit_penalty"
+            model="ir.ui.view">
+        <field name="name">account.move.reversal.form.inherit.penalty</field>
+        <field name="model">account.move.reversal</field>
+        <field name="inherit_id" ref="account.view_account_move_reversal"/>
+        <field name="arch" type="xml">
+
+            <!-- Add fields inside main group -->
+            <xpath expr="//group" position="inside">
+                <field name="is_due_amount_different"/>
+                <field name="reverse_amount" invisible="is_due_amount_different != True"/>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

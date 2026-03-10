@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Tree View -->
+    <record id="education_exam_grade_view_list" model="ir.ui.view">
+        <field name="name">education.exam.grade.list</field>
+        <field name="model">education.exam.grade</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="percentage_from" widget="percentage"/>
+                <field name="percentage_to" widget="percentage"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="education_exam_grade_view_form" model="ir.ui.view">
+        <field name="name">education.exam.grade.form</field>
+        <field name="model">education.exam.grade</field>
+        <field name="arch" type="xml">
+            <form string="Grade Setting">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="percentage_from" widget="percentage"/>
+                            <field name="percentage_to" widget="percentage"/>
+                            <field name="remark"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_grade_setting" model="ir.actions.act_window">
+        <field name="name">Grade Settings</field>
+        <field name="res_model">education.exam.grade</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menu -->
+    <record id="action_grade_setting" model="ir.actions.act_window">
+        <field name="name">Grade Setting</field>
+        <field name="res_model">education.exam.grade</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_grade_setting"
+              name="Grades"
+              parent="menu_exam_configuration"
+              action="action_grade_setting"
+              sequence="60"
+    />
+
+</odoo>

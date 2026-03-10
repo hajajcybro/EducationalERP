@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+<template id="portal_library_home" name="Portal Library Home">
+    <t t-call="portal.portal_layout">
+        <div class="container">
+            <t t-if="alert_messages">
+                <t t-foreach="alert_messages" t-as="msg">
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <i class="fa fa-bell me-2"/>
+                        <t t-esc="msg"/>
+                        <button type="button" class="btn-close"
+                                data-bs-dismiss="alert" aria-label="Close"/>
+                    </div>
+                </t>
+            </t>
+            <h2 class="mb-4">Library</h2>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="card shadow-sm h-100">
+                        <a href="/my/library/books"
+                           class="text-decoration-none p-4 d-block">
+                            <h5>Books  Availability</h5>
+                            <p>View all books and available status</p>
+                        </a>
+                    </div>
+                </div>
+                <t t-if="is_member">
+                    <div class="col-md-6">
+                        <div class="card shadow-sm h-100">
+                            <a href="/my/library/history"
+                               class="text-decoration-none p-4 d-block">
+                                <h5>Activity</h5>
+                                <p>Issued and returned books</p>
+                            </a>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+</template>
+</odoo>

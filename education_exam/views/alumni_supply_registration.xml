@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="portal_supply_form" name="Supplementary Exam Form">
+        <t t-call="portal.portal_layout">
+            <div class="container mt-4">
+                <t t-if="request.params.get('error') == 'already_applied'">
+                    <div class="alert alert-danger">
+                        You have already applied for this supplementary exam!
+                    </div>
+                </t>
+                <t t-if="request.params.get('success') == '1'">
+                    <div class="alert alert-success">
+                        Application submitted successfully.
+                    </div>
+                </t>
+                <h2>Supplementary Exam Application</h2>
+
+                <form action="/my/alumni/exam/supply/submit" method="post">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                    <!-- Failed Subject Dropdown -->
+                    <div class="mb-3">
+                        <label>Failed Subject</label>
+                        <select name="course_id" class="form-control" required="required">
+                            <option value="">-- Select Subject --</option>
+                            <t t-foreach="failed_courses" t-as="course">
+                                <!-- Automatically selects the course based on the URL (?course_id=1) -->
+                                <option t-att-value="course.id"
+                                        t-att-selected="str(course.id) == request.params.get('course_id')">
+                                    <t t-esc="course.name"/>
+                                </option>
+                            </t>
+                        </select>
+                    </div>
+
+                    <!-- Available Exams Dropdown -->
+                    <div class="mb-3">
+                        <label>Select Upcoming Exam</label>
+                        <select name="exam_id" class="form-control" required="required">
+                            <option value="">-- Select Exam --</option>
+                            <t t-foreach="available_exams" t-as="exam">
+                                <option t-att-value="exam.id">
+                                    <t t-esc="exam.name"/>
+                                </option>
+                            </t>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        Submit Application
+                    </button>
+                    <a href="/my/exam-results" class="btn btn-secondary ms-2">Cancel</a>
+                </form>
+            </div>
+        </t>
+    </template>
+</odoo>

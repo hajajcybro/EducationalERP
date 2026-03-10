@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="portal_hostel" name="Portal Hostel">
+        <t t-call="portal.portal_layout">
+            <div class="container mt-4">
+                <h3 class="mb-4">Hostel Details</h3>
+                <t t-if="allocation">
+                    <div class="card shadow-sm p-4">
+                            <div class="row">
+
+                                <!-- LEFT SIDE -->
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <strong>Hostel Name:</strong>
+                                        <span class="ms-2"><t t-esc="hostel.name"/></span>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <strong>Allocated Room:</strong>
+                                        <span class="ms-2"><t t-esc="room.room_no"/></span>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <strong>Warden:</strong>
+                                        <span class="ms-2">
+                                            <t t-if="hostel.warden_id">
+                                                <t t-esc="hostel.warden_id.name"/>
+                                            </t>
+                                        </span>
+                                    </div>
+
+                                    <div>
+                                        <strong>Hostel Phone:</strong>
+                                        <span class="ms-2"><t t-esc="hostel.phone"/></span>
+                                    </div>
+                                </div>
+                                <!-- RIGHT SIDE -->
+                                <div class="col-md-6 border-start ps-4">
+                                    <div class="mb-3">
+                                        <strong>Room Rent:</strong>
+                                        <span class="ms-2"><t t-esc="hostel.room_rent"/></span>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <strong>Mess Fee:</strong>
+                                        <span class="ms-2"><t t-esc="hostel.mess_fee"/></span>
+                                    </div>
+
+                                    <div>
+                                        <strong>Total Fee:</strong>
+                                        <span class="ms-2"><t t-esc="hostel.total_fee"/></span>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </t>
+
+                <!-- 2. PENDING: Application exists but NO allocation yet -->
+                <t t-elif="application and not allocation">
+                    <div class="card shadow-sm p-4 border-warning">
+                        <div class="alert alert-warning mb-0">
+                            <h4><i class="fa fa-clock-o"/> Application Pending</h4>
+                            <p>
+                                Your application (ID: <span t-field="application.name"/>) is currently
+                                <strong><span t-field="application.state"/></strong>.
+                            </p>
+                            <p>No room has been allocated to you yet. Please check back later.</p>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- 3. NO APPLICATION -->
+                <t t-else="">
+                    <div class="alert alert-info">
+                        No hostel application found.
+                    </div>
+                </t>
+                <t t-if="allocation and hostel_fee and pending_amount > 0">
+                    <div class="card shadow-sm mt-4 p-4 border-danger">
+                        <h5 class="text-danger">Pending Hostel Payment</h5>
+
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div>
+                                <strong>Outstanding Amount:</strong>
+                                <span t-esc="pending_amount" t-options='{"widget": "monetary", "display_currency": hostel_fee.currency_id}'/>
+                            </div>
+
+                            <div>
+                                <a t-att-href="'/my/invoices'" class="btn btn-danger">
+                                    Pay Now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+
+            </div>
+        </t>
+    </template>
+</odoo>

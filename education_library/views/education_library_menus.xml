@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_education_library_root"
+              name="Library"
+              sequence="10"/>
+
+    <menuitem id="menu_education_library_operations"
+              name="Operations"
+              parent="menu_education_library_root"
+              sequence="10"/>
+
+    <menuitem id="menu_education_library_reservations_main"
+              name="Reservations"
+              parent="menu_education_library_root"
+              sequence="10"/>
+
+    <menuitem id="menu_education_library_reporting"
+              name="Reporting"
+              parent="menu_education_library_root"
+              sequence="10"/>
+
+    <menuitem id="menu_library_usage_report"
+              name="Usage Report"
+              parent="menu_education_library_reporting"
+              action="action_library_usage_report_wizard"
+              sequence="10"/>
+
+    <menuitem id="menu_library_stock_report"
+              name="Stock Report"
+              parent="menu_education_library_reporting"
+              action="action_library_stock_wizard"
+              sequence="20"/>
+
+    <menuitem id="menu_library_overdue_books_report"
+              name="Overdue Books Report"
+              parent="menu_education_library_reporting"
+              action="action_library_overdue_wizard"
+              sequence="30"/>
+
+    <menuitem id="menu_education_library_transaction"
+              name="Transactions"
+              parent="menu_education_library_operations"
+              action="action_education_library_transaction"
+              sequence="10"/>
+
+    <menuitem id="menu_education_library_transaction_overdue"
+              name="Overdue Books"
+              parent="menu_education_library_operations"
+              action="action_education_library_transaction_overdue"
+              sequence="20"/>
+
+    <menuitem id="menu_education_library_reservation"
+              name="Reservations"
+              parent="menu_education_library_reservations_main"
+              action="action_education_library_reservation"
+              sequence="30"/>
+
+    <menuitem id="menu_education_library_reservation_pending"
+              name="Pending Queue"
+              parent="menu_education_library_reservations_main"
+              action="action_education_library_reservation_pending"
+              sequence="40"/>
+
+    <menuitem id="menu_education_library_reservation_available"
+              name="Available to Collect"
+              parent="menu_education_library_reservations_main"
+              action="action_education_library_reservation_available"
+              sequence="50"/>
+
+    <menuitem id="menu_education_library_management"
+              name="Configuration"
+              parent="menu_education_library_root"
+              sequence="20"/>
+
+    <menuitem id="menu_library_config_settings"
+              name="Settings"
+              parent="menu_education_library_management"
+              action="action_library_config_settings"
+              sequence="10"
+              groups="group_library_manager"/>
+
+    <menuitem id="menu_education_library_book"
+              name="Books"
+              parent="menu_education_library_management"
+              action="action_education_library_book"
+              sequence="20"/>
+
+    <menuitem id="menu_education_library_member"
+              name="Members"
+              parent="menu_education_library_management"
+              action="action_education_library_member"
+              sequence="30"/>
+
+    <menuitem id="menu_education_library_category"
+              name="Categories"
+              parent="menu_education_library_management"
+              action="action_education_library_category"
+              sequence="40"/>
+
+<!--    <menuitem id="menu_education_library_config"-->
+<!--              name="Configuration"-->
+<!--              parent="menu_education_library_root"-->
+<!--              sequence="30"/>-->
+</odoo>

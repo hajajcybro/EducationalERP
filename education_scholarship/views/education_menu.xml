@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem id="menu_education_scholarship_root"
+              name="Scholarship"
+              sequence="10"/>
+
+    <menuitem id="menu_education_scholarship"
+              name="Scholarships"
+              parent="menu_education_scholarship_root"
+              action="action_education_scholarship"
+              sequence="30"/>
+    <menuitem id="menu_education_scholarship_application"
+              name="Scholarship Applications"
+              parent="menu_education_scholarship_root"
+              action="action_education_scholarship_application"
+              sequence="15"/>
+     <menuitem id="menu_education_scholarship_report"
+              parent="menu_education_scholarship_root"
+              action="action_scholarship_report_wizard"
+              name="Report" sequence="40"
+              groups="education_core.group_education_admin,education_core.group_education_admission_officer,education_core.group_education_teacher"/>
+    <menuitem id="menu_education_scholarship_settings"
+              parent="menu_education_scholarship_root"
+              name="Settings" sequence="99"
+              groups="education_core.group_education_admin,education_core.group_education_admission_officer,education_core.group_education_teacher"/>
+    <menuitem id="menu_education_scholarship_criteria"
+              name="Scholarship Criteria"
+              parent="menu_education_scholarship_settings"
+              action="action_education_scholarship_criteria"
+              sequence="10"/>
+    <menuitem id="menu_education_eligibility_criteria"
+              name="Eligibility Criteria"
+              parent="menu_education_scholarship_settings"
+              action="action_education_eligibility_criteria"
+              sequence="20"/>
+</odoo>

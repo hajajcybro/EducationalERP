@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="portal_student_profile" name="Student Profile">
+        <t t-call="portal.portal_layout">
+            <div class="container mt-4">
+                <h3 class="mb-4">My Profile</h3>
+                <div class="card shadow-sm p-4">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Name:</strong> <t t-esc="student.name"/></p>
+                            <p><strong>Admission No:</strong> <t t-esc="student.admission_no"/></p>
+                            <p><strong>Academic Year:</strong> <t t-esc="student.academic_year_id.name"/></p>
+                            <p><strong>Program:</strong> <t t-esc="student.program_id.name"/></p>
+                            <p><strong>Class:</strong> <t t-esc="student.class_id.name"/></p>
+                            <p><strong>Roll No:</strong> <t t-esc="student.roll_no"/></p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <p><strong>Father Name:</strong> <t t-esc="student.father_name"/></p>
+                            <p><strong>Mother Name:</strong> <t t-esc="student.mother_name"/></p>
+                            <p><strong>Guardian:</strong> <t t-esc="student.guardian_id.name"/></p>
+                            <p><strong>Relation:</strong> <t t-esc="student.relation"/></p>
+                            <p><strong>Date of Birth:</strong> <t t-esc="student.dob"/></p>
+                            <p><strong>Age:</strong> <t t-esc="student.age"/></p>
+                            <p><strong>Gender:</strong> <t t-esc="student.gender"/></p>
+                            <p><strong>Blood Group:</strong> <t t-esc="student.blood_group"/></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

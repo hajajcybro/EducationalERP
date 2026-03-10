@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="portal_transport" name="Portal Transport">
+        <t t-call="portal.portal_layout">
+            <div class="container mt-4">
+                 <t t-if="is_student">
+                    <t t-if="alert_messages">
+                        <t t-foreach="alert_messages" t-as="msg">
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <i class="fa fa-bell me-2"/>
+                                <t t-esc="msg"/>
+                                <button type="button" class="btn-close"
+                                        data-bs-dismiss="alert" aria-label="Close"/>
+                            </div>
+                        </t>
+                    </t>
+                 </t>
+                <h3 class="mb-4">Transport Details</h3>
+                <t t-if="transport">
+                    <div class="card shadow-sm p-4">
+                        <div class="mb-2">
+                            <strong>Route:</strong>
+                            <t t-esc="route.name"/>
+                        </div>
+                        <div class="mb-2">
+                            <strong>Vehicle No:</strong>
+                            <t t-esc="route.vehicle_id.reg_no"/>
+                        </div>
+                        <div class="mb-2">
+                            <strong>Driver:</strong>
+                            <t t-esc="route.vehicle_id.empl_driver_id.name"/>
+                        </div>
+                        <div class="mb-2">
+                            <strong>Driver Mobile:</strong>
+                            <t t-esc="route.vehicle_id.empl_driver_id.mobile_phone"/>
+                        </div>
+                    </div>
+                    <!-- ROUTE PLAN -->
+                    <div class="card shadow-sm mt-4 p-4">
+                        <h5>Route Plan</h5>
+                        <table class="table table-bordered mt-3">
+                            <thead>
+                                <tr>
+                                    <th>Seq</th>
+                                    <th>Stop</th>
+                                    <th>Pickup</th>
+                                    <th>Drop</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+<!--                                <t t-foreach="stops" t-as="s">-->
+                                    <tr>
+                                        <td><t t-esc="stop.sequence"/></td>
+                                        <td><t t-esc="stop.stop_name"/></td>
+                                        <td><t t-esc="stop.pickup_time"/></td>
+                                        <td><t t-esc="stop.drop_time"/></td>
+                                    </tr>
+<!--                                </t>-->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- PENDING PAYMENT -->
+                    <t t-if="transport_fee and pending_amount > 0">
+                        <div class="card shadow-sm mt-4 p-4 border-danger">
+                            <h5 class="text-danger">Pending Transport Payment</h5>
+
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div>
+                                    <strong>Outstanding Amount:</strong>
+                                    <span t-esc="pending_amount"/>
+                                </div>
+
+                                <div>
+                                    <a t-att-href="'/my/invoices'"
+                                       class="btn btn-danger">
+                                        Pay Now
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+
+                <t t-if="not transport">
+                    <div class="alert alert-info">
+                        No active transport assignment found.
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+</odoo>
+
+

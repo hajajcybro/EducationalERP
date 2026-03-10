@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="fleet_vehicle_form_transport_driver_inherit" model="ir.ui.view">
+        <field name="name">fleet.vehicle.form.transport.driver.inherit</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+        <field name="arch" type="xml">
+             <xpath expr="//form/header" position="inside">
+                 <button name="action_maintenance" type="object"  invisible="status == 'maintenance'"
+                    string="Maintenance" class="oe_highlight"/>
+                 <button name="action_inactive" type="object" invisible="status == 'inactive'"
+                    string="Inactive" class="btn-secondary"/>
+            </xpath>
+
+            <!-- Replace default driver -->
+            <xpath expr="//field[@name='mobility_card']" position="replace">
+                <field name="is_transport_vehicle" widget="boolean_toggle"/>
+            </xpath>
+            <xpath expr="//field[@name='driver_id']" position="replace">
+                <field name="empl_driver_id"/>
+            </xpath>
+             <xpath expr="//field[@name='future_driver_id']" position="replace">
+                <field name="reg_no"/>
+            </xpath>
+            <xpath expr="//field[@name='order_date']" position="replace">
+                <field name="capacity"/>
+            </xpath>
+             <xpath expr="//field[@name='state_id']" position="replace">
+                <field name="status"
+                       widget="statusbar"
+                       statusbar_visible="active,maintenance,inactive"/>
+            </xpath>
+
+
+        </field>
+    </record>
+
+    <record id="action_fleet_vehicle" model="ir.actions.act_window">
+        <field name="name">Vehicle</field>
+        <field name="res_model">fleet.vehicle</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_transport_vehicle', '=', True)]</field>
+        <field name="context">{'default_is_transport_vehicle': True}</field>
+        <field name="help" type="html">
+            <p class="0_view_no_content_smiling_face">create</p>
+        </field>
+    </record>
+</odoo>

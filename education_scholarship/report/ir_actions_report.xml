@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+     <record id="action_report_scholarship_information" model="ir.actions.report">
+       <field name="name">Scholarship Report</field>
+       <field name="model">education.scholarship.application</field>
+       <field name="report_type">qweb-pdf</field>
+       <field name="report_name">education_scholarship.scholarship_report_template</field>
+       <field name="report_file">education_scholarship.scholarship_report_template</field>
+   </record>
+
+</odoo>

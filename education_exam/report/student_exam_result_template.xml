@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="report_exam_result_pdf">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <div class="page">
+                        <h2>Exam Result:
+                            <t t-esc="doc.name"/>
+                        </h2>
+                        <p>
+                            <strong>Student:</strong>
+                            <t t-esc="doc.student_id.name"/>
+                        </p>
+                        <p>
+                            <strong>Class:</strong>
+                            <t t-esc="doc.class_id.name"/>
+                        </p>
+                        <p>
+                            <strong>Program:</strong>
+                            <t t-esc="doc.program_id.name"/>
+                        </p>
+                        <p>
+                            <strong>Session:</strong>
+                            <t t-esc="doc.session_id.name"/>
+                        </p>
+                        <p>
+                            <strong>Academic Year:</strong>
+                            <t t-esc="doc.academic_year_id.name"/>
+                        </p>
+
+                        <h3>Mark Sheet</h3>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Course</th>
+                                    <th>Max Mark</th>
+                                    <th>Pass Mark</th>
+                                    <th>Mark Scored</th>
+                                    <th>Pass/Fail</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.result_line_ids" t-as="line">
+                                    <tr>
+                                        <td>
+                                            <t t-esc="line.course_id.name"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.max_mark"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.pass_mark"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="line.mark_scored"/>
+                                        </td>
+                                        <td>
+                                            <t t-if="line.pass_or_fail">Pass</t>
+                                            <t t-else="">Fail</t>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <p>
+                            <strong>Total Marks Scored:</strong>
+                            <t t-esc="doc.total_mark_scored"/>
+                        </p>
+                        <p>
+                            <strong>Overall Status:</strong>
+                            <t t-if="doc.all_pass">Pass</t>
+                            <t t-else="">Fail</t>
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

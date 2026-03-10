@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Wizard Form View -->
+    <record id="view_library_stock_wizard_form" model="ir.ui.view">
+        <field name="name">library.stock.wizard.form</field>
+        <field name="model">library.stock.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Library Stock Report">
+
+                <group string="Filters" name="filters">
+                    <group>
+                        <field name="book_ids" widget="many2many_tags"
+                               placeholder="Leave empty for all books"
+                               options="{'no_create': True}"/>
+                    </group>
+                    <group>
+                        <field name="category_ids" widget="many2many_tags"
+                               placeholder="Leave empty for all categories"
+                               options="{'no_create': True}"/>
+                    </group>
+                </group>
+
+                <group string="Text Filters" name="text_filters">
+                    <group>
+                        <field name="authors" placeholder="Filter by author (optional)"/>
+                    </group>
+                    <group>
+                        <field name="publisher" placeholder="Filter by publisher (optional)"/>
+                    </group>
+                </group>
+
+                <group string="Availability" name="availability">
+                    <group>
+                        <field name="availability_filter" nolabel="1"/>
+                    </group>
+                </group>
+
+                <footer>
+                    <button name="action_generate_pdf" string="PDF" type="object"
+                            class="oe_highlight"/>
+                    <button name="action_generate_xlsx" string="XLSX" type="object"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_library_stock_wizard" model="ir.actions.act_window">
+        <field name="name">Stock Report</field>
+        <field name="res_model">library.stock.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

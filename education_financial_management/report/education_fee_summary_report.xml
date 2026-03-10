@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="report_fee_summary">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h3 style="text-align:left;">Fee Summary Report</h3>
+                    <table class="table table-sm table-bordered text-center">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Student</th>
+                                <th class="text-center">Admission No</th>
+                                <th class="text-center">Payment Type</th>
+                                <th class="text-center">Due Date</th>
+                                <th class="text-center">Invoiced</th>
+                                <th class="text-center">Paid</th>
+                                <th class="text-center">Refunded</th>
+                                <th class="text-center">Outstanding</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <t t-foreach="docs" t-as="row">
+                                <tr>
+                                    <td>
+                                        <t t-esc="row['student_name']"/>
+                                    </td>
+                                    <td>
+                                        <t t-esc="row['admission_no']"/>
+                                    </td>
+                                     <td>
+                                        <t t-esc="row['payment_type']"/>
+                                    </td>
+                                    <td class="text-center">
+                                        <t t-esc="row['due_date'] or '-'"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <t t-esc="row['total_invoiced']"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <t t-esc="row['total_paid']"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <t t-esc="row['total_refunded']"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <t t-esc="row['outstanding_amount']"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>
+

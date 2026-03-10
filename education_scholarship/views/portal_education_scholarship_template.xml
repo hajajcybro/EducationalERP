@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="portal_scholarship_home">
+        <t t-call="portal.portal_layout">
+            <div class="container mt-4">
+                <t t-if="alert_messages">
+                    <t t-foreach="alert_messages" t-as="msg">
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <i class="fa fa-bell me-2"/>
+                            <t t-esc="msg"/>
+                            <button type="button" class="btn-close"
+                                    data-bs-dismiss="alert" aria-label="Close"/>
+                        </div>
+                    </t>
+                </t>
+                <h2>Scholarships</h2>
+                <div class="row mt-4">
+                    <div class="col-md-4 mb-3">
+                        <a href="/my/published-scholarships" class="text-decoration-none">
+                            <div class="card shadow-sm  h-100">
+                                <div class="card-body">
+                                    <i class="fa fa-bullhorn fa-2x mb-3 text-primary"/>
+                                    <h5>Published Scholarships</h5>
+                                    <p class="text-muted">
+                                        View available scholarships and eligibility criteria
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <t t-if="student">
+                        <div class="col-md-4 mb-3">
+                            <a href="/scholarship/application" class="text-decoration-none">
+                                <div class="card shadow-sm h-100">
+                                    <div class="card-body">
+                                        <i class="fa fa-file-text fa-2x mb-3 text-success"/>
+                                        <h5>Apply Scholarship</h5>
+                                        <p class="text-muted">
+                                            Submit a new scholarship application
+                                        </p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </t>
+                    <div class="col-md-4 mb-3">
+                        <a href="/my/my-scholarship" class="text-decoration-none">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-body">
+                                    <i class="fa fa-trophy fa-2x mb-3 text-warning"/>
+                                    <h5>Scholarship</h5>
+                                    <p class="text-muted">
+                                        View approved scholarship details and remaining amount
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
