@@ -1,5 +1,4 @@
-from odoo import models, fields, api
-from odoo.exceptions import ValidationError
+from odoo import models, fields
 
 class EducationCategory(models.Model):
     _name = 'education.category'

@@ -13,7 +13,6 @@ class EducationEnrollment(models.Model):
         'education.application',
         string='Student',
         required=True,
-        ondelete='cascade',
         help='Student being enrolled.'
     )
     admission_no = fields.Char(related='student_id.admission_no', string="Register No")
@@ -24,7 +23,7 @@ class EducationEnrollment(models.Model):
         readonly=True
     )
     academic_year_id = fields.Many2one('education.academic.year',related='student_id.academic_year_id',
-        string='Academic Year',
+        string='Academic Year',domain=[('state', '!=', 'closed')],
      )
     program_id = fields.Many2one('education.program',related='student_id.program_id',
         string='Program',
@@ -46,55 +45,49 @@ class EducationEnrollment(models.Model):
         ('enrolled', 'Enrolled'),
         ('promoted', 'Promoted'),
         ('retained', 'Retained'),
+        ('completed', 'Completed'),
         ('dropped', 'Dropped'),
-        ('completed', 'Completed')
         ], string='Status', default='draft', tracking=True
     )
     roll_number = fields.Integer(
         string='Roll Number',
         store=True,
-
-        help='Automatically assigned roll number per class and academic year.'
-    )
+        help='Automatically assigned roll number per class and academic year.')
     remarks = fields.Text(string='Remarks')
-
-
-    _sql_constraints = [
-        ('unique_enrollment',
-         'unique(student_id,current_class_id,academic_year_id)',
-         'A student cannot be enrolled multiple times.')
-    ]
 
     def action_enroll(self):
         """Mark as enrolled"""
         for rec in self:
             rec.status = 'enrolled'
 
+    def action_dropped(self):
+        """Mark as dropped"""
+        for rec in self:
+            rec.status = 'dropped'
 
-    # def _assign_roll_number(self):
-    #     """Assign sequential roll number based on class and academic year."""
-    #     for rec in self:
-    #         if not rec.current_class_id or not rec.academic_year_id:
-    #             continue
-    #
-    #         last_enrollment = self.search([
-    #             ('current_class_id', '=', rec.current_class_id.id),
-    #             ('academic_year_id', '=', rec.academic_year_id.id),
-    #         ], order='roll_number desc', limit=1)
-    #         last_roll = last_enrollment.roll_number or 0
-    #         rec.roll_number = last_roll + 1
-
+    def _assign_roll_number(self):
+        """Assign the next available roll number for the class and academic year."""
+        for rec in self:
+            if not rec.current_class_id or not rec.academic_year_id:
+                continue
+            last_student = self.env['res.partner'].search([
+                ('position_role', '=', 'student'),
+                ('class_id', '=', rec.current_class_id.id),
+                ('academic_year_id', '=', rec.academic_year_id.id),
+                ('roll_no', '!=', False),
+            ], order="roll_no desc", limit=1)
+            last_roll = int(last_student.roll_no) if last_student else 0
+            rec.roll_number = last_roll + 1
 
     @api.model_create_multi
     def create(self, vals_list):
-        """Create enrollment and update linked student's state and current enrollment."""
+        """Create enrollment, assign roll number, and update student records."""
         records = super().create(vals_list)
         for rec in records:
-            # if not rec.roll_number:
-            #     # rec._assign_roll_number()
-            #     rec.write({'roll_number': rec.roll_number
-            #     })
-
+            if not rec.roll_number:
+                rec._assign_roll_number()
+                rec.write({'roll_number': rec.roll_number
+                })
             existing = self.search([
                 ('student_id', '=', rec.student_id.id),
                 ('status', '=', 'enrolled'),
@@ -104,7 +97,6 @@ class EducationEnrollment(models.Model):
                 raise ValidationError(_(
                     "Student '%s' is already enrolled in another class (%s)."
                 ) % (rec.student_id.name, existing.current_class_id.display_name))
-
             if rec.student_id:
                 rec.student_id.write({
                     'state': 'enrolled',
@@ -117,5 +109,7 @@ class EducationEnrollment(models.Model):
                         'roll_no': rec.roll_number,
                         'class_teacher_id': rec.teacher_id.id,
                     })
-        return records
+        return records\
+
+
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields, api
+from odoo import models, fields, api,_
 from odoo.exceptions import ValidationError
 
 class EducationClass(models.Model):
@@ -15,6 +15,7 @@ class EducationClass(models.Model):
                     help='Specify the education program or course this class belongs to'
                              )
     academic_year_id = fields.Many2one('education.academic.year',string='Academic Year', required=True,
+                                       domain=[('state', '!=', 'closed')],
                     help = 'Select the academic year during which this class will run'
                                    )
     capacity = fields.Integer(string='Room Capacity',  compute='_compute_capacity',
@@ -33,8 +34,23 @@ class EducationClass(models.Model):
         default=True,
         help='Uncheck to archive this class and hide it from selection lists.'
     )
-    student_ids = fields.One2many('education.enrollment','current_class_id')
+    student_ids = fields.One2many('res.partner','class_id')
+    session_id = fields.Many2one('education.session',string='Session')
+    timetable_line_ids = fields.One2many('education.timetable.line','class_id')
+    program_type = fields.Selection(
+        [('school', 'School'), ('college', 'College')],
+        string='Program Type', readonly=True
+    )
+    division = fields.Char(
+        string='Division',
+        help='Class division (A, B, C, etc.)'
+    )
 
+    @api.onchange('program_id')
+    def _onchange_program_id(self):
+        """Update the program type automatically when the program is changed."""
+        if self.program_id:
+            self.program_type = self.program_id.education_type
 
     @api.depends('room_id')
     def _compute_capacity(self):
@@ -54,17 +70,25 @@ class EducationClass(models.Model):
                     ('academic_year_id', '=', rec.academic_year_id.id)
                 ], limit=1)
                 if existing:
-                    raise ValidationError((
-                        f"Room '{rec.room_id.name}' is already assigned to class "
-                        f"'{existing.name}' for academic year '{rec.academic_year_id.name}'."
-                    ))
+                    raise ValidationError('already assigned')
 
     @api.constrains('program_id', 'academic_year_id')
     def _check_program_year_duration(self):
+        """ Ensure the Academic Year duration matches the selected Program's duration.
+        Raises a ValidationError if both durations are different."""
         for rec in self:
             if rec.program_id and rec.academic_year_id:
                 if int(rec.academic_year_id.duration) != rec.program_id.duration:
-                    raise ValidationError(
-                        f"Academic year '{rec.academic_year_id.name}' (duration {rec.academic_year_id.duration}) "
-                        f"does not match the duration of program '{rec.program_id.name}' ({rec.program_id.duration} years)."
-                    )
+                    raise ValidationError("Program duration must match academic year duration.")
+
+    @api.constrains('room_id')
+    def _check_room_already_allocated(self):
+        """Prevent assigning the same room to multiple classes."""
+        for rec in self:
+            if rec.room_id and self.search_count([
+                ('id', '!=', rec.id),
+                ('room_id', '=', rec.room_id.id),
+            ]):
+                raise ValidationError(_("Room is already assigned to another class."))
+
+

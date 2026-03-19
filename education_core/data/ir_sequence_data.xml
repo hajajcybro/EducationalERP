@@ -15,4 +15,11 @@
         <field name="padding">3</field>
     </record>
 
+    <record model="ir.sequence" id="seq_alumni_id">
+        <field name="name">Alumni ID</field>
+        <field name="code">alumni.id.sequence</field>
+        <field name="prefix">ALM/%(year)s/</field>
+        <field name="padding">4</field>
+    </record>
+
 </odoo>

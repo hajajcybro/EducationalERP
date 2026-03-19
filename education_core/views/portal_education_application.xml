@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+     <template id="application_form" name="Student Application Form">
+        <t t-call="website.layout">
+            <div class="container my-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-9">
+                        <div class="card shadow-sm p-4">
+                            <h2 class="mb-4 text-center">Student Application Form</h2>
+                            <form action="/student/application/submit" method="post" enctype="multipart/form-data">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <h5 class="mb-3">Personal Information</h5>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label>Name</label>
+                                        <input type="text" name="name" class="form-control" required="1"/>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label>Email</label>
+                                        <input type="email" name="email" class="form-control" required="1"/>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label>Phone</label>
+                                        <input type="text" name="phone" class="form-control"/>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label>Date of Birth</label>
+                                        <input type="date" name="dob" class="form-control"/>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label>Aadhar No. / ID No.</label>
+                                        <input type="text" name="id_no" class="form-control"/>
+                                    </div>
+                                </div>
+                                 <h5 class="mt-4 mb-3">Address Details</h5>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label>Street <span class="text-danger">*</span></label>
+                                            <!-- The name="street" attribute is crucial here -->
+                                            <input type="text" name="street" class="form-control" required="1"/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label>Street 2 <span class="text-danger">*</span></label>
+                                            <!-- The name="street2" attribute is crucial here -->
+                                            <input type="text" name="street2" class="form-control" required="1"/>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label>City</label>
+                                            <input type="text" name="city" class="form-control"/>
+                                        </div>
+                                    </div>
+                                <h5 class="mt-4 mb-3">Academic Details</h5>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label>Program</label>
+                                        <select name="program" class="form-control">
+                                            <t t-foreach="programs" t-as="prog">
+                                                <option t-att-value="prog.id">
+                                                    <t t-esc="prog.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label>Academic Year</label>
+                                        <select name="year" class="form-control">
+                                            <t t-foreach="years" t-as="year">
+                                                <option t-att-value="year.id">
+                                                    <t t-esc="year.name"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                </div>
+                                <h5 class="mt-4 mb-3">Upload Documents</h5>
+                                <div class="mb-3">
+                                    <label>Upload Certificates / ID</label>
+                                    <input type="file" name="document" class="form-control"/>
+                                </div>
+                                <div class="text-center mt-4">
+                                    <button type="submit" class="btn btn-primary px-5">
+                                        Submit Application
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="application_success" name="Application Success">
+        <t t-call="website.layout">
+            <div class="container mt-5 text-center">
+                <h3>Application Submitted Successfully</h3>
+                <p>We will contact you soon.</p>
+            </div>
+        </t>
+    </template>
+</odoo>

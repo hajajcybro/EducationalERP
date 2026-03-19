@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
 
+<!--form view-->
     <record id="school_partner_teacher_form_view" model="ir.ui.view">
         <field name="name">school.partner.teacher.form.view</field>
         <field name="model">res.partner</field>
@@ -28,32 +29,45 @@
             </xpath>
 
 
-             <xpath expr="//field[@name='category_id']" position="replace">
-                <field name="stu_category_id"/>
+             <xpath expr="//field[@name='category_id']" position="after">
+                <field name="stu_category_id" invisible="position_role != 'student'"/>
             </xpath>
-             <xpath expr="//field[@name='vat']" position="replace">
-                <field name="program_id"/>
+             <xpath expr="//field[@name='vat']" position="after">
+                <field name="program_id" invisible="position_role != 'student'"/>
             </xpath>
-            <xpath expr="//field[@name='website']" position="replace">
-                <field name="academic_year_id"/>
+            <xpath expr="//field[@name='website']" position="after">
+                <field name="academic_year_id" invisible="position_role != 'student'"/>
             </xpath>
-            <xpath expr="//page[@name='contact_addresses']"  position="replace">
+            <xpath expr="//page[@name='contact_addresses']"  position="after">
                 <page string="Academic Info" name="academic_info">
                     <group>
-                        <group string="Reference">
-                            <field name="admission_no" readonly="1"/>
-                            <field name="scholarship_id"/>
+                        <group string="Previous Academic Details">
+                            <field name="previous_academic"/>
+                            <field name="previous_class"/>
+                            <field name="Year_of_passing"/>
+                            <field name="language"/>
+                            <field name="board"/>
                         </group>
+
                         <group string="Class">
                             <field name="class_id"/>
                             <field name="roll_no"/>
                             <field name="class_teacher_id"/>
                         </group>
+                        <group string="Reference">
+                            <field name="admission_no" readonly="1"/>
+                            <field name="alumni_reference" readonly="1" invisible="position_role != 'alumni'"/>
+                            <field name="last_missing_doc_mail_date" readonly="1"/>
+                        </group>
+                        <group string="Transport">
+                            <field name="transportation" widget="boolean_toggle"/>
+                            <field name="bus_no" invisible ="transportation != True"/>
+                        </group>
                     </group>
                 </page>
             </xpath>
-            <xpath expr="//page[@name='sales_purchases']" position="replace">
-                <page string="Other Info" name="personal_info">name=""
+            <xpath expr="//page[@name='sales_purchases']" position="after">
+                <page string="Other Info" name="personal_info" invisible="position_role != 'student'">
                     <group>
                         <group string="Personal Info">
                             <field name="gender"/>
@@ -61,24 +75,35 @@
                             <field name="age" readonly="1"/>
                             <field name="blood_group"/>
                             <field name="id_no"/>
-                            <field name="guardian"/>
+                            <field name="guardian_id"/>
+                            <field name="parent_email"/>
                             <field name="relation"/>
+                        </group>
+                        <group string="Account Info">
+                            <field name="bank_name"/>
+                            <field name="bank_branch"/>
+                            <field name="account_holder_name"/>
+                            <field name="bank_account_number"/>
+                            <field name="account_type"/>
+                            <field name="ifsc_code"/>
+                            <field name="swift_code"/>
+                            <field name="bank_address"/>
                         </group>
                         <group string="Parents Info">
                             <field name="father_name"/>
                             <field name="mother_name"/>
-                            <field name="occupation"/>
                             <field name="contact_no"/>
                             <field name="emergency_phone"/>
-                            <field name="contact_address"/>
+                            <field name="current_address"/>
                         </group>
+
                     </group>
                 </page>
             </xpath>
         </field>
     </record>
 
-<!--    window action for teacher-->
+<!--    window action for student-->
     <record id="action_school_partner_student" model="ir.actions.act_window">
         <field name="name">Student</field>
         <field name="res_model">res.partner</field>
@@ -90,5 +115,25 @@
         </field>
     </record>
 
+    <record id="action_school_partner_parent" model="ir.actions.act_window">
+        <field name="name">Parent</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('position_role', '=', 'parent')]</field>
+        <field name="context">{'default_position_role': 'parent'}</field>
+        <field name="help" type="html">
+            <p class="0_view_no_content_smiling_face">create</p>
+        </field>
+    </record>
 
+     <record id="action_school_partner_allumini" model="ir.actions.act_window">
+        <field name="name">Alumni</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('position_role', '=', 'alumni')]</field>
+        <field name="context">{'default_position_role': 'alumni'}</field>
+        <field name="help" type="html">
+            <p class="0_view_no_content_smiling_face">create</p>
+        </field>
+    </record>
 </odoo>

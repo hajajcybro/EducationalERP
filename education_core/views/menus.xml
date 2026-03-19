@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
    <menuitem id="menu_student_management_root"
-              name="Student Management"
+              name="Education Management"
               sequence="10"/>
     <menuitem id="menu_student_student"
-              name="Student"
+              name="Students"
               parent="menu_student_management_root"
               sequence="10"/>
 
@@ -12,6 +12,17 @@
               name="Student"
               parent="menu_student_student"
               action="action_school_partner_student"/>
+
+   <menuitem id="menu_education_parent_role"
+              name="Parent"
+              parent="menu_student_student"
+              action="action_school_partner_parent"/>
+   <menuitem id="menu_education_parent_role"
+              name="Alumni"
+              parent="menu_student_student"
+              action="action_school_partner_allumini"/>
+
+
     <menuitem id="menu_education_students"
               name="Application"
               parent="menu_student_student"
@@ -22,40 +33,13 @@
               parent="menu_student_student"
               action="action_education_enrollment"
               sequence="20"/>
-<!--    class/program/course/session/timetable menu-->
-
-    <menuitem id="menu_student_class_main"
-              name="Programs"
-              parent="menu_student_management_root"
-              sequence="10"/>
-    <menuitem id="menu_education_program"
-              name="Programs"
-              parent="menu_student_class_main"
-              action="action_education_program"
-              sequence="10"/>
-    <menuitem id="menu_education_session"
-              name="Sessions"
-              parent="menu_student_class_main"
-              action="education_session_action"
-              sequence="10"/>
-     <menuitem id="menu_education_class" name="Class"
-              parent="menu_student_class_main"
-              action="action_education_class"
-              sequence="10"/>
-    <menuitem id="menu_education_course"
-              name="Courses"
-              parent="menu_student_class_main"
-              action="action_education_course"
-              sequence="40"/>
-     <menuitem id="menu_education_timetable"
-              name="Timetable"
-              parent="menu_student_class_main"
-              action="action_education_timetable"
-              sequence="10"/>
+    <menuitem id="menu_education_document_action"
+              name="Document"
+              parent="menu_student_student"
+              action="action_education_document"/>
 
 
-
-<!--    faculty menu-->
+   <!--    faculty menu-->
     <menuitem id="menu_education_role" name="Teachers"
               parent="menu_student_management_root"
               action="action_school_partner_role"
@@ -64,42 +48,58 @@
     <menuitem id="menu_scholarship_root"
               name="Scholarships"
               parent="menu_student_management_root"
-              sequence="20"/>
-
-    <!-- Scholarship Main Menu -->
-    <menuitem id="menu_education_scholarship"
-              name="Scholarship Records"
-              parent="menu_scholarship_root"
-              action="action_education_scholarship"
               sequence="10"/>
 
-    <menuitem id="menu_education_scholarship_criteria"
-              name="Eligibility Criteria"
-              parent="menu_scholarship_root"
-              action="action_education_scholarship_criteria"
-              sequence="20"/>
+<!--    class/program/course/session/timetable menu-->
 
-    <menuitem id="menu_education_scholarship_criteria_line"
-              name="Criteria line"
-              parent="menu_scholarship_root"
-              action="action_education_scholarship_criteria_line"
+    <menuitem id="menu_student_class_main"
+              name="Academics"
+              parent="menu_student_management_root"
               sequence="20"/>
+    <menuitem id="menu_education_program"
+              name="Programs"
+              parent="menu_student_class_main"
+              action="action_education_program"
+              sequence="20"/>
+    <menuitem id="menu_education_session"
+              name="Sessions"
+              parent="menu_student_class_main"
+              action="education_session_action"
+              sequence="20"/>
+     <menuitem id="menu_education_class" name="Class"
+              parent="menu_student_class_main"
+              action="action_education_class"
+              sequence="20"/>
+    <menuitem id="menu_education_subject"
+              name="Subject"
+              parent="menu_student_class_main"
+              action="action_education_subject"
+              sequence="20"/>
+    <menuitem id="menu_education_timetable_line"
+              name="Timetable"
+              parent="menu_student_class_main"
+              action="action_education_core_timetable_line"
+              sequence="10"/>
+
+     <!--    Report-->
+    <menuitem id="menu_education_student_wizard"
+              name="Student Report"
+              parent="menu_student_management_root"
+              action="action_student_report_wizard"
+              sequence="20"
+              groups="education_core.group_education_admin,education_core.group_education_admission_officer,education_core.group_education_teacher"/>
 
     <!--    configuration-->
     <menuitem id="menu_student_configuration"
               name="Configuration"
-              parent="menu_student_management_root"
-              sequence="20"/>
+              parent="menu_student_management_root" sequence="30"
+              groups="education_core.group_education_admin,education_core.group_education_admission_officer,education_core.group_education_teacher"/>
     <menuitem id="menu_education_academic_year"
               name="Academic year"
               parent="menu_student_configuration"
               action="education_academic_year_action"
-              sequence="20"/>
+              sequence="30"/>
 
-    <menuitem id="menu_education_document_action"
-              name="Document"
-              parent="menu_student_configuration"
-              action="action_education_document"/>
     <menuitem id="menu_education_category_action"
               name="Category"
               parent="menu_student_configuration"
@@ -109,5 +109,14 @@
               parent="menu_student_configuration"
               action="action_education_class_room"/>
 
+    <menuitem id="menu_education_class_facility_action"
+              name="Facilities"
+              parent="menu_student_configuration"
+              action="action_education_class_facility"/>
+
+      <menuitem id="menu_education_document_type_action"
+              name="Document Type"
+              parent="menu_student_configuration"
+              action="education_document_type_action"/>
 
 </odoo>

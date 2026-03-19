@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Student View -->
+    <record id="rule_res_partner_student_own" model="ir.rule">
+      <field name="name">Res Partner: Student Own Record</field>
+      <field name="model_id" ref="base.model_res_partner"/>
+      <field name="domain_force">[("id", "=", user.partner_id.id)]</field>
+      <field name="groups" eval="[(4, ref('education_core.group_education_student'))]"/>
+    </record>
+
+    <record id="rule_res_partner_teacher_see_students" model="ir.rule">
+        <field name="name">Teacher: Can View All Students</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="domain_force">[('position_role', '=', 'student')]</field>
+        <field name="global" eval="False"/>
+        <field name="groups" eval="[(4, ref('education_core.group_education_teacher'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+
+</odoo>

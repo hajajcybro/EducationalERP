@@ -5,14 +5,17 @@ from odoo.exceptions import ValidationError
 class EducationClassRoom(models.Model):
     _name = 'education.class.room'
     _description = 'Education Class Room'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Integer(string='Room Name', required=True)
+    name = fields.Char(string='Room Name', required=True)
     building = fields.Char(string='Building', help='Building or block name')
     floor = fields.Char(string='Floor', help='Floor number', required=True)
     capacity = fields.Integer(string='Room Capacity', required=True)
     notes = fields.Text(string='Notes')
     active = fields.Boolean(string='Active', default=True)
-
+    facility_ids = fields.Many2many(
+        'education.class.facility','name',string='Facilities'
+    )
 
     @api.constrains('capacity')
     def _check_capacity(self):
