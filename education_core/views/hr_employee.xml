@@ -8,10 +8,6 @@
         <field name="arch" type="xml">
              <xpath expr="//field[@name='category_ids']" position="replace">
                 <field name="role" filter_domain="[('role,'==','teacher')]"/>
-                  <group>
-                    <field name="other_role" invisible="role != 'other'"/>
-                 </group>
-
             </xpath>
         </field>
     </record>
@@ -22,8 +18,6 @@
         <field name="res_model">hr.employee</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[('role', '=', 'teacher')]</field>
-        <field name="context">{'default_role': 'teacher'}</field>
-
         <field name="help" type="html">
             <p class="0_view_no_content_smiling_face">create</p>
         </field>

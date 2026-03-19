@@ -7,7 +7,7 @@ from datetime import date
 class EducationApplication(models.Model):
     _name = 'education.application'
     _description = 'Education Application'
-    _inherit = ['mail.thread', 'mail.activity.mixin',]
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'admission_no'
 
     name = fields.Char('Student Name',
@@ -32,7 +32,7 @@ class EducationApplication(models.Model):
         readonly=True,
     )
     dob = fields.Date(
-        string='Date of Birth', required=True, store=True,
+        string='Date of Birth', required=True,
         help='Student date of birth.'
     )
     age = fields.Integer('Age',
@@ -60,6 +60,7 @@ class EducationApplication(models.Model):
         readonly=True,
         help='Link to the current enrollment record of the student.'
     )
+
     photo = fields.Binary(string='Image',
                           help='Upload a photo of the student.'
                           )
@@ -72,11 +73,15 @@ class EducationApplication(models.Model):
         ('rejected', 'Rejected'),
     ], string='Status', default='application',tracking=True, help='Current status of the student.'
     )
+
     reject_reason = fields.Text('Rejection Reason')
     notes = fields.Text(string='Notes',help='Additional notes about the student.')
+
     active = fields.Boolean(default=True, help='Uncheck to archive the student record.')
+
     email = fields.Char(string='Email', required=True, help='Student email address.')
     phone = fields.Char(string='Phone', help='Student contact number.')
+
     street = fields.Char('Street', help='Street address.',required=True,)
     street2 = fields.Char('Street2', help='Additional street information.',required=True,)
     city = fields.Char('City', help='City of residence.')
@@ -99,35 +104,31 @@ class EducationApplication(models.Model):
                                     )
     partner_id = fields.Many2one('res.partner', string='Related Contact', readonly=True,
                                  help='Linked res.partner record for this student.')
-    guardian_id = fields.Many2one('res.partner',
-        string='Guardians',domain=[('position_role', '=', 'parent')],
+
+    guardian = fields.Char(
+        string='Guardians',
         help='Enter the student’s guardians or parents.'
     )
-    id_no = fields.Char('Aadhar No. / ID No.', help='Government-issued ID number',required=True)
+    id_no = fields.Char('Aadhar No. / ID No.', help='Government-issued ID number')
     relation = fields.Char(string='Relation',  help="Relationship of the guardian to the applicant" )
     father_name = fields.Char('Father Name')
     mother_name = fields.Char('Mother Name')
     contact_no = fields.Char('Contact Number')
     emergency_phone = fields.Char('Emergency Phone Number')
+
     contact_address = fields.Text('Permanent Address')
-    previous_academic = fields.Char('Previous Academic')
-    previous_class = fields.Char('Previous Class')
-    Year_of_passing = fields.Char('Year Of Passing')
-    language = fields.Char('Language / Medium')
-    board = fields.Char('Board / University')
+    occupation = fields.Char('Occupation',help='Job or business')
+
+
+
 
     @api.depends('dob')
     def _compute_age(self):
-        """Compute age from date of birth."""
-        for rec in self:
-            rec.age = int((date.today() - rec.dob).days / 365.25) if rec.dob else 0
-
-    @api.constrains('dob')
-    def _check_dob(self):
-        """Prevent future date of birth."""
-        for rec in self:
-            if rec.dob and rec.dob > date.today():
-                raise ValidationError(_('Date of birth cannot be in the future.'))
+        for record in self:
+            if record.dob:
+                record.age = (date.today() - record.dob).days / 365
+                if record.age <= 5:
+                    raise ValidationError('Please enter valid date of birth, Age must be above 5')
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -144,6 +145,7 @@ class EducationApplication(models.Model):
                 rec.admission_no = self.env['ir.sequence'].next_by_code('education_student_admission')
                 rec.reference_no = False
                 rec.state = 'admission'
+
             partner = rec.partner_id
             if not partner:
                 partner = self.env['res.partner'].create({
@@ -157,6 +159,7 @@ class EducationApplication(models.Model):
                     'country_id': rec.country_id.id,
                     'state_id': rec.state_id.id,
                     'position_role': 'student',
+
                 })
             rec.partner_id = partner.id
             partner.write({
@@ -168,34 +171,29 @@ class EducationApplication(models.Model):
                     'age': rec.age,
                     'blood_group': rec.blood_group,
                     'stu_category_id': rec.category_id,
-                    'guardian_id': rec.guardian_id.id,
+                    'guardian': rec.guardian,
                     'id_no' : rec.id_no,
                     'relation' : rec.relation,
                     'father_name' : rec.father_name,
                     'mother_name' : rec.mother_name,
                     'contact_no' : rec.contact_no,
                     'emergency_phone' : rec.emergency_phone,
-                    'current_address' : rec.contact_address,
-                    'previous_academic' : rec.previous_academic,
-                    'previous_class': rec.previous_class,
-                    'Year_of_passing': rec.Year_of_passing,
-                    'language': rec.language,
-                    'board': rec.board,
-                    'image_1920': rec.photo,
+                    'contact_address' : rec.contact_address,
+                    'occupation' : rec.occupation,
                 })
 
-    @api.constrains('program_id', 'academic_year_id')
-    def _check_duration_match(self):
-        """Ensure program duration matches academic year duration."""
-        for rec in self:
-            if rec.program_id and rec.academic_year_id:
-                program_duration = rec.program_id.duration or 0.0
-                year_duration = rec.academic_year_id.duration or 0.0
-                if float(program_duration) != float(year_duration):
-                    raise ValidationError(_(
-                        "Duration mismatch: The selected program (%s years) "
-                        "does not match the academic year (%s years)."
-                    ) % (program_duration, year_duration))
+    @api.constrains('email', 'phone')
+    def _check_contact_fields(self):
+        """Validate email and phone formats."""
+        import re
+        email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        phone_pattern = r'^\+?\d{7,15}$'
+
+        for record in self:
+            if record.email and not re.match(email_pattern, record.email):
+                raise ValidationError(_('Invalid email address. Please enter a valid format like name@example.com.'))
+            if record.phone  and record.contact_no and not re.match(phone_pattern, record.phone):
+                raise ValidationError(_('Invalid phone number. Please enter digits only, 7–15 numbers, with optional +.'))
 
     def action_enroll(self):
         """Open Enrollment form for this student"""
@@ -216,6 +214,7 @@ class EducationApplication(models.Model):
                 'default_current_class_id':default_class.id if default_class else False,
             },
         }
+
 
     def action_reject(self):
         """This opens a popup wizard to ask reject reason"""
