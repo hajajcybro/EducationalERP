@@ -12,7 +12,7 @@
     'depends': ['base', 'mail','education_core',
                 'portal','website','education_notification'],
     'data': [
-        'security/education_hostel_groups.xml',
+        'security/education_hostel_management_groups.xml',
         'security/ir.model.access.csv',
         'data/ir.sequence_data.xml',
         'views/education_hostel_views.xml',
@@ -25,6 +25,10 @@
         'views/portal_hostel_application_template.xml',
         'views/portal_hostel_template.xml',
         'views/portal.xml',
+        'wizard/menus.xml',
+        'wizard/hostel_report_wizard.xml',
+        'report/ir_actions_report.xml',
+        'report/hostel_report_template.xml'
     ],
     'license': 'AGPL-3',
     'installable': True,

@@ -6,6 +6,35 @@
         <field name="model">education.hostel.application</field>
         <field name="arch" type="xml">
             <form string="Hostel Application">
+                <header>
+                    <!-- Statusbar -->
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submitted,allocated,vacated"/>
+
+                    <!-- Buttons -->
+                    <button name="action_submit"
+                            string="Submit"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+
+                    <button name="action_allocate"
+                            string="Allocate"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'submitted'"/>
+
+                    <button name="action_vacate"
+                            string="Vacate"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'allocated'"/>
+
+                    <button name="action_reset_draft"
+                            string="Reset to Draft"
+                            type="object"
+                            invisible="state == 'draft'"/>
+                </header>
                 <sheet>
                     <field name="photo" widget="image" class="oe_avatar"
                            options="{'preview_image': 'photo'}"/>
@@ -14,12 +43,6 @@
                             <field name="name" placeholder="Name"/>
                         </h1>
                     </group>
-
-                    <!--                    <h1>-->
-                    <!--                        <field name="name" placeholder="Name"/>-->
-                    <!--                    </h1>-->
-                    <!--                     <field name="photo" widget="image" class="oe_avatar"-->
-                    <!--                           options="{'preview_image': 'photo'}"/>-->
                     <group>
                         <group>
                             <field name="program_id"/>
@@ -42,7 +65,7 @@
                             <field name="mobile"/>
                             <field name="phone"/>
                             <field name="email"/>
-                            <field name="state"/>
+                            <field name="gender"/>
                         </group>
                     </group>
                     <notebook>
@@ -93,8 +116,7 @@
         <field name="model">education.hostel.application</field>
         <field name="arch" type="xml">
             <list string="Hostel Applications">
-                <!--                <field name="name"/>-->
-                <field name="admission_no"/>
+                <field name="name"/>
                 <field name="student_id"/>
                 <field name="program_id"/>
                 <field name="class_id"/>

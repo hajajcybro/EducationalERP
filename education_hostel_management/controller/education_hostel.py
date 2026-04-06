@@ -67,7 +67,7 @@ class HostelApplicationWebsite(http.Controller):
             - Retrieve unpaid hostel fee invoices.
             """
         partner = get_student_partner()
-        if not partner:
+        if not partner or not partner.id:
             return request.redirect('/my')
         unread = request.env['edu.notification'].sudo().search([
             ('module', '=', 'hostel'),
@@ -93,9 +93,6 @@ class HostelApplicationWebsite(http.Controller):
             if allocation:
                 hostel = allocation.hostel_id
                 room = allocation.room_id
-
-
-
         return request.render(
             'education_hostel_management.portal_hostel',
             {

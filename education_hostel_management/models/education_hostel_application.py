@@ -21,7 +21,7 @@ class EducationHostelApplication(models.Model):
     student_id = fields.Many2one(
         'res.partner',
         string='Student',
-        domain="[('program_id', '=', program_id), ('class_id', '=', class_id)]"
+        domain="[('program_id', '=', program_id), ('class_id', '=', class_id),('position_role','=', 'student')]"
     )
     # address fields
     street = fields.Char(string='Street', help='Hostel Street')
@@ -35,10 +35,17 @@ class EducationHostelApplication(models.Model):
     email = fields.Char(string='Email', help='Email Id of hostel')
     phone = fields.Char(string='Phone', required=True, help='Phone Number')
     mobile = fields.Char(string='Mobile', required=True, help='Mobile Number')
-
     state = fields.Selection(
-        [('draft', 'Draft'), ('allocated', 'Allocated'),
-         ('Vacated', 'Vacated')], default='draft', help='State of Room Allocation.')
+        [
+            ('draft', 'Draft'),
+            ('submitted', 'Submitted'),
+            ('allocated', 'Allocated'),
+            ('vacated', 'Vacated')
+        ],
+        string='Status',
+        default='draft',
+        tracking=True
+    )
     program_id = fields.Many2one('education.program',string='Program', required=True)
     class_id = fields.Many2one('education.class',string='Class', required=True)
     parent_name = fields.Char(string='Parent Name')
@@ -83,6 +90,30 @@ class EducationHostelApplication(models.Model):
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('education.hostel.application') or _('New')
         return super().create(vals_list)
+
+    def action_submit(self):
+        for rec in self:
+            rec.state = 'submitted'
+
+    def action_allocate(self):
+        for rec in self:
+            if not rec.allocation_detail_ids:
+                raise UserError(_("Please choose at least one room."))
+            if any(not line.vacated_date for line in rec.allocation_detail_ids):
+                raise UserError(_("Please choose Vacated Date."))
+            rec.state = 'allocated'
+
+    def action_vacate(self):
+        for rec in self:
+            if not rec.allocation_detail_ids:
+                raise UserError(_("No room allocated."))
+            if any(not line.vacated_date for line in rec.allocation_detail_ids):
+                raise UserError(_("Please set Vacated Date for all allocation lines."))
+            rec.state = 'vacated'
+
+    def action_reset_draft(self):
+        for rec in self:
+            rec.state = 'draft'
 
     @api.onchange('student_id',)
     def _onchange_student_id(self):
