@@ -33,7 +33,6 @@ class EducationHostelRoom(models.Model):
     @api.onchange('allocated_no')
     def _onchange_allocated_no(self):
         if self.allocated_no == self.capacity and  self.capacity !=0:
-            print("jjjjjjjjjjjjjj")
             self.status = 'full'
 
     @api.model_create_multi

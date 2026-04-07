@@ -21,7 +21,7 @@ class EducationHostelApplication(models.Model):
     student_id = fields.Many2one(
         'res.partner',
         string='Student',
-        domain="[('program_id', '=', program_id), ('class_id', '=', class_id),('position_role','=', 'student')]"
+        domain="[('program_id', '=', program_id), ('class_id', '=', class_id),('position_role','=', 'student'),('hostel','=',True)]"
     )
     # address fields
     street = fields.Char(string='Street', help='Hostel Street')
@@ -99,7 +99,10 @@ class EducationHostelApplication(models.Model):
         for rec in self:
             if not rec.allocation_detail_ids:
                 raise UserError(_("Please choose at least one room."))
-            if any(not line.vacated_date for line in rec.allocation_detail_ids):
+            active_lines = rec.allocation_detail_ids.filtered(lambda l: not l.vacated_date)
+            if not active_lines:
+                raise UserError(_("Please allocate a room first."))
+            if len(active_lines) > 1:
                 raise UserError(_("Please choose Vacated Date."))
             rec.state = 'allocated'
 
@@ -114,23 +117,3 @@ class EducationHostelApplication(models.Model):
     def action_reset_draft(self):
         for rec in self:
             rec.state = 'draft'
-
-    @api.onchange('student_id',)
-    def _onchange_student_id(self):
-        print("llllllllll", self.student_id.class_id,self.student_id)
-        self.street = self.student_id.street
-        # self.street2 = student_id.sreet2
-        # self.zip = self.admission_no.zip
-        # self.city = self.admission_no.city
-        # self.state_id = self.admission_no.state_id
-        # self.country_id = self.admission_no.country_id
-        # self.email = self.admission_no.email
-        # self.phone = self.admission_no.phone
-        # # self.mobile = student_id.mobile
-        # self.dob = self.admission_no.dob
-        # self.parent_name = .parent_name
-        # # self.guardian_name = self.admission_no.guardian_name
-        # self.contact_address = self.admission_no.contact_address
-        #
-
-
