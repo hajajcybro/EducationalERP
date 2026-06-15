@@ -1,40 +1,27 @@
- # -*- coding: utf-8 -*-
 {
-    'name': 'Education Scholarship',
-    'version': '19.0.1.0.0',
-    'summary': 'Eduction Scholarship',
-    'category': 'Education',
-    'sequence': -328,
-    'author': 'Cybrosys Techno Solutions',
-    'company': 'Cybrosys Techno Solutions',
-    'maintainer': 'Cybrosys Techno Solutions',
-    'website': 'https://www.cybrosys.com',
-    'depends': ['education_core','education_exam',
-                'education_notification'],
-    'data': [
-        'security/ir.model.access.csv',
-        'data/education_scholarship_product.xml',
-        'views/education_scholarship_application.xml',
-        'views/education_scholarship_view.xml',
-        'views/education_scholarship_criteria_view.xml',
-        'views/education_scholarship_eligibility_criteria_view.xml',
-        'wizard/education_scholarship_wizard.xml',
-        'report/ir_actions_report.xml',
-        'report/scholarship_report_template.xml',
-        'views/portal.xml',
-        'views/portal_education_scholarship.xml',
-        'views/portal_education_scholarship_details.xml',
-        'views/portal_education_scholarship_published.xml',
-        'views/portal_education_scholarship_template.xml',
-        'views/education_menu.xml',
-    ],
-    'assets' : {
-                'web.assets_backend': [
-                    'education_scholarship/static/src/js/action_manager.js',
-                                       ],
-        },
-    'license': 'AGPL-3',
-    'installable': True,
-    'application': True,
-    'auto_install': False,
+    "name": "Education ERP — Scholarships",
+    "version": "19.0.1.0.0",
+    "category": "Education",
+    "summary": "Scholarship applications, review workflow and fee allocation",
+    "description": """
+Education ERP — Scholarships
+============================
+
+Scholarship applications, review workflow and fee allocation.
+
+Part of the Educational ERP — LMS System built on Odoo 19 Community Edition
+by Cybrosys Techno Solutions for Hajaj (Product Owner).
+
+Version: 19.0.1.0.0  |  License: LGPL-3
+    """,
+    "author": "Cybrosys Techno Solutions",
+    "website": "https://www.cybrosys.com",
+    "license": "LGPL-3",
+    "depends": ['education_core', 'education_financial_management'],
+    "data": [],
+    "demo": [],
+    "installable": True,
+    "application": False,
+    "auto_install": False,
+    "sequence": 17,
 }

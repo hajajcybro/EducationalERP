@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ── Library Root Menu ─────────────────────────────────────────────── -->
+    <menuitem id="menu_education_library_root"
+              name="Library"
+              parent="education_config.menu_education_root"
+              sequence="60"
+              groups="education_security.group_education_admin"/>
+
+    <!-- ── Sub-menus ─────────────────────────────────────────────────────── -->
+    <menuitem id="menu_library_books"
+              name="Books"
+              parent="menu_education_library_root"
+              action="action_edu_library_book"
+              sequence="10"/>
+
+    <menuitem id="menu_library_members"
+              name="Members"
+              parent="menu_education_library_root"
+              action="action_edu_library_member"
+              sequence="20"/>
+
+    <menuitem id="menu_library_loans"
+              name="Loans"
+              parent="menu_education_library_root"
+              action="action_edu_library_loan"
+              sequence="30"/>
+
+    <menuitem id="menu_library_issue"
+              name="Issue / Return"
+              parent="menu_education_library_root"
+              action="action_edu_library_issue_wizard"
+              sequence="40"/>
+
+    <menuitem id="menu_library_categories"
+              name="Book Categories"
+              parent="menu_education_library_root"
+              action="action_edu_library_book_category"
+              sequence="50"/>
+</odoo>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════════════════════════
+         education.class — Views
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <!-- Form -->
+    <record id="view_education_class_form" model="ir.ui.view">
+        <field name="name">education.class.form</field>
+        <field name="model">education.class</field>
+        <field name="arch" type="xml">
+            <form string="Class / Section">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_enrollments" type="object"
+                                class="oe_stat_button" icon="fa-users"
+                                invisible="enrollment_count == 0">
+                            <field name="enrollment_count" widget="statinfo"
+                                   string="Students"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group name="main">
+                        <group name="left">
+                            <field name="program_id"/>
+                            <field name="academic_year_id"/>
+                            <field name="section"/>
+                            <field name="class_teacher_id"/>
+                        </group>
+                        <group name="right">
+                            <field name="department_id" readonly="1"/>
+                            <field name="capacity"/>
+                            <field name="enrollment_count" readonly="1"/>
+                            <field name="seats_available" readonly="1"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" nolabel="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- List -->
+    <record id="view_education_class_list" model="ir.ui.view">
+        <field name="name">education.class.list</field>
+        <field name="model">education.class</field>
+        <field name="arch" type="xml">
+            <list string="Classes / Sections"
+                  default_order="academic_year_id desc, program_id, section">
+                <field name="name"/>
+                <field name="program_id"/>
+                <field name="academic_year_id"/>
+                <field name="section"/>
+                <field name="class_teacher_id" optional="show"/>
+                <field name="capacity"/>
+                <field name="enrollment_count" string="Enrolled"
+                       decoration-danger="enrollment_count >= capacity"
+                       decoration-warning="enrollment_count &gt;= capacity * 0.9"/>
+                <field name="seats_available" string="Seats Left" optional="show"/>
+                <field name="active" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search -->
+    <record id="view_education_class_search" model="ir.ui.view">
+        <field name="name">education.class.search</field>
+        <field name="model">education.class</field>
+        <field name="arch" type="xml">
+            <search string="Search Classes">
+                <field name="name"/>
+                <field name="program_id"/>
+                <field name="academic_year_id"/>
+                <field name="class_teacher_id"/>
+                <separator/>
+                <filter string="Current Year" name="current_year"
+                        domain="[('academic_year_id.is_current', '=', True)]"/>
+                <filter string="Active" name="active"
+                        domain="[('active', '=', True)]" default="1"/>
+                <group expand="0" string="Group By">
+                    <filter string="Program" name="group_program"
+                            context="{'group_by': 'program_id'}"/>
+                    <filter string="Academic Year" name="group_year"
+                            context="{'group_by': 'academic_year_id'}"/>
+                    <filter string="Department" name="group_dept"
+                            context="{'group_by': 'department_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_education_class" model="ir.actions.act_window">
+        <field name="name">Classes</field>
+        <field name="res_model">education.class</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_education_class_search"/>
+        <field name="context">{"search_default_active": 1,
+                               "search_default_current_year": 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first class / section
+            </p>
+            <p>
+                A class is a specific section of a program for a given
+                academic year, e.g. B.Tech CSE — Section A — 2025-2026.
+            </p>
+        </field>
+    </record>
+
+</odoo>

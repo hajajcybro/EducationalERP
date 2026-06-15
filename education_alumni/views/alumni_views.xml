@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════════════════════════
+         edu.alumni — Views (S7-T17)
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <!-- ── Form View ──────────────────────────────────────────────────── -->
+    <record id="view_edu_alumni_form" model="ir.ui.view">
+        <field name="name">edu.alumni.form</field>
+        <field name="model">edu.alumni</field>
+        <field name="arch" type="xml">
+            <form string="Alumni">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="student_name"/>
+                        <h1>
+                            <field name="student_name" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <!-- Left column — personal / academic info -->
+                        <group string="Academic Information">
+                            <field name="enrollment_id"/>
+                            <field name="program_id" readonly="1"/>
+                            <field name="graduation_year"/>
+                            <field name="graduation_date"/>
+                        </group>
+                        <!-- Right column — contact / professional info -->
+                        <group string="Professional &amp; Contact">
+                            <field name="current_employer"/>
+                            <field name="job_title"/>
+                            <field name="contact_email"/>
+                            <field name="contact_phone"/>
+                            <field name="linkedin_url"/>
+                        </group>
+                    </group>
+
+                    <group string="Address">
+                        <field name="address" nolabel="1" colspan="2"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Additional notes about this alumnus…"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── List View ──────────────────────────────────────────────────── -->
+    <record id="view_edu_alumni_list" model="ir.ui.view">
+        <field name="name">edu.alumni.list</field>
+        <field name="model">edu.alumni</field>
+        <field name="arch" type="xml">
+            <list string="Alumni">
+                <field name="student_name"/>
+                <field name="graduation_year"/>
+                <field name="program_id"/>
+                <field name="current_employer"/>
+                <field name="contact_email"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── Search View ────────────────────────────────────────────────── -->
+    <record id="view_edu_alumni_search" model="ir.ui.view">
+        <field name="name">edu.alumni.search</field>
+        <field name="model">edu.alumni</field>
+        <field name="arch" type="xml">
+            <search string="Alumni">
+                <field name="student_name" string="Student Name"/>
+                <field name="graduation_year" string="Graduation Year"/>
+                <field name="program_id" string="Program"/>
+
+                <!-- Filters -->
+                <filter
+                    name="filter_this_year"
+                    string="This Year"
+                    domain="[('graduation_year', '=', context_today().year)]"/>
+                <filter
+                    name="filter_active"
+                    string="Active"
+                    domain="[('active', '=', True)]"/>
+
+                <separator/>
+
+                <!-- Group By -->
+                <group expand="0" string="Group By">
+                    <filter
+                        name="group_graduation_year"
+                        string="Graduation Year"
+                        context="{'group_by': 'graduation_year'}"/>
+                    <filter
+                        name="group_program"
+                        string="Program"
+                        context="{'group_by': 'program_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ── Window Action ──────────────────────────────────────────────── -->
+    <record id="action_edu_alumni" model="ir.actions.act_window">
+        <field name="name">Alumni</field>
+        <field name="res_model">edu.alumni</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_edu_alumni_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No alumni records found.
+            </p>
+            <p>
+                Create the first alumni record to start building your alumni network.
+            </p>
+        </field>
+    </record>
+
+</odoo>

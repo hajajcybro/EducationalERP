@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ══════════════════════════════════════════════════════════════════
+         institution.profile  —  Views
+         ══════════════════════════════════════════════════════════════════ -->
+
+    <!-- ── Form View ──────────────────────────────────────────────────── -->
+    <record id="view_institution_profile_form" model="ir.ui.view">
+        <field name="name">institution.profile.form</field>
+        <field name="model">institution.profile</field>
+        <field name="arch" type="xml">
+            <form string="Institution Profile">
+                <header>
+                    <button name="action_open_profile" type="object"
+                            string="Refresh View" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <!-- Logo + Name banner -->
+                    <div class="row mb-4">
+                        <div class="col-auto">
+                            <field name="logo" widget="image"
+                                   class="oe_avatar"
+                                   options="{'preview_image': 'logo', 'size': [128, 128]}"/>
+                        </div>
+                        <div class="col">
+                            <div class="oe_title">
+                                <label for="name"/>
+                                <h1>
+                                    <field name="name"
+                                           placeholder="Full Institution Name…"
+                                           required="1"/>
+                                </h1>
+                                <field name="short_name"
+                                       placeholder="Abbreviation / Acronym"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <group name="identity" string="Identity">
+                        <group name="identity_left">
+                            <field name="institution_type"/>
+                            <field name="registration_number"/>
+                            <field name="established_year"/>
+                            <field name="accreditation_body"/>
+                        </group>
+                        <group name="identity_right">
+                            <field name="company_id"
+                                   groups="base.group_multi_company"/>
+                            <field name="currency_id"/>
+                            <field name="timezone"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+
+                    <group name="contact" string="Contact Details">
+                        <group name="contact_left">
+                            <field name="phone"/>
+                            <field name="mobile"/>
+                            <field name="email" widget="email"/>
+                            <field name="website" widget="url"/>
+                        </group>
+                        <group name="contact_right">
+                            <field name="address"/>
+                            <field name="city"/>
+                            <field name="state_id"/>
+                            <field name="country_id"/>
+                            <field name="zip_code"/>
+                        </group>
+                    </group>
+
+                    <group name="branding" string="Branding">
+                        <group name="branding_left">
+                            <field name="branding_color" widget="color"/>
+                            <field name="branding_color_secondary" widget="color"/>
+                        </group>
+                    </group>
+
+                    <group name="academic_calendar" string="Academic Calendar Defaults">
+                        <group name="cal_left">
+                            <field name="academic_year_start_month"/>
+                            <field name="working_days"/>
+                            <field name="max_periods_per_day"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── List View ──────────────────────────────────────────────────── -->
+    <record id="view_institution_profile_list" model="ir.ui.view">
+        <field name="name">institution.profile.list</field>
+        <field name="model">institution.profile</field>
+        <field name="arch" type="xml">
+            <list string="Institution Profiles">
+                <field name="logo" widget="image" options="{'size': [32, 32]}"/>
+                <field name="name"/>
+                <field name="institution_type"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="country_id"/>
+                <field name="active" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── Window Action ──────────────────────────────────────────────── -->
+    <record id="action_institution_profile" model="ir.actions.act_window">
+        <field name="name">Institution Profile</field>
+        <field name="res_model">institution.profile</field>
+        <field name="view_mode">form,list</field>
+        <field name="limit">1</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Configure your institution profile
+            </p>
+            <p>
+                Set up your institution's name, logo, branding and
+                academic calendar defaults here.
+            </p>
+        </field>
+    </record>
+
+</odoo>

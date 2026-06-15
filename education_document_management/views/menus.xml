@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Document Management — menu entries (S5-T10)
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <!-- ── Top-level "Documents" parent ──────────────────────────────────── -->
+    <menuitem
+        id="menu_education_documents_root"
+        name="Documents"
+        parent="education_core.menu_education_root"
+        sequence="60"
+        groups="education_security.group_education_admin,education_security.group_education_admission_officer"/>
+
+    <!-- ── Document Expiry Dashboard ─────────────────────────────────────── -->
+    <menuitem
+        id="menu_education_doc_expiry"
+        name="Expiry Dashboard"
+        parent="menu_education_documents_root"
+        action="education_document_management.action_expiring_documents"
+        sequence="10"
+        groups="education_security.group_education_admin,education_security.group_education_admission_officer"/>
+
+</odoo>

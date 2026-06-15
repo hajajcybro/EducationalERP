@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
+# Education ERP — Library
 from . import models
-from . import wizards
-from . import report
-from . import controller
+from . import wizard

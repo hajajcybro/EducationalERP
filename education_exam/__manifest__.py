@@ -1,43 +1,53 @@
- # -*- coding: utf-8 -*-
 {
-    'name': 'Education Examination Management',
-    'version': '19.0.1.0.0',
-    'summary': 'Manage Examination Details',
-    'category': 'Education',
-    'sequence': -333,
-    'author': 'Cybrosys Techno Solutions',
-    'company': 'Cybrosys Techno Solutions',
-    'maintainer': 'Cybrosys Techno Solutions',
-    'website': 'https://www.cybrosys.com',
-    'depends': ['base', 'mail','education_core','education_notification'],
-    'data': [
-        'security/ir.model.access.csv',
-        'security/education_exam_security.xml',
-        'data/ir.sequence_data.xml',
-        'data/exam_notification_template.xml',
-        'data/exam_published_notification_template.xml',
-        'data/cron.xml',
-        'views/education_exam_views.xml',
-        'views/education_exam_type_views.xml',
-        'views/education_exam_valuation_views.xml',
-        'views/education_exam_result_views.xml',
-        'views/education_exam_revaluation_views.xml',
-        'views/education_exam_revaluation_creation_views.xml',
-        'views/education_exam_grade_views.xml',
-        'wizard/education_exam_result_wizard_views.xml',
-        # 'report/student_wise_report_template.xml',
-        'report/ir_actions_report.xml',
-        'report/student_exam_result_template.xml',
-        'report/student_class_wise_report_template.xml',
-        'views/portal.xml',
-        'views/portal_education_exam.xml',
-        'views/portal_education_exam_published.xml',
-        'views/portal_education_exam_result.xml',
-        'views/portal_education_exam_revaluation.xml',
-        'views/alumni_supply_registration.xml',
+    "name": "Education ERP — Examinations",
+    "version": "19.0.4.0.0",
+    "category": "Education",
+    "summary": "Exam scheduling, hall seating, results, mark sheets and re-evaluation",
+    "description": """
+Education ERP — Examinations
+============================
+
+Sprint 4 (S4-T01 – S4-T11):
+  - edu.exam: Exam scheduling, state machine (draft→scheduled→ongoing→published→closed)
+  - edu.exam.subject: Subject schedule lines with date, time, hall, marks
+  - edu.exam.seating: Auto-assign hall + seat from enrolled students (S4-T02)
+  - edu.exam.invigilator: Faculty assigned to halls per exam date (S4-T03)
+  - edu.exam.result: Mark entry with percentage, grade (A+–F), pass/fail, rank (S4-T04,T05)
+  - edu.exam.result.history: Full audit log of every marks change (S4-T06)
+  - Re-evaluation wizard: Request re-check, resets result to draft (S4-T06)
+  - Admit Card QWeb PDF: Student name, roll no, schedule, hall, seat, rules (S4-T08)
+  - Bulk Mark Entry wizard: Enter all students' marks for one subject at once (S4-T09)
+  - Mark Sheet / Progress Card QWeb PDF: All subjects, marks, grades, rank (S4-T10)
+  - Unit tests covering all the above (S4-T11)
+
+edu.classroom added to education_core (S4-T12).
+
+Part of the Educational ERP — LMS System built on Odoo 19 Community Edition
+by Cybrosys Techno Solutions for Hajaj (Product Owner).
+
+Version: 19.0.4.0.0  |  License: LGPL-3
+    """,
+    "author": "Cybrosys Techno Solutions",
+    "website": "https://www.cybrosys.com",
+    "license": "LGPL-3",
+    "depends": ['education_core', 'education_faculty'],
+    "data": [
+        # ── Security ──────────────────────────────────────────────────
+        "security/ir.model.access.csv",
+        "security/record_rules.xml",
+        # ── Sequences ─────────────────────────────────────────────────
+        "data/ir_sequence.xml",
+        # ── Views ─────────────────────────────────────────────────────
+        "views/exam_views.xml",
+        # ── Reports ───────────────────────────────────────────────────
+        "report/admit_card_report.xml",
+        "report/mark_sheet_report.xml",
+        # ── Menus (always last) ────────────────────────────────────────
+        "views/menus.xml",
     ],
-    'license': 'AGPL-3',
-    'installable': True,
-    'application': True,
-    'auto_install': False,
+    "demo": [],
+    "installable": True,
+    "application": False,
+    "auto_install": False,
+    "sequence": 11,
 }

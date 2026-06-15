@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Attendance Period Report — QWeb PDF (S3-T08)
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <!-- ir.actions.report record -->
+    <record id="action_report_attendance_period" model="ir.actions.report">
+        <field name="name">Attendance Period Report</field>
+        <field name="model">education.attendance</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">education_core.report_attendance_period_template</field>
+        <field name="report_file">education_core.report_attendance_period_template</field>
+        <field name="binding_model_id" ref="model_education_attendance"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Attendance_Report_' + (object.class_id.name or '')</field>
+    </record>
+
+    <!-- QWeb template -->
+    <template id="report_attendance_period_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <!-- Header -->
+                    <div class="row mb-4">
+                        <div class="col-12 text-center">
+                            <h2>Attendance Report</h2>
+                            <t t-if="docs">
+                                <p class="text-muted">
+                                    Class: <strong t-esc="docs[0].class_id.name"/>
+                                    &amp;nbsp;|&amp;nbsp;
+                                    Period: <strong
+                                        t-esc="docs[0].date"/> to
+                                    <strong t-esc="docs[-1].date"/>
+                                </p>
+                            </t>
+                        </div>
+                    </div>
+
+                    <!-- Per-student summary -->
+                    <t t-set="enrollment_map" t-value="{}"/>
+                    <t t-foreach="docs" t-as="att">
+                        <t t-set="_key" t-value="att.enrollment_id.id"/>
+                    </t>
+
+                    <!-- Group by enrollment and summarise -->
+                    <t t-set="enrollments"
+                       t-value="docs.mapped('enrollment_id')"/>
+                    <table class="table table-bordered table-sm" style="font-size: 11px;">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Student</th>
+                                <th class="text-center">Total</th>
+                                <th class="text-center">Present</th>
+                                <th class="text-center">Absent</th>
+                                <th class="text-center">Late</th>
+                                <th class="text-center">Excused</th>
+                                <th class="text-center">Attendance %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="enrollments" t-as="enr">
+                                <t t-set="enr_records"
+                                   t-value="docs.filtered(lambda a: a.enrollment_id == enr)"/>
+                                <t t-set="total" t-value="len(enr_records)"/>
+                                <t t-set="present_cnt"
+                                   t-value="len(enr_records.filtered(lambda a: a.state == 'present'))"/>
+                                <t t-set="absent_cnt"
+                                   t-value="len(enr_records.filtered(lambda a: a.state == 'absent'))"/>
+                                <t t-set="late_cnt"
+                                   t-value="len(enr_records.filtered(lambda a: a.state == 'late'))"/>
+                                <t t-set="excused_cnt"
+                                   t-value="len(enr_records.filtered(lambda a: a.state == 'excused'))"/>
+                                <t t-set="pct"
+                                   t-value="round((present_cnt + late_cnt + excused_cnt) / total * 100, 1) if total else 0"/>
+                                <tr t-attf-class="#{' table-danger' if pct &lt; 75 else ''}">
+                                    <td t-esc="enr.student_name"/>
+                                    <td class="text-center" t-esc="total"/>
+                                    <td class="text-center" t-esc="present_cnt"/>
+                                    <td class="text-center" t-esc="absent_cnt"/>
+                                    <td class="text-center" t-esc="late_cnt"/>
+                                    <td class="text-center" t-esc="excused_cnt"/>
+                                    <td class="text-center">
+                                        <strong
+                                            t-attf-style="color: #{'dc3545' if pct &lt; 75 else '28a745'}">
+                                            <t t-esc="pct"/>%
+                                        </strong>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                    <p class="text-muted small mt-2">
+                        ⚠ Rows highlighted in red indicate attendance below 75%.
+                    </p>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

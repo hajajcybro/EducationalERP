@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Fee Receipt PDF Report — S5-T07
+         Bound to account.move (customer invoices with enrollment link)
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <record id="action_report_fee_receipt" model="ir.actions.report">
+        <field name="name">Fee Receipt</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">education_financial_management.report_fee_receipt_template</field>
+        <field name="report_file">education_financial_management.report_fee_receipt_template</field>
+        <field name="print_report_name">'Fee Receipt - %s' % object.name</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_view_types">form,list</field>
+        <field name="domain">[('enrollment_id','!=',False),('move_type','=','out_invoice')]</field>
+    </record>
+
+    <template id="report_fee_receipt_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="invoice">
+                <t t-call="web.external_layout">
+                    <div class="page">
+
+                        <!-- ── Header ──────────────────────────────── -->
+                        <div class="row mb-4 border-bottom pb-3">
+                            <div class="col-8">
+                                <h2 class="text-primary">FEE RECEIPT</h2>
+                                <p class="mb-0 text-muted">
+                                    Receipt No.: <strong><t t-esc="invoice.name"/></strong>
+                                </p>
+                                <p class="mb-0 text-muted">
+                                    Date: <strong><t t-esc="invoice.invoice_date"/></strong>
+                                </p>
+                            </div>
+                            <div class="col-4 text-end">
+                                <div class="border p-2 d-inline-block text-center">
+                                    <small class="text-muted d-block">Status</small>
+                                    <span class="fw-bold fs-5">
+                                        <t t-if="invoice.payment_state == 'paid'">
+                                            <span class="text-success">PAID</span>
+                                        </t>
+                                        <t t-elif="invoice.payment_state == 'partial'">
+                                            <span class="text-warning">PARTIAL</span>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="text-danger">UNPAID</span>
+                                        </t>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ── Student Details ─────────────────────── -->
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <h6 class="border-bottom pb-1">Student Details</h6>
+                                <table class="table table-sm table-borderless">
+                                    <tr>
+                                        <td class="fw-bold" style="width:130px">Name</td>
+                                        <td>: <t t-esc="invoice.student_name or invoice.partner_id.name"/></td>
+                                    </tr>
+                                    <t t-if="invoice.enrollment_id">
+                                        <tr>
+                                            <td class="fw-bold">Class</td>
+                                            <td>: <t t-esc="invoice.class_id.name or '—'"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">Academic Year</td>
+                                            <td>: <t t-esc="invoice.academic_year_id.name or '—'"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">Fee Plan</td>
+                                            <td>: <t t-esc="invoice.enrollment_id.fee_plan_id.name or '—'"/></td>
+                                        </tr>
+                                    </t>
+                                </table>
+                            </div>
+                            <div class="col-6">
+                                <h6 class="border-bottom pb-1">Payment Info</h6>
+                                <table class="table table-sm table-borderless">
+                                    <tr>
+                                        <td class="fw-bold" style="width:130px">Invoice Date</td>
+                                        <td>: <t t-esc="invoice.invoice_date"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Due Date</td>
+                                        <td>: <t t-esc="invoice.invoice_date_due or '—'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Total Amount</td>
+                                        <td>: <strong><t t-esc="format_amount(invoice.amount_total, invoice.currency_id)"/></strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Amount Due</td>
+                                        <td>: <t t-esc="format_amount(invoice.amount_residual, invoice.currency_id)"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- ── Fee Breakdown ───────────────────────── -->
+                        <h6 class="border-bottom pb-1 mb-2">Fee Breakdown</h6>
+                        <table class="table table-sm table-bordered">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th style="width:50%">Component</th>
+                                    <th class="text-end">Amount</th>
+                                    <th class="text-end">Tax</th>
+                                    <th class="text-end">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="invoice.invoice_line_ids" t-as="line">
+                                    <tr>
+                                        <td><t t-esc="line.name"/></td>
+                                        <td class="text-end">
+                                            <t t-esc="format_amount(line.price_unit, invoice.currency_id)"/>
+                                        </td>
+                                        <td class="text-end">
+                                            <t t-esc="format_amount(line.price_tax, invoice.currency_id)"/>
+                                        </td>
+                                        <td class="text-end">
+                                            <t t-esc="format_amount(line.price_subtotal, invoice.currency_id)"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                            <tfoot class="fw-bold">
+                                <tr>
+                                    <td colspan="3" class="text-end">Total</td>
+                                    <td class="text-end">
+                                        <t t-esc="format_amount(invoice.amount_total, invoice.currency_id)"/>
+                                    </td>
+                                </tr>
+                                <t t-if="invoice.amount_residual > 0">
+                                    <tr class="text-danger">
+                                        <td colspan="3" class="text-end">Balance Due</td>
+                                        <td class="text-end">
+                                            <t t-esc="format_amount(invoice.amount_residual, invoice.currency_id)"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tfoot>
+                        </table>
+
+                        <!-- ── Payment History ─────────────────────── -->
+                        <t t-if="invoice.invoice_payments_widget">
+                            <h6 class="border-bottom pb-1 mt-3">Payments Received</h6>
+                            <table class="table table-sm table-bordered">
+                                <thead class="table-light">
+                                    <tr><th>Date</th><th>Reference</th><th class="text-end">Amount</th></tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="invoice._get_reconciled_info_JSON_values()" t-as="pay">
+                                        <tr>
+                                            <td><t t-esc="pay.get('date','—')"/></td>
+                                            <td><t t-esc="pay.get('ref','—')"/></td>
+                                            <td class="text-end">
+                                                <t t-esc="format_amount(pay.get('amount',0), invoice.currency_id)"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </t>
+
+                        <!-- ── Footer ─────────────────────────────── -->
+                        <div class="row mt-4">
+                            <div class="col-4 text-center">
+                                <div class="border-top pt-1">Cashier / Accounts</div>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div class="border-top pt-1">Student / Guardian</div>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div class="border-top pt-1">Principal</div>
+                            </div>
+                        </div>
+
+                        <p class="text-center small text-muted mt-3">
+                            This is a computer-generated receipt. No signature required.
+                        </p>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

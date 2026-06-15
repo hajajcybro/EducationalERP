@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
+# Copyright 2025 Cybrosys Techno Solutions
+# License LGPL-3 - See https://www.gnu.org/licenses/lgpl-3.0.html
 
-from . import education_notification
-from . import mailing_mailing
-
-
+from . import notification

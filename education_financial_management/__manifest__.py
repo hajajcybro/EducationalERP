@@ -1,52 +1,45 @@
- # -*- coding: utf-8 -*-
 {
-    'name': 'Education Financial Management',
-    'version': '19.0.1.0.0',
-    'summary': 'Eduction Financial Management',
-    'category': 'Education',
-    'sequence': -329,
-    'author': 'Cybrosys Techno Solutions',
-    'company': 'Cybrosys Techno Solutions',
-    'maintainer': 'Cybrosys Techno Solutions',
-    'website': 'https://www.cybrosys.com',
-    'depends': ['education_core','account','education_transport',
-                'education_hostel_management','education_library',
-                'education_scholarship','education_notification',
-                'website','portal'],
-    'data': [
-        'security/security_group.xml',
-        'security/ir.model.access.csv',
-        'data/ir_cron.xml',
-        'views/education_fee_installment_view.xml',
-        'views/education_fee_plan_view.xml',
-        'views/education_fee_invoice_view.xml',
-        'views/education_fee_penalty_rule_view.xml',
-        'views/education_refund_request_views.xml',
-        'views/account_move_reversal_view.xml',
-        'views/account_move_view.xml',
-        'views/education_transport_fee_view.xml',
-        'views/education_enrollment_view.xml',
-        'views/education_hostel_application_view.xml',
-        'views/education_library_member_views.xml',
-        'views/education_scholarship_application.xml',
-        'wizard/education_refund_reject_wizard_view.xml',
-        'wizard/education_fee_summary_wizard_view.xml',
-        'wizard/education_invoice_summary_wizard.xml',
-        'report/ir_actions_report.xml',
-        'report/education_fee_summary_report.xml',
-        'report/education_invoice_summary_report.xml',
-        'wizard/education_refund_summary_wizard.xml',
-        'report/education_refund_summary_report.xml',
-        'views/portal.xml',
-        'views/menu.xml',
+    "name": "Education ERP — Financial Management",
+    "version": "19.0.5.0.0",
+    "category": "Education",
+    "summary": "Fee structures, invoices, payments, overdue reminders and fee reports",
+    "description": """
+Education ERP — Financial Management
+====================================
+
+* Fee plan master with components (tuition, lab, transport, etc.)
+* Auto-invoice generation from enrollment fee plan
+* Scholarship / concession deduction on invoice
+* Daily overdue reminder cron + email notification
+* Fee Receipt PDF report (QWeb)
+* Outstanding Fees pivot & graph dashboard
+* Enrolled-invoice shortcut in Fees menu
+
+Part of the Educational ERP — LMS System built on Odoo 19 Community Edition
+by Cybrosys Techno Solutions for Hajaj (Product Owner).
+
+Version: 19.0.5.0.0  |  License: LGPL-3
+    """,
+    "author": "Cybrosys Techno Solutions",
+    "website": "https://www.cybrosys.com",
+    "license": "LGPL-3",
+    "depends": [
+        "education_core",
+        "education_security",
+        "account",
+        "mail",
     ],
-    'assets' : {
-            'web.assets_backend': [
-                'education_financial_management/static/src/js/action_manager.js',
-                                   ],
-        },
-    'license': 'AGPL-3',
-    'installable': True,
-    'application': True,
-    'auto_install': False,
+    "data": [
+        "security/ir.model.access.csv",
+        "data/mail_template_fee_overdue.xml",
+        "data/ir_cron.xml",
+        "views/fee_plan_views.xml",
+        "views/menus.xml",
+        "report/fee_receipt_report.xml",
+    ],
+    "demo": [],
+    "installable": True,
+    "application": False,
+    "auto_install": False,
+    "sequence": 50,
 }

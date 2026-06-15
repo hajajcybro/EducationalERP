@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hostel_property_admin,edu.hostel.property admin,model_edu_hostel_property,education_security.group_education_admin,1,1,1,1
+access_hostel_property_user,edu.hostel.property user,model_edu_hostel_property,base.group_user,1,0,0,0
+access_hostel_room_admin,edu.hostel.room admin,model_edu_hostel_room,education_security.group_education_admin,1,1,1,1
+access_hostel_room_user,edu.hostel.room user,model_edu_hostel_room,base.group_user,1,0,0,0
+access_hostel_allocation_admin,edu.hostel.allocation admin,model_edu_hostel_allocation,education_security.group_education_admin,1,1,1,1
+access_hostel_allocation_user,edu.hostel.allocation user,model_edu_hostel_allocation,base.group_user,1,0,0,0

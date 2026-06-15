@@ -1,41 +1,31 @@
- # -*- coding: utf-8 -*-
 {
-    'name': 'Education Transport',
-    'version': '19.0.1.0.0',
-    'summary': 'Manage educational details and student data',
-    'category': 'Education',
-    'sequence': -332,
-    'author': 'Cybrosys Techno Solutions',
-    'company': 'Cybrosys Techno Solutions',
-    'maintainer': 'Cybrosys Techno Solutions',
-    'website': 'https://www.cybrosys.com',
-    'depends': ['education_core','fleet','web',
-                'education_notification'],
-    'data': [
-        'security/security_group.xml',
-        'security/ir.model.access.csv',
-        'views/education_transport_route_views.xml',
-        'views/education_transport_stop_views.xml',
-        'views/education_transport_assignment_views.xml',
-        'views/hr_employee_view.xml',
-        'views/fleet_vehicle_view.xml',
-        'wizard/transport_delay_wizard.xml',
-        'wizard/transport_report_wizard.xml',
-        'wizard/vehicle_report_wizard.xml',
-        'report/ir_actions_report.xml',
-        'report/transport_report_template.xml',
-        'report/vehicle_report_template.xml',
-        'views/portal.xml',
-        'views/portal_education_transport.xml',
-        'views/menu.xml',
-        ],
-    'assets' : {
-            'web.assets_backend': [
-                'education_transport/static/src/js/action_manager.js',
-            ],
-        },
-    'license': 'AGPL-3',
-    'installable': True,
-    'application': True,
-    'auto_install': False,
+    "name": "Education ERP — Transport",
+    "version": "19.0.1.0.0",
+    "category": "Education",
+    "summary": "Vehicle fleet, route planning, stop management and student assignments",
+    "description": """
+Education ERP — Transport
+=========================
+
+Vehicle fleet, route planning, stop management and student assignments.
+
+Part of the Educational ERP — LMS System built on Odoo 19 Community Edition
+by Cybrosys Techno Solutions for Hajaj (Product Owner).
+
+Version: 19.0.1.0.0  |  License: LGPL-3
+    """,
+    "author": "Cybrosys Techno Solutions",
+    "website": "https://www.cybrosys.com",
+    "license": "LGPL-3",
+    "depends": ["education_core", "education_security"],
+    "data": [
+        "security/ir.model.access.csv",
+        "views/transport_views.xml",
+        "views/menus.xml",
+    ],
+    "demo": [],
+    "installable": True,
+    "application": False,
+    "auto_install": False,
+    "sequence": 20,
 }

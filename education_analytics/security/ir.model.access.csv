@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_analytics_enrollment_admin,analytics enrollment admin,model_edu_analytics_enrollment_summary,education_security.group_education_admin,1,0,0,0
+access_analytics_enrollment_user,analytics enrollment user,model_edu_analytics_enrollment_summary,base.group_user,1,0,0,0
+access_analytics_fee_admin,analytics fee admin,model_edu_analytics_fee_collection,education_security.group_education_admin,1,0,0,0
+access_analytics_fee_user,analytics fee user,model_edu_analytics_fee_collection,account.group_account_user,1,0,0,0
+access_analytics_attendance_admin,analytics attendance admin,model_edu_analytics_attendance_rate,education_security.group_education_admin,1,0,0,0
+access_analytics_attendance_user,analytics attendance user,model_edu_analytics_attendance_rate,base.group_user,1,0,0,0
+access_analytics_exam_admin,analytics exam admin,model_edu_analytics_exam_pass_rate,education_security.group_education_admin,1,0,0,0
+access_analytics_exam_user,analytics exam user,model_edu_analytics_exam_pass_rate,base.group_user,1,0,0,0

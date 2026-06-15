@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Root Analytics menu (under the main Education root from education_config) -->
+    <menuitem
+        id="menu_education_analytics_root"
+        name="Analytics"
+        parent="education_config.menu_education_root"
+        sequence="95"
+        groups="education_security.group_education_admin,account.group_account_user"
+    />
+
+    <!-- Sub-menu items -->
+    <menuitem
+        id="menu_analytics_enrollment"
+        name="Enrollment Summary"
+        parent="menu_education_analytics_root"
+        action="action_edu_analytics_enrollment_summary"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_analytics_fees"
+        name="Fee Collection"
+        parent="menu_education_analytics_root"
+        action="action_edu_analytics_fee_collection"
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_analytics_attendance"
+        name="Attendance Rate"
+        parent="menu_education_analytics_root"
+        action="action_edu_analytics_attendance_rate"
+        sequence="30"
+    />
+
+    <menuitem
+        id="menu_analytics_exam"
+        name="Exam Pass Rate"
+        parent="menu_education_analytics_root"
+        action="action_edu_analytics_exam_pass_rate"
+        sequence="40"
+    />
+
+    <menuitem
+        id="menu_analytics_admin_dash"
+        name="Admin Dashboard"
+        parent="menu_education_analytics_root"
+        action="action_edu_admin_dashboard"
+        sequence="50"
+        groups="education_security.group_education_admin"
+    />
+
+    <menuitem
+        id="menu_analytics_accountant_dash"
+        name="Accountant Dashboard"
+        parent="menu_education_analytics_root"
+        action="action_edu_accountant_dashboard"
+        sequence="60"
+        groups="account.group_account_user"
+    />
+
+</odoo>

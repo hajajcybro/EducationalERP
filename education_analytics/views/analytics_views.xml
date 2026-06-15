@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         ENROLLMENT SUMMARY  (S7-T16)
+    ════════════════════════════════════════════════════════════════════ -->
+
+    <!-- Pivot -->
+    <record id="view_edu_analytics_enrollment_pivot" model="ir.ui.view">
+        <field name="name">edu.analytics.enrollment.summary.pivot</field>
+        <field name="model">edu.analytics.enrollment.summary</field>
+        <field name="arch" type="xml">
+            <pivot string="Enrollment Summary">
+                <field name="program_name" type="row"/>
+                <field name="academic_year_name" type="col"/>
+                <field name="total_enrolled" type="measure"/>
+                <field name="active_count" type="measure"/>
+                <field name="graduated_count" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Graph -->
+    <record id="view_edu_analytics_enrollment_graph" model="ir.ui.view">
+        <field name="name">edu.analytics.enrollment.summary.graph</field>
+        <field name="model">edu.analytics.enrollment.summary</field>
+        <field name="arch" type="xml">
+            <graph string="Enrollment by Program" type="bar">
+                <field name="program_name"/>
+                <field name="total_enrolled" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- List -->
+    <record id="view_edu_analytics_enrollment_list" model="ir.ui.view">
+        <field name="name">edu.analytics.enrollment.summary.list</field>
+        <field name="model">edu.analytics.enrollment.summary</field>
+        <field name="arch" type="xml">
+            <list string="Enrollment Summary" create="false" edit="false" delete="false">
+                <field name="program_name" string="Program"/>
+                <field name="academic_year_name" string="Academic Year"/>
+                <field name="total_enrolled" string="Total Enrolled"/>
+                <field name="active_count" string="Active"/>
+                <field name="graduated_count" string="Graduated"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search -->
+    <record id="view_edu_analytics_enrollment_search" model="ir.ui.view">
+        <field name="name">edu.analytics.enrollment.summary.search</field>
+        <field name="model">edu.analytics.enrollment.summary</field>
+        <field name="arch" type="xml">
+            <search string="Enrollment Summary">
+                <field name="program_name" string="Program"/>
+                <field name="academic_year_name" string="Academic Year"/>
+                <filter name="filter_by_year" string="Academic Year"
+                        domain="[]"
+                        context="{'group_by': 'academic_year_name'}"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_program" string="Program"
+                            context="{'group_by': 'program_name'}"/>
+                    <filter name="group_by_year" string="Academic Year"
+                            context="{'group_by': 'academic_year_name'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_edu_analytics_enrollment_summary" model="ir.actions.act_window">
+        <field name="name">Enrollment Summary</field>
+        <field name="res_model">edu.analytics.enrollment.summary</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="search_view_id" ref="view_edu_analytics_enrollment_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No enrollment data found.
+            </p>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         FEE COLLECTION  (S7-T16)
+    ════════════════════════════════════════════════════════════════════ -->
+
+    <!-- Pivot -->
+    <record id="view_edu_analytics_fee_pivot" model="ir.ui.view">
+        <field name="name">edu.analytics.fee.collection.pivot</field>
+        <field name="model">edu.analytics.fee.collection</field>
+        <field name="arch" type="xml">
+            <pivot string="Fee Collection">
+                <field name="academic_year_name" type="row"/>
+                <field name="class_name" type="col"/>
+                <field name="total_invoiced" type="measure"/>
+                <field name="total_paid" type="measure"/>
+                <field name="total_outstanding" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Graph -->
+    <record id="view_edu_analytics_fee_graph" model="ir.ui.view">
+        <field name="name">edu.analytics.fee.collection.graph</field>
+        <field name="model">edu.analytics.fee.collection</field>
+        <field name="arch" type="xml">
+            <graph string="Fee Collection by Class" type="bar">
+                <field name="class_name"/>
+                <field name="total_paid" type="measure"/>
+                <field name="total_outstanding" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- List -->
+    <record id="view_edu_analytics_fee_list" model="ir.ui.view">
+        <field name="name">edu.analytics.fee.collection.list</field>
+        <field name="model">edu.analytics.fee.collection</field>
+        <field name="arch" type="xml">
+            <list string="Fee Collection" create="false" edit="false" delete="false">
+                <field name="academic_year_name" string="Academic Year"/>
+                <field name="class_name" string="Class"/>
+                <field name="total_invoiced" string="Total Invoiced" widget="monetary"/>
+                <field name="total_paid" string="Paid" widget="monetary"/>
+                <field name="total_outstanding" string="Outstanding" widget="monetary"/>
+                <field name="overdue_count" string="Overdue"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search -->
+    <record id="view_edu_analytics_fee_search" model="ir.ui.view">
+        <field name="name">edu.analytics.fee.collection.search</field>
+        <field name="model">edu.analytics.fee.collection</field>
+        <field name="arch" type="xml">
+            <search string="Fee Collection">
+                <field name="academic_year_name" string="Academic Year"/>
+                <field name="class_name" string="Class"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_year" string="Academic Year"
+                            context="{'group_by': 'academic_year_name'}"/>
+                    <filter name="group_by_class" string="Class"
+                            context="{'group_by': 'class_name'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_edu_analytics_fee_collection" model="ir.actions.act_window">
+        <field name="name">Fee Collection</field>
+        <field name="res_model">edu.analytics.fee.collection</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="search_view_id" ref="view_edu_analytics_fee_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No fee collection data found.
+            </p>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         ATTENDANCE RATE  (S7-T16)
+    ════════════════════════════════════════════════════════════════════ -->
+
+    <!-- Pivot -->
+    <record id="view_edu_analytics_attendance_pivot" model="ir.ui.view">
+        <field name="name">edu.analytics.attendance.rate.pivot</field>
+        <field name="model">edu.analytics.attendance.rate</field>
+        <field name="arch" type="xml">
+            <pivot string="Attendance Rate">
+                <field name="class_name" type="row"/>
+                <field name="attendance_rate" type="measure"/>
+                <field name="present_count" type="measure"/>
+                <field name="total_records" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Graph -->
+    <record id="view_edu_analytics_attendance_graph" model="ir.ui.view">
+        <field name="name">edu.analytics.attendance.rate.graph</field>
+        <field name="model">edu.analytics.attendance.rate</field>
+        <field name="arch" type="xml">
+            <graph string="Attendance Rate by Class" type="bar">
+                <field name="class_name"/>
+                <field name="attendance_rate" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- List -->
+    <record id="view_edu_analytics_attendance_list" model="ir.ui.view">
+        <field name="name">edu.analytics.attendance.rate.list</field>
+        <field name="model">edu.analytics.attendance.rate</field>
+        <field name="arch" type="xml">
+            <list string="Attendance Rate" create="false" edit="false" delete="false">
+                <field name="class_name" string="Class"/>
+                <field name="academic_year_name" string="Academic Year"/>
+                <field name="total_records" string="Total Records"/>
+                <field name="present_count" string="Present"/>
+                <field name="attendance_rate" string="Rate (%)" digits="[5,2]"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search -->
+    <record id="view_edu_analytics_attendance_search" model="ir.ui.view">
+        <field name="name">edu.analytics.attendance.rate.search</field>
+        <field name="model">edu.analytics.attendance.rate</field>
+        <field name="arch" type="xml">
+            <search string="Attendance Rate">
+                <field name="class_name" string="Class"/>
+                <field name="academic_year_name" string="Academic Year"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_class" string="Class"
+                            context="{'group_by': 'class_name'}"/>
+                    <filter name="group_by_year" string="Academic Year"
+                            context="{'group_by': 'academic_year_name'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_edu_analytics_attendance_rate" model="ir.actions.act_window">
+        <field name="name">Attendance Rate</field>
+        <field name="res_model">edu.analytics.attendance.rate</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="search_view_id" ref="view_edu_analytics_attendance_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No attendance data found.
+            </p>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         EXAM PASS RATE  (S7-T16)
+    ════════════════════════════════════════════════════════════════════ -->
+
+    <!-- Pivot -->
+    <record id="view_edu_analytics_exam_pivot" model="ir.ui.view">
+        <field name="name">edu.analytics.exam.pass.rate.pivot</field>
+        <field name="model">edu.analytics.exam.pass.rate</field>
+        <field name="arch" type="xml">
+            <pivot string="Exam Pass Rate">
+                <field name="exam_name" type="row"/>
+                <field name="pass_rate" type="measure"/>
+                <field name="passed_count" type="measure"/>
+                <field name="failed_count" type="measure"/>
+                <field name="total_students" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Graph -->
+    <record id="view_edu_analytics_exam_graph" model="ir.ui.view">
+        <field name="name">edu.analytics.exam.pass.rate.graph</field>
+        <field name="model">edu.analytics.exam.pass.rate</field>
+        <field name="arch" type="xml">
+            <graph string="Exam Pass Rate" type="bar">
+                <field name="exam_name"/>
+                <field name="pass_rate" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- List -->
+    <record id="view_edu_analytics_exam_list" model="ir.ui.view">
+        <field name="name">edu.analytics.exam.pass.rate.list</field>
+        <field name="model">edu.analytics.exam.pass.rate</field>
+        <field name="arch" type="xml">
+            <list string="Exam Pass Rate" create="false" edit="false" delete="false">
+                <field name="exam_name" string="Exam"/>
+                <field name="exam_type" string="Type"/>
+                <field name="class_name" string="Class"/>
+                <field name="total_students" string="Total"/>
+                <field name="passed_count" string="Passed"/>
+                <field name="failed_count" string="Failed"/>
+                <field name="pass_rate" string="Pass Rate (%)" digits="[5,2]"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search -->
+    <record id="view_edu_analytics_exam_search" model="ir.ui.view">
+        <field name="name">edu.analytics.exam.pass.rate.search</field>
+        <field name="model">edu.analytics.exam.pass.rate</field>
+        <field name="arch" type="xml">
+            <search string="Exam Pass Rate">
+                <field name="exam_name" string="Exam"/>
+                <field name="class_name" string="Class"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_exam" string="Exam"
+                            context="{'group_by': 'exam_name'}"/>
+                    <filter name="group_by_type" string="Exam Type"
+                            context="{'group_by': 'exam_type'}"/>
+                    <filter name="group_by_class" string="Class"
+                            context="{'group_by': 'class_name'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_edu_analytics_exam_pass_rate" model="ir.actions.act_window">
+        <field name="name">Exam Pass Rate</field>
+        <field name="res_model">edu.analytics.exam.pass.rate</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="search_view_id" ref="view_edu_analytics_exam_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No exam result data found.
+            </p>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         OWL DASHBOARD CLIENT ACTIONS  (S7-T10 / T11 / T12 / T13)
+    ════════════════════════════════════════════════════════════════════ -->
+
+    <!-- Admin Dashboard -->
+    <record id="action_edu_admin_dashboard" model="ir.actions.client">
+        <field name="name">Admin Dashboard</field>
+        <field name="tag">edu_analytics.AdminDashboard</field>
+    </record>
+
+    <!-- Teacher Dashboard -->
+    <record id="action_edu_teacher_dashboard" model="ir.actions.client">
+        <field name="name">Teacher Dashboard</field>
+        <field name="tag">edu_analytics.TeacherDashboard</field>
+    </record>
+
+    <!-- Student Dashboard -->
+    <record id="action_edu_student_dashboard" model="ir.actions.client">
+        <field name="name">Student Dashboard</field>
+        <field name="tag">edu_analytics.StudentDashboard</field>
+    </record>
+
+    <!-- Accountant Dashboard -->
+    <record id="action_edu_accountant_dashboard" model="ir.actions.client">
+        <field name="name">Accountant Dashboard</field>
+        <field name="tag">edu_analytics.AccountantDashboard</field>
+    </record>
+
+</odoo>

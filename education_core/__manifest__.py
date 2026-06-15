@@ -1,56 +1,60 @@
- # -*- coding: utf-8 -*-
 {
-    'name': 'Education Core',
-    'version': '19.0.1.0.0',
-    'summary': 'Manage educational details and student data',
-    'category': 'Education',
-    'sequence': -333,
-    'author': 'Cybrosys Techno Solutions',
-    'company': 'Cybrosys Techno Solutions',
-    'maintainer': 'Cybrosys Techno Solutions',
-    'website': 'https://www.cybrosys.com',
-    'depends': ['base', 'mail','base_automation','hr','web','portal',
-                'website',],
-    'data': [
-        'security/education_security_groups.xml',
-        'security/ir.model.access.csv',
-        'security/res_partner_security.xml',
-        'security/hr_employee_security.xml',
-        'security/education_enrollment_security.xml',
-        'data/website_menu_data.xml',
-        'views/education_application.xml',
-        'views/education_class_views.xml',
-        'views/education_category_views.xml',
-        'views/res_partner_view.xml',
-        'views/hr_employee.xml',
-        'views/education_class_fecility.xml',
-        'data/ir_sequence_data.xml',
-        'views/education_enrollment_views.xml',
-		'views/education_academic_year_views.xml',
-		'views/education_session_views.xml',
-        'views/education_program_views.xml',
-        'views/education_subject_views.xml',
-        'views/education_document_view.xml',
-        'views/eduaction_document_type_view.xml',
-        'views/education_class_room_view.xml',
-        'views/education_timetable_line_view.xml',
-        'wizard/eduaction_application_reject_wizard.xml',
-        'wizard/student_report_wizard.xml',
-        'report/ir_actions_report.xml',
-        'report/student_report-template.xml',
-        'views/portal_education_application.xml',
-        'views/portal.xml',
-        'views/portal_education_student_profile.xml',
-        'views/portal_alumni_templates.xml',
-        'views/menus.xml',
-],
-    'assets': {
-        'web.assets_backend': [
-            'education_core/static/src/js/action_manager.js',
-        ],
-    },
-    'license': 'AGPL-3',
-    'installable': True,
-    'application': True,
-    'auto_install': False,
+    "name": "Education ERP — Core",
+    "version": "19.0.4.0.0",
+    "category": "Education",
+    "summary": "Student management, enrollment, attendance, timetable, programs, classes",
+    "description": """
+Education ERP — Core
+====================
+
+Sprint 1: Departments, Academic Years, Programs, Classes, Timetable.
+Sprint 2: Student Applications, Enrollment, Documents, Portal Accounts, Email Templates.
+Sprint 3: Timetable Slots, Attendance (per-period), Leave Requests, 75% Threshold Cron,
+          PDF Attendance Report, Faculty Module.
+Sprint 4: Classroom / Exam Hall management (edu.classroom).
+
+Part of the Educational ERP — LMS System built on Odoo 19 Community Edition
+by Cybrosys Techno Solutions for Hajaj (Product Owner).
+
+Version: 19.0.4.0.0  |  License: LGPL-3
+    """,
+    "author": "Cybrosys Techno Solutions",
+    "website": "https://www.cybrosys.com",
+    "license": "LGPL-3",
+    "depends": ['education_config', 'mail', 'portal'],
+    "data": [
+        # ── Security (always first) ────────────────────────────────────
+        "security/ir.model.access.csv",
+        "security/record_rules.xml",
+        # ── Sequences & seed data ──────────────────────────────────────
+        "data/ir_sequence.xml",
+        "data/document_type_data.xml",
+        # ── Email templates & cron ─────────────────────────────────────
+        "data/mail_templates.xml",
+        "data/ir_cron.xml",
+        # ── Views — Sprint 1 ──────────────────────────────────────────
+        "views/department_views.xml",
+        "views/academic_year_views.xml",
+        "views/program_views.xml",
+        "views/class_views.xml",
+        "views/timetable_views.xml",
+        # ── Views — Sprint 2 ──────────────────────────────────────────
+        "views/document_type_views.xml",
+        "views/application_views.xml",
+        "views/enrollment_views.xml",
+        "views/portal_templates.xml",
+        # ── Views — Sprint 3 ──────────────────────────────────────────
+        "views/attendance_views.xml",
+        # ── Views — Sprint 4 ──────────────────────────────────────────
+        "views/classroom_views.xml",
+        # ── Reports ────────────────────────────────────────────────────
+        "report/attendance_report.xml",
+        # ── Menus (always last) ────────────────────────────────────────
+        "views/menus.xml",
+    ],
+    "demo": [],
+    "installable": True,
+    "application": True,
+    "auto_install": False,
+    "sequence": 3,
 }

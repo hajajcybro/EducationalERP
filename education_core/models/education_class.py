@@ -1,94 +1,150 @@
 # -*- coding: utf-8 -*-
-
-from odoo import models, fields, api,_
+"""education.class — Class / Section model."""
+from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
+
 class EducationClass(models.Model):
-    _name = 'education.class'
-    _description = 'Education Class'
-    _inherit  = ['mail.thread', 'mail.activity.mixin']
-    _order = 'name'
+    """
+    A class is a specific section/batch of a program in a given academic year.
+    Example: B.Tech CSE Section A — 2025-2026.
 
-    name = fields.Char(string='Class Name',required=True,
-                       help='Enter the name of the class')
-    program_id = fields.Many2one('education.program', string='Education Program',required=True,
-                    help='Specify the education program or course this class belongs to'
-                             )
-    academic_year_id = fields.Many2one('education.academic.year',string='Academic Year', required=True,
-                                       domain=[('state', '!=', 'closed')],
-                    help = 'Select the academic year during which this class will run'
-                                   )
-    capacity = fields.Integer(string='Room Capacity',  compute='_compute_capacity',
-                              help='Maximum number of students that can be enrolled in this class'
-                              )
-    class_teacher_id = fields.Many2one('hr.employee', string='Class Teacher', domain=[('role', '=', 'teacher')],
-                        help = 'Assign a teacher who will be responsible for this class.',required=True,
+    Multiple classes can exist for the same program/year with different sections.
+    """
+
+    _name = "education.class"
+    _description = "Class / Section"
+    _order = "academic_year_id desc, program_id, section"
+    _inherit = ["mail.thread"]
+    # _rec_name defaults to "name" — we store the auto-generated label there.
+
+    # ── Identity ─────────────────────────────────────────────────────────
+    name = fields.Char(
+        string="Class Name",
+        compute="_compute_name",
+        store=True,
+        help="Auto-generated: Program Code + Section + Year, e.g. BTECH-CSE-A-2526.",
     )
-    room_id = fields.Many2one('education.class.room',string='Room No', required=True,
-                          help='Specify the room or hall number where this class will be conducted.'
-                          )
-    notes = fields.Text(string='Notes',
-                        help='Additional notes or information about this class.'
-                        )
-    active = fields.Boolean(string='Active',
-        default=True,
-        help='Uncheck to archive this class and hide it from selection lists.'
+    section = fields.Char(
+        string="Section",
+        required=True,
+        default="A",
+        size=5,
+        help='Section identifier, e.g. "A", "B", "Morning", "Weekend".',
     )
-    student_ids = fields.One2many('res.partner','class_id')
-    session_id = fields.Many2one('education.session',string='Session')
-    timetable_line_ids = fields.One2many('education.timetable.line','class_id')
-    program_type = fields.Selection(
-        [('school', 'School'), ('college', 'College')],
-        string='Program Type', readonly=True
-    )
-    division = fields.Char(
-        string='Division',
-        help='Class division (A, B, C, etc.)'
+    capacity = fields.Integer(
+        string="Max Capacity",
+        default=60,
+        help="Maximum number of students allowed in this class.",
     )
 
-    @api.onchange('program_id')
-    def _onchange_program_id(self):
-        """Update the program type automatically when the program is changed."""
-        if self.program_id:
-            self.program_type = self.program_id.education_type
+    # ── Relationships ─────────────────────────────────────────────────────
+    program_id = fields.Many2one(
+        "education.program",
+        string="Program",
+        required=True,
+        ondelete="restrict",
+        tracking=True,
+        index=True,
+    )
+    academic_year_id = fields.Many2one(
+        "education.academic.year",
+        string="Academic Year",
+        required=True,
+        ondelete="restrict",
+        tracking=True,
+        index=True,
+        default=lambda self: self.env["education.academic.year"].get_current_year(),
+    )
+    department_id = fields.Many2one(
+        "education.department",
+        string="Department",
+        related="program_id.department_id",
+        store=True,
+        readonly=True,
+    )
+    class_teacher_id = fields.Many2one(
+        "res.partner",
+        string="Class Teacher",
+        domain="[('is_company', '=', False)]",
+        tracking=True,
+    )
 
-    @api.depends('room_id')
-    def _compute_capacity(self):
-        """Compute the class capacity based on the selected room."""
+    # ── Enrollment counters (populated in Sprint 2) ───────────────────────
+    enrollment_count = fields.Integer(
+        string="Enrolled Students",
+        compute="_compute_enrollment_count",
+        help="Number of active enrollments in this class.",
+    )
+    seats_available = fields.Integer(
+        string="Seats Available",
+        compute="_compute_seats_available",
+    )
+
+    # ── System ────────────────────────────────────────────────────────────
+    notes = fields.Text(string="Notes")
+    company_id = fields.Many2one(
+        "res.company",
+        string="Company",
+        related="program_id.company_id",
+        store=True,
+        readonly=True,
+    )
+    active = fields.Boolean(default=True)
+
+    _sql_constraints = [
+        (
+            "program_year_section_uniq",
+            "UNIQUE(program_id, academic_year_id, section)",
+            "A class with the same program, academic year and section already exists.",
+        )
+    ]
+
+    # ── Constraints ────────────────────────────────────────────────────────
+
+    @api.constrains("capacity")
+    def _check_capacity(self):
         for rec in self:
-            rec.capacity = rec.room_id.capacity if rec.room_id else 0
+            if rec.capacity < 1:
+                raise ValidationError(
+                    _("Class capacity must be at least 1.")
+                )
 
-    @api.constrains('room_id', 'academic_year_id')
-    def _check_duplicate_room_assignment(self):
-        """Prevent assigning the same room to multiple classes
-            in the same academic year."""
+    # ── Computed ───────────────────────────────────────────────────────────
+
+    @api.depends("program_id.code", "section", "academic_year_id.code")
+    def _compute_name(self):
         for rec in self:
-            if rec.room_id and rec.academic_year_id:
-                existing = self.search([
-                    ('id', '!=', rec.id),
-                    ('room_id', '=', rec.room_id.id),
-                    ('academic_year_id', '=', rec.academic_year_id.id)
-                ], limit=1)
-                if existing:
-                    raise ValidationError('already assigned')
+            parts = [
+                rec.program_id.code or "",
+                f"Sec-{rec.section}" if rec.section else "",
+                rec.academic_year_id.code or "",
+            ]
+            rec.name = "-".join(p for p in parts if p)
 
-    @api.constrains('program_id', 'academic_year_id')
-    def _check_program_year_duration(self):
-        """ Ensure the Academic Year duration matches the selected Program's duration.
-        Raises a ValidationError if both durations are different."""
+    def _compute_enrollment_count(self):
+        """Count active enrollments in this class."""
+        Enrollment = self.env["education.enrollment"]
         for rec in self:
-            if rec.program_id and rec.academic_year_id:
-                if int(rec.academic_year_id.duration) != rec.program_id.duration:
-                    raise ValidationError("Program duration must match academic year duration.")
+            rec.enrollment_count = Enrollment.search_count([
+                ("class_id", "=", rec.id),
+                ("state", "=", "active"),
+            ])
 
-    @api.constrains('room_id')
-    def _check_room_already_allocated(self):
-        """Prevent assigning the same room to multiple classes."""
+    @api.depends("capacity", "enrollment_count")
+    def _compute_seats_available(self):
         for rec in self:
-            if rec.room_id and self.search_count([
-                ('id', '!=', rec.id),
-                ('room_id', '=', rec.room_id.id),
-            ]):
-                raise ValidationError(_("Room is already assigned to another class."))
+            rec.seats_available = max(0, rec.capacity - rec.enrollment_count)
 
+    # ── Actions ────────────────────────────────────────────────────────────
 
+    def action_view_enrollments(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Enrollments — %s") % self.name,
+            "res_model": "education.enrollment",
+            "domain": [("class_id", "=", self.id)],
+            "view_mode": "list,form",
+            "context": {"default_class_id": self.id},
+        }

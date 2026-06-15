@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Faculty ID auto-sequence -->
+    <record id="seq_education_faculty" model="ir.sequence">
+        <field name="name">Faculty ID</field>
+        <field name="code">education.faculty</field>
+        <field name="prefix">FAC/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="number_increment">1</field>
+        <field name="number_next">1</field>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+</odoo>

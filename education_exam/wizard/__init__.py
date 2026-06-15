@@ -1,1 +1,2 @@
-from .import education_exam_result_class_wizard
+from . import mark_entry_wizard
+from . import reevaluation_wizard

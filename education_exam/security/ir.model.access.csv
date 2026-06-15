@@ -1,48 +1,23 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-
-access_exam_student,exam student,model_education_exam,education_core.group_education_student,1,0,0,0
-access_exam_teacher,exam teacher,model_education_exam,education_core.group_education_teacher,1,1,1,1
-access_exam_admin,exam admin,model_education_exam,education_core.group_education_admin,1,1,1,1
-
-access_exam_line_student,exam student,model_education_exam_line,education_core.group_education_student,1,0,0,0
-access_exam_line_teacher,exam teacher,model_education_exam_line,education_core.group_education_teacher,1,1,1,1
-access_exam_line_admin,exam admin,model_education_exam_line,education_core.group_education_admin,1,1,1,1
-
-access_exam_type_admin,exam type admin,model_education_exam_type,education_core.group_education_admin,1,1,1,1
-access_exam_type_teacher,exam type teacher,model_education_exam_type,education_core.group_education_teacher,1,1,1,1
-access_exam_type_student,exam type student,model_education_exam_type,education_core.group_education_student,0,0,0,0
-
-
-access_exam_valuation_teacher,exam valuation teacher,model_education_exam_valuation,education_core.group_education_teacher,1,1,1,1
-access_exam_valuation_admin,exam valuation admin,model_education_exam_valuation,education_core.group_education_admin,1,1,1,1
-access_exam_valuation_student,exam valuation student,model_education_exam_valuation,education_core.group_education_student,0,0,0,0
-
-
-access_exam_valuation_line_teacher,exam valuation line teacher,model_education_exam_valuation_line,education_core.group_education_teacher,1,1,1,1
-access_exam_valuation_line_admin,exam valuation line admin,model_education_exam_valuation_line,education_core.group_education_admin,1,1,1,1
-access_exam_valuation_line_student,exam valuation line student,model_education_exam_valuation_line,education_core.group_education_student,0,0,0,0
-
-access_exam_result_admin,exam result admin,model_education_exam_result,education_core.group_education_admin,1,1,1,1
-access_exam_result_teacher,exam result teacher,model_education_exam_result,education_core.group_education_teacher,1,1,1,1
-access_exam_result_student,exam result student,model_education_exam_result,education_core.group_education_student,1,0,0,0
-
-access_exam_result_line_admin,exam result line admin,model_education_exam_result_line,education_core.group_education_admin,1,1,1,1
-access_exam_result_line_teacher,exam result line teacher,model_education_exam_result_line,education_core.group_education_teacher,1,1,1,1
-access_exam_result_line_student,exam result line student,model_education_exam_result_line,education_core.group_education_student,1,0,0,0
-
-
-access_exam_revaluation_student,exam revaluation student,model_education_exam_revaluation,education_core.group_education_student,1,1,1,0
-access_exam_revaluation_teacher,exam revaluation teacher,model_education_exam_revaluation,education_core.group_education_teacher,1,1,1,1
-access_exam_revaluation_admin,exam revaluation admin,model_education_exam_revaluation,education_core.group_education_admin,1,1,1,1
-
-access_revaluation_admin,revaluation admin,model_education_exam_revaluation_creation,education_core.group_education_admin,1,1,1,1
-access_revaluation_teacher,revaluation teacher,model_education_exam_revaluation_creation,education_core.group_education_teacher,1,1,1,1
-access_revaluation_student,revaluation student,model_education_exam_revaluation_creation,education_core.group_education_student,1,0,0,0
-
-access_exam_result_class_report_wizard_admin,Exam Result Class Report Wizard Admin,model_exam_result_class_report_wizard,education_core.group_education_admin,1,1,1,1
-access_exam_result_class_report_wizard_teacher,Exam Result Class Report Wizard Teacher,model_exam_result_class_report_wizard,education_core.group_education_teacher,1,1,1,1
-access_exam_result_class_report_wizard_student,Exam Result Class Report Wizard Student,model_exam_result_class_report_wizard,education_core.group_education_student,0,0,0,0
-
-
-access_grade_setting_admin,education exam admin,model_education_exam_grade,education_core.group_education_admin,1,1,1,1
-
+access_edu_exam_admin,edu.exam admin,model_edu_exam,education_security.group_education_admin,1,1,1,1
+access_edu_exam_teacher,edu.exam teacher,model_edu_exam,education_security.group_education_teacher,1,1,0,0
+access_edu_exam_user,edu.exam user,model_edu_exam,base.group_user,1,0,0,0
+access_edu_exam_subject_admin,edu.exam.subject admin,model_edu_exam_subject,education_security.group_education_admin,1,1,1,1
+access_edu_exam_subject_teacher,edu.exam.subject teacher,model_edu_exam_subject,education_security.group_education_teacher,1,1,0,0
+access_edu_exam_subject_user,edu.exam.subject user,model_edu_exam_subject,base.group_user,1,0,0,0
+access_edu_exam_seating_admin,edu.exam.seating admin,model_edu_exam_seating,education_security.group_education_admin,1,1,1,1
+access_edu_exam_seating_teacher,edu.exam.seating teacher,model_edu_exam_seating,education_security.group_education_teacher,1,0,0,0
+access_edu_exam_seating_user,edu.exam.seating user,model_edu_exam_seating,base.group_user,1,0,0,0
+access_edu_exam_invigilator_admin,edu.exam.invigilator admin,model_edu_exam_invigilator,education_security.group_education_admin,1,1,1,1
+access_edu_exam_invigilator_teacher,edu.exam.invigilator teacher,model_edu_exam_invigilator,education_security.group_education_teacher,1,1,0,0
+access_edu_exam_result_admin,edu.exam.result admin,model_edu_exam_result,education_security.group_education_admin,1,1,1,1
+access_edu_exam_result_teacher,edu.exam.result teacher,model_edu_exam_result,education_security.group_education_teacher,1,1,1,0
+access_edu_exam_result_portal,edu.exam.result portal,model_edu_exam_result,base.group_portal,1,0,0,0
+access_edu_exam_result_history_admin,edu.exam.result.history admin,model_edu_exam_result_history,education_security.group_education_admin,1,1,1,1
+access_edu_exam_result_history_teacher,edu.exam.result.history teacher,model_edu_exam_result_history,education_security.group_education_teacher,1,0,0,0
+access_edu_mark_entry_wizard_admin,edu.exam.mark.entry.wizard admin,model_edu_exam_mark_entry_wizard,education_security.group_education_admin,1,1,1,1
+access_edu_mark_entry_wizard_teacher,edu.exam.mark.entry.wizard teacher,model_edu_exam_mark_entry_wizard,education_security.group_education_teacher,1,1,1,1
+access_edu_mark_entry_line_admin,edu.exam.mark.entry.line admin,model_edu_exam_mark_entry_line,education_security.group_education_admin,1,1,1,1
+access_edu_mark_entry_line_teacher,edu.exam.mark.entry.line teacher,model_edu_exam_mark_entry_line,education_security.group_education_teacher,1,1,1,1
+access_edu_reevaluation_wizard_admin,edu.exam.reevaluation.wizard admin,model_edu_exam_reevaluation_wizard,education_security.group_education_admin,1,1,1,1
+access_edu_reevaluation_wizard_portal,edu.exam.reevaluation.wizard portal,model_edu_exam_reevaluation_wizard,base.group_portal,1,1,1,1

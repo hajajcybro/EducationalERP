@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Education Integrations — Portal Templates (S7-T14, S7-T15)
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <!-- ── Portal Home: Education entry ──────────────────────────────── -->
+    <template id="portal_my_home_education"
+              name="Portal My Home: Education"
+              inherit_id="portal.portal_my_home"
+              priority="35">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-if="education_count">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">My Education</t>
+                    <t t-set="url">/my/education</t>
+                    <t t-set="count" t-value="education_count"/>
+                    <t t-set="icon" t-value="'fa-university'"/>
+                    <t t-set="text">Attendance, fees and courses</t>
+                </t>
+            </t>
+            <t t-if="children_count">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">My Children</t>
+                    <t t-set="url">/my/education/children</t>
+                    <t t-set="count" t-value="children_count"/>
+                    <t t-set="icon" t-value="'fa-child'"/>
+                    <t t-set="text">Enrolled children overview</t>
+                </t>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- ── Student Dashboard (/my/education) ─────────────────────────── -->
+    <template id="edu_portal_dashboard" name="Education Dashboard">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumb_name">My Education</t>
+
+            <div class="o_portal_wrap">
+                <div class="container py-4">
+
+                    <t t-if="not enrollment">
+                        <div class="alert alert-warning text-center">
+                            <i class="fa fa-info-circle me-2"/>
+                            You are not currently enrolled. Please contact the
+                            admission office.
+                        </div>
+                    </t>
+
+                    <t t-if="enrollment">
+                        <!-- Page heading -->
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h3 class="mb-0">
+                                <i class="fa fa-graduation-cap me-2 text-primary"/>
+                                <t t-esc="enrollment.student_name"/>
+                            </h3>
+                            <a href="/my/education/report-card"
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="fa fa-file-text-o me-1"/> Report Card
+                            </a>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <!-- Attendance card -->
+                            <div class="col-md-4">
+                                <div class="card h-100 shadow-sm border-0">
+                                    <div class="card-body text-center">
+                                        <i class="fa fa-calendar-check-o fa-2x text-success mb-2"/>
+                                        <h5 class="card-title">Attendance</h5>
+                                        <p class="display-6 fw-bold text-success mb-0">
+                                            <t t-esc="'%.1f%%' % attendance_pct"/>
+                                        </p>
+                                        <small class="text-muted">Overall attendance rate</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Fees card -->
+                            <div class="col-md-4">
+                                <div class="card h-100 shadow-sm border-0">
+                                    <div class="card-body text-center">
+                                        <i class="fa fa-credit-card fa-2x text-warning mb-2"/>
+                                        <h5 class="card-title">Fees Due</h5>
+                                        <p class="display-6 fw-bold text-warning mb-0">
+                                            <t t-esc="'%.2f' % (amount_due or 0.0)"/>
+                                        </p>
+                                        <small class="text-muted">
+                                            <t t-if="fee_state"
+                                               t-attf-class="badge #{
+                                                   'bg-success' if fee_state == 'paid' else
+                                                   'bg-danger' if fee_state == 'overdue' else
+                                                   'bg-warning text-dark' if fee_state == 'partial' else
+                                                   'bg-secondary'}">
+                                                <t t-esc="fee_state.replace('_', ' ').title()"/>
+                                            </t>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Enrollment info card -->
+                            <div class="col-md-4">
+                                <div class="card h-100 shadow-sm border-0">
+                                    <div class="card-body">
+                                        <i class="fa fa-info-circle fa-2x text-info mb-2"/>
+                                        <h5 class="card-title">Enrollment</h5>
+                                        <dl class="row small mb-0">
+                                            <dt class="col-6">No.</dt>
+                                            <dd class="col-6">
+                                                <t t-esc="enrollment.enrollment_no"/>
+                                            </dd>
+                                            <dt class="col-6">Class</dt>
+                                            <dd class="col-6">
+                                                <t t-esc="enrollment.class_id.name or '—'"/>
+                                            </dd>
+                                            <dt class="col-6">Program</dt>
+                                            <dd class="col-6">
+                                                <t t-esc="enrollment.program_id.name or '—'"/>
+                                            </dd>
+                                            <dt class="col-6">Year</dt>
+                                            <dd class="col-6">
+                                                <t t-esc="enrollment.academic_year_id.name or '—'"/>
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- LMS Courses -->
+                        <div class="card mb-4 shadow-sm border-0">
+                            <div class="card-header bg-light fw-bold">
+                                <i class="fa fa-book me-2 text-primary"/>
+                                Current Courses
+                            </div>
+                            <div class="card-body p-0">
+                                <t t-if="not lms_courses">
+                                    <p class="text-muted p-3 mb-0">
+                                        No active course enrollments.
+                                    </p>
+                                </t>
+                                <t t-if="lms_courses">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Course</th>
+                                                <th>Enrolled</th>
+                                                <th>Completion</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="lms_courses" t-as="lms">
+                                                <tr>
+                                                    <td>
+                                                        <t t-esc="lms.course_id.title"/>
+                                                    </td>
+                                                    <td>
+                                                        <t t-esc="lms.enrolled_date"/>
+                                                    </td>
+                                                    <td>
+                                                        <div class="progress" style="height:8px;min-width:80px;">
+                                                            <div class="progress-bar bg-success"
+                                                                 t-attf-style="width:#{lms.completion_pct}%"/>
+                                                        </div>
+                                                        <small class="text-muted">
+                                                            <t t-esc="'%.0f%%' % lms.completion_pct"/>
+                                                        </small>
+                                                    </td>
+                                                    <td>
+                                                        <span t-attf-class="badge #{
+                                                            'bg-success' if lms.state == 'completed' else
+                                                            'bg-secondary' if lms.state == 'dropped' else
+                                                            'bg-primary'}">
+                                                            <t t-esc="lms.state.title()"/>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- Recent Exam Results -->
+                        <div class="card shadow-sm border-0">
+                            <div class="card-header bg-light fw-bold">
+                                <i class="fa fa-trophy me-2 text-warning"/>
+                                Recent Exam Results
+                            </div>
+                            <div class="card-body p-0">
+                                <t t-if="not recent_results">
+                                    <p class="text-muted p-3 mb-0">
+                                        No published results yet.
+                                    </p>
+                                </t>
+                                <t t-if="recent_results">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Exam</th>
+                                                <th>Subject</th>
+                                                <th>Marks</th>
+                                                <th>Grade</th>
+                                                <th>Result</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="recent_results" t-as="res">
+                                                <tr>
+                                                    <td>
+                                                        <t t-esc="res.exam_id.name"/>
+                                                    </td>
+                                                    <td>
+                                                        <t t-esc="res.subject"/>
+                                                    </td>
+                                                    <td>
+                                                        <t t-esc="'%.1f / %.1f' % (res.marks_obtained, res.max_marks)"/>
+                                                    </td>
+                                                    <td>
+                                                        <strong><t t-esc="res.grade"/></strong>
+                                                    </td>
+                                                    <td>
+                                                        <span t-attf-class="badge #{
+                                                            'bg-success' if res.pass_fail == 'pass' else
+                                                            'bg-secondary' if res.pass_fail == 'absent' else
+                                                            'bg-danger'}">
+                                                            <t t-esc="(res.pass_fail or '').title()"/>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </t>
+                            </div>
+                        </div>
+
+                    </t><!-- /t if enrollment -->
+                </div><!-- /container -->
+            </div><!-- /o_portal_wrap -->
+        </t>
+    </template>
+
+    <!-- ── Report Card (/my/education/report-card) ───────────────────── -->
+    <template id="edu_portal_report_card" name="Report Card">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumb_name">Report Card</t>
+
+            <div class="o_portal_wrap">
+                <div class="container py-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4>
+                            <i class="fa fa-file-text-o me-2"/>
+                            <t t-esc="exam.name if exam else 'Report Card'"/>
+                        </h4>
+                        <a href="/my/education" class="btn btn-sm btn-outline-secondary">
+                            <i class="fa fa-arrow-left me-1"/> Back
+                        </a>
+                    </div>
+
+                    <t t-if="not results">
+                        <div class="alert alert-info">No results found.</div>
+                    </t>
+
+                    <t t-if="results">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-header bg-primary text-white">
+                                <strong>
+                                    <t t-esc="enrollment.student_name"/>
+                                </strong>
+                                &amp;nbsp;|&amp;nbsp;
+                                <t t-esc="enrollment.class_id.name or ''"/>
+                                &amp;nbsp;|&amp;nbsp;
+                                <t t-esc="enrollment.academic_year_id.name or ''"/>
+                            </div>
+                            <div class="card-body p-0">
+                                <table class="table table-bordered mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Subject</th>
+                                            <th class="text-end">Marks Obtained</th>
+                                            <th class="text-end">Max Marks</th>
+                                            <th class="text-end">%</th>
+                                            <th class="text-center">Grade</th>
+                                            <th class="text-center">Result</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="results" t-as="res">
+                                            <tr>
+                                                <td><t t-esc="res.subject"/></td>
+                                                <td class="text-end">
+                                                    <t t-esc="'%.1f' % res.marks_obtained"/>
+                                                </td>
+                                                <td class="text-end">
+                                                    <t t-esc="'%.1f' % res.max_marks"/>
+                                                </td>
+                                                <td class="text-end">
+                                                    <t t-esc="'%.1f%%' % res.percentage"/>
+                                                </td>
+                                                <td class="text-center fw-bold">
+                                                    <t t-esc="res.grade"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-attf-class="badge #{
+                                                        'bg-success' if res.pass_fail == 'pass' else
+                                                        'bg-secondary' if res.pass_fail == 'absent' else
+                                                        'bg-danger'}">
+                                                        <t t-esc="(res.pass_fail or '').title()"/>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ── Parent Portal (/my/education/children) ────────────────────── -->
+    <template id="edu_portal_children" name="My Children">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumb_name">My Children</t>
+
+            <div class="o_portal_wrap">
+                <div class="container py-4">
+                    <h4 class="mb-4">
+                        <i class="fa fa-child me-2 text-primary"/>
+                        Enrolled Children
+                    </h4>
+
+                    <t t-if="not children">
+                        <div class="alert alert-warning">
+                            <i class="fa fa-info-circle me-2"/>
+                            No enrolled children found linked to your account.
+                            Please contact the school administration.
+                        </div>
+                    </t>
+
+                    <t t-if="children">
+                        <div class="row g-3 mb-4">
+                            <t t-foreach="children" t-as="child">
+                                <div class="col-md-6 col-lg-4">
+                                    <a t-attf-href="/my/education/children?child_id=#{child.id}"
+                                       class="text-decoration-none">
+                                        <div t-attf-class="card h-100 shadow-sm border-0
+                                            #{'border border-primary' if selected and selected.id == child.id else ''}">
+                                            <div class="card-body">
+                                                <h6 class="card-title fw-bold mb-1">
+                                                    <i class="fa fa-user-circle me-1 text-secondary"/>
+                                                    <t t-esc="child.student_name"/>
+                                                </h6>
+                                                <p class="small text-muted mb-1">
+                                                    <t t-esc="child.class_id.name if child.class_id else '—'"/>
+                                                    &amp;nbsp;|&amp;nbsp;
+                                                    <t t-esc="child.academic_year_id.name if child.academic_year_id else '—'"/>
+                                                </p>
+                                                <p class="mb-0">
+                                                    <span t-attf-class="badge #{
+                                                        'bg-success' if not hasattr(child, 'fee_state') or child.fee_state == 'paid' else
+                                                        'bg-danger' if hasattr(child, 'fee_state') and child.fee_state == 'overdue' else
+                                                        'bg-warning text-dark' if hasattr(child, 'fee_state') and child.fee_state in ('invoiced','partial') else
+                                                        'bg-secondary'}">
+                                                        <t t-if="hasattr(child, 'fee_state') and child.fee_state">
+                                                            <t t-esc="child.fee_state.replace('_', ' ').title()"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            Active
+                                                        </t>
+                                                    </span>
+                                                    <span t-attf-class="badge #{
+                                                        'bg-success' if child.state == 'active' else
+                                                        'bg-secondary'} ms-1">
+                                                        <t t-esc="child.state.title()"/>
+                                                    </span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </t>
+                        </div>
+
+                        <!-- Selected child detail -->
+                        <t t-if="selected">
+                            <hr class="my-4"/>
+                            <h5 class="mb-3">
+                                <i class="fa fa-bar-chart me-2 text-primary"/>
+                                Details for <strong><t t-esc="selected.student_name"/></strong>
+                            </h5>
+
+                            <div class="row g-3 mb-4">
+                                <!-- Attendance -->
+                                <div class="col-md-4">
+                                    <div class="card border-0 shadow-sm text-center">
+                                        <div class="card-body">
+                                            <i class="fa fa-calendar fa-2x text-success mb-2"/>
+                                            <h6>Attendance</h6>
+                                            <p class="h4 fw-bold text-success mb-0">
+                                                <t t-esc="'%.1f%%' % child_attendance_pct"/>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Fees -->
+                                <div class="col-md-4">
+                                    <div class="card border-0 shadow-sm text-center">
+                                        <div class="card-body">
+                                            <i class="fa fa-money fa-2x text-warning mb-2"/>
+                                            <h6>Fees Due</h6>
+                                            <t t-if="hasattr(selected, 'amount_due')">
+                                                <p class="h4 fw-bold text-warning mb-0">
+                                                    <t t-esc="'%.2f' % (selected.amount_due or 0.0)"/>
+                                                </p>
+                                            </t>
+                                            <t t-else="">
+                                                <p class="text-muted small mb-0">N/A</p>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- LMS courses count -->
+                                <div class="col-md-4">
+                                    <div class="card border-0 shadow-sm text-center">
+                                        <div class="card-body">
+                                            <i class="fa fa-book fa-2x text-info mb-2"/>
+                                            <h6>Active Courses</h6>
+                                            <p class="h4 fw-bold text-info mb-0">
+                                                <t t-esc="len(child_lms)"/>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Recent Results for child -->
+                            <t t-if="child_results">
+                                <div class="card shadow-sm border-0 mb-3">
+                                    <div class="card-header bg-light fw-bold">
+                                        <i class="fa fa-trophy me-2 text-warning"/>
+                                        Recent Results
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <table class="table table-hover mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Exam</th>
+                                                    <th>Subject</th>
+                                                    <th class="text-end">Marks</th>
+                                                    <th class="text-center">Grade</th>
+                                                    <th class="text-center">Result</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="child_results" t-as="res">
+                                                    <tr>
+                                                        <td><t t-esc="res.exam_id.name"/></td>
+                                                        <td><t t-esc="res.subject"/></td>
+                                                        <td class="text-end">
+                                                            <t t-esc="'%.1f / %.1f' % (res.marks_obtained, res.max_marks)"/>
+                                                        </td>
+                                                        <td class="text-center fw-bold">
+                                                            <t t-esc="res.grade"/>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <span t-attf-class="badge #{
+                                                                'bg-success' if res.pass_fail == 'pass' else
+                                                                'bg-secondary' if res.pass_fail == 'absent' else
+                                                                'bg-danger'}">
+                                                                <t t-esc="(res.pass_fail or '').title()"/>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </t>
+
+                        </t><!-- /t if selected -->
+                    </t><!-- /t if children -->
+                </div><!-- /container -->
+            </div><!-- /o_portal_wrap -->
+        </t>
+    </template>
+
+</odoo>

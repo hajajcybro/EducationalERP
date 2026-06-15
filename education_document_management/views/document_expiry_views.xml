@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Document Management — Expiry views (S5-T10)
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <!-- ── Document Type form — add expiry_alert_days field ─────────────── -->
+    <record id="view_education_document_type_expiry_inherit" model="ir.ui.view">
+        <field name="name">education.document.type.expiry.inherit</field>
+        <field name="model">education.document.type</field>
+        <field name="inherit_id" ref="education_core.view_education_document_type_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='is_mandatory']" position="after">
+                <field name="expiry_alert_days"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ── Standalone form view for education.document with expiry_state ─── -->
+    <record id="view_education_document_expiry_form" model="ir.ui.view">
+        <field name="name">education.document.expiry.form</field>
+        <field name="model">education.document</field>
+        <field name="priority">25</field>
+        <field name="arch" type="xml">
+            <form string="Document">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="document_type_id"/>
+                            <field name="enrollment_id"/>
+                            <field name="application_id"/>
+                        </group>
+                        <group>
+                            <field name="state" widget="badge"
+                                   decoration-success="state == 'verified'"
+                                   decoration-warning="state == 'uploaded'"
+                                   decoration-danger="state == 'rejected'"/>
+                            <field name="expiry_state" widget="badge"
+                                   decoration-success="expiry_state == 'valid'"
+                                   decoration-warning="expiry_state == 'expiring_soon'"
+                                   decoration-danger="expiry_state == 'expired'"
+                                   decoration-muted="expiry_state == 'no_expiry'"
+                                   readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="issue_date"/>
+                            <field name="expiry_date"/>
+                        </group>
+                        <group>
+                            <field name="verified_by_id" readonly="1"/>
+                            <field name="verified_date" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="File">
+                        <field name="file" filename="file_name"/>
+                        <field name="file_name" invisible="1"/>
+                    </group>
+                    <group string="Remarks">
+                        <field name="remarks" nolabel="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── Expiring Documents list view ──────────────────────────────────── -->
+    <record id="view_expiring_documents_list" model="ir.ui.view">
+        <field name="name">education.document.expiring.list</field>
+        <field name="model">education.document</field>
+        <field name="arch" type="xml">
+            <list string="Expiring / Expired Documents"
+                  create="false" delete="false"
+                  decoration-danger="expiry_state == 'expired'"
+                  decoration-warning="expiry_state == 'expiring_soon'">
+                <field name="name"/>
+                <field name="document_type_id"/>
+                <field name="enrollment_id" optional="show"/>
+                <field name="application_id" optional="hide"/>
+                <field name="issue_date"/>
+                <field name="expiry_date"/>
+                <field name="expiry_state" widget="badge"
+                       decoration-success="expiry_state == 'valid'"
+                       decoration-warning="expiry_state == 'expiring_soon'"
+                       decoration-danger="expiry_state == 'expired'"
+                       decoration-muted="expiry_state == 'no_expiry'"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'verified'"
+                       decoration-warning="state == 'uploaded'"
+                       decoration-danger="state == 'rejected'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── Search view for expiring documents ────────────────────────────── -->
+    <record id="view_expiring_documents_search" model="ir.ui.view">
+        <field name="name">education.document.expiring.search</field>
+        <field name="model">education.document</field>
+        <field name="arch" type="xml">
+            <search string="Search Documents">
+                <field name="name"/>
+                <field name="document_type_id"/>
+                <separator/>
+                <filter string="Expired"
+                        name="expired"
+                        domain="[('expiry_state','=','expired')]"/>
+                <filter string="Expiring Soon"
+                        name="expiring_soon"
+                        domain="[('expiry_state','=','expiring_soon')]"/>
+                <filter string="Valid"
+                        name="valid"
+                        domain="[('expiry_state','=','valid')]"/>
+                <separator/>
+                <filter string="Verified"
+                        name="verified"
+                        domain="[('state','=','verified')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Document Type" name="group_type"
+                            context="{'group_by': 'document_type_id'}"/>
+                    <filter string="Expiry Status" name="group_expiry"
+                            context="{'group_by': 'expiry_state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ── Window action: Expiring Documents dashboard ───────────────────── -->
+    <record id="action_expiring_documents" model="ir.actions.act_window">
+        <field name="name">Document Expiry Dashboard</field>
+        <field name="res_model">education.document</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_expiring_documents_list"/>
+        <field name="search_view_id" ref="view_expiring_documents_search"/>
+        <field name="domain">[('expiry_date','!=',False)]</field>
+        <field name="context">{'search_default_expiring_soon': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No documents with expiry dates</p>
+            <p>Documents with expiry dates will appear here with their status.</p>
+        </field>
+    </record>
+
+</odoo>

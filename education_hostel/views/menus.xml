@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Hostel root menu under the Education ERP root -->
+    <menuitem
+        id="menu_education_hostel_root"
+        name="Hostel"
+        parent="education_config.menu_education_root"
+        sequence="70"
+        groups="education_security.group_education_admin"/>
+
+    <menuitem
+        id="menu_hostel_properties"
+        name="Properties"
+        parent="menu_education_hostel_root"
+        action="action_edu_hostel_property"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_hostel_rooms"
+        name="Rooms"
+        parent="menu_education_hostel_root"
+        action="action_edu_hostel_room"
+        sequence="20"/>
+
+    <menuitem
+        id="menu_hostel_allocations"
+        name="Allocations"
+        parent="menu_education_hostel_root"
+        action="action_edu_hostel_allocation"
+        sequence="30"/>
+
+</odoo>

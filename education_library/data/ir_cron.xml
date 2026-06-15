@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Daily cron: Library due-date reminder (S6-T06) -->
+    <record id="ir_cron_library_due_date_reminder" model="ir.cron">
+        <field name="name">Library: Send Due Date Reminders</field>
+        <field name="model_id" ref="education_library.model_edu_library_cron"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_due_date_reminder()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="priority">10</field>
+    </record>
+</odoo>

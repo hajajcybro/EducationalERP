@@ -1,5 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-
-access_education_notification,education_notification,model_edu_notification,,1,1,1,1
-
-
+access_notif_queue_admin,edu.notification.queue admin,model_edu_notification_queue,education_security.group_education_admin,1,1,1,1
+access_notif_queue_user,edu.notification.queue user,model_edu_notification_queue,base.group_user,1,0,0,0
+access_notif_centre_admin,edu.notification.centre admin,model_edu_notification_centre,education_security.group_education_admin,1,1,1,1
+access_notif_centre_user,edu.notification.centre user,model_edu_notification_centre,base.group_user,1,1,1,0

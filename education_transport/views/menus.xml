@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Transport Root Menu ──────────────────────────────────────────── -->
+    <menuitem
+        id="menu_education_transport_root"
+        name="Transport"
+        parent="education_config.menu_education_root"
+        sequence="80"
+        groups="education_security.group_education_admin"/>
+
+    <!-- ── Vehicles ─────────────────────────────────────────────────────── -->
+    <menuitem
+        id="menu_transport_vehicles"
+        name="Vehicles"
+        parent="menu_education_transport_root"
+        action="action_edu_transport_vehicle"
+        sequence="10"/>
+
+    <!-- ── Routes ───────────────────────────────────────────────────────── -->
+    <menuitem
+        id="menu_transport_routes"
+        name="Routes"
+        parent="menu_education_transport_root"
+        action="action_edu_transport_route"
+        sequence="20"/>
+
+    <!-- ── Student Assignments ──────────────────────────────────────────── -->
+    <menuitem
+        id="menu_transport_assignments"
+        name="Student Assignments"
+        parent="menu_education_transport_root"
+        action="action_edu_transport_assignment"
+        sequence="30"/>
+
+</odoo>

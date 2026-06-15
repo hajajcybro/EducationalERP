@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- G-02: Portal users can only read/write their own quiz attempts -->
+    <record id="rule_lms_quiz_attempt_portal_own" model="ir.rule">
+        <field name="name">LMS Quiz Attempt: portal sees own record only</field>
+        <field name="model_id" ref="model_edu_lms_quiz_attempt"/>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="domain_force">
+            [('student_id.student_partner_id', '=', user.partner_id.id)]
+        </field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- LMS Enrollment: portal users see only their own enrollments -->
+    <record id="rule_lms_enrollment_portal_own" model="ir.rule">
+        <field name="name">LMS Enrollment: portal sees own record only</field>
+        <field name="model_id" ref="model_edu_lms_enrollment"/>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="domain_force">
+            [('student_id.student_partner_id', '=', user.partner_id.id)]
+        </field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+</odoo>

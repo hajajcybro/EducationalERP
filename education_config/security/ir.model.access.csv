@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_institution_profile_admin,institution.profile admin,model_institution_profile,education_security.group_education_admin,1,1,1,1
+access_institution_profile_user,institution.profile user,model_institution_profile,base.group_user,1,0,0,0

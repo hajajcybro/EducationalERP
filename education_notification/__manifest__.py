@@ -1,24 +1,32 @@
-# -*- coding: utf-8 -*-
 {
-    'name': 'Education Notifications & Communication',
-    'version': '19.0.1.0.0',
-    'summary': 'Unified notification system for students, parents, teachers',
-    'category': 'Education',
-    'sequence': -333,
-    'author': 'Cybrosys Techno Solutions',
-    'company': 'Cybrosys Techno Solutions',
-    'maintainer': 'Cybrosys Techno Solutions',
-    'website': 'https://www.cybrosys.com',
-    'depends': ['base', 'mail','mass_mailing','education_core'],
-    'data': [
-        'security/ir.model.access.csv',
-        'views/education_notification_views.xml',
-        'views/mailing_mailing_views.xml',
-        'views/portal_templates.xml',
-        'views/portal_announcements.xml',
+    "name": "Education ERP — Notifications",
+    "version": "19.0.1.0.0",
+    "category": "Education",
+    "summary": "Email queue, SMS stub, in-app notification centre and cron reminders",
+    "description": """
+Education ERP — Notifications
+=============================
+
+Email queue, SMS stub, in-app notification centre and cron reminders.
+
+Part of the Educational ERP — LMS System built on Odoo 19 Community Edition
+by Cybrosys Techno Solutions for Hajaj (Product Owner).
+
+Version: 19.0.1.0.0  |  License: LGPL-3
+    """,
+    "author": "Cybrosys Techno Solutions",
+    "website": "https://www.cybrosys.com",
+    "license": "LGPL-3",
+    "depends": ["education_core", "education_security", "mail"],
+    "data": [
+        "security/ir.model.access.csv",
+        "data/ir_cron.xml",
+        "views/notification_views.xml",
+        "views/menus.xml",
     ],
-    'license': 'AGPL-3',
-    'installable': True,
-    'application': True,
-    'auto_install': False,
+    "demo": [],
+    "installable": True,
+    "application": False,
+    "auto_install": False,
+    "sequence": 16,
 }

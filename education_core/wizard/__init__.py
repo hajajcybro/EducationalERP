@@ -1,4 +1,2 @@
-# -*- coding: utf-8 -*-
-
-from . import eduaction_application_reject_wizard
-from . import student_report_wizard
+from . import application_reject_wizard
+from . import attendance_summary_wizard

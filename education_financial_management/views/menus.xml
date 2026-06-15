@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Fees &amp; Accounting — menu entries (S5-T06)
+         Attach under the Education root menu defined in education_core
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <!-- ── Top-level "Fees" parent ──────────────────────────────────────── -->
+    <menuitem
+        id="menu_education_fees_root"
+        name="Fees"
+        parent="education_config.menu_education_root"
+        sequence="50"
+        groups="education_security.group_education_admin,account.group_account_user"/>
+
+    <!-- ── Fee Plans ─────────────────────────────────────────────────────── -->
+    <menuitem
+        id="menu_education_fee_plans"
+        name="Fee Plans"
+        parent="menu_education_fees_root"
+        action="education_financial_management.action_edu_fee_plan"
+        sequence="10"
+        groups="education_security.group_education_admin,account.group_account_user"/>
+
+    <!-- ── Fee Invoices (link to account.move filtered list) ─────────────── -->
+    <menuitem
+        id="menu_education_fee_invoices"
+        name="Fee Invoices"
+        parent="menu_education_fees_root"
+        action="education_financial_management.action_edu_fee_invoices"
+        sequence="20"
+        groups="education_security.group_education_admin,account.group_account_user"/>
+
+    <!-- ── Outstanding Fees Report ───────────────────────────────────────── -->
+    <menuitem
+        id="menu_education_fee_outstanding"
+        name="Outstanding Fees"
+        parent="menu_education_fees_root"
+        action="education_financial_management.action_edu_fee_outstanding"
+        sequence="30"
+        groups="education_security.group_education_admin,account.group_account_user"/>
+
+</odoo>

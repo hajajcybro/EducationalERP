@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════════════════════════
+         edu.classroom — Views (S4-T12)
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <!-- ── Form View ──────────────────────────────────────────────────── -->
+    <record id="view_edu_classroom_form" model="ir.ui.view">
+        <field name="name">edu.classroom.form</field>
+        <field name="model">edu.classroom</field>
+        <field name="arch" type="xml">
+            <form string="Classroom">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="display_name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="room_no"/>
+                            <field name="block"/>
+                            <field name="floor"/>
+                        </group>
+                        <group>
+                            <field name="room_type"/>
+                            <field name="capacity"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── List View ─────────────────────────────────────────────────── -->
+    <record id="view_edu_classroom_list" model="ir.ui.view">
+        <field name="name">edu.classroom.list</field>
+        <field name="model">edu.classroom</field>
+        <field name="arch" type="xml">
+            <list string="Classrooms" editable="bottom">
+                <field name="room_no"/>
+                <field name="block"/>
+                <field name="floor" optional="show"/>
+                <field name="room_type" widget="badge"
+                       decoration-info="room_type == 'classroom'"
+                       decoration-warning="room_type == 'lab'"
+                       decoration-success="room_type == 'hall'"/>
+                <field name="capacity"/>
+                <field name="active" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── Search View ────────────────────────────────────────────────── -->
+    <record id="view_edu_classroom_search" model="ir.ui.view">
+        <field name="name">edu.classroom.search</field>
+        <field name="model">edu.classroom</field>
+        <field name="arch" type="xml">
+            <search string="Search Classrooms">
+                <field name="room_no"/>
+                <field name="block"/>
+                <separator/>
+                <filter string="Exam Halls" name="halls"
+                        domain="[('room_type', '=', 'hall')]"/>
+                <filter string="Labs" name="labs"
+                        domain="[('room_type', '=', 'lab')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Block" name="group_block"
+                            context="{'group_by': 'block'}"/>
+                    <filter string="Type" name="group_type"
+                            context="{'group_by': 'room_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ── Window Action ─────────────────────────────────────────────── -->
+    <record id="action_edu_classroom" model="ir.actions.act_window">
+        <field name="name">Classrooms</field>
+        <field name="res_model">edu.classroom</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_edu_classroom_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No classrooms yet</p>
+            <p>Add classrooms, labs and exam halls for scheduling.</p>
+        </field>
+    </record>
+
+</odoo>

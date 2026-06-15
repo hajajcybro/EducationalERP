@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        education_exam — Menu structure
+        Hangs under the root Education menu defined in education_config.
+    -->
+
+    <!-- ── Examinations top-level submenu ─────────────────────────────── -->
+    <menuitem
+        id="menu_education_exam_root"
+        name="Examinations"
+        parent="education_config.menu_education_root"
+        sequence="40"
+        groups="education_security.group_education_admin,
+                education_security.group_education_teacher"/>
+
+    <!-- Exam Schedule -->
+    <menuitem
+        id="menu_edu_exam"
+        name="Exam Schedule"
+        parent="menu_education_exam_root"
+        action="action_edu_exam"
+        sequence="10"
+        groups="education_security.group_education_admin,
+                education_security.group_education_teacher"/>
+
+    <!-- Results -->
+    <menuitem
+        id="menu_edu_exam_result"
+        name="Results"
+        parent="menu_education_exam_root"
+        action="action_edu_exam_result"
+        sequence="20"
+        groups="education_security.group_education_admin,
+                education_security.group_education_teacher"/>
+
+    <!-- Mark Entry Wizard -->
+    <menuitem
+        id="menu_mark_entry_wizard"
+        name="Enter Marks"
+        parent="menu_education_exam_root"
+        action="action_mark_entry_wizard"
+        sequence="30"
+        groups="education_security.group_education_admin,
+                education_security.group_education_teacher"/>
+
+</odoo>

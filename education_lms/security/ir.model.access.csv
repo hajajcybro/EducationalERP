@@ -1,0 +1,20 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_lms_course_category_admin,lms.course.category admin,model_edu_lms_course_category,education_security.group_education_admin,1,1,1,1
+access_lms_course_category_user,lms.course.category user,model_edu_lms_course_category,base.group_user,1,0,0,0
+access_lms_course_admin,education.lms.course admin,model_education_lms_course,education_security.group_education_admin,1,1,1,1
+access_lms_course_teacher,education.lms.course teacher,model_education_lms_course,education_security.group_education_teacher,1,1,0,0
+access_lms_course_user,education.lms.course user,model_education_lms_course,base.group_user,1,0,0,0
+access_lms_lesson_admin,education.lms.lesson admin,model_education_lms_lesson,education_security.group_education_admin,1,1,1,1
+access_lms_lesson_teacher,education.lms.lesson teacher,model_education_lms_lesson,education_security.group_education_teacher,1,1,1,0
+access_lms_lesson_user,education.lms.lesson user,model_education_lms_lesson,base.group_user,1,0,0,0
+access_lms_quiz_admin,edu.lms.quiz admin,model_edu_lms_quiz,education_security.group_education_admin,1,1,1,1
+access_lms_quiz_teacher,edu.lms.quiz teacher,model_edu_lms_quiz,education_security.group_education_teacher,1,1,1,0
+access_lms_quiz_user,edu.lms.quiz user,model_edu_lms_quiz,base.group_user,1,0,0,0
+access_lms_quiz_question_admin,edu.lms.quiz.question admin,model_edu_lms_quiz_question,education_security.group_education_admin,1,1,1,1
+access_lms_quiz_question_teacher,edu.lms.quiz.question teacher,model_edu_lms_quiz_question,education_security.group_education_teacher,1,1,1,1
+access_lms_quiz_option_admin,edu.lms.quiz.option admin,model_edu_lms_quiz_option,education_security.group_education_admin,1,1,1,1
+access_lms_quiz_option_teacher,edu.lms.quiz.option teacher,model_edu_lms_quiz_option,education_security.group_education_teacher,1,1,1,1
+access_lms_enrollment_admin,edu.lms.enrollment admin,model_edu_lms_enrollment,education_security.group_education_admin,1,1,1,1
+access_lms_enrollment_user,edu.lms.enrollment user,model_edu_lms_enrollment,base.group_user,1,0,0,0
+access_lms_attempt_admin,edu.lms.quiz.attempt admin,model_edu_lms_quiz_attempt,education_security.group_education_admin,1,1,1,1
+access_lms_attempt_user,edu.lms.quiz.attempt user,model_edu_lms_quiz_attempt,base.group_user,1,1,1,0

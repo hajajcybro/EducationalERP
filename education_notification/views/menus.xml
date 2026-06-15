@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_education_notification_root"
+        name="Notifications"
+        parent="education_config.menu_education_root"
+        sequence="90"
+        groups="education_security.group_education_admin"/>
+
+    <menuitem id="menu_notif_queue"
+        name="Queue"
+        parent="menu_education_notification_root"
+        action="action_edu_notification_queue"
+        sequence="10"/>
+
+    <menuitem id="menu_notif_centre"
+        name="Notification Centre"
+        parent="menu_education_notification_root"
+        action="action_edu_notification_centre"
+        sequence="20"/>
+
+</odoo>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Educational ERP — Security Groups
+        Source: Educational_ERP_Comprehensive_Project_Submission.docx — Table 22 / Table 63
+        5 security groups covering all user roles in the institution.
+    -->
+
+    <!-- ── Module Category ──────────────────────────────────────────────── -->
+    <record id="module_category_education" model="ir.module.category">
+        <field name="name">Education ERP</field>
+        <field name="description">
+            Educational ERP — LMS System by Cybrosys Techno Solutions.
+            Covers all education institution roles: Admin, Admission, Teaching,
+            Finance, Student and Parent/Guardian.
+        </field>
+        <field name="sequence">10</field>
+    </record>
+
+    <!-- ── Group 1: Administrator ────────────────────────────────────────
+         XML ID : group_education_admin
+         Access : Full system access — all modules read/write/create/delete
+         Also covers: Library Staff, Hostel Warden, Transport Manager (scoped)
+    ─────────────────────────────────────────────────────────────────────── -->
+    <record id="group_education_admin" model="res.groups">
+        <field name="name">Administrator</field>
+        <field name="category_id" ref="module_category_education"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+        <field name="comment">
+            Full system access. All modules: read, write, create, delete.
+            Scoped sub-roles: Library Staff, Hostel Warden, Transport Manager.
+        </field>
+    </record>
+
+    <!-- ── Group 2: Admission Officer ───────────────────────────────────
+         XML ID : group_education_admission_officer
+         Access : Applications, enrollment, documents
+    ─────────────────────────────────────────────────────────────────────── -->
+    <record id="group_education_admission_officer" model="res.groups">
+        <field name="name">Admission Officer</field>
+        <field name="category_id" ref="module_category_education"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">
+            Admissions operations: student applications, enrollment workflow,
+            document checklist, admission reports.
+        </field>
+    </record>
+
+    <!-- ── Group 3: Teacher ──────────────────────────────────────────────
+         XML ID : group_education_teacher
+         Access : Attendance, exams, LMS course delivery, own class timetable
+    ─────────────────────────────────────────────────────────────────────── -->
+    <record id="group_education_teacher" model="res.groups">
+        <field name="name">Teacher</field>
+        <field name="category_id" ref="module_category_education"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">
+            Teaching operations: attendance marking, exam result entry,
+            LMS course creation and delivery, timetable view.
+        </field>
+    </record>
+
+    <!-- ── Group 4: Student ──────────────────────────────────────────────
+         XML ID : group_education_student
+         Access : Own records only (portal), LMS courses, portal
+         Note   : Portal user — NOT an internal user
+    ─────────────────────────────────────────────────────────────────────── -->
+    <record id="group_education_student" model="res.groups">
+        <field name="name">Student</field>
+        <field name="category_id" ref="module_category_education"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="comment">
+            Self-service portal: own records, LMS courses, exam results,
+            fee status, notification inbox. Record rules enforce own-only access.
+        </field>
+    </record>
+
+    <!-- ── Group 5: Parent / Guardian ───────────────────────────────────
+         XML ID : group_education_parent
+         Access : Child records read-only, notifications, fee status
+         Note   : Portal user — NOT an internal user
+    ─────────────────────────────────────────────────────────────────────── -->
+    <record id="group_education_parent" model="res.groups">
+        <field name="name">Parent / Guardian</field>
+        <field name="category_id" ref="module_category_education"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="comment">
+            Child monitoring: academic records (read-only), attendance summary,
+            fee status, notifications. Cannot edit any records.
+        </field>
+    </record>
+
+    <!-- ── Group 6: Accountant ───────────────────────────────────────────
+         XML ID : group_education_accountant
+         Access : Invoices, payments, financial reports
+    ─────────────────────────────────────────────────────────────────────── -->
+    <record id="group_education_accountant" model="res.groups">
+        <field name="name">Accountant</field>
+        <field name="category_id" ref="module_category_education"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">
+            Finance operations: fee invoices, payment recording,
+            outstanding fee reports, hostel and transport billing.
+        </field>
+    </record>
+
+</odoo>

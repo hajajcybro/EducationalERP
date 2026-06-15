@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Education ERP — Root Application Menu
+        All sub-menus for every module hang off this root.
+    -->
+
+    <!-- ── Root App Menu ────────────────────────────────────────────────
+         icon: uses web static icon path convention
+    ─────────────────────────────────────────────────────────────────────── -->
+    <menuitem
+        id="menu_education_root"
+        name="Education ERP"
+        sequence="10"
+        groups="education_security.group_education_admin,
+                education_security.group_education_admission_officer,
+                education_security.group_education_teacher,
+                education_security.group_education_accountant"/>
+
+    <!-- ── Configuration Submenu (root-level) ─────────────────────────── -->
+    <menuitem
+        id="menu_education_config"
+        name="Configuration"
+        parent="menu_education_root"
+        sequence="100"
+        groups="education_security.group_education_admin"/>
+
+    <!-- ── Institution Profile ──────────────────────────────────────── -->
+    <menuitem
+        id="menu_institution_profile"
+        name="Institution Profile"
+        parent="menu_education_config"
+        action="action_institution_profile"
+        sequence="10"
+        groups="education_security.group_education_admin"/>
+
+</odoo>

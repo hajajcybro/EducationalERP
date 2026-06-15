@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Scheduled Action: Weekly document expiry alert (S5-T11)
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <record id="ir_cron_doc_expiry_alert" model="ir.cron">
+        <field name="name">Education: Send Document Expiry Alerts</field>
+        <field name="model_id" ref="base.model_res_lang"/>
+        <field name="code">env['edu.doc.expiry.cron']._cron_send_expiry_alerts()</field>
+        <field name="active" eval="True"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">weeks</field>
+        <field name="numbercall">-1</field>
+        <field name="priority">10</field>
+    </record>
+
+</odoo>

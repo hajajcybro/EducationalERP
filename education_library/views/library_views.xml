@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         edu.library.book.category — Form, List, Action
+    ══════════════════════════════════════════════════════════════════════════ -->
+
+    <record id="view_library_book_category_form" model="ir.ui.view">
+        <field name="name">edu.library.book.category.form</field>
+        <field name="model">edu.library.book.category</field>
+        <field name="arch" type="xml">
+            <form string="Book Category">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Category Name"/></h1>
+                    </div>
+                    <group>
+                        <field name="daily_fine_rate" widget="monetary"
+                               options="{'currency_field': False}"/>
+                    </group>
+                    <notebook>
+                        <page string="Books" name="books">
+                            <field name="book_ids" readonly="1">
+                                <list>
+                                    <field name="isbn"/>
+                                    <field name="title"/>
+                                    <field name="author"/>
+                                    <field name="rack_location"/>
+                                    <field name="total_copies"/>
+                                    <field name="available_copies"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_library_book_category_list" model="ir.ui.view">
+        <field name="name">edu.library.book.category.list</field>
+        <field name="model">edu.library.book.category</field>
+        <field name="arch" type="xml">
+            <list string="Book Categories">
+                <field name="name"/>
+                <field name="daily_fine_rate"/>
+                <field name="book_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_edu_library_book_category" model="ir.actions.act_window">
+        <field name="name">Book Categories</field>
+        <field name="res_model">edu.library.book.category</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first book category
+            </p>
+        </field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         edu.library.book — Form, List, Search, Action
+    ══════════════════════════════════════════════════════════════════════════ -->
+
+    <record id="view_library_book_form" model="ir.ui.view">
+        <field name="name">edu.library.book.form</field>
+        <field name="model">edu.library.book</field>
+        <field name="arch" type="xml">
+            <form string="Library Book">
+                <sheet>
+                    <!-- Stat buttons -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(action_edu_library_loan)d"
+                                type="action"
+                                class="oe_stat_button"
+                                icon="fa-book"
+                                context="{'search_default_book_id': active_id}">
+                            <field name="available_copies" widget="statinfo"
+                                   string="Available"/>
+                        </button>
+                    </div>
+                    <!-- Archive toggle -->
+                    <widget name="web_ribbon" title="Archived"
+                            bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <field name="active" invisible="1"/>
+
+                    <div class="oe_title">
+                        <label for="title"/>
+                        <h1><field name="title" placeholder="Book Title"/></h1>
+                    </div>
+                    <group>
+                        <group string="Book Details">
+                            <field name="isbn"/>
+                            <field name="author"/>
+                            <field name="category_id"/>
+                            <field name="rack_location"/>
+                        </group>
+                        <group string="Stock">
+                            <field name="total_copies"/>
+                            <field name="available_copies" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Internal notes…"/>
+                        </page>
+                        <page string="Loans" name="loans">
+                            <field name="loan_ids" readonly="1">
+                                <list decoration-danger="state == 'overdue'"
+                                      decoration-muted="state == 'returned'">
+                                    <field name="member_id"/>
+                                    <field name="issue_date"/>
+                                    <field name="due_date"/>
+                                    <field name="return_date"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'returned'"
+                                           decoration-warning="state == 'issued'"
+                                           decoration-danger="state == 'overdue'"/>
+                                    <field name="fine_amount"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_library_book_list" model="ir.ui.view">
+        <field name="name">edu.library.book.list</field>
+        <field name="model">edu.library.book</field>
+        <field name="arch" type="xml">
+            <list string="Books">
+                <field name="isbn"/>
+                <field name="title"/>
+                <field name="author"/>
+                <field name="category_id"/>
+                <field name="rack_location"/>
+                <field name="total_copies"/>
+                <field name="available_copies"/>
+                <field name="active" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_library_book_search" model="ir.ui.view">
+        <field name="name">edu.library.book.search</field>
+        <field name="model">edu.library.book</field>
+        <field name="arch" type="xml">
+            <search string="Search Books">
+                <field name="title" string="Title" filter_domain="[('title', 'ilike', self)]"/>
+                <field name="author" string="Author" filter_domain="[('author', 'ilike', self)]"/>
+                <field name="isbn" string="ISBN" filter_domain="[('isbn', 'ilike', self)]"/>
+                <field name="category_id"/>
+                <field name="rack_location"/>
+                <separator/>
+                <filter string="Available" name="filter_available"
+                        domain="[('available_copies', '&gt;', 0)]"/>
+                <filter string="Archived" name="filter_archived"
+                        domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Category" name="groupby_category"
+                            context="{'group_by': 'category_id'}"/>
+                    <filter string="Author" name="groupby_author"
+                            context="{'group_by': 'author'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_edu_library_book" model="ir.actions.act_window">
+        <field name="name">Books</field>
+        <field name="res_model">edu.library.book</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_library_book_search"/>
+        <field name="context">{'search_default_filter_available': 0}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add your first book to the library catalogue
+            </p>
+        </field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         edu.library.member — Form, List, Action
+    ══════════════════════════════════════════════════════════════════════════ -->
+
+    <record id="view_library_member_form" model="ir.ui.view">
+        <field name="name">edu.library.member.form</field>
+        <field name="model">edu.library.member</field>
+        <field name="arch" type="xml">
+            <form string="Library Member">
+                <sheet>
+                    <!-- Stat buttons -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(action_edu_library_loan)d"
+                                type="action"
+                                class="oe_stat_button"
+                                icon="fa-book"
+                                context="{'search_default_member_id': active_id,
+                                          'search_default_filter_active': 1}">
+                            <field name="active_loans_count" widget="statinfo"
+                                   string="Active Loans"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived"
+                            bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <field name="active" invisible="1"/>
+
+                    <div class="oe_title">
+                        <label for="member_no" string="Member No."/>
+                        <h1><field name="member_no" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Member Details">
+                            <field name="enrollment_id"/>
+                            <field name="student_name" readonly="1"/>
+                            <field name="student_email" readonly="1"/>
+                        </group>
+                        <group string="Borrowing">
+                            <field name="borrowing_limit"/>
+                            <field name="active_loans_count" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Internal notes…"/>
+                        </page>
+                        <page string="Loan History" name="loans">
+                            <field name="loan_ids" readonly="1">
+                                <list decoration-danger="state == 'overdue'"
+                                      decoration-muted="state == 'returned'">
+                                    <field name="book_id"/>
+                                    <field name="issue_date"/>
+                                    <field name="due_date"/>
+                                    <field name="return_date"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'returned'"
+                                           decoration-warning="state == 'issued'"
+                                           decoration-danger="state == 'overdue'"/>
+                                    <field name="fine_amount"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_library_member_list" model="ir.ui.view">
+        <field name="name">edu.library.member.list</field>
+        <field name="model">edu.library.member</field>
+        <field name="arch" type="xml">
+            <list string="Library Members">
+                <field name="member_no"/>
+                <field name="student_name"/>
+                <field name="student_email"/>
+                <field name="enrollment_id"/>
+                <field name="borrowing_limit"/>
+                <field name="active_loans_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_edu_library_member" model="ir.actions.act_window">
+        <field name="name">Library Members</field>
+        <field name="res_model">edu.library.member</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Register your first library member
+            </p>
+        </field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         edu.library.loan — Form, List, Search, Action
+    ══════════════════════════════════════════════════════════════════════════ -->
+
+    <record id="view_library_loan_form" model="ir.ui.view">
+        <field name="name">edu.library.loan.form</field>
+        <field name="model">edu.library.loan</field>
+        <field name="arch" type="xml">
+            <form string="Library Loan">
+                <header>
+                    <button name="action_return"
+                            string="Return Book"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state == 'returned'"
+                            confirm="Mark this book as returned?"/>
+                    <button name="action_mark_overdue"
+                            string="Mark Overdue"
+                            type="object"
+                            invisible="state != 'issued'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="issued,overdue,returned"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Loan Details">
+                            <field name="book_id"
+                                   readonly="state == 'returned'"/>
+                            <field name="member_id"
+                                   readonly="state == 'returned'"/>
+                            <field name="issue_date"
+                                   readonly="state == 'returned'"/>
+                            <field name="due_date"
+                                   readonly="state == 'returned'"/>
+                        </group>
+                        <group string="Return &amp; Fine">
+                            <field name="return_date" readonly="1"/>
+                            <field name="fine_amount" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" nolabel="1"
+                               placeholder="Optional notes about this loan…"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_library_loan_list" model="ir.ui.view">
+        <field name="name">edu.library.loan.list</field>
+        <field name="model">edu.library.loan</field>
+        <field name="arch" type="xml">
+            <list string="Loans"
+                  decoration-danger="state == 'overdue'"
+                  decoration-muted="state == 'returned'">
+                <field name="book_id"/>
+                <field name="member_id"/>
+                <field name="issue_date"/>
+                <field name="due_date"/>
+                <field name="return_date"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'returned'"
+                       decoration-warning="state == 'issued'"
+                       decoration-danger="state == 'overdue'"/>
+                <field name="fine_amount"/>
+                <button name="action_return" string="Return" type="object"
+                        icon="fa-undo"
+                        invisible="state == 'returned'"
+                        class="btn-sm btn-secondary"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_library_loan_search" model="ir.ui.view">
+        <field name="name">edu.library.loan.search</field>
+        <field name="model">edu.library.loan</field>
+        <field name="arch" type="xml">
+            <search string="Search Loans">
+                <field name="book_id"/>
+                <field name="member_id"/>
+                <separator/>
+                <filter string="Issued" name="filter_issued"
+                        domain="[('state', '=', 'issued')]"/>
+                <filter string="Overdue" name="filter_overdue"
+                        domain="[('state', '=', 'overdue')]"/>
+                <filter string="Returned" name="filter_returned"
+                        domain="[('state', '=', 'returned')]"/>
+                <filter string="Active" name="filter_active"
+                        domain="[('state', 'in', ('issued', 'overdue'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Member" name="groupby_member"
+                            context="{'group_by': 'member_id'}"/>
+                    <filter string="Book" name="groupby_book"
+                            context="{'group_by': 'book_id'}"/>
+                    <filter string="Status" name="groupby_state"
+                            context="{'group_by': 'state'}"/>
+                    <filter string="Due Date" name="groupby_due_date"
+                            context="{'group_by': 'due_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_edu_library_loan" model="ir.actions.act_window">
+        <field name="name">Loans</field>
+        <field name="res_model">edu.library.loan</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_library_loan_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Issue your first book loan
+            </p>
+        </field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         edu.library.issue.wizard — Form view + Action
+    ══════════════════════════════════════════════════════════════════════════ -->
+
+    <record id="view_library_issue_wizard_form" model="ir.ui.view">
+        <field name="name">edu.library.issue.wizard.form</field>
+        <field name="model">edu.library.issue.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Issue / Return Book">
+                <group>
+                    <field name="action" widget="radio"/>
+                </group>
+                <group>
+                    <field name="member_id"/>
+                    <field name="book_id"/>
+                    <field name="due_date" invisible="action == 'return'"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" string="Confirm"
+                            type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_edu_library_issue_wizard" model="ir.actions.act_window">
+        <field name="name">Issue / Return Book</field>
+        <field name="res_model">edu.library.issue.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

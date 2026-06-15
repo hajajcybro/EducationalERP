@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ── Alumni Root Menu ───────────────────────────────────────────── -->
+    <menuitem
+        id="menu_education_alumni_root"
+        name="Alumni"
+        parent="education_config.menu_education_root"
+        sequence="92"
+        groups="education_security.group_education_admin"/>
+
+    <!-- ── Alumni Records ────────────────────────────────────────────── -->
+    <menuitem
+        id="menu_alumni_list"
+        name="Alumni Records"
+        parent="menu_education_alumni_root"
+        action="action_edu_alumni"
+        sequence="10"/>
+</odoo>

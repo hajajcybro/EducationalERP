@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Completion Certificate — QWeb PDF Report (S7-T06)
+         Bound to edu.lms.enrollment; only printed when state=completed.
+    ══════════════════════════════════════════════════════════════════════ -->
+
+    <record id="action_report_lms_certificate" model="ir.actions.report">
+        <field name="name">Completion Certificate</field>
+        <field name="model">edu.lms.enrollment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">education_lms.report_lms_certificate_template</field>
+        <field name="report_file">education_lms.report_lms_certificate_template</field>
+        <field name="binding_model_id" ref="model_edu_lms_enrollment"/>
+        <field name="binding_type">report</field>
+        <field name="domain">[('state', '=', 'completed')]</field>
+    </record>
+
+    <template id="report_lms_certificate_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="enrollment">
+                <t t-call="web.external_layout">
+                    <div class="page">
+
+                        <!-- ── Header ─────────────────────────────────── -->
+                        <div class="text-center mb-4" style="border-bottom: 3px double #2c3e50; padding-bottom: 20px;">
+                            <h1 style="font-size: 36px; color: #2c3e50; letter-spacing: 2px; margin-bottom: 4px;">
+                                CERTIFICATE OF COMPLETION
+                            </h1>
+                            <p style="font-size: 14px; color: #7f8c8d; margin: 0;">
+                                <t t-esc="enrollment.env.company.name"/>
+                            </p>
+                        </div>
+
+                        <!-- ── Body ───────────────────────────────────── -->
+                        <div class="text-center" style="padding: 40px 60px;">
+                            <p style="font-size: 16px; color: #555; margin-bottom: 30px;">
+                                This is to certify that
+                            </p>
+                            <h2 style="font-size: 32px; color: #2980b9; border-bottom: 2px solid #2980b9; display: inline-block; padding-bottom: 8px; margin-bottom: 30px;">
+                                <t t-esc="enrollment.student_id.student_name"/>
+                            </h2>
+                            <p style="font-size: 16px; color: #555; margin-bottom: 10px;">
+                                has successfully completed the course
+                            </p>
+                            <h3 style="font-size: 24px; color: #2c3e50; margin-bottom: 10px;">
+                                <strong>
+                                    <t t-esc="enrollment.course_id.title"/>
+                                </strong>
+                            </h3>
+                            <p style="font-size: 16px; color: #555; margin-bottom: 10px;">
+                                on
+                                <strong>
+                                    <t t-esc="enrollment.enrolled_date"/>
+                                </strong>
+                            </p>
+                            <p style="font-size: 16px; color: #555; margin-bottom: 40px;">
+                                with a grade of
+                                <strong>
+                                    <t t-if="enrollment.completion_pct >= 90">Distinction</t>
+                                    <t t-elif="enrollment.completion_pct >= 75">Merit</t>
+                                    <t t-elif="enrollment.completion_pct >= 60">Credit</t>
+                                    <t t-else="">Pass</t>
+                                </strong>
+                                (<t t-esc="'%.1f' % enrollment.completion_pct"/>%)
+                            </p>
+                        </div>
+
+                        <!-- ── Footer / Signatures ────────────────────── -->
+                        <div style="margin-top: 60px; border-top: 1px solid #ccc; padding-top: 20px;">
+                            <div class="row">
+                                <div class="col-4 text-center">
+                                    <div style="border-top: 1px solid #333; margin: 0 20px; padding-top: 6px;">
+                                        <p style="font-size: 13px; color: #555; margin: 0;">
+                                            <t t-if="enrollment.course_id.teacher_id">
+                                                <t t-esc="enrollment.course_id.teacher_id.name"/>
+                                            </t>
+                                            <t t-else="">Teacher</t>
+                                        </p>
+                                        <p style="font-size: 11px; color: #888; margin: 0;">Course Teacher</p>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <p style="font-size: 13px; color: #888; margin-bottom: 4px;">Date of Issue</p>
+                                    <p style="font-size: 14px; color: #2c3e50; font-weight: bold; margin: 0;">
+                                        <t t-esc="enrollment.enrolled_date"/>
+                                    </p>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <div style="border-top: 1px solid #333; margin: 0 20px; padding-top: 6px;">
+                                        <p style="font-size: 13px; color: #555; margin: 0;">Principal</p>
+                                        <p style="font-size: 11px; color: #888; margin: 0;">
+                                            <t t-esc="enrollment.env.company.name"/>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

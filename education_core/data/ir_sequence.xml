@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!--
+        education_core — Sequences
+        Used by Sprint 2 (enrollment) and other modules.
+        Defined here since education_core owns the referenced models.
+    -->
+
+    <!-- Enrollment sequence (used in Sprint 2) -->
+    <record id="seq_education_enrollment" model="ir.sequence">
+        <field name="name">Student Enrollment</field>
+        <field name="code">education.enrollment</field>
+        <field name="prefix">ENR/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="number_increment">1</field>
+        <field name="number_next">1</field>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+    <!-- Application sequence (used in Sprint 2) -->
+    <record id="seq_education_application" model="ir.sequence">
+        <field name="name">Student Application</field>
+        <field name="code">education.application</field>
+        <field name="prefix">ADM/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="number_increment">1</field>
+        <field name="number_next">1</field>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+
+    <!-- Leave Request sequence (Sprint 3) -->
+    <record id="seq_education_leave_request" model="ir.sequence">
+        <field name="name">Student Leave Request</field>
+        <field name="code">education.leave.request</field>
+        <field name="prefix">LVE/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="number_increment">1</field>
+        <field name="number_next">1</field>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+</odoo>

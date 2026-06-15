@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════════════════════════
+         education.attendance — Views (S3-T06)
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <!-- ── Form View ──────────────────────────────────────────────────── -->
+    <record id="view_education_attendance_form" model="ir.ui.view">
+        <field name="name">education.attendance.form</field>
+        <field name="model">education.attendance</field>
+        <field name="arch" type="xml">
+            <form string="Attendance Record">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="enrollment_id"/>
+                            <field name="student_name" readonly="1"/>
+                            <field name="class_id" readonly="1"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="period_no"/>
+                            <field name="timetable_slot_id"
+                                   domain="[('class_id', '=', class_id)]"/>
+                            <field name="subject" readonly="1"/>
+                            <field name="state" widget="radio"/>
+                        </group>
+                    </group>
+                    <group string="Remarks">
+                        <field name="notes" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── List View ─────────────────────────────────────────────────── -->
+    <record id="view_education_attendance_list" model="ir.ui.view">
+        <field name="name">education.attendance.list</field>
+        <field name="model">education.attendance</field>
+        <field name="arch" type="xml">
+            <list string="Attendance" default_order="date desc, period_no"
+                  editable="bottom">
+                <field name="date"/>
+                <field name="class_id"/>
+                <field name="student_name"/>
+                <field name="period_no"/>
+                <field name="subject" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'present'"
+                       decoration-warning="state == 'late'"
+                       decoration-danger="state == 'absent'"
+                       decoration-info="state == 'excused'"
+                       decoration-muted="state == 'holiday'"/>
+                <field name="notes" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── Calendar View (S3-T06 / S3-T10 companion) ─────────────────── -->
+    <record id="view_education_attendance_calendar" model="ir.ui.view">
+        <field name="name">education.attendance.calendar</field>
+        <field name="model">education.attendance</field>
+        <field name="arch" type="xml">
+            <calendar string="Attendance Calendar"
+                      date_start="date"
+                      color="state"
+                      mode="month"
+                      quick_create="false">
+                <field name="student_name"/>
+                <field name="class_id"/>
+                <field name="period_no"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- ── Search View ────────────────────────────────────────────────── -->
+    <record id="view_education_attendance_search" model="ir.ui.view">
+        <field name="name">education.attendance.search</field>
+        <field name="model">education.attendance</field>
+        <field name="arch" type="xml">
+            <search string="Search Attendance">
+                <field name="student_name"/>
+                <field name="class_id"/>
+                <field name="date"/>
+                <separator/>
+                <filter string="Present" name="present"
+                        domain="[('state', '=', 'present')]"/>
+                <filter string="Absent" name="absent"
+                        domain="[('state', '=', 'absent')]"/>
+                <filter string="Late" name="late"
+                        domain="[('state', '=', 'late')]"/>
+                <filter string="Excused" name="excused"
+                        domain="[('state', '=', 'excused')]"/>
+                <separator/>
+                <filter string="Today" name="today"
+                        domain="[('date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="This Week" name="this_week"
+                        domain="[('date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Student" name="group_student"
+                            context="{'group_by': 'enrollment_id'}"/>
+                    <filter string="Class" name="group_class"
+                            context="{'group_by': 'class_id'}"/>
+                    <filter string="Date" name="group_date"
+                            context="{'group_by': 'date:day'}"/>
+                    <filter string="Status" name="group_state"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ── Window Action ─────────────────────────────────────────────── -->
+    <record id="action_education_attendance" model="ir.actions.act_window">
+        <field name="name">Attendance</field>
+        <field name="res_model">education.attendance</field>
+        <field name="view_mode">list,calendar,form</field>
+        <field name="search_view_id" ref="view_education_attendance_search"/>
+        <field name="context">{"search_default_today": 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No attendance records yet
+            </p>
+            <p>Mark attendance per period per class.</p>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         education.leave.request — Views (S3-T09)
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <!-- ── Form View ──────────────────────────────────────────────────── -->
+    <record id="view_education_leave_form" model="ir.ui.view">
+        <field name="name">education.leave.request.form</field>
+        <field name="model">education.leave.request</field>
+        <field name="arch" type="xml">
+            <form string="Leave Request">
+                <header>
+                    <button name="action_submit" type="object"
+                            string="Submit" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_approve" type="object"
+                            string="Approve" class="btn-success"
+                            invisible="state != 'submitted'"
+                            groups="education_security.group_education_admin,
+                                    education_security.group_education_teacher"/>
+                    <button name="action_reject" type="object"
+                            string="Reject" class="btn-danger"
+                            invisible="state != 'submitted'"
+                            groups="education_security.group_education_admin,
+                                    education_security.group_education_teacher"/>
+                    <button name="action_reset_draft" type="object"
+                            string="Reset" invisible="state != 'rejected'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submitted,approved"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="reference" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="enrollment_id"/>
+                            <field name="student_name" readonly="1"/>
+                            <field name="class_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="leave_type"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="days_count" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Details">
+                        <field name="reason" nolabel="1" placeholder="Reason for leave…"/>
+                        <field name="supporting_document" filename="supporting_document_name"/>
+                        <field name="supporting_document_name" invisible="1"/>
+                    </group>
+                    <group string="Approval" invisible="state == 'draft'">
+                        <field name="approved_by_id" readonly="1"/>
+                        <field name="approval_date" readonly="1"/>
+                        <field name="rejection_reason" readonly="1"
+                               invisible="state != 'rejected'"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── List View ──────────────────────────────────────────────────── -->
+    <record id="view_education_leave_list" model="ir.ui.view">
+        <field name="name">education.leave.request.list</field>
+        <field name="model">education.leave.request</field>
+        <field name="arch" type="xml">
+            <list string="Leave Requests" default_order="date_from desc">
+                <field name="reference"/>
+                <field name="student_name"/>
+                <field name="class_id"/>
+                <field name="leave_type"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="days_count"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'approved'"
+                       decoration-warning="state == 'submitted'"
+                       decoration-danger="state == 'rejected'"
+                       decoration-muted="state == 'draft'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── Calendar View (S3-T09) ─────────────────────────────────────── -->
+    <record id="view_education_leave_calendar" model="ir.ui.view">
+        <field name="name">education.leave.request.calendar</field>
+        <field name="model">education.leave.request</field>
+        <field name="arch" type="xml">
+            <calendar string="Leave Calendar"
+                      date_start="date_from"
+                      date_stop="date_to"
+                      color="state"
+                      mode="month"
+                      quick_create="false">
+                <field name="student_name"/>
+                <field name="leave_type"/>
+                <field name="days_count"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- ── Search View ────────────────────────────────────────────────── -->
+    <record id="view_education_leave_search" model="ir.ui.view">
+        <field name="name">education.leave.request.search</field>
+        <field name="model">education.leave.request</field>
+        <field name="arch" type="xml">
+            <search string="Search Leave Requests">
+                <field name="reference"/>
+                <field name="student_name"/>
+                <field name="class_id"/>
+                <separator/>
+                <filter string="Draft" name="draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter string="Pending Approval" name="submitted"
+                        domain="[('state', '=', 'submitted')]"/>
+                <filter string="Approved" name="approved"
+                        domain="[('state', '=', 'approved')]"/>
+                <filter string="Rejected" name="rejected"
+                        domain="[('state', '=', 'rejected')]"/>
+                <separator/>
+                <filter string="Medical" name="medical"
+                        domain="[('leave_type', '=', 'medical')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Student" name="group_student"
+                            context="{'group_by': 'enrollment_id'}"/>
+                    <filter string="Class" name="group_class"
+                            context="{'group_by': 'class_id'}"/>
+                    <filter string="Leave Type" name="group_type"
+                            context="{'group_by': 'leave_type'}"/>
+                    <filter string="Status" name="group_state"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ── Window Action ─────────────────────────────────────────────── -->
+    <record id="action_education_leave" model="ir.actions.act_window">
+        <field name="name">Leave Requests</field>
+        <field name="res_model">education.leave.request</field>
+        <field name="view_mode">list,calendar,form</field>
+        <field name="search_view_id" ref="view_education_leave_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No leave requests yet</p>
+            <p>Students submit leave applications for approval.</p>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         education.timetable.slot — Day/Period Grid View (S3-T10)
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <!-- ── List View (embedded O2M in timetable form) ────────────────── -->
+    <record id="view_timetable_slot_list" model="ir.ui.view">
+        <field name="name">education.timetable.slot.list</field>
+        <field name="model">education.timetable.slot</field>
+        <field name="arch" type="xml">
+            <list string="Timetable Slots" editable="bottom"
+                  default_order="weekday, period_no">
+                <field name="weekday"/>
+                <field name="period_no"/>
+                <field name="start_time" widget="float_time"/>
+                <field name="end_time" widget="float_time"/>
+                <field name="subject"/>
+                <field name="teacher_id"/>
+                <field name="room" optional="show"/>
+                <field name="notes" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── Kanban View — Day/Period Grid (S3-T10) ────────────────────── -->
+    <record id="view_timetable_slot_kanban" model="ir.ui.view">
+        <field name="name">education.timetable.slot.kanban</field>
+        <field name="model">education.timetable.slot</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="weekday"
+                    class="o_kanban_small_column"
+                    quick_create="false"
+                    sample="1">
+                <field name="weekday"/>
+                <field name="period_no"/>
+                <field name="subject"/>
+                <field name="teacher_id"/>
+                <field name="room"/>
+                <field name="start_time"/>
+                <field name="end_time"/>
+                <field name="class_id"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between mb-1">
+                            <strong>P<t t-esc="record.period_no.value"/></strong>
+                            <span class="text-muted small">
+                                <t t-esc="record.start_time.value"/>
+                                –
+                                <t t-esc="record.end_time.value"/>
+                            </span>
+                        </div>
+                        <div class="fw-bold">
+                            <t t-esc="record.subject.value or '—'"/>
+                        </div>
+                        <div class="text-muted small">
+                            <i class="fa fa-user me-1"/>
+                            <t t-esc="record.teacher_id.value or 'Unassigned'"/>
+                        </div>
+                        <t t-if="record.room.value">
+                            <div class="text-muted small">
+                                <i class="fa fa-map-marker me-1"/>
+                                <t t-esc="record.room.value"/>
+                            </div>
+                        </t>
+                        <div class="text-muted small">
+                            <t t-esc="record.class_id.value"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ── Search View ────────────────────────────────────────────────── -->
+    <record id="view_timetable_slot_search" model="ir.ui.view">
+        <field name="name">education.timetable.slot.search</field>
+        <field name="model">education.timetable.slot</field>
+        <field name="arch" type="xml">
+            <search string="Search Timetable Slots">
+                <field name="subject"/>
+                <field name="teacher_id"/>
+                <field name="class_id"/>
+                <separator/>
+                <filter string="Monday"    name="mon" domain="[('weekday', '=', '0')]"/>
+                <filter string="Tuesday"   name="tue" domain="[('weekday', '=', '1')]"/>
+                <filter string="Wednesday" name="wed" domain="[('weekday', '=', '2')]"/>
+                <filter string="Thursday"  name="thu" domain="[('weekday', '=', '3')]"/>
+                <filter string="Friday"    name="fri" domain="[('weekday', '=', '4')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Day"     name="group_day"
+                            context="{'group_by': 'weekday'}"/>
+                    <filter string="Teacher" name="group_teacher"
+                            context="{'group_by': 'teacher_id'}"/>
+                    <filter string="Class"   name="group_class"
+                            context="{'group_by': 'class_id'}"/>
+                    <filter string="Period"  name="group_period"
+                            context="{'group_by': 'period_no'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ── Window Action — Standalone slot browser ───────────────────── -->
+    <record id="action_education_timetable_slot" model="ir.actions.act_window">
+        <field name="name">Weekly Schedule</field>
+        <field name="res_model">education.timetable.slot</field>
+        <field name="view_mode">kanban,list</field>
+        <field name="search_view_id" ref="view_timetable_slot_search"/>
+        <field name="context">{"search_default_group_day": 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No timetable slots yet</p>
+            <p>Create a timetable first, then add slots for each day and period.</p>
+        </field>
+    </record>
+
+    <!-- ── Timetable form inherit — inject slot O2M (Sprint 3) ───────── -->
+    <record id="view_education_timetable_form_s3" model="ir.ui.view">
+        <field name="name">education.timetable.form.sprint3</field>
+        <field name="model">education.timetable</field>
+        <field name="inherit_id" ref="view_education_timetable_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='notes']" position="before">
+                <group string="Timetable Slots">
+                    <field name="slot_ids" mode="list" nolabel="1"
+                           context="{'default_timetable_id': active_id}">
+                        <list string="Slots" editable="bottom"
+                              default_order="weekday, period_no">
+                            <field name="weekday"/>
+                            <field name="period_no"/>
+                            <field name="start_time" widget="float_time"/>
+                            <field name="end_time" widget="float_time"/>
+                            <field name="subject"/>
+                            <field name="teacher_id"/>
+                            <field name="room" optional="show"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Attendance Summary Wizard — S3-T07
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <record id="view_attendance_summary_wizard_form" model="ir.ui.view">
+        <field name="name">education.attendance.summary.wizard.form</field>
+        <field name="model">education.attendance.summary.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Attendance Summary">
+                <sheet>
+                    <group string="Filter Parameters">
+                        <field name="class_id"/>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_print_report" type="object"
+                            string="Print PDF Report" class="btn-primary"/>
+                    <button name="action_view_attendance" type="object"
+                            string="View Records" class="btn-secondary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_attendance_summary_wizard" model="ir.actions.act_window">
+        <field name="name">Attendance Summary</field>
+        <field name="res_model">education.attendance.summary.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Mail template: Library Book Due Soon reminder -->
+    <record id="mail_template_loan_due" model="mail.template">
+        <field name="name">Library Book Due Soon</field>
+        <field name="model_id" ref="education_library.model_edu_library_loan"/>
+        <field name="subject">Library Book Due Soon: {{ object.book_id.title }}</field>
+        <field name="email_from">{{ (object.env.company.email or '') }}</field>
+        <field name="email_to">{{ object.member_id.student_partner_id.email or object.member_id.student_email }}</field>
+        <field name="body_html" type="html">
+<![CDATA[
+<div style="font-family: Arial, sans-serif; font-size: 14px; color: #333;">
+    <h2 style="color: #2c5f8a;">Library Reminder — Book Due in 2 Days</h2>
+    <p>Dear <strong>{{ object.member_id.student_name }}</strong>,</p>
+    <p>
+        This is a friendly reminder that the following book is due for return in
+        <strong>2 days</strong>.
+    </p>
+    <table style="border-collapse: collapse; width: 100%; max-width: 500px;">
+        <tr>
+            <td style="padding: 6px 12px; font-weight: bold; background: #f0f4f8;">Book Title</td>
+            <td style="padding: 6px 12px;">{{ object.book_id.title }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 6px 12px; font-weight: bold; background: #f0f4f8;">Author</td>
+            <td style="padding: 6px 12px;">{{ object.book_id.author or 'N/A' }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 6px 12px; font-weight: bold; background: #f0f4f8;">Member No.</td>
+            <td style="padding: 6px 12px;">{{ object.member_id.member_no }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 6px 12px; font-weight: bold; background: #f0f4f8;">Issue Date</td>
+            <td style="padding: 6px 12px;">{{ object.issue_date }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 6px 12px; font-weight: bold; background: #f0f4f8;">Due Date</td>
+            <td style="padding: 6px 12px; color: #c0392b;"><strong>{{ object.due_date }}</strong></td>
+        </tr>
+    </table>
+    <p style="margin-top: 16px;">
+        Please return the book by the due date to avoid late fines.
+        A fine of <strong>{{ object.book_id.category_id.daily_fine_rate or 1.0 }}</strong>
+        per day will be charged for overdue books.
+    </p>
+    <p>Thank you,<br/>The Library Team</p>
+</div>
+]]>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+</odoo>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         LMS Menu Structure
+         Parent: education_config.menu_education_root
+    ══════════════════════════════════════════════════════════════════════ -->
+
+    <menuitem
+        id="menu_education_lms_root"
+        name="LMS"
+        parent="education_config.menu_education_root"
+        sequence="55"
+        groups="education_security.group_education_admin,
+                education_security.group_education_teacher"/>
+
+    <menuitem
+        id="menu_lms_courses"
+        name="Courses"
+        parent="menu_education_lms_root"
+        action="action_education_lms_course"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_lms_enrollments"
+        name="Enrollments"
+        parent="menu_education_lms_root"
+        action="action_edu_lms_enrollment"
+        sequence="20"/>
+
+    <menuitem
+        id="menu_lms_quizzes"
+        name="Quizzes"
+        parent="menu_education_lms_root"
+        action="action_edu_lms_quiz"
+        sequence="30"/>
+
+    <menuitem
+        id="menu_lms_categories"
+        name="Categories"
+        parent="menu_education_lms_root"
+        action="action_edu_lms_course_category"
+        sequence="40"/>
+
+</odoo>

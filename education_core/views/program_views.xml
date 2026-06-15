@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════════════════════════
+         education.program — Views
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <!-- Form -->
+    <record id="view_education_program_form" model="ir.ui.view">
+        <field name="name">education.program.form</field>
+        <field name="model">education.program</field>
+        <field name="arch" type="xml">
+            <form string="Academic Program">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_classes" type="object"
+                                class="oe_stat_button" icon="fa-users"
+                                invisible="class_count == 0">
+                            <field name="class_count" widget="statinfo"
+                                   string="Classes"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name"
+                                   placeholder="Program Name…"/>
+                        </h1>
+                        <h3>
+                            <field name="code"
+                                   placeholder="Code (e.g. BTECH-CSE)"/>
+                        </h3>
+                    </div>
+                    <group name="main">
+                        <group name="left">
+                            <field name="department_id"/>
+                            <field name="degree_type"/>
+                            <field name="duration_years"/>
+                            <field name="semesters_per_year"/>
+                        </group>
+                        <group name="right">
+                            <field name="sequence"/>
+                            <field name="company_id"
+                                   groups="base.group_multi_company"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description" name="description">
+                            <field name="description"
+                                   placeholder="Add program overview…"/>
+                        </page>
+                        <page string="Eligibility" name="eligibility">
+                            <field name="eligibility"
+                                   placeholder="Entry requirements, pre-requisites…"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- List -->
+    <record id="view_education_program_list" model="ir.ui.view">
+        <field name="name">education.program.list</field>
+        <field name="model">education.program</field>
+        <field name="arch" type="xml">
+            <list string="Academic Programs">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="department_id"/>
+                <field name="degree_type"/>
+                <field name="duration_years" string="Years"/>
+                <field name="class_count" string="Classes" optional="show"/>
+                <field name="active" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Kanban -->
+    <record id="view_education_program_kanban" model="ir.ui.view">
+        <field name="name">education.program.kanban</field>
+        <field name="model">education.program</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" sample="1">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="degree_type"/>
+                <field name="department_id"/>
+                <field name="class_count"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="fw-bolder fs-5">
+                            <field name="code"/> — <field name="name"/>
+                        </div>
+                        <div class="text-muted">
+                            <field name="degree_type"/>
+                            ·
+                            <field name="department_id"/>
+                        </div>
+                        <div class="mt-2">
+                            <span class="badge bg-primary">
+                                <field name="class_count"/> Classes
+                            </span>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Search -->
+    <record id="view_education_program_search" model="ir.ui.view">
+        <field name="name">education.program.search</field>
+        <field name="model">education.program</field>
+        <field name="arch" type="xml">
+            <search string="Search Programs">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="department_id"/>
+                <separator/>
+                <filter string="Bachelor" name="bachelor"
+                        domain="[('degree_type', '=', 'bachelor')]"/>
+                <filter string="Master" name="master"
+                        domain="[('degree_type', '=', 'master')]"/>
+                <filter string="Active" name="active"
+                        domain="[('active', '=', True)]" default="1"/>
+                <filter string="Archived" name="archived"
+                        domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Department" name="group_dept"
+                            context="{'group_by': 'department_id'}"/>
+                    <filter string="Degree Type" name="group_degree"
+                            context="{'group_by': 'degree_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_education_program" model="ir.actions.act_window">
+        <field name="name">Programs</field>
+        <field name="res_model">education.program</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_education_program_search"/>
+        <field name="context">{"search_default_active": 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first academic program
+            </p>
+            <p>
+                Programs define the curriculum offered by each department
+                (e.g. B.Tech CSE, MBA, MBBS).
+            </p>
+        </field>
+    </record>
+
+</odoo>

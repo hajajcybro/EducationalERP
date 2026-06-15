@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════════════════════════
+         Student Portal Templates (S2-T12)
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <!-- ── Portal Home — Enrollment count entry ──────────────────────── -->
+    <template id="portal_my_home_enrollment"
+              name="Portal My Home: Enrollment"
+              inherit_id="portal.portal_my_home"
+              priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-if="enrollment_count">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">My Enrollments</t>
+                    <t t-set="url">/student</t>
+                    <t t-set="count" t-value="enrollment_count"/>
+                    <t t-set="icon" t-value="'fa-graduation-cap'"/>
+                    <t t-set="text">Active academic enrollments</t>
+                </t>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- ── Student Dashboard ─────────────────────────────────────────── -->
+    <template id="portal_student_dashboard" name="Student Dashboard">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">My Enrollments</t>
+            </t>
+            <t t-if="not enrollments">
+                <div class="alert alert-warning text-center mt-4">
+                    <i class="fa fa-info-circle me-2"/>
+                    You have no active enrollments. Please contact the admission office.
+                </div>
+            </t>
+            <t t-if="enrollments">
+                <div class="row mt-4">
+                    <t t-foreach="enrollments" t-as="enr">
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <t t-esc="enr.program_id.name"/>
+                                    </h5>
+                                    <p class="card-text text-muted small">
+                                        <t t-esc="enr.academic_year_id.name"/>
+                                        <t t-if="enr.class_id">
+                                            — <t t-esc="enr.class_id.name"/>
+                                        </t>
+                                    </p>
+                                    <p class="card-text">
+                                        <span t-attf-class="badge
+                                            #{'bg-success' if enr.state == 'active' else
+                                              'bg-warning' if enr.state == 'suspended' else
+                                              'bg-secondary'}">
+                                            <t t-esc="dict(enr._fields['state'].selection).get(enr.state, enr.state)"/>
+                                        </span>
+                                    </p>
+                                    <div class="progress mb-2" style="height: 8px;">
+                                        <div class="progress-bar bg-info"
+                                             t-attf-style="width: #{enr.doc_completion_pct}%"/>
+                                    </div>
+                                    <small class="text-muted">
+                                        Documents: <t t-esc="enr.doc_completion_pct"/>% verified
+                                    </small>
+                                </div>
+                                <div class="card-footer bg-transparent">
+                                    <a t-attf-href="/student/enrollment/#{enr.id}"
+                                       class="btn btn-sm btn-outline-primary w-100">
+                                        View Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- ── Enrollment Detail ─────────────────────────────────────────── -->
+    <template id="portal_student_enrollment" name="Student Enrollment Detail">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumb_name">
+                <t t-esc="enrollment.enrollment_no"/>
+            </t>
+            <div class="container mt-4">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <!-- Enrollment summary card -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">
+                                    <i class="fa fa-graduation-cap me-2"/>
+                                    <t t-esc="enrollment.program_id.name"/>
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <dl class="row mb-0">
+                                    <dt class="col-sm-4">Enrollment No.</dt>
+                                    <dd class="col-sm-8">
+                                        <t t-esc="enrollment.enrollment_no"/>
+                                    </dd>
+                                    <dt class="col-sm-4">Academic Year</dt>
+                                    <dd class="col-sm-8">
+                                        <t t-esc="enrollment.academic_year_id.name"/>
+                                    </dd>
+                                    <dt class="col-sm-4">Class / Section</dt>
+                                    <dd class="col-sm-8">
+                                        <t t-esc="enrollment.class_id.name or '—'"/>
+                                    </dd>
+                                    <dt class="col-sm-4">Department</dt>
+                                    <dd class="col-sm-8">
+                                        <t t-esc="enrollment.department_id.name or '—'"/>
+                                    </dd>
+                                    <dt class="col-sm-4">Status</dt>
+                                    <dd class="col-sm-8">
+                                        <span t-attf-class="badge
+                                            #{'bg-success' if enrollment.state == 'active' else 'bg-secondary'}">
+                                            <t t-esc="dict(enrollment._fields['state'].selection).get(enrollment.state)"/>
+                                        </span>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+
+                        <!-- Document checklist card -->
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span><i class="fa fa-file-text-o me-2"/>Document Checklist</span>
+                                <span class="badge bg-info">
+                                    <t t-esc="enrollment.doc_completion_pct"/>% Complete
+                                </span>
+                            </div>
+                            <div class="card-body p-0">
+                                <t t-if="not documents">
+                                    <p class="text-muted p-3 mb-0">No documents required yet.</p>
+                                </t>
+                                <t t-if="documents">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Document</th>
+                                                <th>Required</th>
+                                                <th>Status</th>
+                                                <th>Remarks</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="documents" t-as="doc">
+                                                <tr>
+                                                    <td><t t-esc="doc.document_type_id.name"/></td>
+                                                    <td>
+                                                        <t t-if="doc.is_mandatory">
+                                                            <span class="badge bg-danger">Required</span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="badge bg-secondary">Optional</span>
+                                                        </t>
+                                                    </td>
+                                                    <td>
+                                                        <span t-attf-class="badge
+                                                            #{'bg-success' if doc.state == 'verified' else
+                                                              'bg-warning text-dark' if doc.state == 'uploaded' else
+                                                              'bg-danger' if doc.state == 'rejected' else
+                                                              'bg-secondary'}">
+                                                            <t t-esc="dict(doc._fields['state'].selection).get(doc.state)"/>
+                                                        </span>
+                                                    </td>
+                                                    <td class="text-muted small">
+                                                        <t t-esc="doc.remarks or '—'"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="col-lg-4">
+                        <div class="card mb-3">
+                            <div class="card-header">Guardian</div>
+                            <div class="card-body small">
+                                <p class="mb-1"><strong>
+                                    <t t-esc="enrollment.guardian_name or '—'"/>
+                                </strong></p>
+                                <p class="mb-1">
+                                    <i class="fa fa-phone me-1"/>
+                                    <t t-esc="enrollment.guardian_phone or '—'"/>
+                                </p>
+                                <p class="mb-0">
+                                    <i class="fa fa-envelope me-1"/>
+                                    <t t-esc="enrollment.guardian_email or '—'"/>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>
