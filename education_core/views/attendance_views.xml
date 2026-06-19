@@ -42,11 +42,12 @@
             <list string="Attendance" default_order="date desc, period_no"
                   editable="bottom">
                 <field name="date"/>
-                <field name="class_id"/>
                 <field name="student_name"/>
+                <field name="enrollment_id"/>
+                <field name="class_id"/>
                 <field name="period_no"/>
                 <field name="subject" optional="show"/>
-                <field name="state" widget="badge"
+                <field name="state" widget="selection"
                        decoration-success="state == 'present'"
                        decoration-warning="state == 'late'"
                        decoration-danger="state == 'absent'"
@@ -98,7 +99,7 @@
                         domain="[('date', '=', context_today().strftime('%Y-%m-%d'))]"/>
                 <filter string="This Week" name="this_week"
                         domain="[('date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter string="Student" name="group_student"
                             context="{'group_by': 'enrollment_id'}"/>
                     <filter string="Class" name="group_class"
@@ -158,7 +159,9 @@
                 </header>
                 <sheet>
                     <div class="oe_title">
-                        <h1><field name="reference" readonly="1"/></h1>
+                        <h1>
+                            <field name="reference" readonly="1"/>
+                        </h1>
                     </div>
                     <group>
                         <group>
@@ -252,7 +255,7 @@
                 <separator/>
                 <filter string="Medical" name="medical"
                         domain="[('leave_type', '=', 'medical')]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter string="Student" name="group_student"
                             context="{'group_by': 'enrollment_id'}"/>
                     <filter string="Class" name="group_class"
@@ -289,6 +292,7 @@
         <field name="arch" type="xml">
             <list string="Timetable Slots" editable="bottom"
                   default_order="weekday, period_no">
+<!--                <field name="timetable_id"/>-->
                 <field name="weekday"/>
                 <field name="period_no"/>
                 <field name="start_time" widget="float_time"/>
@@ -321,7 +325,9 @@
                 <templates>
                     <t t-name="card">
                         <div class="d-flex justify-content-between mb-1">
-                            <strong>P<t t-esc="record.period_no.value"/></strong>
+                            <strong>P
+                                <t t-esc="record.period_no.value"/>
+                            </strong>
                             <span class="text-muted small">
                                 <t t-esc="record.start_time.value"/>
                                 –
@@ -360,19 +366,19 @@
                 <field name="teacher_id"/>
                 <field name="class_id"/>
                 <separator/>
-                <filter string="Monday"    name="mon" domain="[('weekday', '=', '0')]"/>
-                <filter string="Tuesday"   name="tue" domain="[('weekday', '=', '1')]"/>
+                <filter string="Monday" name="mon" domain="[('weekday', '=', '0')]"/>
+                <filter string="Tuesday" name="tue" domain="[('weekday', '=', '1')]"/>
                 <filter string="Wednesday" name="wed" domain="[('weekday', '=', '2')]"/>
-                <filter string="Thursday"  name="thu" domain="[('weekday', '=', '3')]"/>
-                <filter string="Friday"    name="fri" domain="[('weekday', '=', '4')]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Day"     name="group_day"
+                <filter string="Thursday" name="thu" domain="[('weekday', '=', '3')]"/>
+                <filter string="Friday" name="fri" domain="[('weekday', '=', '4')]"/>
+                <group>
+                    <filter string="Day" name="group_day"
                             context="{'group_by': 'weekday'}"/>
                     <filter string="Teacher" name="group_teacher"
                             context="{'group_by': 'teacher_id'}"/>
-                    <filter string="Class"   name="group_class"
+                    <filter string="Class" name="group_class"
                             context="{'group_by': 'class_id'}"/>
-                    <filter string="Period"  name="group_period"
+                    <filter string="Period" name="group_period"
                             context="{'group_by': 'period_no'}"/>
                 </group>
             </search>
@@ -401,7 +407,7 @@
             <xpath expr="//field[@name='notes']" position="before">
                 <group string="Timetable Slots">
                     <field name="slot_ids" mode="list" nolabel="1"
-                           context="{'default_timetable_id': active_id}">
+                           context="{'default_timetable_id': id}">
                         <list string="Slots" editable="bottom"
                               default_order="weekday, period_no">
                             <field name="weekday"/>

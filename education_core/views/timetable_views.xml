@@ -24,14 +24,6 @@
                            statusbar_visible="draft,published"/>
                 </header>
                 <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button" icon="fa-calendar"
-                                invisible="slot_count == 0" type="object"
-                                name="action_view_attendance">
-                            <field name="slot_count" widget="statinfo"
-                                   string="Slots"/>
-                        </button>
-                    </div>
                     <div class="oe_title">
                         <label for="name"/>
                         <h1><field name="name" readonly="1"/></h1>
@@ -90,7 +82,7 @@
                         domain="[('state', '=', 'published')]"/>
                 <filter string="Draft" name="draft"
                         domain="[('state', '=', 'draft')]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter string="Class" name="group_class"
                             context="{'group_by': 'class_id'}"/>
                     <filter string="Academic Year" name="group_year"

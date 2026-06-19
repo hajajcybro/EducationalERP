@@ -49,13 +49,11 @@ class EduClassroom(models.Model):
     active = fields.Boolean(default=True)
     notes = fields.Text(string="Notes")
 
-    _sql_constraints = [
-        (
-            "room_no_block_uniq",
+    _room_no_block_uniq = models.Constraint(
             "UNIQUE(room_no, block)",
             "A room with this number already exists in the same block.",
         )
-    ]
+
 
     @api.depends("room_no", "block")
     def _compute_display_name(self):

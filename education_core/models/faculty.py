@@ -1,0 +1,220 @@
+# -*- coding: utf-8 -*-
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
+
+OVERLOAD_THRESHOLD = 30
+
+
+class EducationFaculty(models.Model):
+    _name = "education.faculty"
+    _description = "Faculty Member"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _order = "name"
+    _rec_name = "name"
+
+    # ── Identity ──────────────────────────────────────────────────────────
+    name = fields.Char(string="Faculty Name", required=True, tracking=True)
+    faculty_id = fields.Char(
+        string="Faculty ID",
+        required=True,
+        copy=False,
+        default="New",
+        tracking=True,
+    )
+    photo = fields.Image(string="Photo", max_width=256, max_height=256)
+    gender = fields.Selection(
+        selection=[("male", "Male"), ("female", "Female"), ("other", "Other")],
+        string="Gender",
+    )
+    date_of_birth = fields.Date(string="Date of Birth")
+    blood_group = fields.Selection(
+        selection=[
+            ("a+", "A+"), ("a-", "A−"),
+            ("b+", "B+"), ("b-", "B−"),
+            ("ab+", "AB+"), ("ab-", "AB−"),
+            ("o+", "O+"), ("o-", "O−"),
+        ],
+        string="Blood Group",
+    )
+    nationality_id = fields.Many2one("res.country", string="Nationality")
+
+    # ── Contact ───────────────────────────────────────────────────────────
+    email = fields.Char(string="Work Email", required=True, tracking=True)
+    phone = fields.Char(string="Phone")
+    mobile = fields.Char(string="Mobile")
+    address = fields.Text(string="Address")
+
+    # ── Academic Profile ──────────────────────────────────────────────────
+    department_id = fields.Many2one(
+        "education.department",
+        string="Department",
+        required=True,
+        tracking=True,
+        ondelete="restrict",
+    )
+    designation = fields.Char(string="Designation", tracking=True)
+    specialization = fields.Char(string="Specialization / Subject Area", tracking=True)
+    date_joined = fields.Date(string="Date Joined", default=fields.Date.today, tracking=True)
+    employment_type = fields.Selection(
+        selection=[
+            ("permanent", "Permanent"),
+            ("contract", "Contract"),
+            ("visiting", "Visiting / Adjunct"),
+            ("part_time", "Part-time"),
+        ],
+        string="Employment Type",
+        default="permanent",
+        tracking=True,
+    )
+
+    # ── Qualifications ────────────────────────────────────────────────────
+    qualification_ids = fields.One2many(
+        "education.faculty.qualification", "faculty_id", string="Qualifications"
+    )
+    highest_qualification = fields.Char(
+        string="Highest Qualification",
+        compute="_compute_highest_qualification",
+        store=True,
+    )
+
+    # ── Workload ──────────────────────────────────────────────────────────
+    weekly_periods = fields.Integer(
+        string="Assigned Weekly Periods",
+        compute="_compute_weekly_periods",
+        store=False,
+    )
+    is_overloaded = fields.Boolean(
+        string="Overloaded",
+        compute="_compute_weekly_periods",
+        store=False,
+    )
+
+    # ── HR Link (optional) ────────────────────────────────────────────────
+    employee_id = fields.Many2one(
+        "hr.employee",
+        string="HR Employee Record",
+        copy=False,
+        ondelete="set null",
+        help="Link to Odoo HR employee for payroll and leave integration.",
+    )
+
+    # ── System ────────────────────────────────────────────────────────────
+    company_id = fields.Many2one(
+        "res.company",
+        string="Company",
+        default=lambda self: self.env.company,
+        required=True,
+        index=True,
+    )
+    active = fields.Boolean(default=True)
+    notes = fields.Text(string="Internal Notes")
+
+    _faculty_id_company_uniq = models.Constraint(
+        "UNIQUE(faculty_id, company_id)",
+        "Faculty ID must be unique per company.",
+    )
+    _email_company_uniq = models.Constraint(
+        "UNIQUE(email, company_id)",
+        "A faculty member with this email already exists in this company.",
+    )
+
+    # ── ORM ───────────────────────────────────────────────────────────────
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get("faculty_id", "New") == "New":
+                vals["faculty_id"] = (
+                    self.env["ir.sequence"].next_by_code("education.faculty") or "New"
+                )
+        return super().create(vals_list)
+
+    # ── Computed ───────────────────────────────────────────────────────────
+
+    @api.depends("qualification_ids", "qualification_ids.degree")
+    def _compute_highest_qualification(self):
+        degree_rank = {
+            "post_doc": 6, "phd": 5, "master": 4,
+            "bachelor": 3, "diploma": 2, "certificate": 1, "other": 0,
+        }
+        for rec in self:
+            if not rec.qualification_ids:
+                rec.highest_qualification = ""
+                continue
+            top = max(rec.qualification_ids, key=lambda q: degree_rank.get(q.degree, 0))
+            rec.highest_qualification = top.display_name
+
+    def _compute_weekly_periods(self):
+        Slot = self.env["education.timetable.slot"]
+        for rec in self:
+            periods = Slot.search_count([
+                ("teacher_id", "=", rec.id),
+                ("timetable_id.state", "=", "published"),
+            ])
+            rec.weekly_periods = periods
+            rec.is_overloaded = periods > OVERLOAD_THRESHOLD
+
+    # ── Actions ────────────────────────────────────────────────────────────
+
+    def action_view_timetable_slots(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Timetable Slots — %s") % self.name,
+            "res_model": "education.timetable.slot",
+            "view_mode": "list,form",
+            "domain": [("teacher_id", "=", self.id)],
+        }
+
+
+class EducationFacultyQualification(models.Model):
+    _name = "education.faculty.qualification"
+    _description = "Faculty Qualification"
+    _order = "year_obtained desc"
+
+    faculty_id = fields.Many2one(
+        "education.faculty",
+        string="Faculty Member",
+        required=True,
+        ondelete="cascade",
+        index=True,
+    )
+    degree = fields.Selection(
+        selection=[
+            ("certificate", "Certificate"),
+            ("diploma", "Diploma"),
+            ("bachelor", "Bachelor's Degree"),
+            ("master", "Master's Degree"),
+            ("phd", "PhD / Doctorate"),
+            ("post_doc", "Post-Doctoral"),
+            ("other", "Other"),
+        ],
+        string="Degree",
+        required=True,
+    )
+    field_of_study = fields.Char(string="Field of Study", required=True)
+    institution = fields.Char(string="Institution", required=True)
+    year_obtained = fields.Integer(string="Year Obtained", required=True)
+    grade = fields.Char(string="Grade / GPA")
+    certificate_file = fields.Binary(string="Certificate", attachment=True)
+    certificate_file_name = fields.Char()
+    display_name = fields.Char(compute="_compute_display_name", store=True)
+
+    @api.depends("degree", "field_of_study", "institution", "year_obtained")
+    def _compute_display_name(self):
+        degree_labels = dict(self._fields["degree"].selection)
+        for rec in self:
+            rec.display_name = (
+                f"{degree_labels.get(rec.degree, '')} in "
+                f"{rec.field_of_study} — {rec.institution} ({rec.year_obtained})"
+            )
+
+    @api.constrains("year_obtained")
+    def _check_year(self):
+        import datetime
+        current_year = datetime.date.today().year
+        for rec in self:
+            if rec.year_obtained and not (1900 <= rec.year_obtained <= current_year + 1):
+                raise ValidationError(
+                    _("Year obtained must be between 1900 and %d.") % current_year
+                )

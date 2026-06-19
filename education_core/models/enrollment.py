@@ -16,7 +16,7 @@ class EducationEnrollment(models.Model):
     _description = "Student Enrollment"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "enrollment_date desc, enrollment_no desc"
-    _rec_name = "enrollment_no"
+    _rec_name = "display_name"
 
     # ── Reference ────────────────────────────────────────────────────────
     enrollment_no = fields.Char(
@@ -26,6 +26,13 @@ class EducationEnrollment(models.Model):
         default="New",
         tracking=True,
     )
+    display_name = fields.Char(
+        string="Display Name",
+        compute="_compute_display_name",
+        store=True,
+        help="Shows student name + enrollment no. for easy identification.",
+    )
+
     state = fields.Selection(
         selection=[
             ("active", "Active"),
@@ -173,18 +180,14 @@ class EducationEnrollment(models.Model):
     active = fields.Boolean(default=True)
     notes = fields.Text(string="Notes")
 
-    _sql_constraints = [
-        (
-            "enrollment_no_uniq",
-            "UNIQUE(enrollment_no)",
-            "Enrollment number must be unique.",
-        ),
-        (
-            "application_year_uniq",
-            "UNIQUE(application_id, academic_year_id)",
-            "A student can only be enrolled once per academic year.",
-        ),
-    ]
+    _enrollment_no_uniq = models.Constraint(
+        "UNIQUE(enrollment_no)",
+        "Enrollment number must be unique.",
+    )
+    _application_year_uniq = models.Constraint(
+        "UNIQUE(application_id, academic_year_id)",
+        "A student can only be enrolled once per academic year.",
+    )
 
     # ── ORM Overrides ─────────────────────────────────────────────────────
 
@@ -199,6 +202,14 @@ class EducationEnrollment(models.Model):
         return super().create(vals_list)
 
     # ── Computed ───────────────────────────────────────────────────────────
+    #
+    @api.depends("student_name", "enrollment_no")
+    def _compute_display_name(self):
+        for rec in self:
+            if rec.student_name and rec.enrollment_no:
+                rec.display_name = f"{rec.student_name} ({rec.enrollment_no})"
+            else:
+                rec.display_name = rec.enrollment_no or "New"
 
     @api.depends("document_ids")
     def _compute_document_count(self):
@@ -225,8 +236,7 @@ class EducationEnrollment(models.Model):
             if rec.student_partner_id:
                 raise UserError(
                     _("Portal access has already been granted for enrollment %s.")
-                    % rec.enrollment_no
-                )
+                    % rec.enrollment_no)
             # Create partner
             partner = self.env["res.partner"].create({
                 "name": rec.student_name,
@@ -236,21 +246,19 @@ class EducationEnrollment(models.Model):
                 "comment": _("Auto-created for enrollment %s") % rec.enrollment_no,
             })
             rec.student_partner_id = partner
-            # Send portal invite via Odoo wizard
+            # Send portal invite via Odoo wizard.
+            # Odoo 19: 'in_portal' field and 'action_apply()' no longer exist.
+            # Create wizard via partner_ids → user_ids is auto-computed by
+            # _compute_user_ids, then call action_grant_access() on the user
+            # record to create the portal user and send the invitation email.
             wizard = self.env["portal.wizard"].create({
-                "user_ids": [
-                    (
-                        0,
-                        0,
-                        {
-                            "partner_id": partner.id,
-                            "email": partner.email or "",
-                            "in_portal": True,
-                        },
-                    )
-                ]
+                "partner_ids": [(4, partner.id)],
             })
-            wizard.action_apply()
+            wizard_user = wizard.user_ids.filtered(
+                lambda u: u.partner_id == partner
+            )
+            if wizard_user:
+                wizard_user.action_grant_access()
             # Log in chatter
             rec.message_post(
                 body=_("Portal access granted. Login invitation sent to %s.")

@@ -42,3 +42,9 @@ access_att_summary_wizard_teacher,education.attendance.summary.wizard teacher,mo
 access_classroom_admin,edu.classroom admin,model_edu_classroom,education_security.group_education_admin,1,1,1,1
 access_classroom_teacher,edu.classroom teacher,model_edu_classroom,education_security.group_education_teacher,1,0,0,0
 access_classroom_user,edu.classroom user,model_edu_classroom,base.group_user,1,0,0,0
+access_faculty_admin,education.faculty admin,model_education_faculty,education_security.group_education_admin,1,1,1,1
+access_faculty_teacher,education.faculty teacher,model_education_faculty,education_security.group_education_teacher,1,0,0,0
+access_faculty_user,education.faculty user,model_education_faculty,base.group_user,1,0,0,0
+access_faculty_qualification_admin,education.faculty.qualification admin,model_education_faculty_qualification,education_security.group_education_admin,1,1,1,1
+access_faculty_qualification_teacher,education.faculty.qualification teacher,model_education_faculty_qualification,education_security.group_education_teacher,1,0,0,0
+access_faculty_qualification_user,education.faculty.qualification user,model_education_faculty_qualification,base.group_user,1,0,0,0

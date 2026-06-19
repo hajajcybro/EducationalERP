@@ -4,6 +4,16 @@
          education.application — Views (S2-T09, S2-T10)
          ═══════════════════════════════════════════════════════════════════ -->
 
+
+    <!-- Action filtered to Documents for an application (smart button) -->
+    <record id="action_education_document_application" model="ir.actions.act_window">
+        <field name="name">Application Documents</field>
+        <field name="res_model">education.document</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('application_id', '=', active_id)]</field>
+        <field name="context">{'default_application_id': active_id}</field>
+    </record>
+
     <!-- ── Form View ──────────────────────────────────────────────────── -->
     <record id="view_education_application_form" model="ir.ui.view">
         <field name="name">education.application.form</field>
@@ -219,7 +229,7 @@
                 <field name="email"/>
                 <field name="date_application"/>
                 <templates>
-                    <t t-name="kanban-box">
+                    <t t-name="card" class="flex-row">
                         <div class="oe_kanban_card oe_kanban_global_click">
                             <div class="o_kanban_record_top">
                                 <div class="o_kanban_record_headings">
@@ -267,7 +277,7 @@
                 <separator/>
                 <filter string="Current Year" name="current_year"
                         domain="[('academic_year_id.is_current', '=', True)]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter string="Status" name="group_state"
                             context="{'group_by': 'state'}"/>
                     <filter string="Program" name="group_program"
@@ -296,14 +306,7 @@
         </field>
     </record>
 
-    <!-- Action filtered to Documents for an application (smart button) -->
-    <record id="action_education_document_application" model="ir.actions.act_window">
-        <field name="name">Application Documents</field>
-        <field name="res_model">education.document</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[('application_id', '=', active_id)]</field>
-        <field name="context">{'default_application_id': active_id}</field>
-    </record>
+
 
     <!-- ── Rejection Wizard View ─────────────────────────────────────── -->
     <record id="view_application_reject_wizard_form" model="ir.ui.view">

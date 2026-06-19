@@ -21,7 +21,7 @@ Version: 19.0.4.0.0  |  License: LGPL-3
     "author": "Cybrosys Techno Solutions",
     "website": "https://www.cybrosys.com",
     "license": "LGPL-3",
-    "depends": ['education_config', 'mail', 'portal'],
+    "depends": ['education_config', 'mail', 'portal', 'hr'],
     "data": [
         # ── Security (always first) ────────────────────────────────────
         "security/ir.model.access.csv",
@@ -45,10 +45,13 @@ Version: 19.0.4.0.0  |  License: LGPL-3
         "views/portal_templates.xml",
         # ── Views — Sprint 3 ──────────────────────────────────────────
         "views/attendance_views.xml",
+        # ── Views — Faculty ───────────────────────────────────────────
+        "views/faculty_views.xml",
         # ── Views — Sprint 4 ──────────────────────────────────────────
         "views/classroom_views.xml",
         # ── Reports ────────────────────────────────────────────────────
         "report/attendance_report.xml",
+        "report/faculty_report.xml",
         # ── Menus (always last) ────────────────────────────────────────
         "views/menus.xml",
     ],

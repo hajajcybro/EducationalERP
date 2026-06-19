@@ -12,9 +12,7 @@
         name="Academics"
         parent="education_config.menu_education_root"
         sequence="10"
-        groups="education_security.group_education_admin,
-                education_security.group_education_admission_officer,
-                education_security.group_education_teacher"/>
+        groups="education_security.group_education_admin,education_security.group_education_admission_officer,education_security.group_education_teacher"/>
 
     <!-- Academic Years -->
     <menuitem
@@ -50,8 +48,7 @@
         parent="menu_education_academics"
         action="action_education_class"
         sequence="40"
-        groups="education_security.group_education_admin,
-                education_security.group_education_teacher"/>
+        groups="education_security.group_education_admin,education_security.group_education_teacher"/>
 
     <!-- ── Admissions submenu (Sprint 2) ─────────────────────────────── -->
     <menuitem
@@ -59,8 +56,7 @@
         name="Admissions"
         parent="education_config.menu_education_root"
         sequence="20"
-        groups="education_security.group_education_admin,
-                education_security.group_education_admission_officer"/>
+        groups="education_security.group_education_admin,education_security.group_education_admission_officer"/>
 
     <menuitem
         id="menu_education_application"
@@ -68,8 +64,7 @@
         parent="menu_education_admissions"
         action="action_education_application"
         sequence="10"
-        groups="education_security.group_education_admin,
-                education_security.group_education_admission_officer"/>
+        groups="education_security.group_education_admin,education_security.group_education_admission_officer"/>
 
     <menuitem
         id="menu_education_enrollment"
@@ -77,8 +72,7 @@
         parent="menu_education_admissions"
         action="action_education_enrollment"
         sequence="20"
-        groups="education_security.group_education_admin,
-                education_security.group_education_admission_officer"/>
+        groups="education_security.group_education_admin,education_security.group_education_admission_officer"/>
 
     <!-- ── Attendance submenu (Sprint 3) ────────────────────────────── -->
     <menuitem
@@ -86,8 +80,7 @@
         name="Attendance"
         parent="education_config.menu_education_root"
         sequence="30"
-        groups="education_security.group_education_admin,
-                education_security.group_education_teacher"/>
+        groups="education_security.group_education_admin,education_security.group_education_teacher"/>
 
     <menuitem
         id="menu_education_attendance"
@@ -95,8 +88,7 @@
         parent="menu_education_attendance_root"
         action="action_education_attendance"
         sequence="10"
-        groups="education_security.group_education_admin,
-                education_security.group_education_teacher"/>
+        groups="education_security.group_education_admin,education_security.group_education_teacher"/>
 
     <menuitem
         id="menu_education_leave"
@@ -104,8 +96,7 @@
         parent="menu_education_attendance_root"
         action="action_education_leave"
         sequence="20"
-        groups="education_security.group_education_admin,
-                education_security.group_education_teacher"/>
+        groups="education_security.group_education_admin,education_security.group_education_teacher"/>
 
     <menuitem
         id="menu_attendance_summary"
@@ -113,8 +104,7 @@
         parent="menu_education_attendance_root"
         action="action_attendance_summary_wizard"
         sequence="30"
-        groups="education_security.group_education_admin,
-                education_security.group_education_teacher"/>
+        groups="education_security.group_education_admin,education_security.group_education_teacher"/>
 
     <menuitem
         id="menu_education_timetable"
@@ -122,8 +112,7 @@
         parent="menu_education_academics"
         action="action_education_timetable"
         sequence="50"
-        groups="education_security.group_education_admin,
-                education_security.group_education_teacher"/>
+        groups="education_security.group_education_admin,education_security.group_education_teacher"/>
 
     <!-- Weekly Schedule — slot kanban grid by weekday (S3-T10) -->
     <menuitem
@@ -132,8 +121,7 @@
         parent="menu_education_academics"
         action="action_education_timetable_slot"
         sequence="55"
-        groups="education_security.group_education_admin,
-                education_security.group_education_teacher"/>
+        groups="education_security.group_education_admin,education_security.group_education_teacher"/>
 
     <!-- Classrooms / Exam Halls (S4-T12) -->
     <menuitem
@@ -143,6 +131,38 @@
         action="action_edu_classroom"
         sequence="60"
         groups="education_security.group_education_admin"/>
+
+    <!-- ── Faculty submenu ──────────────────────────────────────────── -->
+    <menuitem
+        id="menu_education_faculty_root"
+        name="Faculty"
+        parent="education_config.menu_education_root"
+        sequence="15"
+        groups="education_security.group_education_admin,education_security.group_education_teacher"/>
+
+    <menuitem
+        id="menu_education_faculty"
+        name="Faculty Members"
+        parent="menu_education_faculty_root"
+        action="action_education_faculty"
+        sequence="10"
+        groups="education_security.group_education_admin,education_security.group_education_teacher"/>
+
+    <!-- ── Faculty submenu ──────────────────────────────────────────── -->
+    <menuitem
+        id="menu_education_faculty_root"
+        name="Faculty"
+        parent="education_config.menu_education_root"
+        sequence="15"
+        groups="education_security.group_education_admin,education_security.group_education_teacher"/>
+
+    <menuitem
+        id="menu_education_faculty"
+        name="Faculty Members"
+        parent="menu_education_faculty_root"
+        action="action_education_faculty"
+        sequence="10"
+        groups="education_security.group_education_admin,education_security.group_education_teacher"/>
 
     <!-- ── Configuration (extends education_config submenu) ─────────── -->
     <menuitem

@@ -66,7 +66,7 @@
                         domain="[('room_type', '=', 'hall')]"/>
                 <filter string="Labs" name="labs"
                         domain="[('room_type', '=', 'lab')]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter string="Block" name="group_block"
                             context="{'group_by': 'block'}"/>
                     <filter string="Type" name="group_type"

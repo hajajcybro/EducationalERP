@@ -70,21 +70,19 @@ class EducationTimetableSlot(models.Model):
              "Will be linked to course catalog in Sprint 4.",
     )
     teacher_id = fields.Many2one(
-        "res.partner",
+        "education.faculty",
         string="Teacher",
-        domain="[('is_company', '=', False)]",
-        help="Assigned teacher for this slot.",
+        ondelete="set null",
+        help="Assigned faculty member for this slot.",
     )
     room = fields.Char(string="Room / Lab")
     notes = fields.Char(string="Notes")
 
-    _sql_constraints = [
-        (
-            "slot_unique",
+    _slot_unique = models.Constraint(
             "UNIQUE(timetable_id, weekday, period_no)",
             "A slot for this day and period already exists in this timetable.",
         )
-    ]
+
 
     @api.constrains("start_time", "end_time")
     def _check_times(self):

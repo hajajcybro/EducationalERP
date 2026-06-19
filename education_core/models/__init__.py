@@ -1,3 +1,4 @@
+from . import faculty
 from . import department
 from . import academic_year
 from . import program

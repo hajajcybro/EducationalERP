@@ -195,13 +195,10 @@ class EducationApplication(models.Model):
     active = fields.Boolean(default=True)
     notes = fields.Text(string="Internal Notes")
 
-    _sql_constraints = [
-        (
-            "admission_no_uniq",
+    _admission_no_uniq = models.Constraint (
             "UNIQUE(admission_no)",
-            "Application number must be unique.",
-        )
-    ]
+            "Application number must be unique." )
+
 
     # ── ORM Overrides ─────────────────────────────────────────────────────
 

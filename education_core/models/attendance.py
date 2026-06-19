@@ -31,25 +31,26 @@ class EducationAttendance(models.Model):
         ondelete="cascade",
         index=True,
     )
+
+
     student_name = fields.Char(
         related="enrollment_id.student_name",
         store=True,
-        readonly=True,
         string="Student",
+        readonly=True,
     )
+
     class_id = fields.Many2one(
         "education.class",
         string="Class",
         related="enrollment_id.class_id",
         store=True,
-        readonly=True,
         index=True,
     )
     academic_year_id = fields.Many2one(
         "education.academic.year",
         related="enrollment_id.academic_year_id",
         store=True,
-        readonly=True,
     )
     timetable_slot_id = fields.Many2one(
         "education.timetable.slot",
@@ -105,13 +106,10 @@ class EducationAttendance(models.Model):
         readonly=True,
     )
 
-    _sql_constraints = [
-        (
-            "enrollment_date_period_uniq",
+    _enrollment_date_period_uniq = models.Constraint(
             "UNIQUE(enrollment_id, date, period_no)",
-            "Attendance for this student, date and period already exists.",
-        )
-    ]
+            "Attendance for this student, date and period already exists.", )
+
 
     # ── Computed ───────────────────────────────────────────────────────────
 

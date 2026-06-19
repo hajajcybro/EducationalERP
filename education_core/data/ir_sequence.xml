@@ -29,6 +29,17 @@
     </record>
 
 
+    <!-- Faculty ID sequence -->
+    <record id="seq_education_faculty" model="ir.sequence">
+        <field name="name">Faculty ID</field>
+        <field name="code">education.faculty</field>
+        <field name="prefix">FAC/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="number_increment">1</field>
+        <field name="number_next">1</field>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
     <!-- Leave Request sequence (Sprint 3) -->
     <record id="seq_education_leave_request" model="ir.sequence">
         <field name="name">Student Leave Request</field>

@@ -36,13 +36,11 @@ class EducationDocumentType(models.Model):
     )
     active = fields.Boolean(default=True)
 
-    _sql_constraints = [
-        (
-            "code_uniq",
+    _code_uniq = models.Constraint(
             "UNIQUE(code)",
             "Document type code must be unique.",
         )
-    ]
+
 
 
 class EducationDocument(models.Model):

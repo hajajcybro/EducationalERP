@@ -47,12 +47,12 @@
                                 <span class="o_stat_text">Application</span>
                             </div>
                         </button>
-                        <button class="oe_stat_button" icon="fa-file"
-                                invisible="document_count == 0"
-                                type="object" name="action_view_documents">
-                            <field name="document_count" widget="statinfo"
-                                   string="Documents"/>
-                        </button>
+<!--                        <button class="oe_stat_button" icon="fa-file"-->
+<!--                                invisible="document_count == 0"-->
+<!--                                type="object" name="action_view_documents">-->
+<!--                            <field name="document_count" widget="statinfo"-->
+<!--                                   string="Documents"/>-->
+<!--                        </button>-->
                     </div>
 
                     <!-- Photo + Header -->
@@ -174,7 +174,7 @@
                 <field name="class_id"/>
                 <separator/>
                 <filter string="Active" name="active"
-                        domain="[('state', '=', 'active')]" default="1"/>
+                        domain="[('state', '=', 'active')]"/>
                 <filter string="Suspended" name="suspended"
                         domain="[('state', '=', 'suspended')]"/>
                 <filter string="Graduated" name="graduated"
@@ -186,7 +186,7 @@
                         domain="[('academic_year_id.is_current', '=', True)]"/>
                 <filter string="No Portal Yet" name="no_portal"
                         domain="[('student_partner_id', '=', False)]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter string="Program" name="group_program"
                             context="{'group_by': 'program_id'}"/>
                     <filter string="Class" name="group_class"

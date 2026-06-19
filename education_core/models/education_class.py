@@ -64,10 +64,10 @@ class EducationClass(models.Model):
         readonly=True,
     )
     class_teacher_id = fields.Many2one(
-        "res.partner",
+        "education.faculty",
         string="Class Teacher",
-        domain="[('is_company', '=', False)]",
         tracking=True,
+        ondelete="set null",
     )
 
     # ── Enrollment counters (populated in Sprint 2) ───────────────────────
@@ -92,13 +92,11 @@ class EducationClass(models.Model):
     )
     active = fields.Boolean(default=True)
 
-    _sql_constraints = [
-        (
-            "program_year_section_uniq",
+    _program_year_section_uniq = models.Constraint(
             "UNIQUE(program_id, academic_year_id, section)",
             "A class with the same program, academic year and section already exists.",
         )
-    ]
+
 
     # ── Constraints ────────────────────────────────────────────────────────
 

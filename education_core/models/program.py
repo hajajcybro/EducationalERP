@@ -104,13 +104,10 @@ class EducationProgram(models.Model):
     )
     active = fields.Boolean(default=True)
 
-    _sql_constraints = [
-        (
-            "code_company_uniq",
+    _code_company_uniq = models.Constraint(
             "UNIQUE(code, company_id)",
-            "Program code must be unique per company.",
-        )
-    ]
+            "Program code must be unique per company.",)
+
 
     # ── Constraints ────────────────────────────────────────────────────────
 

@@ -51,13 +51,11 @@ class EducationDepartment(models.Model):
     )
     active = fields.Boolean(default=True)
 
-    _sql_constraints = [
-        (
-            "code_company_uniq",
+    _code_company_uniq = models.Constraint(
             "UNIQUE(code, company_id)",
             "Department code must be unique per company.",
         )
-    ]
+
 
     @api.depends("program_ids")
     def _compute_program_count(self):

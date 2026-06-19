@@ -83,13 +83,11 @@ class EducationTimetable(models.Model):
     notes = fields.Text(string="Notes")
     active = fields.Boolean(default=True)
 
-    _sql_constraints = [
-        (
-            "class_year_uniq",
+    _class_year_uniq =models.Constraint(
             "UNIQUE(class_id, academic_year_id)",
             "A timetable for this class and academic year already exists.",
         )
-    ]
+
 
     @api.depends("slot_ids")
     def _compute_slot_count(self):
@@ -109,3 +107,4 @@ class EducationTimetable(models.Model):
 
     def action_reset_draft(self):
         self.write({"state": "draft"})
+

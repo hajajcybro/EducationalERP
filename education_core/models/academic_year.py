@@ -61,21 +61,6 @@ class AcademicYear(models.Model):
         compute="_compute_enrollment_count",
     )
 
-    _sql_constraints = [
-        (
-            "code_company_uniq",
-            "UNIQUE(code, company_id)",
-            "Academic Year code must be unique per company.",
-        ),
-        (
-            "name_company_uniq",
-            "UNIQUE(name, company_id)",
-            "Academic Year name must be unique per company.",
-        ),
-    ]
-
-    # ── Constraints ────────────────────────────────────────────────────────
-
     @api.constrains("date_start", "date_end")
     def _check_dates(self):
         for rec in self:
