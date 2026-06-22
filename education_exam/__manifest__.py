@@ -30,7 +30,7 @@ Version: 19.0.4.0.0  |  License: LGPL-3
     "author": "Cybrosys Techno Solutions",
     "website": "https://www.cybrosys.com",
     "license": "LGPL-3",
-    "depends": ['education_core', 'education_faculty'],
+    "depends": ['education_core'],
     "data": [
         # ── Security ──────────────────────────────────────────────────
         "security/ir.model.access.csv",

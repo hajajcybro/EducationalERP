@@ -83,6 +83,15 @@ class EducationProgram(models.Model):
         string="# Classes",
         compute="_compute_class_count",
     )
+    subject_ids = fields.One2many(
+        "education.subject",
+        "program_id",
+        string="Subjects",
+    )
+    subject_count = fields.Integer(
+        string="# Subjects",
+        compute="_compute_subject_count",
+    )
 
     # ── Description ───────────────────────────────────────────────────────
     description = fields.Html(
@@ -131,7 +140,23 @@ class EducationProgram(models.Model):
         for rec in self:
             rec.class_count = len(rec.class_ids)
 
+    @api.depends("subject_ids")
+    def _compute_subject_count(self):
+        for rec in self:
+            rec.subject_count = len(rec.subject_ids)
+
     # ── Actions ────────────────────────────────────────────────────────────
+
+    def action_view_subjects(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Subjects — %s") % self.full_name,
+            "res_model": "education.subject",
+            "domain": [("program_id", "=", self.id)],
+            "view_mode": "list",
+            "context": {"default_program_id": self.id},
+        }
 
     def action_view_classes(self):
         self.ensure_one()

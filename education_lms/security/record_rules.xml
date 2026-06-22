@@ -19,8 +19,7 @@
         <field name="name">LMS Enrollment: portal sees own record only</field>
         <field name="model_id" ref="model_edu_lms_enrollment"/>
         <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
-        <field name="domain_force">
-            [('student_id.student_partner_id', '=', user.partner_id.id)]
+        <field name="domain_force"> [('student_id.student_partner_id', '=', user.partner_id.id)]
         </field>
         <field name="perm_read" eval="True"/>
         <field name="perm_write" eval="False"/>

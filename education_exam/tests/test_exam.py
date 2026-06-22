@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Unit tests — edu.exam, edu.exam.result, seating (S4-T11)
-=========================================================
-Covers: exam creation, state machine, seating auto-generation,
-mark entry, grade computation, history logging, rank calculation,
-and re-evaluation wizard.
+Unit tests — edu.exam, edu.exam.result (S4-T11)
+================================================
+Covers: exam creation, state machine, mark entry, grade computation,
+history logging, rank calculation, and re-evaluation wizard.
 """
 from odoo.tests import TransactionCase, tagged
 from odoo.exceptions import ValidationError, UserError
@@ -20,22 +19,44 @@ class TestEduExam(TransactionCase):
         # Academic year
         cls.academic_year = cls.env["education.academic.year"].create({
             "name": "Test Year 2026",
+            "code": "TEST2026",
             "date_start": "2026-01-01",
-            "date_stop": "2026-12-31",
+            "date_end": "2026-12-31",
         })
 
         # Department & program
-        dept = cls.env["education.department"].create({"name": "Test Dept"})
-        program = cls.env["education.program"].create({
+        dept = cls.env["education.department"].create({
+            "name": "Test Dept",
+            "code": "TDEPT",
+        })
+        cls.program = cls.env["education.program"].create({
             "name": "Test Program",
+            "code": "TEST",
             "department_id": dept.id,
+        })
+
+        # Subjects
+        cls.subj_math = cls.env["education.subject"].create({
+            "name": "Mathematics",
+            "code": "MATH",
+            "program_id": cls.program.id,
+        })
+        cls.subj_english = cls.env["education.subject"].create({
+            "name": "English",
+            "code": "ENG",
+            "program_id": cls.program.id,
+        })
+        cls.subj_science = cls.env["education.subject"].create({
+            "name": "Science",
+            "code": "SCI",
+            "program_id": cls.program.id,
         })
 
         # Class
         cls.edu_class = cls.env["education.class"].create({
-            "name": "Class 10-A",
+            "section": "A",
             "academic_year_id": cls.academic_year.id,
-            "program_id": program.id,
+            "program_id": cls.program.id,
         })
 
         # Classroom
@@ -46,30 +67,26 @@ class TestEduExam(TransactionCase):
             "room_type": "hall",
         })
 
-        # Partner for enrollment
-        partner1 = cls.env["res.partner"].create({"name": "Alice Test"})
-        partner2 = cls.env["res.partner"].create({"name": "Bob Test"})
-        partner3 = cls.env["res.partner"].create({"name": "Carol Test"})
-
         # Application → enrollment helper
-        def _make_enrollment(partner):
+        def _make_enrollment(first_name, email):
             app = cls.env["education.application"].create({
-                "name": partner.name,
-                "partner_id": partner.id,
+                "first_name": first_name,
+                "date_of_birth": "2000-06-15",
+                "gender": "male",
+                "email": email,
+                "phone": "9999999999",
                 "academic_year_id": cls.academic_year.id,
-                "program_id": program.id,
+                "program_id": cls.program.id,
             })
+            app.action_submit()
             app.action_approve()
-            return cls.env["education.enrollment"].create({
-                "application_id": app.id,
-                "academic_year_id": cls.academic_year.id,
-                "class_id": cls.edu_class.id,
-                "state": "active",
-            })
+            enr = app.enrollment_id
+            enr.write({"class_id": cls.edu_class.id})
+            return enr
 
-        cls.enr1 = _make_enrollment(partner1)
-        cls.enr2 = _make_enrollment(partner2)
-        cls.enr3 = _make_enrollment(partner3)
+        cls.enr1 = _make_enrollment("Alice", "alice.test@exam.com")
+        cls.enr2 = _make_enrollment("Bob", "bob.test@exam.com")
+        cls.enr3 = _make_enrollment("Carol", "carol.test@exam.com")
 
     # ── Exam CRUD ──────────────────────────────────────────────────────────
 
@@ -83,13 +100,13 @@ class TestEduExam(TransactionCase):
             "class_ids": [(4, self.edu_class.id)],
             "subject_line_ids": [
                 (0, 0, {
-                    "subject": "Mathematics",
+                    "subject_id": self.subj_math.id,
                     "exam_date": "2026-11-01",
                     "max_marks": 100.0,
                     "pass_marks": 40.0,
                 }),
                 (0, 0, {
-                    "subject": "English",
+                    "subject_id": self.subj_english.id,
                     "exam_date": "2026-11-03",
                     "max_marks": 100.0,
                     "pass_marks": 40.0,
@@ -128,7 +145,7 @@ class TestEduExam(TransactionCase):
         self.env["edu.exam.result"].create({
             "exam_id": exam.id,
             "enrollment_id": self.enr1.id,
-            "subject": "Mathematics",
+            "subject_id": self.subj_math.id,
             "marks_obtained": 75.0,
             "max_marks": 100.0,
             "pass_marks": 40.0,
@@ -151,35 +168,13 @@ class TestEduExam(TransactionCase):
         with self.assertRaises(UserError):
             exam.action_schedule()
 
-    # ── Seating Generation ────────────────────────────────────────────────
-
-    def test_generate_seating(self):
-        exam = self._make_exam()
-        exam.action_schedule()
-        exam.action_generate_seating()
-
-        seating = exam.seating_ids
-        self.assertEqual(len(seating), 3)  # 3 enrollments
-        roll_nos = seating.mapped("roll_no")
-        self.assertEqual(len(set(roll_nos)), 3)  # all unique
-
-    def test_seating_duplicate_prevented(self):
-        exam = self._make_exam()
-        exam.action_generate_seating()
-        with self.assertRaises(Exception):
-            self.env["edu.exam.seating"].create({
-                "exam_id": exam.id,
-                "enrollment_id": self.enr1.id,
-                "roll_no": "9999",
-            })
-
     # ── Mark Entry & Grade Computation ───────────────────────────────────
 
     def _make_result(self, exam, enrollment, subject, marks, max_marks=100.0, pass_marks=40.0):
         return self.env["edu.exam.result"].create({
             "exam_id": exam.id,
             "enrollment_id": enrollment.id,
-            "subject": subject,
+            "subject_id": subject.id,
             "marks_obtained": marks,
             "max_marks": max_marks,
             "pass_marks": pass_marks,
@@ -187,9 +182,9 @@ class TestEduExam(TransactionCase):
 
     def test_grade_computation(self):
         exam = self._make_exam()
-        r_aplus = self._make_result(exam, self.enr1, "Math", 95)
-        r_a = self._make_result(exam, self.enr2, "Math", 82)
-        r_fail = self._make_result(exam, self.enr3, "Math", 35)
+        r_aplus = self._make_result(exam, self.enr1, self.subj_math, 95)
+        r_a = self._make_result(exam, self.enr2, self.subj_math, 82)
+        r_fail = self._make_result(exam, self.enr3, self.subj_math, 35)
 
         self.assertEqual(r_aplus.grade, "A+")
         self.assertEqual(r_aplus.pass_fail, "pass")
@@ -203,7 +198,7 @@ class TestEduExam(TransactionCase):
 
     def test_absent_result(self):
         exam = self._make_exam()
-        r = self._make_result(exam, self.enr1, "English", 0)
+        r = self._make_result(exam, self.enr1, self.subj_english, 0)
         r.write({"absent": True})
         self.assertEqual(r.pass_fail, "absent")
         self.assertEqual(r.grade, "AB")
@@ -211,20 +206,20 @@ class TestEduExam(TransactionCase):
     def test_marks_exceeds_max_raises(self):
         exam = self._make_exam()
         with self.assertRaises(ValidationError):
-            self._make_result(exam, self.enr1, "Science", 105, max_marks=100)
+            self._make_result(exam, self.enr1, self.subj_science, 105, max_marks=100)
 
     def test_marks_negative_raises(self):
         exam = self._make_exam()
         with self.assertRaises(ValidationError):
-            self._make_result(exam, self.enr1, "History", -5)
+            self._make_result(exam, self.enr1, self.subj_science, -5)
 
     # ── Rank Computation ─────────────────────────────────────────────────
 
     def test_rank_calculation(self):
         exam = self._make_exam()
-        r1 = self._make_result(exam, self.enr1, "Math", 90)
-        r2 = self._make_result(exam, self.enr2, "Math", 75)
-        r3 = self._make_result(exam, self.enr3, "Math", 60)
+        r1 = self._make_result(exam, self.enr1, self.subj_math, 90)
+        r2 = self._make_result(exam, self.enr2, self.subj_math, 75)
+        r3 = self._make_result(exam, self.enr3, self.subj_math, 60)
 
         # Force recompute
         (r1 | r2 | r3)._compute_rank()
@@ -237,7 +232,7 @@ class TestEduExam(TransactionCase):
 
     def test_marks_change_logged_in_history(self):
         exam = self._make_exam()
-        result = self._make_result(exam, self.enr1, "Math", 70)
+        result = self._make_result(exam, self.enr1, self.subj_math, 70)
         initial_history = len(result.history_ids)
 
         result.write({"marks_obtained": 80.0})
@@ -252,7 +247,7 @@ class TestEduExam(TransactionCase):
 
     def test_reevaluation_resets_to_draft(self):
         exam = self._make_exam()
-        result = self._make_result(exam, self.enr1, "Math", 65)
+        result = self._make_result(exam, self.enr1, self.subj_math, 65)
         result.write({"state": "published"})
 
         wizard = self.env["edu.exam.reevaluation.wizard"].create({

@@ -39,6 +39,9 @@ access_leave_teacher,education.leave.request teacher,model_education_leave_reque
 access_leave_portal,education.leave.request portal,model_education_leave_request,base.group_portal,1,1,1,0
 access_att_summary_wizard_user,education.attendance.summary.wizard user,model_education_attendance_summary_wizard,education_security.group_education_admin,1,1,1,1
 access_att_summary_wizard_teacher,education.attendance.summary.wizard teacher,model_education_attendance_summary_wizard,education_security.group_education_teacher,1,1,1,1
+access_education_subject_admin,education.subject admin,model_education_subject,education_security.group_education_admin,1,1,1,1
+access_education_subject_teacher,education.subject teacher,model_education_subject,education_security.group_education_teacher,1,0,0,0
+access_education_subject_user,education.subject user,model_education_subject,base.group_user,1,0,0,0
 access_classroom_admin,edu.classroom admin,model_edu_classroom,education_security.group_education_admin,1,1,1,1
 access_classroom_teacher,edu.classroom teacher,model_edu_classroom,education_security.group_education_teacher,1,0,0,0
 access_classroom_user,edu.classroom user,model_edu_classroom,base.group_user,1,0,0,0

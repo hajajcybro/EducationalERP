@@ -33,7 +33,7 @@ class EduExamResult(models.Model):
 
     _name = "edu.exam.result"
     _description = "Exam Result"
-    _order = "exam_id, class_id, student_name, subject"
+    _order = "exam_id, class_id, student_name"
     _rec_name = "display_name"
 
     display_name = fields.Char(
@@ -67,15 +67,12 @@ class EduExamResult(models.Model):
         store=True,
         readonly=True,
     )
-    roll_no = fields.Char(
-        string="Roll No.",
-        compute="_compute_roll_no",
-        store=True,
-        readonly=True,
-    )
-    subject = fields.Char(
+    subject_id = fields.Many2one(
+        "education.subject",
         string="Subject",
         required=True,
+        ondelete="restrict",
+        index=True,
     )
 
     # ── Marks ─────────────────────────────────────────────────────────────
@@ -150,13 +147,10 @@ class EduExamResult(models.Model):
         compute="_compute_history_count",
     )
 
-    _sql_constraints = [
-        (
-            "exam_enrollment_subject_uniq",
-            "UNIQUE(exam_id, enrollment_id, subject)",
-            "A result for this student and subject already exists in this exam.",
-        )
-    ]
+    _exam_enrollment_subject_uniq = models.Constraint(
+        "UNIQUE(exam_id, enrollment_id, subject_id)",
+        "A result for this student and subject already exists in this exam.",
+    )
 
     # ── ORM override — track marks changes ────────────────────────────────
 
@@ -178,15 +172,6 @@ class EduExamResult(models.Model):
 
     # ── Computed ──────────────────────────────────────────────────────────
 
-    @api.depends("enrollment_id", "exam_id")
-    def _compute_roll_no(self):
-        for rec in self:
-            seating = self.env["edu.exam.seating"].search([
-                ("exam_id", "=", rec.exam_id.id),
-                ("enrollment_id", "=", rec.enrollment_id.id),
-            ], limit=1)
-            rec.roll_no = seating.roll_no if seating else ""
-
     @api.depends("marks_obtained", "max_marks", "pass_marks", "absent")
     def _compute_grade_fields(self):
         for rec in self:
@@ -205,17 +190,15 @@ class EduExamResult(models.Model):
                 "pass" if rec.marks_obtained >= rec.pass_marks else "fail"
             )
 
-    @api.depends("exam_id", "class_id", "subject", "marks_obtained", "absent")
+    @api.depends("exam_id", "class_id", "subject_id", "marks_obtained", "absent")
     def _compute_rank(self):
         """Rank within exam + class + subject, highest marks = rank 1."""
-        # Group results by (exam_id, class_id, subject)
         groups = {}
         for rec in self:
-            key = (rec.exam_id.id, rec.class_id.id, rec.subject)
+            key = (rec.exam_id.id, rec.class_id.id, rec.subject_id.id)
             groups.setdefault(key, []).append(rec)
 
         for key, records in groups.items():
-            # Sort: absent last, then by marks descending
             sorted_recs = sorted(
                 records,
                 key=lambda r: (-r.marks_obtained if not r.absent else -9999),
@@ -225,11 +208,11 @@ class EduExamResult(models.Model):
                 r.rank = rank if not r.absent else 0
                 rank += 1
 
-    @api.depends("student_name", "subject", "exam_id")
+    @api.depends("student_name", "subject_id", "exam_id")
     def _compute_display_name(self):
         for rec in self:
             rec.display_name = (
-                f"{rec.student_name or '?'} / {rec.subject or '?'}"
+                f"{rec.student_name or '?'} / {rec.subject_id.name or '?'}"
             )
 
     @api.depends("history_ids")
@@ -254,7 +237,7 @@ class EduExamResult(models.Model):
                             rec.marks_obtained,
                             rec.max_marks,
                             rec.student_name,
-                            rec.subject,
+                            rec.subject_id.name,
                         )
                     )
 

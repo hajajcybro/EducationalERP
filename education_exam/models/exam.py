@@ -144,6 +144,19 @@ class EduExam(models.Model):
             rec.seating_count = len(rec.seating_ids)
             rec.result_count = len(rec.result_ids)
 
+    def action_view_seats(self):
+        self.ensure_one()
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Seats',
+            'res_model': 'edu.exam.seating',
+            'view_mode': 'list,form',
+            'domain': [('exam_id', '=', self.id)],
+            'context': {'default_exam_id': self.id},
+        }
+
+
     # ── Constraints ───────────────────────────────────────────────────────
 
     @api.constrains("date_from", "date_to")
@@ -189,42 +202,6 @@ class EduExam(models.Model):
     def action_reset_draft(self):
         self.filtered(lambda r: r.state != "closed").write({"state": "draft"})
 
-    # ── Seating plan generation ────────────────────────────────────────────
-
-    def action_generate_seating(self):
-        """Auto-generate seating assignments for all enrolled students."""
-        self.ensure_one()
-        if not self.class_ids:
-            raise UserError(_("No classes linked to this exam."))
-
-        # Remove existing seating
-        self.seating_ids.unlink()
-
-        Seating = self.env["edu.exam.seating"]
-        enrollments = self.env["education.enrollment"].search([
-            ("class_id", "in", self.class_ids.ids),
-            ("state", "=", "active"),
-        ], order="class_id, id")
-
-        roll = 1
-        for enr in enrollments:
-            Seating.create({
-                "exam_id": self.id,
-                "enrollment_id": enr.id,
-                "roll_no": str(roll).zfill(4),
-            })
-            roll += 1
-
-        self.message_post(
-            body=_("Seating plan generated for %d students.") % len(enrollments)
-        )
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Seating Plan"),
-            "res_model": "edu.exam.seating",
-            "view_mode": "list",
-            "domain": [("exam_id", "=", self.id)],
-        }
 
 
 class EduExamSubject(models.Model):
@@ -241,9 +218,12 @@ class EduExamSubject(models.Model):
         ondelete="cascade",
         index=True,
     )
-    subject = fields.Char(
-        string="Subject / Paper",
+    subject_id = fields.Many2one(
+        "education.subject",
+        string="Subject",
         required=True,
+        ondelete="restrict",
+        index=True,
     )
     exam_date = fields.Date(string="Date")
     exam_time = fields.Float(
@@ -274,7 +254,7 @@ class EduExamSubject(models.Model):
         for rec in self:
             if rec.pass_marks > rec.max_marks:
                 raise ValidationError(
-                    _("Pass marks cannot exceed max marks for subject '%s'.") % rec.subject
+                    _("Pass marks cannot exceed max marks for subject '%s'.") % rec.subject_id.name
                 )
             if rec.max_marks <= 0:
                 raise ValidationError(_("Max marks must be greater than zero."))

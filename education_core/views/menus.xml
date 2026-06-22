@@ -123,6 +123,15 @@
         sequence="55"
         groups="education_security.group_education_admin,education_security.group_education_teacher"/>
 
+    <!-- Subjects (linked to Programs) -->
+    <menuitem
+        id="menu_education_subject"
+        name="Subjects"
+        parent="menu_education_academics"
+        action="action_education_subject"
+        sequence="35"
+        groups="education_security.group_education_admin"/>
+
     <!-- Classrooms / Exam Halls (S4-T12) -->
     <menuitem
         id="menu_edu_classroom"

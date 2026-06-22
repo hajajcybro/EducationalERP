@@ -49,6 +49,7 @@ Version: 19.0.4.0.0  |  License: LGPL-3
         "views/faculty_views.xml",
         # ── Views — Sprint 4 ──────────────────────────────────────────
         "views/classroom_views.xml",
+        "views/subject_views.xml",
         # ── Reports ────────────────────────────────────────────────────
         "report/attendance_report.xml",
         "report/faculty_report.xml",

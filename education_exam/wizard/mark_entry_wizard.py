@@ -2,11 +2,11 @@
 """
 edu.exam.mark.entry.wizard — Bulk mark entry (S4-T09)
 =======================================================
-Select exam + subject → table of all enrolled students loads.
-Teacher enters marks per student and saves in bulk.
+Select Exam + Class → every enrolled student × every subject scheduled
+for that exam loads automatically. Teacher enters marks and saves in bulk.
 """
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError, UserError
+from odoo.exceptions import UserError
 
 
 class EduExamMarkEntryWizard(models.TransientModel):
@@ -19,24 +19,10 @@ class EduExamMarkEntryWizard(models.TransientModel):
         required=True,
         domain="[('state', 'in', ['scheduled', 'ongoing'])]",
     )
-    subject = fields.Char(
-        string="Subject",
-        required=True,
-    )
     class_id = fields.Many2one(
         "education.class",
         string="Class",
         required=True,
-    )
-    max_marks = fields.Float(
-        string="Max Marks",
-        required=True,
-        default=100.0,
-    )
-    pass_marks = fields.Float(
-        string="Pass Marks",
-        required=True,
-        default=40.0,
     )
     line_ids = fields.One2many(
         "edu.exam.mark.entry.line",
@@ -44,44 +30,39 @@ class EduExamMarkEntryWizard(models.TransientModel):
         string="Student Marks",
     )
 
-    @api.onchange("exam_id", "subject", "class_id")
-    def _onchange_load_students(self):
+    @api.onchange("exam_id", "class_id")
+    def _onchange_load(self):
+        """Load all students × all exam subjects when both fields are set."""
+        self.line_ids = [(5, 0, 0)]
         if not (self.exam_id and self.class_id):
             return
+
         enrollments = self.env["education.enrollment"].search([
             ("class_id", "=", self.class_id.id),
             ("state", "=", "active"),
         ], order="student_name")
 
-        # Get subject defaults from exam subject lines
-        subj_line = self.exam_id.subject_line_ids.filtered(
-            lambda l: l.subject == self.subject
-        )[:1]
-        if subj_line:
-            self.max_marks = subj_line.max_marks
-            self.pass_marks = subj_line.pass_marks
+        subject_lines = self.exam_id.subject_line_ids
+        if not enrollments or not subject_lines:
+            return
 
         lines = []
         for enr in enrollments:
-            existing = self.env["edu.exam.result"].search([
-                ("exam_id", "=", self.exam_id.id),
-                ("enrollment_id", "=", enr.id),
-                ("subject", "=", self.subject),
-            ], limit=1)
-            lines.append((0, 0, {
-                "enrollment_id": enr.id,
-                "marks_obtained": existing.marks_obtained if existing else 0.0,
-                "absent": existing.absent if existing else False,
-            }))
+            for subj_line in subject_lines:
+                existing = self.env["edu.exam.result"].search([
+                    ("exam_id", "=", self.exam_id.id),
+                    ("enrollment_id", "=", enr.id),
+                    ("subject_id", "=", subj_line.subject_id.id),
+                ], limit=1)
+                lines.append((0, 0, {
+                    "enrollment_id": enr.id,
+                    "subject_id": subj_line.subject_id.id,
+                    "max_marks": subj_line.max_marks,
+                    "pass_marks": subj_line.pass_marks,
+                    "marks_obtained": existing.marks_obtained if existing else 0.0,
+                    "absent": existing.absent if existing else False,
+                }))
         self.line_ids = lines
-
-    @api.constrains("pass_marks", "max_marks")
-    def _check_marks(self):
-        for rec in self:
-            if rec.pass_marks > rec.max_marks:
-                raise ValidationError(
-                    _("Pass marks cannot exceed max marks.")
-                )
 
     def action_save_marks(self):
         """Create or update edu.exam.result for each line."""
@@ -95,13 +76,13 @@ class EduExamMarkEntryWizard(models.TransientModel):
             existing = Result.search([
                 ("exam_id", "=", self.exam_id.id),
                 ("enrollment_id", "=", line.enrollment_id.id),
-                ("subject", "=", self.subject),
+                ("subject_id", "=", line.subject_id.id),
             ], limit=1)
             vals = {
                 "marks_obtained": line.marks_obtained,
                 "absent": line.absent,
-                "max_marks": self.max_marks,
-                "pass_marks": self.pass_marks,
+                "max_marks": line.max_marks,
+                "pass_marks": line.pass_marks,
             }
             if existing:
                 existing.write(vals)
@@ -109,24 +90,21 @@ class EduExamMarkEntryWizard(models.TransientModel):
                 Result.create({
                     "exam_id": self.exam_id.id,
                     "enrollment_id": line.enrollment_id.id,
-                    "subject": self.subject,
+                    "subject_id": line.subject_id.id,
                     **vals,
                 })
             saved += 1
 
         self.exam_id.message_post(
-            body=_(
-                "Marks saved for %d students — %s / %s."
-            ) % (saved, self.subject, self.class_id.name)
+            body=_("Marks saved for %d entries — %s.") % (saved, self.class_id.name)
         )
         return {
             "type": "ir.actions.act_window",
-            "name": _("Results — %s") % self.subject,
+            "name": _("Results — %s") % self.class_id.name,
             "res_model": "edu.exam.result",
             "view_mode": "list,form",
             "domain": [
                 ("exam_id", "=", self.exam_id.id),
-                ("subject", "=", self.subject),
                 ("class_id", "=", self.class_id.id),
             ],
         }
@@ -135,7 +113,7 @@ class EduExamMarkEntryWizard(models.TransientModel):
 class EduExamMarkEntryLine(models.TransientModel):
     _name = "edu.exam.mark.entry.line"
     _description = "Mark Entry Line"
-    _order = "student_name"
+    _order = "student_name, subject_id"
 
     wizard_id = fields.Many2one(
         "edu.exam.mark.entry.wizard",
@@ -153,11 +131,13 @@ class EduExamMarkEntryLine(models.TransientModel):
         store=True,
         readonly=True,
     )
-    marks_obtained = fields.Float(
-        string="Marks",
-        default=0.0,
+    subject_id = fields.Many2one(
+        "education.subject",
+        string="Subject",
+        required=True,
+        readonly=True,
     )
-    absent = fields.Boolean(
-        string="Absent",
-        default=False,
-    )
+    max_marks = fields.Float(string="Max", default=100.0, readonly=True)
+    pass_marks = fields.Float(string="Pass", default=40.0, readonly=True)
+    marks_obtained = fields.Float(string="Marks", default=0.0)
+    absent = fields.Boolean(string="Absent", default=False)

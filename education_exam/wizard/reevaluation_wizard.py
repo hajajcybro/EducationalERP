@@ -24,8 +24,9 @@ class EduExamReevaluationWizard(models.TransientModel):
         related="result_id.student_name",
         readonly=True,
     )
-    subject = fields.Char(
-        related="result_id.subject",
+    subject_id = fields.Many2one(
+        "education.subject",
+        related="result_id.subject_id",
         readonly=True,
     )
     current_marks = fields.Float(
@@ -65,7 +66,7 @@ class EduExamReevaluationWizard(models.TransientModel):
         result.exam_id.message_post(
             body=_(
                 "Re-evaluation requested for %s — %s. Reason: %s"
-            ) % (result.student_name, result.subject, self.reason)
+            ) % (result.student_name, result.subject_id.name, self.reason)
         )
 
         return {

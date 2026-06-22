@@ -41,9 +41,9 @@
                                 </div>
                                 <div class="col-4 text-end">
                                     <div class="border p-2 d-inline-block">
-                                        <strong>Roll No.</strong><br/>
+                                        <strong>Enrollment No.</strong><br/>
                                         <span class="fs-3 text-primary">
-                                            <t t-esc="seating.roll_no if seating else '—'"/>
+                                            <t t-esc="seating.enrollment_id.enrollment_no if seating else '—'"/>
                                         </span>
                                     </div>
                                 </div>
@@ -86,7 +86,7 @@
                                 <tbody>
                                     <t t-foreach="student_results" t-as="res">
                                         <tr t-attf-class="{{ 'table-success' if res.pass_fail == 'pass' else ('table-danger' if res.pass_fail == 'fail' else 'table-warning') }}">
-                                            <td><t t-esc="res.subject"/></td>
+                                            <td><t t-esc="res.subject_id.name"/></td>
                                             <td class="text-center"><t t-esc="res.max_marks"/></td>
                                             <td class="text-center fw-bold">
                                                 <t t-esc="'ABSENT' if res.absent else res.marks_obtained"/>

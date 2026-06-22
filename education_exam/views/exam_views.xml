@@ -1,10 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- ═══════════════════════════════════════════════════════════════════
-         edu.exam — Form, List, Search (S4-T07)
+         edu.exam.result — Search view
          ═══════════════════════════════════════════════════════════════════ -->
 
-    <!-- ── Form View ──────────────────────────────────────────────────── -->
+    <record id="view_edu_exam_result_search" model="ir.ui.view">
+        <field name="name">edu.exam.result.search</field>
+        <field name="model">edu.exam.result</field>
+        <field name="arch" type="xml">
+            <search string="Search Results">
+                <field name="student_name"/>
+                <field name="subject_id"/>
+                <field name="exam_id"/>
+                <field name="class_id"/>
+                <separator/>
+                <filter string="Pass" name="pass" domain="[('pass_fail','=','pass')]"/>
+                <filter string="Fail" name="fail" domain="[('pass_fail','=','fail')]"/>
+                <filter string="Absent" name="absent" domain="[('pass_fail','=','absent')]"/>
+                <separator/>
+                <filter string="Published" name="published"
+                        domain="[('state','=','published')]"/>
+                <group>
+                    <filter string="Exam" name="group_exam"
+                            context="{'group_by': 'exam_id'}"/>
+                    <filter string="Class" name="group_class"
+                            context="{'group_by': 'class_id'}"/>
+                    <filter string="Subject" name="group_subject"
+                            context="{'group_by': 'subject_id'}"/>
+                    <filter string="Grade" name="group_grade"
+                            context="{'group_by': 'grade'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_edu_exam_result" model="ir.actions.act_window">
+        <field name="name">Exam Results</field>
+        <field name="res_model">edu.exam.result</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_edu_exam_result_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No results yet</p>
+            <p>Use the Mark Entry wizard to bulk-enter student marks.</p>
+        </field>
+    </record>
+
+    <!-- ── edu.exam Form View ─────────────────────────────────────────── -->
     <record id="view_edu_exam_form" model="ir.ui.view">
         <field name="name">edu.exam.form</field>
         <field name="model">edu.exam</field>
@@ -30,9 +71,6 @@
                             string="Reset to Draft"
                             invisible="state not in ['scheduled','ongoing']"
                             groups="education_security.group_education_admin"/>
-                    <button name="action_generate_seating" type="object"
-                            string="Generate Seating Plan" class="btn-secondary"
-                            invisible="state not in ['scheduled','ongoing']"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,scheduled,ongoing,result_published,closed"/>
                 </header>
@@ -41,12 +79,15 @@
                         <button class="oe_stat_button" icon="fa-book"
                                 name="%(action_edu_exam_result)d" type="action"
                                 invisible="result_count == 0"
-                                context="{'default_exam_id': active_id,
-                                          'search_default_exam_id': active_id}">
+                                context="{'default_exam_id': id,
+                                          'search_default_exam_id': id}">
                             <field name="result_count" widget="statinfo"
                                    string="Results"/>
                         </button>
-                        <button class="oe_stat_button" icon="fa-users"
+                        <button name="action_view_seats"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-users"
                                 invisible="seating_count == 0">
                             <field name="seating_count" widget="statinfo"
                                    string="Seats"/>
@@ -76,7 +117,7 @@
                         <page string="Subject Schedule" name="subjects">
                             <field name="subject_line_ids">
                                 <list string="Subjects" editable="bottom">
-                                    <field name="subject"/>
+                                    <field name="subject_id"/>
                                     <field name="exam_date"/>
                                     <field name="exam_time" widget="float_time"/>
                                     <field name="duration_hours"/>
@@ -90,7 +131,7 @@
                         <page string="Seating Plan" name="seating">
                             <field name="seating_ids">
                                 <list string="Seating" editable="bottom">
-                                    <field name="roll_no"/>
+                                    <field name="enrollment_id"/>
                                     <field name="student_name" readonly="1"/>
                                     <field name="class_id" readonly="1"/>
                                     <field name="classroom_id"/>
@@ -118,13 +159,12 @@
                                       decoration-success="pass_fail == 'pass'"
                                       decoration-danger="pass_fail == 'fail'"
                                       decoration-muted="pass_fail == 'absent'">
-                                    <field name="roll_no"/>
                                     <field name="student_name"/>
                                     <field name="class_id"/>
-                                    <field name="subject"/>
+                                    <field name="subject_id"/>
                                     <field name="marks_obtained"/>
                                     <field name="max_marks"/>
-                                    <field name="percentage" widget="percentage"/>
+                                    <field name="percentage" string="Percentage (%)"/>
                                     <field name="grade"/>
                                     <field name="pass_fail" widget="badge"
                                            decoration-success="pass_fail == 'pass'"
@@ -148,7 +188,7 @@
         </field>
     </record>
 
-    <!-- ── List View ─────────────────────────────────────────────────── -->
+    <!-- ── edu.exam List View ─────────────────────────────────────────── -->
     <record id="view_edu_exam_list" model="ir.ui.view">
         <field name="name">edu.exam.list</field>
         <field name="model">edu.exam</field>
@@ -175,7 +215,7 @@
         </field>
     </record>
 
-    <!-- ── Search View ────────────────────────────────────────────────── -->
+    <!-- ── edu.exam Search View ──────────────────────────────────────── -->
     <record id="view_edu_exam_search" model="ir.ui.view">
         <field name="name">edu.exam.search</field>
         <field name="model">edu.exam</field>
@@ -186,29 +226,29 @@
                 <field name="academic_year_id"/>
                 <field name="class_ids"/>
                 <separator/>
-                <filter string="Draft"    name="draft"    domain="[('state','=','draft')]"/>
+                <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
                 <filter string="Scheduled" name="scheduled" domain="[('state','=','scheduled')]"/>
-                <filter string="Ongoing"  name="ongoing"  domain="[('state','=','ongoing')]"/>
+                <filter string="Ongoing" name="ongoing" domain="[('state','=','ongoing')]"/>
                 <filter string="Results Published" name="published"
                         domain="[('state','=','result_published')]"/>
                 <separator/>
                 <filter string="Final Exams" name="final"
                         domain="[('exam_type','=','final')]"/>
-                <filter string="Mid-Terms"   name="midterm"
+                <filter string="Mid-Terms" name="midterm"
                         domain="[('exam_type','=','mid_term')]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Exam Type"    name="group_type"
+                <group>
+                    <filter string="Exam Type" name="group_type"
                             context="{'group_by': 'exam_type'}"/>
                     <filter string="Academic Year" name="group_year"
                             context="{'group_by': 'academic_year_id'}"/>
-                    <filter string="Status"       name="group_state"
+                    <filter string="Status" name="group_state"
                             context="{'group_by': 'state'}"/>
                 </group>
             </search>
         </field>
     </record>
 
-    <!-- ── Window Action ─────────────────────────────────────────────── -->
+    <!-- ── edu.exam Window Action ────────────────────────────────────── -->
     <record id="action_edu_exam" model="ir.actions.act_window">
         <field name="name">Examinations</field>
         <field name="res_model">edu.exam</field>
@@ -216,13 +256,20 @@
         <field name="search_view_id" ref="view_edu_exam_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">No exams scheduled yet</p>
-            <p>Create an exam, add subject schedule and generate seating plans.</p>
+            <p>Create an exam, add subject schedule and assign seating.</p>
         </field>
     </record>
 
     <!-- ═══════════════════════════════════════════════════════════════════
-         edu.exam.result — Standalone result views
+         edu.exam.result — Standalone views
          ═══════════════════════════════════════════════════════════════════ -->
+
+    <record id="edu_exam_reevaluation_wizard_action" model="ir.actions.act_window">
+        <field name="name">Request Re-evaluation</field>
+        <field name="res_model">edu.exam.reevaluation.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
 
     <record id="view_edu_exam_result_form" model="ir.ui.view">
         <field name="name">edu.exam.result.form</field>
@@ -233,7 +280,7 @@
                     <button name="%(edu_exam_reevaluation_wizard_action)d"
                             type="action" string="Request Re-evaluation"
                             invisible="state != 'published'"
-                            context="{'default_result_id': active_id}"/>
+                            context="{'default_result_id': id}"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -243,10 +290,9 @@
                             <field name="enrollment_id"/>
                             <field name="student_name" readonly="1"/>
                             <field name="class_id" readonly="1"/>
-                            <field name="roll_no" readonly="1"/>
                         </group>
                         <group>
-                            <field name="subject"/>
+                            <field name="subject_id"/>
                             <field name="marks_obtained"/>
                             <field name="max_marks"/>
                             <field name="pass_marks"/>
@@ -293,13 +339,12 @@
                   decoration-danger="pass_fail == 'fail'"
                   decoration-muted="pass_fail == 'absent'">
                 <field name="exam_id" optional="hide"/>
-                <field name="roll_no"/>
                 <field name="student_name"/>
                 <field name="class_id"/>
-                <field name="subject"/>
+                <field name="subject_id"/>
                 <field name="marks_obtained"/>
                 <field name="max_marks"/>
-                <field name="percentage" widget="percentage"/>
+                <field name="percentage" string="Percentage (%)"/>
                 <field name="grade"/>
                 <field name="pass_fail" widget="badge"
                        decoration-success="pass_fail == 'pass'"
@@ -313,49 +358,22 @@
         </field>
     </record>
 
-    <record id="view_edu_exam_result_search" model="ir.ui.view">
-        <field name="name">edu.exam.result.search</field>
-        <field name="model">edu.exam.result</field>
+    <record id="view_edu_exam_seating_list" model="ir.ui.view">
+        <field name="name">edu.exam.seating.list</field>
+        <field name="model">edu.exam.seating</field>
         <field name="arch" type="xml">
-            <search string="Search Results">
+            <list>
                 <field name="student_name"/>
-                <field name="subject"/>
-                <field name="exam_id"/>
+                <field name="enrollment_id"/>
                 <field name="class_id"/>
-                <separator/>
-                <filter string="Pass"   name="pass"   domain="[('pass_fail','=','pass')]"/>
-                <filter string="Fail"   name="fail"   domain="[('pass_fail','=','fail')]"/>
-                <filter string="Absent" name="absent" domain="[('pass_fail','=','absent')]"/>
-                <separator/>
-                <filter string="Published" name="published"
-                        domain="[('state','=','published')]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Exam"    name="group_exam"
-                            context="{'group_by': 'exam_id'}"/>
-                    <filter string="Class"   name="group_class"
-                            context="{'group_by': 'class_id'}"/>
-                    <filter string="Subject" name="group_subject"
-                            context="{'group_by': 'subject'}"/>
-                    <filter string="Grade"   name="group_grade"
-                            context="{'group_by': 'grade'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
-    <record id="action_edu_exam_result" model="ir.actions.act_window">
-        <field name="name">Exam Results</field>
-        <field name="res_model">edu.exam.result</field>
-        <field name="view_mode">list,form</field>
-        <field name="search_view_id" ref="view_edu_exam_result_search"/>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">No results yet</p>
-            <p>Use the Mark Entry wizard to bulk-enter student marks.</p>
+                <field name="classroom_id"/>
+                <field name="seat_no"/>
+            </list>
         </field>
     </record>
 
     <!-- ═══════════════════════════════════════════════════════════════════
-         Mark Entry Wizard — S4-T09
+         Mark Entry Wizard
          ═══════════════════════════════════════════════════════════════════ -->
 
     <record id="view_mark_entry_wizard_form" model="ir.ui.view">
@@ -364,20 +382,20 @@
         <field name="arch" type="xml">
             <form string="Mark Entry">
                 <sheet>
-                    <group string="Exam Details">
+                    <group string="Select Exam &amp; Class">
                         <group>
                             <field name="exam_id"/>
-                            <field name="subject"/>
                         </group>
                         <group>
                             <field name="class_id"/>
-                            <field name="max_marks"/>
-                            <field name="pass_marks"/>
                         </group>
                     </group>
                     <field name="line_ids">
                         <list string="Student Marks" editable="bottom">
                             <field name="student_name" readonly="1"/>
+                            <field name="subject_id" readonly="1"/>
+                            <field name="max_marks" readonly="1" optional="show"/>
+                            <field name="pass_marks" readonly="1" optional="show"/>
                             <field name="absent"/>
                             <field name="marks_obtained"
                                    readonly="absent"
@@ -402,7 +420,7 @@
     </record>
 
     <!-- ═══════════════════════════════════════════════════════════════════
-         Re-evaluation Wizard — S4-T06
+         Re-evaluation Wizard
          ═══════════════════════════════════════════════════════════════════ -->
 
     <record id="view_reevaluation_wizard_form" model="ir.ui.view">
@@ -414,7 +432,7 @@
                     <group>
                         <field name="result_id" readonly="1"/>
                         <field name="student_name" readonly="1"/>
-                        <field name="subject" readonly="1"/>
+                        <field name="subject_id" readonly="1"/>
                         <field name="current_marks" readonly="1"/>
                     </group>
                     <group string="Request Details">
@@ -429,13 +447,6 @@
                 </footer>
             </form>
         </field>
-    </record>
-
-    <record id="edu_exam_reevaluation_wizard_action" model="ir.actions.act_window">
-        <field name="name">Request Re-evaluation</field>
-        <field name="res_model">edu.exam.reevaluation.wizard</field>
-        <field name="view_mode">form</field>
-        <field name="target">new</field>
     </record>
 
 </odoo>

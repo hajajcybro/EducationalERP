@@ -149,23 +149,17 @@ class InstitutionProfile(models.Model):
     )
 
     # ── SQL Constraints ───────────────────────────────────────────────────
-    _sql_constraints = [
-        (
-            "unique_company",
+    _unique_company = models.Constraint(
             "UNIQUE(company_id)",
-            "Only one Institution Profile is allowed per company.",
-        )
-    ]
+            "Only one Institution Profile is allowed per company.",)
+
 
     # ── Methods ───────────────────────────────────────────────────────────
 
     @api.model
     def _tz_get(self):
         """Return list of (tz, tz) tuples for the timezone Selection field."""
-        return [
-            (tz, tz)
-            for tz in sorted(pytz.all_timezones, key=lambda z: z.lower())
-        ]
+        return [(tz, tz) for tz in sorted(pytz.all_timezones, key=lambda z: z.lower())]
 
     @api.model
     def get_profile(self):

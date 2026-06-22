@@ -33,9 +33,8 @@
                             </div>
                             <div class="col-3 text-end">
                                 <div class="border p-2 d-inline-block">
-                                    <strong>Roll No.</strong><br/>
                                     <span class="fs-3 text-primary">
-                                        <t t-esc="seating.roll_no"/>
+                                        <t t-esc="seating.enrollment_id.enrollment_no"/>
                                     </span>
                                 </div>
                             </div>

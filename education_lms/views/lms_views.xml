@@ -89,7 +89,7 @@
                             <field name="description" widget="html"/>
                         </page>
                         <page string="Lessons" name="lessons">
-                            <field name="lesson_ids" context="{'default_course_id': active_id}">
+                            <field name="lesson_ids" context="{'default_course_id': id}">
                                 <list editable="bottom">
                                     <field name="sequence" widget="handle"/>
                                     <field name="title"/>
@@ -101,8 +101,8 @@
                         </page>
                         <page string="Quizzes" name="quizzes">
                             <field name="quiz_ids"
-                                   context="{'default_course_id': active_id}"
-                                   domain="[('course_id','=',active_id)]">
+                                   context="{'default_course_id': id}"
+                                   domain="[('course_id','=',id)]">
                                 <list>
                                     <field name="title"/>
                                     <field name="question_count"/>
@@ -113,7 +113,7 @@
                             </field>
                         </page>
                         <page string="Enrollments" name="enrollments">
-                            <field name="enrollment_ids" context="{'default_course_id': active_id}">
+                            <field name="enrollment_ids" context="{'default_course_id': id}">
                                 <list>
                                     <field name="student_id"/>
                                     <field name="enrolled_date"/>
@@ -207,7 +207,7 @@
                 <filter string="Archived" name="archived" domain="[('state','=','archived')]"/>
                 <filter string="Open Enrollment" name="open" domain="[('enrollment_mode','=','open')]"/>
                 <separator/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter string="Category" name="group_category" context="{'group_by': 'category_id'}"/>
                     <filter string="Teacher" name="group_teacher" context="{'group_by': 'teacher_id'}"/>
                     <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
@@ -252,17 +252,10 @@
                             <field name="content_url"/>
                         </group>
                     </group>
-                    <!-- Inline content preview for URL-type lessons -->
-                    <group string="Content Preview"
-                           invisible="lesson_type not in ['url','video']">
-                        <div colspan="2" invisible="not content_url">
-                            <iframe t-att-src="content_url"
-                                    width="100%"
-                                    height="480"
-                                    frameborder="0"
-                                    allowfullscreen="1"
-                                    style="border:1px solid #dee2e6; border-radius:4px;"/>
-                        </div>
+                    <!-- Content link — t-att-src is forbidden in Odoo 19 arch;
+                         use widget="url" so the cashier can open the content -->
+                    <group string="Content Preview" invisible="lesson_type not in ['url','video']">
+                        <field name="content_url" widget="url" invisible="not content_url"/>
                     </group>
                 </sheet>
             </form>

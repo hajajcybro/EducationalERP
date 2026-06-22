@@ -12,10 +12,7 @@
         id="menu_education_root"
         name="Education ERP"
         sequence="10"
-        groups="education_security.group_education_admin,
-                education_security.group_education_admission_officer,
-                education_security.group_education_teacher,
-                education_security.group_education_accountant"/>
+        groups="education_security.group_education_admin,education_security.group_education_admission_officer,education_security.group_education_teacher,education_security.group_education_accountant"/>
 
     <!-- ── Configuration Submenu (root-level) ─────────────────────────── -->
     <menuitem

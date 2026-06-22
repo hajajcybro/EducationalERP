@@ -13,5 +13,6 @@ from . import timetable_slot
 from . import attendance
 from . import leave_request
 from . import attendance_cron
-# Sprint 4 — Classroom
+# Sprint 4 — Classroom, Subjects
 from . import classroom
+from . import subject

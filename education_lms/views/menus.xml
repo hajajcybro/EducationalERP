@@ -11,8 +11,7 @@
         name="LMS"
         parent="education_config.menu_education_root"
         sequence="55"
-        groups="education_security.group_education_admin,
-                education_security.group_education_teacher"/>
+        groups="education_security.group_education_admin,education_security.group_education_teacher"/>
 
     <menuitem
         id="menu_lms_courses"

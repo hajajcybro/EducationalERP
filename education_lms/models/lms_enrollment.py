@@ -58,13 +58,10 @@ class EduLmsEnrollment(models.Model):
         default=False,
     )
 
-    _sql_constraints = [
-        (
-            "unique_student_course",
+    _unique_student_course = models.Constraint(
             "UNIQUE(student_id, course_id)",
-            "A student can only be enrolled once per course.",
-        )
-    ]
+            "A student can only be enrolled once per course.",)
+
 
     # ── Computed ─────────────────────────────────────────────────────────
     @api.depends("course_id", "course_id.lesson_ids", "state")

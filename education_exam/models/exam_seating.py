@@ -16,7 +16,7 @@ class EduExamSeating(models.Model):
     _name = "edu.exam.seating"
     _description = "Exam Seating Assignment"
     _order = "classroom_id, seat_no"
-    _rec_name = "roll_no"
+    # _rec_name = "roll_no"
 
     exam_id = fields.Many2one(
         "edu.exam",
@@ -44,28 +44,29 @@ class EduExamSeating(models.Model):
         store=True,
         readonly=True,
     )
-    roll_no = fields.Char(
-        string="Roll No.",
-        required=True,
-    )
+    # roll_no = fields.Char(
+    #     string="Roll No.",
+    #     required=True,
+    # )
     classroom_id = fields.Many2one(
         "edu.classroom",
         string="Exam Hall",
     )
-    seat_no = fields.Char(string="Seat No.")
+    seat_no = fields.Integer(
+        string="Seat No.",
+        default=0,
+        help="Physical seat number in the exam hall. Must be unique per hall per exam.",
+    )
 
-    _sql_constraints = [
-        (
-            "exam_enrollment_uniq",
-            "UNIQUE(exam_id, enrollment_id)",
-            "This student already has a seating assignment for this exam.",
-        ),
-        (
-            "exam_roll_uniq",
-            "UNIQUE(exam_id, roll_no)",
-            "Roll number must be unique within the exam.",
-        ),
-    ]
+    _exam_enrollment_uniq = models.Constraint(
+        "UNIQUE(exam_id, enrollment_id)",
+        "This student already has a seating assignment for this exam.",
+    )
+    _exam_seat_uniq = models.Constraint(
+        "UNIQUE(exam_id, classroom_id, seat_no)",
+        "This seat number is already taken in this exam hall.",
+    )
+
 
 
 class EduExamInvigilator(models.Model):

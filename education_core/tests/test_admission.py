@@ -239,9 +239,7 @@ class TestEnrollmentLifecycle(TransactionCase):
 
     def test_enrollment_duplicate_application_year_raises(self):
         """Same application cannot be enrolled twice in same academic year."""
-        from psycopg2 import IntegrityError
-        from odoo.exceptions import UserError
-        with self.assertRaises((UserError, Exception)):
+        with self.assertRaises(Exception):
             self.env["education.enrollment"].create({
                 "application_id": self.application.id,
                 "program_id": self.program.id,
