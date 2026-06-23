@@ -29,20 +29,26 @@ class TestFeePlan(TransactionCase):
 
         # Academic year
         cls.ay = cls.env["education.academic.year"].create({
-            "name": "AY 2025-26",
-            "start_date": "2025-06-01",
-            "end_date": "2026-05-31",
+            "name": "Test AY 2025-26",
+            "code": "TST2526",
+            "date_start": "2025-06-01",
+            "date_end": "2026-05-31",
         })
 
         # Department → Program → Class
-        cls.dept = cls.env["education.department"].create({"name": "Science"})
+        cls.dept = cls.env["education.department"].create({
+            "name": "Test Science",
+            "code": "TST-SCI",
+        })
         cls.program = cls.env["education.program"].create({
-            "name": "B.Sc Physics",
+            "name": "Test B.Sc Physics",
+            "code": "TST-PHY",
+            "degree_type": "bachelor",
             "department_id": cls.dept.id,
             "duration_years": 3,
         })
         cls.cls = cls.env["education.class"].create({
-            "name": "BSc-I",
+            "section": "A",
             "program_id": cls.program.id,
             "academic_year_id": cls.ay.id,
         })
@@ -50,7 +56,7 @@ class TestFeePlan(TransactionCase):
         # Income account
         cls.income_account = cls.env["account.account"].search([
             ("account_type", "=", "income"),
-            ("company_id", "=", cls.env.company.id),
+            ("company_ids", "in", cls.env.company.id),
         ], limit=1)
         if not cls.income_account:
             cls.income_account = cls.env["account.account"].create({
@@ -96,7 +102,10 @@ class TestFeePlan(TransactionCase):
         cls.application = cls.env["education.application"].create({
             "first_name": "Test",
             "last_name": "Student",
+            "date_of_birth": "2005-01-01",
+            "gender": "male",
             "email": "student_fee@test.com",
+            "phone": "9999999999",
             "program_id": cls.program.id,
             "academic_year_id": cls.ay.id,
         })
@@ -115,6 +124,12 @@ class TestFeePlan(TransactionCase):
                 "class_id": cls.cls.id,
                 "academic_year_id": cls.ay.id,
             })
+
+        # Ensure the enrollment has a student portal account so that
+        # action_generate_invoice() does not raise. The field is readonly in
+        # the UI but writable via ORM; this avoids triggering the portal-invite
+        # email wizard in action_grant_portal_access().
+        cls.enrollment.student_partner_id = cls.student_partner.id
 
     # ── Fee Plan ──────────────────────────────────────────────────────────
 

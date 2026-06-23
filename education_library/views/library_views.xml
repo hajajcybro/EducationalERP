@@ -13,7 +13,9 @@
                 <sheet>
                     <div class="oe_title">
                         <label for="name"/>
-                        <h1><field name="name" placeholder="Category Name"/></h1>
+                        <h1>
+                            <field name="name" placeholder="Category Name"/>
+                        </h1>
                     </div>
                     <group>
                         <field name="daily_fine_rate" widget="monetary"
@@ -65,6 +67,51 @@
          edu.library.book — Form, List, Search, Action
     ══════════════════════════════════════════════════════════════════════════ -->
 
+
+    <record id="view_library_loan_search" model="ir.ui.view">
+        <field name="name">edu.library.loan.search</field>
+        <field name="model">edu.library.loan</field>
+        <field name="arch" type="xml">
+            <search string="Search Loans">
+                <field name="book_id"/>
+                <field name="member_id"/>
+                <separator/>
+                <filter string="Issued" name="filter_issued"
+                        domain="[('state', '=', 'issued')]"/>
+                <filter string="Overdue" name="filter_overdue"
+                        domain="[('state', '=', 'overdue')]"/>
+                <filter string="Returned" name="filter_returned"
+                        domain="[('state', '=', 'returned')]"/>
+                <filter string="Active" name="filter_active"
+                        domain="[('state', 'in', ('issued', 'overdue'))]"/>
+                <group>
+                    <filter string="Member" name="groupby_member"
+                            context="{'group_by': 'member_id'}"/>
+                    <filter string="Book" name="groupby_book"
+                            context="{'group_by': 'book_id'}"/>
+                    <filter string="Status" name="groupby_state"
+                            context="{'group_by': 'state'}"/>
+                    <filter string="Due Date" name="groupby_due_date"
+                            context="{'group_by': 'due_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="action_edu_library_loan" model="ir.actions.act_window">
+        <field name="name">Loans</field>
+        <field name="res_model">edu.library.loan</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_library_loan_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Issue your first book loan
+            </p>
+        </field>
+    </record>
+
+
     <record id="view_library_book_form" model="ir.ui.view">
         <field name="name">edu.library.book.form</field>
         <field name="model">edu.library.book</field>
@@ -77,7 +124,7 @@
                                 type="action"
                                 class="oe_stat_button"
                                 icon="fa-book"
-                                context="{'search_default_book_id': active_id}">
+                                context="{'search_default_book_id': id}">
                             <field name="available_copies" widget="statinfo"
                                    string="Available"/>
                         </button>
@@ -90,7 +137,9 @@
 
                     <div class="oe_title">
                         <label for="title"/>
-                        <h1><field name="title" placeholder="Book Title"/></h1>
+                        <h1>
+                            <field name="title" placeholder="Book Title"/>
+                        </h1>
                     </div>
                     <group>
                         <group string="Book Details">
@@ -163,7 +212,7 @@
                         domain="[('available_copies', '&gt;', 0)]"/>
                 <filter string="Archived" name="filter_archived"
                         domain="[('active', '=', False)]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter string="Category" name="groupby_category"
                             context="{'group_by': 'category_id'}"/>
                     <filter string="Author" name="groupby_author"
@@ -202,7 +251,7 @@
                                 type="action"
                                 class="oe_stat_button"
                                 icon="fa-book"
-                                context="{'search_default_member_id': active_id,
+                                context="{'search_default_member_id': id,
                                           'search_default_filter_active': 1}">
                             <field name="active_loans_count" widget="statinfo"
                                    string="Active Loans"/>
@@ -215,7 +264,9 @@
 
                     <div class="oe_title">
                         <label for="member_no" string="Member No."/>
-                        <h1><field name="member_no" readonly="1"/></h1>
+                        <h1>
+                            <field name="member_no" readonly="1"/>
+                        </h1>
                     </div>
                     <group>
                         <group string="Member Details">
@@ -356,47 +407,6 @@
         </field>
     </record>
 
-    <record id="view_library_loan_search" model="ir.ui.view">
-        <field name="name">edu.library.loan.search</field>
-        <field name="model">edu.library.loan</field>
-        <field name="arch" type="xml">
-            <search string="Search Loans">
-                <field name="book_id"/>
-                <field name="member_id"/>
-                <separator/>
-                <filter string="Issued" name="filter_issued"
-                        domain="[('state', '=', 'issued')]"/>
-                <filter string="Overdue" name="filter_overdue"
-                        domain="[('state', '=', 'overdue')]"/>
-                <filter string="Returned" name="filter_returned"
-                        domain="[('state', '=', 'returned')]"/>
-                <filter string="Active" name="filter_active"
-                        domain="[('state', 'in', ('issued', 'overdue'))]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Member" name="groupby_member"
-                            context="{'group_by': 'member_id'}"/>
-                    <filter string="Book" name="groupby_book"
-                            context="{'group_by': 'book_id'}"/>
-                    <filter string="Status" name="groupby_state"
-                            context="{'group_by': 'state'}"/>
-                    <filter string="Due Date" name="groupby_due_date"
-                            context="{'group_by': 'due_date'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
-    <record id="action_edu_library_loan" model="ir.actions.act_window">
-        <field name="name">Loans</field>
-        <field name="res_model">edu.library.loan</field>
-        <field name="view_mode">list,form</field>
-        <field name="search_view_id" ref="view_library_loan_search"/>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Issue your first book loan
-            </p>
-        </field>
-    </record>
 
     <!-- ══════════════════════════════════════════════════════════════════════
          edu.library.issue.wizard — Form view + Action

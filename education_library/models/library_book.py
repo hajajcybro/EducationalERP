@@ -93,13 +93,10 @@ class EduLibraryBook(models.Model):
     active = fields.Boolean(default=True)
     notes = fields.Text(string="Notes")
 
-    _sql_constraints = [
-        (
-            "isbn_uniq",
+    _isbn_uniq = models.Constraint(
             "UNIQUE(isbn)",
-            "A book with this ISBN already exists.",
-        ),
-    ]
+            "A book with this ISBN already exists.", ),
+
 
     # ── Computed ─────────────────────────────────────────────────────────────
 
@@ -107,8 +104,7 @@ class EduLibraryBook(models.Model):
     def _compute_available_copies(self):
         for rec in self:
             active_loans = rec.loan_ids.filtered(
-                lambda l: l.state in ("issued", "overdue")
-            )
+                lambda l: l.state in ("issued", "overdue"))
             rec.available_copies = max(0, rec.total_copies - len(active_loans))
 
     # ── Constraints ──────────────────────────────────────────────────────────

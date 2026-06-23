@@ -90,11 +90,11 @@
                                     </tr>
                                     <tr>
                                         <td class="fw-bold">Total Amount</td>
-                                        <td>: <strong><t t-esc="format_amount(invoice.amount_total, invoice.currency_id)"/></strong></td>
+                                        <td>: <strong><span t-out="invoice.amount_total" t-options="{'widget': 'monetary', 'display_currency': invoice.currency_id}"/></strong></td>
                                     </tr>
                                     <tr>
                                         <td class="fw-bold">Amount Due</td>
-                                        <td>: <t t-esc="format_amount(invoice.amount_residual, invoice.currency_id)"/></td>
+                                        <td>: <span t-out="invoice.amount_residual" t-options="{'widget': 'monetary', 'display_currency': invoice.currency_id}"/></td>
                                     </tr>
                                 </table>
                             </div>
@@ -116,13 +116,13 @@
                                     <tr>
                                         <td><t t-esc="line.name"/></td>
                                         <td class="text-end">
-                                            <t t-esc="format_amount(line.price_unit, invoice.currency_id)"/>
+                                            <span t-out="line.price_unit" t-options="{'widget': 'monetary', 'display_currency': invoice.currency_id}"/>
                                         </td>
                                         <td class="text-end">
-                                            <t t-esc="format_amount(line.price_tax, invoice.currency_id)"/>
+                                            <span t-out="line.price_total - line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': invoice.currency_id}"/>
                                         </td>
                                         <td class="text-end">
-                                            <t t-esc="format_amount(line.price_subtotal, invoice.currency_id)"/>
+                                            <span t-out="line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': invoice.currency_id}"/>
                                         </td>
                                     </tr>
                                 </t>
@@ -131,14 +131,14 @@
                                 <tr>
                                     <td colspan="3" class="text-end">Total</td>
                                     <td class="text-end">
-                                        <t t-esc="format_amount(invoice.amount_total, invoice.currency_id)"/>
+                                        <span t-out="invoice.amount_total" t-options="{'widget': 'monetary', 'display_currency': invoice.currency_id}"/>
                                     </td>
                                 </tr>
                                 <t t-if="invoice.amount_residual > 0">
                                     <tr class="text-danger">
                                         <td colspan="3" class="text-end">Balance Due</td>
                                         <td class="text-end">
-                                            <t t-esc="format_amount(invoice.amount_residual, invoice.currency_id)"/>
+                                            <span t-out="invoice.amount_residual" t-options="{'widget': 'monetary', 'display_currency': invoice.currency_id}"/>
                                         </td>
                                     </tr>
                                 </t>
@@ -158,7 +158,7 @@
                                             <td><t t-esc="pay.get('date','—')"/></td>
                                             <td><t t-esc="pay.get('ref','—')"/></td>
                                             <td class="text-end">
-                                                <t t-esc="format_amount(pay.get('amount',0), invoice.currency_id)"/>
+                                                <span t-out="pay.get('amount',0)" t-options="{'widget': 'monetary', 'display_currency': invoice.currency_id}"/>
                                             </td>
                                         </tr>
                                     </t>

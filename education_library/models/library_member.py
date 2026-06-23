@@ -79,13 +79,10 @@ class EduLibraryMember(models.Model):
     active = fields.Boolean(default=True)
     notes = fields.Text(string="Notes")
 
-    _sql_constraints = [
-        (
-            "enrollment_uniq",
+    _enrollment_uniq = models.Constraint(
             "UNIQUE(enrollment_id)",
-            "This student is already registered as a library member.",
-        ),
-    ]
+            "This student is already registered as a library member.",),
+
 
     # ── ORM ───────────────────────────────────────────────────────────────────
 

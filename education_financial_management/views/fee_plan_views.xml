@@ -12,7 +12,9 @@
             <form string="Fee Plan">
                 <sheet>
                     <div class="oe_title">
-                        <h1><field name="name"/></h1>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
                     </div>
                     <group>
                         <group>
@@ -70,7 +72,7 @@
                 <field name="name"/>
                 <field name="academic_year_id"/>
                 <field name="program_id"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter string="Academic Year" name="group_year"
                             context="{'group_by': 'academic_year_id'}"/>
                     <filter string="Programme" name="group_program"
@@ -100,36 +102,39 @@
         <field name="model">education.enrollment</field>
         <field name="inherit_id" ref="education_core.view_education_enrollment_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//notebook" position="inside">
-                <page string="Fees" name="fees">
-                    <group>
+            <xpath expr="//sheet" position="inside">
+                <notebook>
+                    <page string="Fees" name="fees">
                         <group>
-                            <field name="fee_plan_id"/>
-                            <field name="scholarship_amount" widget="monetary"/>
+                            <group>
+                                <field name="fee_plan_id"/>
+                                <field name="scholarship_amount" widget="monetary"/>
+                            </group>
+                            <group>
+                                <field name="fee_state" widget="badge"
+                                       decoration-success="fee_state == 'paid'"
+                                       decoration-warning="fee_state in ['invoiced','partial']"
+                                       decoration-danger="fee_state == 'overdue'"
+                                       decoration-muted="fee_state == 'not_invoiced'"/>
+                                <field name="total_fee" readonly="1" widget="monetary"/>
+                                <field name="amount_paid" readonly="1" widget="monetary"/>
+                                <field name="amount_due" readonly="1" widget="monetary"/>
+                            </group>
                         </group>
-                        <group>
-                            <field name="fee_state" widget="badge"
-                                   decoration-success="fee_state == 'paid'"
-                                   decoration-warning="fee_state in ['invoiced','partial']"
-                                   decoration-danger="fee_state == 'overdue'"
-                                   decoration-muted="fee_state == 'not_invoiced'"/>
-                            <field name="total_fee" readonly="1" widget="monetary"/>
-                            <field name="amount_paid" readonly="1" widget="monetary"/>
-                            <field name="amount_due" readonly="1" widget="monetary"/>
-                        </group>
-                    </group>
-                    <div class="o_row">
-                        <button name="action_generate_invoice" type="object"
-                                string="Generate Invoice" class="btn-primary"
-                                invisible="fee_state != 'not_invoiced' or not fee_plan_id"/>
-                        <button name="action_view_invoices" type="object"
-                                string="View Invoices" class="btn-secondary"
-                                invisible="invoice_count == 0"/>
-                    </div>
-                </page>
+                        <div class="o_row">
+                            <button name="action_generate_invoice" type="object"
+                                    string="Generate Invoice" class="btn-primary"
+                                    invisible="fee_state != 'not_invoiced' or not fee_plan_id"/>
+                            <button name="action_view_invoices" type="object"
+                                    string="View Invoices" class="btn-secondary"
+                                    invisible="invoice_count == 0"/>
+                        </div>
+                    </page>
+                </notebook>
             </xpath>
         </field>
     </record>
+
 
     <!-- ═══════════════════════════════════════════════════════════════════
          account.move — inherit: show student/class info (S5-T06)
@@ -138,9 +143,9 @@
     <record id="view_account_move_fee_list_inherit" model="ir.ui.view">
         <field name="name">account.move.fee.list.inherit</field>
         <field name="model">account.move</field>
-        <field name="inherit_id" ref="account.view_out_invoice_list"/>
+        <field name="inherit_id" ref="account.view_out_invoice_tree"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='partner_id']" position="after">
+            <xpath expr="//field[@name='currency_id']" position="after">
                 <field name="student_name" optional="show"/>
                 <field name="class_id" optional="show"/>
                 <field name="academic_year_id" optional="hide"/>
@@ -187,12 +192,12 @@
                         domain="[('fee_state','=','overdue')]"/>
                 <filter string="Partial" name="partial"
                         domain="[('fee_state','=','partial')]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Class"         name="group_class"
+                <group>
+                    <filter string="Class" name="group_class"
                             context="{'group_by': 'class_id'}"/>
                     <filter string="Academic Year" name="group_year"
                             context="{'group_by': 'academic_year_id'}"/>
-                    <filter string="Fee Plan"      name="group_plan"
+                    <filter string="Fee Plan" name="group_plan"
                             context="{'group_by': 'fee_plan_id'}"/>
                 </group>
             </search>

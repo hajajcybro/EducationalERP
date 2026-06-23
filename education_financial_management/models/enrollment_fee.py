@@ -89,7 +89,6 @@ class EducationEnrollmentFee(models.Model):
             rec.total_fee = total
             rec.amount_paid = total - residual
             rec.amount_due = residual
-
             if not invoices:
                 rec.fee_state = "not_invoiced"
             elif residual == 0:
@@ -135,7 +134,6 @@ class EducationEnrollmentFee(models.Model):
                 ),
                 "tax_ids": [(6, 0, line.tax_ids.ids)],
             }))
-
         # Scholarship credit line (S5-T04)
         if self.scholarship_amount > 0:
             move_lines.append((0, 0, {
@@ -144,7 +142,6 @@ class EducationEnrollmentFee(models.Model):
                 "price_unit": -self.scholarship_amount,
                 "account_id": self._get_default_income_account().id,
             }))
-
         invoice = self.env["account.move"].create({
             "move_type": "out_invoice",
             "partner_id": self.student_partner_id.id,
@@ -160,7 +157,6 @@ class EducationEnrollmentFee(models.Model):
             ) % (self.student_name, self.fee_plan_id.name),
             "invoice_line_ids": move_lines,
         })
-
         self.message_post(
             body=_("Fee invoice %s generated for %s (total: %.2f).")
             % (invoice.name, self.student_name, invoice.amount_total)
@@ -188,7 +184,7 @@ class EducationEnrollmentFee(models.Model):
         """Return a sensible default income account."""
         account = self.env["account.account"].search([
             ("account_type", "=", "income"),
-            ("company_id", "=", self.env.company.id),
+            ("company_ids", "in", self.env.company.id),
         ], limit=1)
         if not account:
             raise UserError(
