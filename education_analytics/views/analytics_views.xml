@@ -58,7 +58,7 @@
                 <filter name="filter_by_year" string="Academic Year"
                         domain="[]"
                         context="{'group_by': 'academic_year_name'}"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_by_program" string="Program"
                             context="{'group_by': 'program_name'}"/>
                     <filter name="group_by_year" string="Academic Year"
@@ -121,9 +121,12 @@
             <list string="Fee Collection" create="false" edit="false" delete="false">
                 <field name="academic_year_name" string="Academic Year"/>
                 <field name="class_name" string="Class"/>
-                <field name="total_invoiced" string="Total Invoiced" widget="monetary"/>
-                <field name="total_paid" string="Paid" widget="monetary"/>
-                <field name="total_outstanding" string="Outstanding" widget="monetary"/>
+                <field name="total_invoiced" string="Total Invoiced" widget="float"
+                       options="{'digits': [16, 2]}"/>
+                <field name="total_paid" string="Paid" widget="float"
+                       options="{'digits': [16, 2]}"/>
+                <field name="total_outstanding" string="Outstanding" widget="float"
+                       options="{'digits': [16, 2]}"/>
                 <field name="overdue_count" string="Overdue"/>
             </list>
         </field>
@@ -137,7 +140,7 @@
             <search string="Fee Collection">
                 <field name="academic_year_name" string="Academic Year"/>
                 <field name="class_name" string="Class"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_by_year" string="Academic Year"
                             context="{'group_by': 'academic_year_name'}"/>
                     <filter name="group_by_class" string="Class"
@@ -200,7 +203,8 @@
                 <field name="academic_year_name" string="Academic Year"/>
                 <field name="total_records" string="Total Records"/>
                 <field name="present_count" string="Present"/>
-                <field name="attendance_rate" string="Rate (%)" digits="[5,2]"/>
+                <field name="attendance_rate" string="Rate (%)"
+                       options="{'digits': [5, 2]}"/>
             </list>
         </field>
     </record>
@@ -213,7 +217,7 @@
             <search string="Attendance Rate">
                 <field name="class_name" string="Class"/>
                 <field name="academic_year_name" string="Academic Year"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_by_class" string="Class"
                             context="{'group_by': 'class_name'}"/>
                     <filter name="group_by_year" string="Academic Year"
@@ -279,7 +283,8 @@
                 <field name="total_students" string="Total"/>
                 <field name="passed_count" string="Passed"/>
                 <field name="failed_count" string="Failed"/>
-                <field name="pass_rate" string="Pass Rate (%)" digits="[5,2]"/>
+                <field name="pass_rate" string="Pass Rate (%)"
+                       options="{'digits': [5, 2]}"/>
             </list>
         </field>
     </record>
@@ -292,7 +297,7 @@
             <search string="Exam Pass Rate">
                 <field name="exam_name" string="Exam"/>
                 <field name="class_name" string="Class"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_by_exam" string="Exam"
                             context="{'group_by': 'exam_name'}"/>
                     <filter name="group_by_type" string="Exam Type"

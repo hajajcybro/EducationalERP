@@ -119,7 +119,7 @@
                 <filter string="Verified"
                         name="verified"
                         domain="[('state','=','verified')]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter string="Document Type" name="group_type"
                             context="{'group_by': 'document_type_id'}"/>
                     <filter string="Expiry Status" name="group_expiry"

@@ -265,6 +265,35 @@ class EducationEnrollment(models.Model):
                 % (partner.email or _("(no email)")),
             )
 
+    def action_set_portal_password(self):
+        """Open the wizard to set/reset the student's portal password.
+
+        Admin-only: the header button is restricted to the education admin
+        group. Lets staff hand a student a working password directly instead
+        of relying on the invitation email being delivered.
+        """
+        self.ensure_one()
+        if not self.student_partner_id:
+            raise UserError(
+                _("Grant portal access first — no portal account exists for "
+                  "enrollment %s.") % self.enrollment_no)
+        user = self.student_partner_id.user_ids[:1]
+        if not user:
+            raise UserError(
+                _("No portal user is linked to this student yet. Use "
+                  "'Grant Portal Access' first."))
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Set Portal Password"),
+            "res_model": "education.portal.password.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_enrollment_id": self.id,
+                "default_user_id": user.id,
+            },
+        }
+
     def action_suspend(self):
         self.write({"state": "suspended"})
 

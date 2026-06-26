@@ -23,9 +23,11 @@ class EduHostelProperty(models.Model):
     block = fields.Char(string="Block / Wing")
     total_capacity = fields.Integer(string="Total Capacity")
     warden_id = fields.Many2one(
-        comodel_name="res.users",
+        comodel_name="education.faculty",
         string="Warden",
         domain=[("share", "=", False)],
+        ondelete="restrict",
+        tracking=True,
     )
     active = fields.Boolean(string="Active", default=True)
 
@@ -56,12 +58,31 @@ class EduHostelProperty(models.Model):
                 rec.room_ids.filtered(lambda r: r.state == "occupied")
             )
 
+    def action_view_allocations(self):
+        """Open confirmed allocations for rooms in this hostel property."""
+        self.ensure_one()
+        room_ids = self.room_ids.ids
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Occupied Allocations — %s") % self.name,
+            "res_model": "edu.hostel.allocation",
+            "view_mode": "list,form",
+            "domain": [
+                ("room_id", "in", room_ids),
+                ("state", "=", "confirmed"),
+            ],
+            "context": {
+                "default_room_id": room_ids[0] if len(room_ids) == 1 else False,
+            },
+        }
+
 
 class EduHostelRoom(models.Model):
     """A single room inside a hostel property."""
 
     _name = "edu.hostel.room"
     _description = "Hostel Room"
+    _rec_name = "room_no"
     _order = "property_id, room_no"
 
     property_id = fields.Many2one(
@@ -96,13 +117,10 @@ class EduHostelRoom(models.Model):
     )
     active = fields.Boolean(string="Active", default=True)
 
-    _sql_constraints = [
-        (
-            "unique_room_per_property",
+    _unique_room_per_property = models.Constraint (
             "UNIQUE(property_id, room_no)",
-            "Room number must be unique within the same property.",
-        ),
-    ]
+            "Room number must be unique within the same property.",)
+
 
 
 class EduHostelAllocation(models.Model):
@@ -126,6 +144,16 @@ class EduHostelAllocation(models.Model):
         required=True,
         tracking=True,
     )
+
+    property_id = fields.Many2one(
+        comodel_name="edu.hostel.property",
+        string="Property",
+        related="room_id.property_id",
+        store=True,
+        readonly=True,
+        tracking=True,
+    )
+
     date_from = fields.Date(
         string="From Date",
         required=True,

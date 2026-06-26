@@ -14,6 +14,9 @@ class EduNotificationQueue(models.Model):
     _name = "edu.notification.queue"
     _description = "Notification Queue"
     _order = "create_date desc"
+    _rec_name = 'name'
+
+
 
     name = fields.Char(
         string="Name",
@@ -137,32 +140,61 @@ class EduNotificationQueue(models.Model):
             )
 
     def _send_sms(self):
-        """SMS stub — logs a message; wire up a real SMS provider here."""
+        """Send a real SMS via Odoo's community ``sms`` module.
+
+        Creates an ``sms.sms`` record and dispatches it through the configured
+        SMS gateway. Per-message failures (missing number, no credit, …) set the
+        record's state to ``error``; we surface those as a ``UserError`` so the
+        notification is marked ``failed`` with a meaningful message.
+        """
         self.ensure_one()
+        number = self.recipient_id.phone
+        if not number:
+            raise UserError(
+                _("Recipient %s has no phone number.", self.recipient_id.name)
+            )
+        sms = self.env["sms.sms"].create({
+            "number": number,
+            "body": self.body,
+            "partner_id": self.recipient_id.id,
+        })
+        # Keep the sms.sms record for traceability (unlink_sent=False) and let
+        # gateway/connection errors propagate (raise_exception=True).
+        sms.send(unlink_failed=False, unlink_sent=False, raise_exception=True)
+        if sms.state == "error":
+            reason = dict(
+                sms._fields["failure_type"]._description_selection(self.env)
+            ).get(sms.failure_type, _("Unknown error"))
+            raise UserError(
+                _(
+                    "SMS to %(name)s failed: %(reason)s",
+                    name=self.recipient_id.name,
+                    reason=reason,
+                )
+            )
         _logger.info(
-            "education_notification: SMS stub — would send to %s: %s",
+            "education_notification: SMS sent to %s (%s)",
             self.recipient_id.name,
-            self.body,
+            number,
         )
 
     def _send_inapp(self):
-        """Create an edu.notification.centre record for the recipient's user."""
+        """Send an in-app message as a Discuss direct chat to the recipient.
+
+        Gets (or creates) the 1:1 chat channel between the sender and the
+        recipient partner, then posts the notification body there. The
+        recipient sees it as a normal Discuss conversation.
+        """
         self.ensure_one()
-        user = self.env["res.users"].search(
-            [("partner_id", "=", self.recipient_id.id)], limit=1
+        channel = self.env["discuss.channel"]._get_or_create_chat(
+            partners_to=self.recipient_id.ids,
         )
-        if user:
-            self.env["edu.notification.centre"].create({
-                "user_id": user.id,
-                "title": self.subject or _("Notification"),
-                "message": self.body,
-            })
-        else:
-            _logger.warning(
-                "education_notification: no user found for partner %s (%s)",
-                self.recipient_id.name,
-                self.recipient_id.id,
-            )
+        channel.message_post(
+            body=self.body,
+            subject=self.subject or _("Notification"),
+            message_type="comment",
+            subtype_xmlid="mail.mt_comment",
+        )
 
     # ------------------------------------------------------------------
     # Cron
@@ -177,40 +209,3 @@ class EduNotificationQueue(models.Model):
             len(pending),
         )
         pending.action_send()
-
-
-class EduNotificationCentre(models.Model):
-    _name = "edu.notification.centre"
-    _description = "In-App Notification"
-    _order = "create_date desc"
-
-    user_id = fields.Many2one(
-        comodel_name="res.users",
-        string="User",
-        required=True,
-        default=lambda self: self.env.uid,
-        ondelete="cascade",
-    )
-    title = fields.Char(string="Title", required=True)
-    message = fields.Text(string="Message")
-    is_read = fields.Boolean(string="Read", default=False)
-    notification_date = fields.Datetime(
-        string="Date",
-        default=fields.Datetime.now,
-    )
-    link_model = fields.Char(
-        string="Related Model",
-        help="Optional model name for navigation (e.g. 'edu.student').",
-    )
-    link_res_id = fields.Integer(
-        string="Related Record ID",
-        help="Optional record ID in the related model.",
-    )
-
-    # ------------------------------------------------------------------
-    # Actions
-    # ------------------------------------------------------------------
-
-    def action_mark_read(self):
-        """Mark the selected notification(s) as read."""
-        self.write({"is_read": True})

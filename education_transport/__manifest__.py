@@ -17,9 +17,10 @@ Version: 19.0.1.0.0  |  License: LGPL-3
     "author": "Cybrosys Techno Solutions",
     "website": "https://www.cybrosys.com",
     "license": "LGPL-3",
-    "depends": ["education_core", "education_security"],
+    "depends": ["education_core", "education_security", "fleet"],
     "data": [
         "security/ir.model.access.csv",
+        "security/transport_security.xml",
         "views/transport_views.xml",
         "views/menus.xml",
     ],

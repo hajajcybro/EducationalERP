@@ -6,7 +6,7 @@ Covers:
   - Notification queue created with state=pending
   - action_send() transitions email notification to 'sent'
   - action_retry() increments retry_count
-  - edu.notification.centre action_mark_read()
+  - in-app notification posts a Discuss direct chat to the recipient
   - _cron_process_queue() moves pending notifications out of 'pending'
 """
 from odoo.tests import TransactionCase, tagged
@@ -118,19 +118,32 @@ class TestNotification(TransactionCase):
 
         self.assertEqual(notif.retry_count, 1)
 
-    # ── Notification centre mark read ─────────────────────────────────────
+    # ── In-app notification posts a Discuss chat ──────────────────────────
 
-    def test_centre_mark_read(self):
-        """action_mark_read() should set is_read=True on the notification centre record."""
-        centre = self.env["edu.notification.centre"].create({
-            "user_id": self.env.uid,
-            "title": "Test Notification",
-            "message": "This is a test in-app notification.",
-            "is_read": False,
+    def test_inapp_posts_to_chat(self):
+        """An in-app notification should send to state='sent' and post the body
+        into the direct chat channel with the recipient partner."""
+        notif = self.env["edu.notification.queue"].create({
+            "notif_type": "inapp",
+            "subject": "In-App Alert",
+            "body": "This is a test in-app notification.",
+            "recipient_id": self.partner.id,
         })
-        self.assertFalse(centre.is_read)
-        centre.action_mark_read()
-        self.assertTrue(centre.is_read)
+        notif.action_send()
+        self.assertEqual(notif.state, "sent")
+
+        # The same get-or-create call returns the chat used by _send_inapp.
+        channel = self.env["discuss.channel"]._get_or_create_chat(
+            partners_to=self.partner.ids,
+        )
+        self.assertTrue(channel, "a direct chat channel should exist")
+        posted = channel.message_ids.filtered(
+            lambda m: "test in-app notification" in (m.body or "").lower()
+        )
+        self.assertTrue(
+            posted,
+            "the chat channel should contain the posted notification message",
+        )
 
     # ── Cron processes pending ────────────────────────────────────────────
 

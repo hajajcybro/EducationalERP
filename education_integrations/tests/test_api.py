@@ -7,7 +7,6 @@ validate the underlying data-access logic that the controller methods rely on.
 
 Covered:
   - education.enrollment ORM search used by /api/edu/students
-  - edu.notification.centre model is registered and searchable
   - education_integrations.edu_portal_dashboard QWeb template ref exists
 """
 from odoo.tests.common import TransactionCase, tagged
@@ -26,18 +25,6 @@ class TestEduApi(TransactionCase):
         )
         # Must return a recordset (possibly empty in a test DB)
         self.assertIsNotNone(enrollments)
-
-    # ── notification centre model ──────────────────────────────────────────
-
-    def test_notification_centre_own_domain(self):
-        """edu.notification.centre model must be registered and searchable."""
-        self.assertIn(
-            "edu.notification.centre",
-            self.env,
-            "edu.notification.centre model should be available in the registry",
-        )
-        records = self.env["edu.notification.centre"].search([])
-        self.assertIsNotNone(records)
 
     # ── portal template xmlid ──────────────────────────────────────────────
 

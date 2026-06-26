@@ -28,6 +28,7 @@ access_document_admission,education.document admission,model_education_document,
 access_document_portal,education.document portal,model_education_document,base.group_portal,1,1,1,0
 access_reject_wizard_admin,education.application.reject.wizard admin,model_education_application_reject_wizard,education_security.group_education_admin,1,1,1,1
 access_reject_wizard_admission,education.application.reject.wizard admission,model_education_application_reject_wizard,education_security.group_education_admission_officer,1,1,1,1
+access_portal_pwd_wizard_admin,education.portal.password.wizard admin,model_education_portal_password_wizard,education_security.group_education_admin,1,1,1,1
 access_timetable_slot_admin,education.timetable.slot admin,model_education_timetable_slot,education_security.group_education_admin,1,1,1,1
 access_timetable_slot_teacher,education.timetable.slot teacher,model_education_timetable_slot,education_security.group_education_teacher,1,0,0,0
 access_timetable_slot_user,education.timetable.slot user,model_education_timetable_slot,base.group_user,1,0,0,0

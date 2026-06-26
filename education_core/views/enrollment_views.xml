@@ -18,6 +18,10 @@
                             groups="education_security.group_education_admin,
                                     education_security.group_education_admission_officer"
                             confirm="Create a portal account and send login invitation?"/>
+                    <button name="action_set_portal_password" type="object"
+                            string="Set Portal Password"
+                            invisible="not student_partner_id"
+                            groups="education_security.group_education_admin"/>
                     <button name="action_suspend" type="object"
                             string="Suspend"
                             invisible="state != 'active'"
@@ -215,6 +219,32 @@
             <p>
                 Enrollments are created automatically when an application is approved.
             </p>
+        </field>
+    </record>
+
+    <!-- Wizard: set / reset a student's portal password (admin only) -->
+    <record id="view_portal_password_wizard_form" model="ir.ui.view">
+        <field name="name">education.portal.password.wizard.form</field>
+        <field name="model">education.portal.password.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Set Portal Password">
+                <div class="alert alert-warning" role="alert">
+                    Passwords are stored encrypted and cannot be viewed later.
+                    Copy this password now and share it securely with the student.
+                </div>
+                <group>
+                    <field name="enrollment_id" invisible="1"/>
+                    <field name="user_id" invisible="1"/>
+                    <field name="login"/>
+                    <field name="new_password"/>
+                </group>
+                <footer>
+                    <button name="action_set_password" type="object"
+                            string="Set Password" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
         </field>
     </record>
 

@@ -2,54 +2,41 @@
 <odoo>
 
     <!-- ══════════════════════════════════════════════════════════════════════
-         edu.transport.vehicle — Form, List, Action
+         fleet.vehicle — School-transport extension (form, list, search, action)
     ══════════════════════════════════════════════════════════════════════════ -->
 
-    <record id="view_edu_transport_vehicle_form" model="ir.ui.view">
-        <field name="name">edu.transport.vehicle.form</field>
-        <field name="model">edu.transport.vehicle</field>
+    <record id="view_fleet_vehicle_form_school" model="ir.ui.view">
+        <field name="name">fleet.vehicle.form.school</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
         <field name="arch" type="xml">
-            <form string="Vehicle">
-                <sheet>
-                    <div class="oe_title">
-                        <label for="registration_no"/>
-                        <h1>
-                            <field name="registration_no"
-                                   placeholder="e.g. KL 07 AB 1234"/>
-                        </h1>
-                    </div>
-                    <group>
-                        <group string="Vehicle Details">
-                            <field name="make_model"/>
-                            <field name="capacity"/>
-                            <field name="condition"
-                                   widget="badge"
-                                   decoration-success="condition == 'good'"
-                                   decoration-warning="condition == 'fair'"
-                                   decoration-danger="condition == 'poor'"/>
-                            <field name="last_service_date"/>
-                        </group>
-                        <group string="Assignment">
-                            <field name="driver_id"
-                                   options="{'no_create': True}"/>
-                            <field name="route_id"
-                                   options="{'no_create': True}"/>
-                            <field name="active"/>
-                        </group>
-                    </group>
-                </sheet>
-            </form>
+            <field name="vehicle_properties" position="before">
+                <group string="School Transport" name="school_transport">
+                    <field name="is_school_vehicle"/>
+                    <field name="route_id"
+                           options="{'no_create': True}"
+                           invisible="not is_school_vehicle"/>
+                    <field name="condition"
+                           widget="badge"
+                           decoration-success="condition == 'good'"
+                           decoration-warning="condition == 'fair'"
+                           decoration-danger="condition == 'poor'"
+                           invisible="not is_school_vehicle"/>
+                    <field name="last_service_date"
+                           invisible="not is_school_vehicle"/>
+                </group>
+            </field>
         </field>
     </record>
 
-    <record id="view_edu_transport_vehicle_list" model="ir.ui.view">
-        <field name="name">edu.transport.vehicle.list</field>
-        <field name="model">edu.transport.vehicle</field>
+    <record id="view_fleet_vehicle_list_school" model="ir.ui.view">
+        <field name="name">fleet.vehicle.list.school</field>
+        <field name="model">fleet.vehicle</field>
         <field name="arch" type="xml">
             <list string="Vehicles">
-                <field name="registration_no"/>
-                <field name="make_model"/>
-                <field name="capacity"/>
+                <field name="license_plate"/>
+                <field name="model_id"/>
+                <field name="seats"/>
                 <field name="driver_id"/>
                 <field name="route_id"/>
                 <field name="last_service_date"/>
@@ -58,22 +45,49 @@
                        decoration-success="condition == 'good'"
                        decoration-warning="condition == 'fair'"
                        decoration-danger="condition == 'poor'"/>
-                <field name="active" column_invisible="True"/>
             </list>
+        </field>
+    </record>
+
+    <record id="view_fleet_vehicle_search_school" model="ir.ui.view">
+        <field name="name">fleet.vehicle.search.school</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="arch" type="xml">
+            <search string="Search Vehicles">
+                <field name="license_plate"/>
+                <field name="model_id"/>
+                <field name="driver_id"/>
+                <field name="route_id"/>
+                <group>
+                    <filter name="group_by_route" string="Route"
+                            context="{'group_by': 'route_id'}"/>
+                    <filter name="group_by_condition" string="Condition"
+                            context="{'group_by': 'condition'}"/>
+                </group>
+            </search>
         </field>
     </record>
 
     <record id="action_edu_transport_vehicle" model="ir.actions.act_window">
         <field name="name">Vehicles</field>
-        <field name="res_model">edu.transport.vehicle</field>
+        <field name="res_model">fleet.vehicle</field>
         <field name="view_mode">list,form</field>
-        <field name="context">{'search_default_active': 1}</field>
+        <field name="domain">[('is_school_vehicle', '=', True)]</field>
+        <field name="context">{'default_is_school_vehicle': True}</field>
+        <field name="search_view_id" ref="view_fleet_vehicle_search_school"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Register your first school vehicle
             </p>
             <p>Add vehicles, assign drivers and routes to manage your fleet.</p>
         </field>
+    </record>
+
+    <record id="action_edu_transport_vehicle_view_list" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_fleet_vehicle_list_school"/>
+        <field name="act_window_id" ref="action_edu_transport_vehicle"/>
     </record>
 
     <!-- ══════════════════════════════════════════════════════════════════════
@@ -92,6 +106,12 @@
                                 name="action_view_stops"
                                 icon="fa-map-marker">
                             <field name="stop_count" widget="statinfo" string="Stops"/>
+                        </button>
+                        <button class="oe_stat_button"
+                                type="object"
+                                name="action_view_vehicles"
+                                icon="fa-bus">
+                            <field name="vehicle_count" widget="statinfo" string="Vehicles"/>
                         </button>
                     </div>
                     <div class="oe_title">
@@ -127,9 +147,9 @@
                         <page string="Vehicles" name="vehicles">
                             <field name="vehicle_ids" readonly="1">
                                 <list>
-                                    <field name="registration_no"/>
-                                    <field name="make_model"/>
-                                    <field name="capacity"/>
+                                    <field name="license_plate"/>
+                                    <field name="model_id"/>
+                                    <field name="seats"/>
                                     <field name="driver_id"/>
                                     <field name="condition"
                                            widget="badge"
@@ -197,7 +217,7 @@
                             <field name="state"
                                    widget="badge"
                                    decoration-success="state == 'active'"
-                                   decoration-secondary="state == 'inactive'"/>
+                                   decoration-muted="state == 'inactive'"/>
                             <field name="academic_year_id"
                                    options="{'no_create': True}"/>
                         </group>
@@ -232,7 +252,7 @@
                 <field name="state"
                        widget="badge"
                        decoration-success="state == 'active'"
-                       decoration-secondary="state == 'inactive'"/>
+                       decoration-muted="state == 'inactive'"/>
             </list>
         </field>
     </record>
@@ -250,7 +270,7 @@
                         domain="[('state', '=', 'active')]"/>
                 <filter name="inactive" string="Inactive"
                         domain="[('state', '=', 'inactive')]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_by_route" string="Route"
                             context="{'group_by': 'route_id'}"/>
                     <filter name="group_by_year" string="Academic Year"

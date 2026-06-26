@@ -161,6 +161,33 @@ class EducationDocument(models.Model):
                     % rec.document_type_id.name
                 )
 
+    # ── CRUD ─────────────────────────────────────────────────────────────────
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            # A file attached on creation means the document is uploaded,
+            # not merely pending — unless an explicit state was given.
+            if vals.get("file") and vals.get("state", "pending") == "pending":
+                vals["state"] = "uploaded"
+        return super().create(vals_list)
+
+    def write(self, vals):
+        res = super().write(vals)
+        # Auto-advance the workflow when the file changes, but never override
+        # an explicit state change made in the same write.
+        if "file" in vals and "state" not in vals:
+            if vals.get("file"):
+                self.filtered(lambda r: r.state == "pending").write(
+                    {"state": "uploaded"}
+                )
+            else:
+                # File removed — send it back to pending for re-upload.
+                self.filtered(lambda r: r.state == "uploaded").write(
+                    {"state": "pending"}
+                )
+        return res
+
     # ── Actions ────────────────────────────────────────────────────────────
 
     def action_mark_uploaded(self):

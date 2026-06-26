@@ -13,10 +13,4 @@
         action="action_edu_notification_queue"
         sequence="10"/>
 
-    <menuitem id="menu_notif_centre"
-        name="Notification Centre"
-        parent="menu_education_notification_root"
-        action="action_edu_notification_centre"
-        sequence="20"/>
-
 </odoo>

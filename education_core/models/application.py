@@ -287,6 +287,10 @@ class EducationApplication(models.Model):
                 "company_id": rec.company_id.id,
             })
             rec.write({"state": "approved", "enrollment_id": enrollment.id})
+            # Carry the applicant's uploaded documents over to the enrollment
+            # so they appear on the enrollment's Documents tab.
+            if rec.document_ids:
+                rec.document_ids.write({"enrollment_id": enrollment.id})
             # Send approval email
             template = self.env.ref(
                 "education_core.mail_template_application_approved",

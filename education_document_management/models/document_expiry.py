@@ -5,11 +5,13 @@ education_document_management — Document Expiry & Alert (S5-T10, S5-T11)
 Extends education.document.type with expiry_alert_days.
 Extends education.document with:
   - expiry_state computed field (valid / expiring_soon / expired / no_expiry)
-Adds edu.doc.expiry.cron AbstractModel run weekly by ir.cron to:
+Adds _cron_send_expiry_alerts on education.document, run weekly by ir.cron to:
   - Set state = 'expired' on expired, verified documents
   - Email guardian/student when document is expiring soon or already expired
 """
 from odoo import models, fields, api, _
+import logging
+_logger = logging.getLogger(__name__)
 
 
 class EducationDocumentTypeExpiry(models.Model):
@@ -63,16 +65,10 @@ class EducationDocumentExpiry(models.Model):
                 else:
                     rec.expiry_state = "valid"
 
-
-class EduDocExpiryCron(models.AbstractModel):
-    """Weekly cron: send document expiry alerts (S5-T11)."""
-
-    _name = "edu.doc.expiry.cron"
-    _description = "Document Expiry Alert Cron"
-
     @api.model
     def _cron_send_expiry_alerts(self):
-        """
+        """Weekly cron (S5-T11): send document expiry alerts.
+
         1. Mark verified documents past expiry_date as expired.
         2. Send alert emails for expiring_soon and expired documents.
         """
@@ -81,14 +77,12 @@ class EduDocExpiryCron(models.AbstractModel):
             "education_document_management.mail_template_doc_expiry",
             raise_if_not_found=False,
         )
-
         # Documents that are expiring soon or already expired (have an expiry_date)
-        docs = self.env["education.document"].search([
+        docs = self.search([
             ("expiry_date", "!=", False),
             ("state", "=", "verified"),
             ("active", "=", True),
         ])
-
         alert_sent = 0
         for doc in docs:
             if not doc.expiry_date:
@@ -105,19 +99,21 @@ class EduDocExpiryCron(models.AbstractModel):
 
             # Send email to guardian/student or linked partner
             enr = doc.enrollment_id
-            app = doc.application_id
             partner = (
-                (enr and (enr.guardian_partner_id or enr.student_partner_id))
-                or (app and app.partner_id)
-                or None
-            )
-            if template and partner:
+                enr and (enr.guardian_partner_id or enr.student_partner_id)
+            ) or None
+            if template and partner and partner.email:
                 try:
-                    template.with_context(partner_id=partner.id).send_mail(
-                        doc.id, force_send=False
+                    template.send_mail(
+                        doc.id,
+                        force_send=False,
+                        email_values={'email_to': partner.email},
                     )
                     alert_sent += 1
-                except Exception:
-                    pass
+                except Exception as e:
+                    _logger.error(
+                        "Document expiry alert failed for doc %s (partner %s): %s",
+                        doc.id, partner.id, e
+                    )
 
         return _("Document expiry alerts queued: %d") % alert_sent

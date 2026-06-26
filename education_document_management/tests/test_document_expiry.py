@@ -12,6 +12,7 @@ Covers:
   - Overdue cron queues emails for expiring/expired verified docs
   - Cron ignores non-verified documents
 """
+import base64
 from odoo.tests import tagged, TransactionCase
 from odoo import fields
 from datetime import date, timedelta
@@ -32,19 +33,26 @@ class TestDocumentExpiry(TransactionCase):
         })
 
         # Department → Program → Academic Year
-        cls.dept = cls.env["education.department"].create({"name": "Arts"})
+        cls.dept = cls.env["education.department"].create({
+            "name": "Arts",
+            "code": "ARTS",
+        })
         cls.program = cls.env["education.program"].create({
             "name": "B.A. English",
+            "code": "BAENG",
+            "degree_type": "bachelor",
             "department_id": cls.dept.id,
             "duration_years": 3,
         })
         cls.ay = cls.env["education.academic.year"].create({
             "name": "AY-DOC-TEST",
-            "start_date": "2025-06-01",
-            "end_date": "2026-05-31",
+            "code": "AY2526",
+            "date_start": "2025-06-01",
+            "date_end": "2026-05-31",
         })
         cls.cls = cls.env["education.class"].create({
             "name": "BA-I-DOC",
+            "section": "A",
             "program_id": cls.program.id,
             "academic_year_id": cls.ay.id,
         })
@@ -57,7 +65,10 @@ class TestDocumentExpiry(TransactionCase):
         cls.application = cls.env["education.application"].create({
             "first_name": "Doc",
             "last_name": "Tester",
+            "date_of_birth": "2005-01-01",
+            "gender": "male",
             "email": "doctest@test.com",
+            "phone": "+10000000000",
             "program_id": cls.program.id,
             "academic_year_id": cls.ay.id,
         })
@@ -68,7 +79,7 @@ class TestDocumentExpiry(TransactionCase):
             "application_id": self.application.id,
             "expiry_date": expiry_date,
             "state": state,
-            "file": b"dummydata" if state in ("uploaded", "verified") else False,
+            "file": base64.b64encode(b"dummydata") if state in ("uploaded", "verified") else False,
         })
 
     # ── expiry_state computation ──────────────────────────────────────────
@@ -125,7 +136,7 @@ class TestDocumentExpiry(TransactionCase):
         # Link an email-capable partner
         doc.application_id = self.application.id
 
-        result = self.env["edu.doc.expiry.cron"]._cron_send_expiry_alerts()
+        result = self.env["education.document"]._cron_send_expiry_alerts()
         self.assertIn("Document expiry alerts queued", result)
 
     def test_cron_skips_non_verified_docs(self):
@@ -135,9 +146,9 @@ class TestDocumentExpiry(TransactionCase):
         doc = self._make_doc(expiry_date=soon, state="pending")
         # Count email queue before
         before = self.env["mail.mail"].search_count([])
-        self.env["edu.doc.expiry.cron"]._cron_send_expiry_alerts()
+        self.env["education.document"]._cron_send_expiry_alerts()
         after = self.env["mail.mail"].search_count([])
         # No new emails added for non-verified docs (assuming no verified docs in this test)
         # The assertion is simply that the cron didn't crash
-        self.assertIsNotNone(result := self.env["edu.doc.expiry.cron"]._cron_send_expiry_alerts())
+        self.assertIsNotNone(result := self.env["education.document"]._cron_send_expiry_alerts())
         _ = doc  # referenced to avoid lint warning

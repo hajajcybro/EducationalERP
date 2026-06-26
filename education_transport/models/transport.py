@@ -2,7 +2,7 @@
 """
 Education ERP — Transport Models
 =================================
-S6-T14: edu.transport.vehicle
+S6-T14: fleet.vehicle (extended for school transport)
 S6-T15: edu.transport.route, edu.transport.stop
 S6-T16: edu.transport.assignment
 """
@@ -31,10 +31,19 @@ class EduTransportRoute(models.Model):
         store=True,
     )
     vehicle_ids = fields.One2many(
-        "edu.transport.vehicle",
+        "fleet.vehicle",
         "route_id",
         string="Vehicles",
     )
+    vehicle_count = fields.Integer(
+        string="Vehicles",
+        compute="_compute_vehicle_count",
+    )
+
+    @api.depends("vehicle_ids")
+    def _compute_vehicle_count(self):
+        for rec in self:
+            rec.vehicle_count = len(rec.vehicle_ids)
 
     @api.depends("stop_ids")
     def _compute_stop_count(self):
@@ -50,6 +59,20 @@ class EduTransportRoute(models.Model):
             "view_mode": "list",
             "domain": [("route_id", "=", self.id)],
             "context": {"default_route_id": self.id},
+        }
+
+    def action_view_vehicles(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Vehicles",
+            "res_model": "fleet.vehicle",
+            "view_mode": "list,form",
+            "domain": [("route_id", "=", self.id)],
+            "context": {
+                "default_route_id": self.id,
+                "default_is_school_vehicle": True,
+            },
         }
 
 
@@ -80,24 +103,25 @@ class EduTransportStop(models.Model):
     distance_km = fields.Float(string="Distance (km)")
 
 
-class EduTransportVehicle(models.Model):
-    """School vehicle / bus fleet record."""
+class FleetVehicle(models.Model):
+    """Extend Odoo's Fleet vehicle with school-transport fields.
 
-    _name = "edu.transport.vehicle"
-    _description = "Transport Vehicle"
-    _order = "registration_no"
+    School buses/vans are managed as standard ``fleet.vehicle`` records so
+    they benefit from the Fleet app (services, contracts, odometer, drivers).
+    The education layer only adds the route link, a quick condition flag and
+    a marker to scope the Education > Transport > Vehicles menu.
+    """
 
-    registration_no = fields.Char(
-        string="Registration No.",
-        required=True,
-        copy=False,
+    _inherit = "fleet.vehicle"
+
+    is_school_vehicle = fields.Boolean(
+        string="School Vehicle",
+        default=False,
+        help="Mark this vehicle as part of the school transport fleet.",
     )
-    make_model = fields.Char(string="Make / Model")
-    capacity = fields.Integer(string="Capacity (seats)", default=40)
-    driver_id = fields.Many2one(
-        "res.partner",
-        string="Driver",
-        domain=[("is_company", "=", False)],
+    route_id = fields.Many2one(
+        "edu.transport.route",
+        string="Assigned Route",
     )
     condition = fields.Selection(
         selection=[
@@ -107,22 +131,8 @@ class EduTransportVehicle(models.Model):
         ],
         string="Condition",
         default="good",
-        required=True,
     )
     last_service_date = fields.Date(string="Last Service Date")
-    route_id = fields.Many2one(
-        "edu.transport.route",
-        string="Assigned Route",
-    )
-    active = fields.Boolean(string="Active", default=True)
-
-    _sql_constraints = [
-        (
-            "registration_no_uniq",
-            "UNIQUE(registration_no)",
-            "Registration number must be unique.",
-        ),
-    ]
 
 
 class EduTransportAssignment(models.Model):
@@ -186,10 +196,8 @@ class EduTransportAssignment(models.Model):
         readonly=True,
     )
 
-    _sql_constraints = [
-        (
-            "enrollment_year_uniq",
-            "UNIQUE(enrollment_id, academic_year_id)",
-            "A student can only have one transport assignment per academic year.",
-        ),
-    ]
+    _enrollment_year_uniq = models.Constraint(
+        "UNIQUE(enrollment_id, academic_year_id)",
+        "A student can only have one transport assignment per academic year.",
+    )
+

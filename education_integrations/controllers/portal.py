@@ -43,7 +43,10 @@ class EduPortalController(CustomerPortal):
         partner = request.env.user.partner_id
 
         # Current enrollment (most recent active)
-        enrollment = request.env["education.enrollment"].search([
+        # sudo() needed: portal user has access to their own enrollment via partner,
+        # but sub-models (attendance, results, lms) are restricted to staff groups.
+        env_sudo = request.env(su=True)
+        enrollment = env_sudo["education.enrollment"].search([
             ("student_partner_id", "=", partner.id),
             ("state", "=", "active"),
         ], limit=1, order="enrollment_date desc")
@@ -58,8 +61,8 @@ class EduPortalController(CustomerPortal):
         }
 
         if enrollment:
-            # Attendance percentage
-            attendance_records = request.env["education.attendance"].search([
+            # Attendance percentage — domain-restricted to this student only
+            attendance_records = env_sudo["education.attendance"].search([
                 ("enrollment_id", "=", enrollment.id),
             ])
             if attendance_records:
@@ -72,19 +75,20 @@ class EduPortalController(CustomerPortal):
             # Fee amount due (financial management addon)
             if hasattr(enrollment, "amount_due"):
                 values["amount_due"] = enrollment.amount_due or 0.0
+            if hasattr(enrollment, "fee_state"):
                 values["fee_state"] = enrollment.fee_state or "not_invoiced"
 
-            # LMS enrollments
+            # LMS enrollments — domain-restricted to this student only
             if "edu.lms.enrollment" in request.env:
-                lms_enrollments = request.env["edu.lms.enrollment"].search([
+                lms_enrollments = env_sudo["edu.lms.enrollment"].search([
                     ("student_id", "=", enrollment.id),
                     ("state", "=", "enrolled"),
                 ])
                 values["lms_courses"] = lms_enrollments
 
-            # Recent exam results (last 3)
+            # Recent exam results — published only, domain-restricted to this student
             if "edu.exam.result" in request.env:
-                results = request.env["edu.exam.result"].search([
+                results = env_sudo["edu.exam.result"].search([
                     ("enrollment_id", "=", enrollment.id),
                     ("state", "=", "published"),
                 ], limit=3, order="id desc")
@@ -102,7 +106,8 @@ class EduPortalController(CustomerPortal):
         """Redirect to mark sheet PDF for the student's latest published exam."""
         partner = request.env.user.partner_id
 
-        enrollment = request.env["education.enrollment"].search([
+        env_sudo = request.env(su=True)
+        enrollment = env_sudo["education.enrollment"].search([
             ("student_partner_id", "=", partner.id),
             ("state", "=", "active"),
         ], limit=1, order="enrollment_date desc")
@@ -114,7 +119,7 @@ class EduPortalController(CustomerPortal):
             return request.redirect("/my/education")
 
         # Get the latest published exam for this student
-        result = request.env["edu.exam.result"].search([
+        result = env_sudo["edu.exam.result"].search([
             ("enrollment_id", "=", enrollment.id),
             ("state", "=", "published"),
         ], limit=1, order="id desc")
@@ -123,7 +128,7 @@ class EduPortalController(CustomerPortal):
             return request.redirect("/my/education")
 
         # Build a simple HTML report card rendered as a page
-        results_all = request.env["edu.exam.result"].search([
+        results_all = env_sudo["edu.exam.result"].search([
             ("enrollment_id", "=", enrollment.id),
             ("exam_id", "=", result.exam_id.id),
             ("state", "=", "published"),
@@ -147,7 +152,8 @@ class EduPortalController(CustomerPortal):
         """Parent portal: list enrolled children and optionally show one child's detail."""
         partner = request.env.user.partner_id
 
-        children = request.env["education.enrollment"].search([
+        env_sudo = request.env(su=True)
+        children = env_sudo["education.enrollment"].search([
             ("guardian_partner_id", "=", partner.id),
         ], order="student_name, enrollment_date desc")
 
@@ -167,8 +173,8 @@ class EduPortalController(CustomerPortal):
                 selected = selected[:1] if selected else None
 
         if selected:
-            # Attendance %
-            att_recs = request.env["education.attendance"].search([
+            # Attendance % — domain-restricted to this child only
+            att_recs = env_sudo["education.attendance"].search([
                 ("enrollment_id", "=", selected.id),
             ])
             if att_recs:
@@ -176,16 +182,16 @@ class EduPortalController(CustomerPortal):
                 present = len(att_recs.filtered(lambda a: a.state in ("present", "late")))
                 child_attendance_pct = round(present / total * 100, 1) if total else 0.0
 
-            # Recent results
+            # Recent results — published only, domain-restricted to this child
             if "edu.exam.result" in request.env:
-                child_results = request.env["edu.exam.result"].search([
+                child_results = env_sudo["edu.exam.result"].search([
                     ("enrollment_id", "=", selected.id),
                     ("state", "=", "published"),
                 ], limit=5, order="id desc")
 
-            # LMS courses
+            # LMS courses — domain-restricted to this child
             if "edu.lms.enrollment" in request.env:
-                child_lms = request.env["edu.lms.enrollment"].search([
+                child_lms = env_sudo["edu.lms.enrollment"].search([
                     ("student_id", "=", selected.id),
                     ("state", "=", "enrolled"),
                 ])

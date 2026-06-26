@@ -1,6 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_transport_vehicle_admin,edu.transport.vehicle admin,model_edu_transport_vehicle,education_security.group_education_admin,1,1,1,1
-access_transport_vehicle_user,edu.transport.vehicle user,model_edu_transport_vehicle,base.group_user,1,0,0,0
 access_transport_route_admin,edu.transport.route admin,model_edu_transport_route,education_security.group_education_admin,1,1,1,1
 access_transport_route_user,edu.transport.route user,model_edu_transport_route,base.group_user,1,0,0,0
 access_transport_stop_admin,edu.transport.stop admin,model_edu_transport_stop,education_security.group_education_admin,1,1,1,1

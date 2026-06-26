@@ -2,6 +2,101 @@
 <odoo>
 
     <!-- ═══════════════════════════════════════════════════════════════════
+         edu.hostel.room
+         (defined first — the property form references action_edu_hostel_room)
+    ════════════════════════════════════════════════════════════════════════ -->
+
+    <!-- Room — Form -->
+    <record id="view_edu_hostel_room_form" model="ir.ui.view">
+        <field name="name">edu.hostel.room.form</field>
+        <field name="model">edu.hostel.room</field>
+        <field name="arch" type="xml">
+            <form string="Hostel Room">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="room_no"/>
+                        <h1>
+                            <field name="room_no" placeholder="Room No."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Room Details">
+                            <field name="property_id"/>
+                            <field name="room_type"/>
+                            <field name="capacity"/>
+                            <field name="state" widget="badge"
+                                   decoration-success="state == 'available'"
+                                   decoration-warning="state == 'occupied'"
+                                   decoration-danger="state == 'maintenance'"/>
+                        </group>
+                        <group>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <group string="Amenities">
+                        <field name="amenities" nolabel="1"
+                               placeholder="List amenities e.g. AC, Wi-Fi, Attached Bathroom..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Room — List -->
+    <record id="view_edu_hostel_room_list" model="ir.ui.view">
+        <field name="name">edu.hostel.room.list</field>
+        <field name="model">edu.hostel.room</field>
+        <field name="arch" type="xml">
+            <list string="Hostel Rooms">
+                <field name="property_id"/>
+                <field name="room_no"/>
+                <field name="room_type"/>
+                <field name="capacity"/>
+                <field name="state"
+                       decoration-success="state == 'available'"
+                       decoration-warning="state == 'occupied'"
+                       decoration-danger="state == 'maintenance'"
+                       widget="badge"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Room — Search -->
+    <record id="view_edu_hostel_room_search" model="ir.ui.view">
+        <field name="name">edu.hostel.room.search</field>
+        <field name="model">edu.hostel.room</field>
+        <field name="arch" type="xml">
+            <search string="Hostel Rooms">
+                <field name="room_no"/>
+                <field name="property_id"/>
+                <filter name="available" string="Available" domain="[('state', '=', 'available')]"/>
+                <filter name="occupied" string="Occupied" domain="[('state', '=', 'occupied')]"/>
+                <filter name="maintenance" string="Maintenance" domain="[('state', '=', 'maintenance')]"/>
+                <separator/>
+                <group>
+                    <filter name="group_by_property" string="Property" context="{'group_by': 'property_id'}"/>
+                    <filter name="group_by_type" string="Type" context="{'group_by': 'room_type'}"/>
+                    <filter name="group_by_state" string="State" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Room — Action -->
+    <record id="action_edu_hostel_room" model="ir.actions.act_window">
+        <field name="name">Hostel Rooms</field>
+        <field name="res_model">edu.hostel.room</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_edu_hostel_room_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Add rooms to your hostel properties
+            </p>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
          edu.hostel.property
     ════════════════════════════════════════════════════════════════════════ -->
 
@@ -18,21 +113,23 @@
                                 type="action"
                                 class="oe_stat_button"
                                 icon="fa-bed"
-                                context="{'default_property_id': active_id,
-                                          'search_default_property_id': active_id}">
+                                context="{'default_property_id': id, 'search_default_property_id': id}">
                             <field name="room_count" widget="statinfo" string="Rooms"/>
                         </button>
-                        <button class="oe_stat_button"
-                                icon="fa-user"
+                        <button name="action_view_allocations"
                                 type="object"
-                                name="">
+                                class="oe_stat_button"
+                                icon="fa-user"
+                                context="{'default_property_id': id, 'search_default_property_id': id}">
                             <field name="occupied_count" widget="statinfo" string="Occupied"/>
                         </button>
                     </div>
 
                     <div class="oe_title">
                         <label for="name"/>
-                        <h1><field name="name" placeholder="Property Name"/></h1>
+                        <h1>
+                            <field name="name" placeholder="Property Name"/>
+                        </h1>
                     </div>
 
                     <group>
@@ -50,7 +147,6 @@
                         <page string="Rooms" name="rooms">
                             <field name="room_ids" mode="list">
                                 <list>
-                                    <column_invisible>1</column_invisible>
                                     <field name="room_no"/>
                                     <field name="room_type"/>
                                     <field name="capacity"/>
@@ -115,98 +211,6 @@
     </record>
 
     <!-- ═══════════════════════════════════════════════════════════════════
-         edu.hostel.room
-    ════════════════════════════════════════════════════════════════════════ -->
-
-    <!-- Room — Form -->
-    <record id="view_edu_hostel_room_form" model="ir.ui.view">
-        <field name="name">edu.hostel.room.form</field>
-        <field name="model">edu.hostel.room</field>
-        <field name="arch" type="xml">
-            <form string="Hostel Room">
-                <sheet>
-                    <div class="oe_title">
-                        <label for="room_no"/>
-                        <h1><field name="room_no" placeholder="Room No."/></h1>
-                    </div>
-                    <group>
-                        <group string="Room Details">
-                            <field name="property_id"/>
-                            <field name="room_type"/>
-                            <field name="capacity"/>
-                            <field name="state" widget="badge"
-                                   decoration-success="state == 'available'"
-                                   decoration-warning="state == 'occupied'"
-                                   decoration-danger="state == 'maintenance'"/>
-                        </group>
-                        <group>
-                            <field name="active" widget="boolean_toggle"/>
-                        </group>
-                    </group>
-                    <group string="Amenities">
-                        <field name="amenities" nolabel="1"
-                               placeholder="List amenities e.g. AC, Wi-Fi, Attached Bathroom..."/>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-    <!-- Room — List -->
-    <record id="view_edu_hostel_room_list" model="ir.ui.view">
-        <field name="name">edu.hostel.room.list</field>
-        <field name="model">edu.hostel.room</field>
-        <field name="arch" type="xml">
-            <list string="Hostel Rooms">
-                <field name="property_id"/>
-                <field name="room_no"/>
-                <field name="room_type"/>
-                <field name="capacity"/>
-                <field name="state"
-                       decoration-success="state == 'available'"
-                       decoration-warning="state == 'occupied'"
-                       decoration-danger="state == 'maintenance'"
-                       widget="badge"/>
-                <field name="active"/>
-            </list>
-        </field>
-    </record>
-
-    <!-- Room — Search -->
-    <record id="view_edu_hostel_room_search" model="ir.ui.view">
-        <field name="name">edu.hostel.room.search</field>
-        <field name="model">edu.hostel.room</field>
-        <field name="arch" type="xml">
-            <search string="Hostel Rooms">
-                <field name="room_no"/>
-                <field name="property_id"/>
-                <filter name="available" string="Available" domain="[('state', '=', 'available')]"/>
-                <filter name="occupied" string="Occupied" domain="[('state', '=', 'occupied')]"/>
-                <filter name="maintenance" string="Maintenance" domain="[('state', '=', 'maintenance')]"/>
-                <separator/>
-                <group expand="0" string="Group By">
-                    <filter name="group_by_property" string="Property" context="{'group_by': 'property_id'}"/>
-                    <filter name="group_by_type" string="Type" context="{'group_by': 'room_type'}"/>
-                    <filter name="group_by_state" string="State" context="{'group_by': 'state'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
-    <!-- Room — Action -->
-    <record id="action_edu_hostel_room" model="ir.actions.act_window">
-        <field name="name">Hostel Rooms</field>
-        <field name="res_model">edu.hostel.room</field>
-        <field name="view_mode">list,form</field>
-        <field name="search_view_id" ref="view_edu_hostel_room_search"/>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Add rooms to your hostel properties
-            </p>
-        </field>
-    </record>
-
-    <!-- ═══════════════════════════════════════════════════════════════════
          edu.hostel.allocation
     ════════════════════════════════════════════════════════════════════════ -->
 
@@ -234,6 +238,7 @@
                         <group>
                             <field name="enrollment_id"/>
                             <field name="room_id"/>
+                            <field name="property_id"/>
                         </group>
                         <group>
                             <field name="date_from"/>
@@ -248,11 +253,7 @@
                                placeholder="Additional notes about this allocation..."/>
                     </group>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
+                <chatter/>
             </form>
         </field>
     </record>
@@ -267,6 +268,7 @@
                   decoration-muted="state == 'vacated'">
                 <field name="enrollment_id"/>
                 <field name="room_id"/>
+                <field name="property_id"/>
                 <field name="date_from"/>
                 <field name="date_to"/>
                 <field name="hostel_fee"/>
@@ -286,13 +288,14 @@
             <search string="Hostel Allocations">
                 <field name="enrollment_id"/>
                 <field name="room_id"/>
+                <field name="property_id"/>
                 <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
                 <filter name="confirmed" string="Confirmed" domain="[('state', '=', 'confirmed')]"/>
                 <filter name="vacated" string="Vacated" domain="[('state', '=', 'vacated')]"/>
                 <separator/>
                 <filter name="active_allocations" string="Active"
                         domain="[('state', 'in', ['draft', 'confirmed'])]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_by_room" string="Room" context="{'group_by': 'room_id'}"/>
                     <filter name="group_by_state" string="State" context="{'group_by': 'state'}"/>
                 </group>

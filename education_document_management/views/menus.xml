@@ -8,7 +8,7 @@
     <menuitem
         id="menu_education_documents_root"
         name="Documents"
-        parent="education_core.menu_education_root"
+        parent="education_config.menu_education_root"
         sequence="60"
         groups="education_security.group_education_admin,education_security.group_education_admission_officer"/>
 

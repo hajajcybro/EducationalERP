@@ -6,7 +6,7 @@ Covers:
   - Route stop_count computed field
   - Transport assignment default state
   - Unique assignment constraint (same enrollment + year)
-  - Unique vehicle registration_no constraint
+  - Fleet vehicle <-> route integration (school vehicles)
 """
 from datetime import date, timedelta
 
@@ -116,16 +116,23 @@ class TestTransport(TransactionCase):
         # Clean up
         assignment1.unlink()
 
-    # ── Unique vehicle registration ───────────────────────────────────────
+    # ── Fleet vehicle <-> route integration ──────────────────────────────
 
-    def test_vehicle_unique_registration(self):
-        """Creating two vehicles with the same registration_no should raise an IntegrityError."""
-        self.env["edu.transport.vehicle"].create({
-            "registration_no": "KL-01-TEST-9999",
+    def test_school_vehicle_route_link(self):
+        """A fleet.vehicle flagged as a school vehicle should attach to its route."""
+        brand = self.env["fleet.vehicle.model.brand"].create({"name": "Tata"})
+        model = self.env["fleet.vehicle.model"].create({
+            "name": "Starbus",
+            "brand_id": brand.id,
+        })
+        vehicle = self.env["fleet.vehicle"].create({
+            "model_id": model.id,
+            "license_plate": "KL-01-TEST-9999",
+            "is_school_vehicle": True,
+            "condition": "good",
+            "route_id": self.route.id,
         })
 
-        with self.assertRaises(Exception):
-            with self.env.cr.savepoint():
-                self.env["edu.transport.vehicle"].create({
-                    "registration_no": "KL-01-TEST-9999",
-                })
+        self.assertIn(vehicle, self.route.vehicle_ids)
+        self.route._compute_vehicle_count()
+        self.assertEqual(self.route.vehicle_count, 1)

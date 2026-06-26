@@ -68,7 +68,7 @@
                                         <i class="fa fa-calendar-check-o fa-2x text-success mb-2"/>
                                         <h5 class="card-title">Attendance</h5>
                                         <p class="display-6 fw-bold text-success mb-0">
-                                            <t t-esc="'%.1f%%' % attendance_pct"/>
+                                            <t t-esc="'%.1f' % attendance_pct"/>%
                                         </p>
                                         <small class="text-muted">Overall attendance rate</small>
                                     </div>
@@ -236,14 +236,13 @@
                                 </t>
                             </div>
                         </div>
-
                     </t><!-- /t if enrollment -->
                 </div><!-- /container -->
             </div><!-- /o_portal_wrap -->
         </t>
     </template>
 
-    <!-- ── Report Card (/my/education/report-card) ───────────────────── -->
+    <!-- ── Report Card (/my/education/report-) ───────────────────── -->
     <template id="edu_portal_report_card" name="Report Card">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumb_name">Report Card</t>
@@ -298,7 +297,7 @@
                                                     <t t-esc="'%.1f' % res.max_marks"/>
                                                 </td>
                                                 <td class="text-end">
-                                                    <t t-esc="'%.1f%%' % res.percentage"/>
+                                                    <t t-esc="'%.1f' % res.percentage"/>%
                                                 </td>
                                                 <td class="text-center fw-bold">
                                                     <t t-esc="res.grade"/>
@@ -403,7 +402,7 @@
                                             <i class="fa fa-calendar fa-2x text-success mb-2"/>
                                             <h6>Attendance</h6>
                                             <p class="h4 fw-bold text-success mb-0">
-                                                <t t-esc="'%.1f%%' % child_attendance_pct"/>
+                                                <t t-esc="'%.1f' % child_attendance_pct"/>%
                                             </p>
                                         </div>
                                     </div>
