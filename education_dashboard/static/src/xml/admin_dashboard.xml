@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="education_dashboard.AdminDashboard">
+        <div class="o_edu_dashboard p-3">
+            <div t-if="state.loading" class="o_edu_loading text-center text-muted py-5">
+                <i class="fa fa-spinner fa-spin fa-2x"/>
+                <div class="mt-2">Loading dashboard…</div>
+            </div>
+
+            <t t-else="">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h2 class="mb-0"><i class="fa fa-tachometer me-2 text-primary"/>Admin Dashboard</h2>
+                    <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.load()">
+                        <i class="fa fa-refresh me-1"/>Refresh
+                    </button>
+                </div>
+
+                <!-- KPI cards -->
+                <div class="row g-3 mb-3">
+                    <div class="col-6 col-md-3" t-on-click="onStudents">
+                        <div class="o_edu_kpi o_edu_clickable bg-primary-subtle">
+                            <div class="o_edu_kpi_val" t-esc="state.data.kpis.total_students"/>
+                            <div class="o_edu_kpi_lbl"><i class="fa fa-users me-1"/>Active Students</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3" t-on-click="onFaculty">
+                        <div class="o_edu_kpi o_edu_clickable bg-info-subtle">
+                            <div class="o_edu_kpi_val" t-esc="state.data.kpis.total_faculty"/>
+                            <div class="o_edu_kpi_lbl"><i class="fa fa-graduation-cap me-1"/>Faculty</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3" t-on-click="onApplications">
+                        <div class="o_edu_kpi o_edu_clickable bg-warning-subtle">
+                            <div class="o_edu_kpi_val" t-esc="state.data.kpis.pending_applications"/>
+                            <div class="o_edu_kpi_lbl"><i class="fa fa-inbox me-1"/>Pending Applications</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3" t-on-click="onExams">
+                        <div class="o_edu_kpi o_edu_clickable bg-success-subtle">
+                            <div class="o_edu_kpi_val" t-esc="state.data.kpis.upcoming_exams"/>
+                            <div class="o_edu_kpi_lbl"><i class="fa fa-calendar me-1"/>Upcoming Exams</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3" t-on-click="onPrograms">
+                        <div class="o_edu_kpi o_edu_clickable bg-light">
+                            <div class="o_edu_kpi_val" t-esc="state.data.kpis.total_programs"/>
+                            <div class="o_edu_kpi_lbl"><i class="fa fa-book me-1"/>Programs</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3" t-on-click="onClasses">
+                        <div class="o_edu_kpi o_edu_clickable bg-light">
+                            <div class="o_edu_kpi_val" t-esc="state.data.kpis.total_classes"/>
+                            <div class="o_edu_kpi_lbl"><i class="fa fa-th-large me-1"/>Classes</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3" t-on-click="onFees">
+                        <div class="o_edu_kpi o_edu_clickable bg-danger-subtle">
+                            <div class="o_edu_kpi_val" t-esc="state.data.kpis.fees_outstanding"/>
+                            <div class="o_edu_kpi_lbl"><i class="fa fa-money me-1"/>Fees Outstanding</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="o_edu_kpi bg-secondary-subtle">
+                            <div class="o_edu_kpi_val"><t t-esc="state.data.kpis.attendance_rate"/>%</div>
+                            <div class="o_edu_kpi_lbl"><i class="fa fa-check-circle me-1"/>Attendance Rate</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <!-- Students by program -->
+                    <div class="col-12 col-lg-6">
+                        <div class="o_edu_panel">
+                            <h5>Active Students by Program</h5>
+                            <t t-if="programBars.length">
+                                <div class="o_edu_bar_row" t-foreach="programBars" t-as="b" t-key="b.label">
+                                    <span class="o_edu_bar_lbl" t-esc="b.label"/>
+                                    <div class="o_edu_bar_track">
+                                        <div class="o_edu_bar_fill bg-primary" t-attf-style="width:{{b.pct}}%"/>
+                                    </div>
+                                    <span class="o_edu_bar_val" t-esc="b.value"/>
+                                </div>
+                            </t>
+                            <p t-else="" class="text-muted mb-0">No data.</p>
+                        </div>
+                    </div>
+
+                    <!-- Application funnel -->
+                    <div class="col-12 col-lg-6">
+                        <div class="o_edu_panel">
+                            <h5>Applications Funnel</h5>
+                            <div class="o_edu_bar_row" t-foreach="funnelBars" t-as="b" t-key="b.label">
+                                <span class="o_edu_bar_lbl" t-esc="b.label"/>
+                                <div class="o_edu_bar_track">
+                                    <div class="o_edu_bar_fill bg-info" t-attf-style="width:{{b.pct}}%"/>
+                                </div>
+                                <span class="o_edu_bar_val" t-esc="b.value"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Attendance breakdown -->
+                    <div class="col-12 col-lg-6">
+                        <div class="o_edu_panel">
+                            <h5>Attendance Breakdown</h5>
+                            <div class="d-flex flex-wrap gap-3">
+                                <div class="o_edu_chip"><b class="text-success" t-esc="state.data.attendance.present"/> Present</div>
+                                <div class="o_edu_chip"><b class="text-danger" t-esc="state.data.attendance.absent"/> Absent</div>
+                                <div class="o_edu_chip"><b class="text-warning" t-esc="state.data.attendance.late"/> Late</div>
+                                <div class="o_edu_chip"><b class="text-info" t-esc="state.data.attendance.excused"/> Excused</div>
+                                <div class="o_edu_chip">Total: <b t-esc="state.data.attendance.total"/></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent applications -->
+                    <div class="col-12 col-lg-6">
+                        <div class="o_edu_panel">
+                            <h5>Applications Awaiting Review</h5>
+                            <t t-if="state.data.recent_applications.length">
+                                <div class="o_edu_list_row o_edu_clickable"
+                                     t-foreach="state.data.recent_applications" t-as="a" t-key="a.id"
+                                     t-on-click="() => this.openRecord('education.application', a.id)">
+                                    <span t-esc="a.name"/>
+                                    <span class="badge text-bg-light" t-esc="a.program"/>
+                                </div>
+                            </t>
+                            <p t-else="" class="text-muted mb-0">Nothing pending. 🎉</p>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+
+</templates>

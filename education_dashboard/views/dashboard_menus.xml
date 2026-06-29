@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Dashboards root menu under the main Education app -->
+    <menuitem
+        id="menu_edu_dashboard_root"
+        name="Dashboards"
+        parent="education_config.menu_education_root"
+        sequence="1"
+        groups="education_security.group_education_admin,education_security.group_education_teacher"
+    />
+
+    <menuitem
+        id="menu_edu_admin_dashboard"
+        name="Admin Dashboard"
+        parent="menu_edu_dashboard_root"
+        action="action_edu_admin_dashboard_v2"
+        sequence="10"
+        groups="education_security.group_education_admin"
+    />
+
+    <menuitem
+        id="menu_edu_faculty_dashboard"
+        name="Faculty Dashboard"
+        parent="menu_edu_dashboard_root"
+        action="action_edu_faculty_dashboard"
+        sequence="20"
+        groups="education_security.group_education_teacher,education_security.group_education_admin"
+    />
+
+</odoo>

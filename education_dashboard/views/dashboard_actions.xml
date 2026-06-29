@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_edu_admin_dashboard_v2" model="ir.actions.client">
+        <field name="name">Admin Dashboard</field>
+        <field name="tag">education_dashboard.admin_dashboard</field>
+    </record>
+
+    <record id="action_edu_faculty_dashboard" model="ir.actions.client">
+        <field name="name">Faculty Dashboard</field>
+        <field name="tag">education_dashboard.faculty_dashboard</field>
+    </record>
+
+</odoo>
